@@ -1,0 +1,1336 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="PMApp">
+<meta name="theme-color" content="#1a1a2e">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='112' fill='%231a1a2e'/%3E%3Ctext x='256' y='340' font-size='280' text-anchor='middle' fill='%23e94560' font-family='sans-serif' font-weight='bold'%3EP%3C/text%3E%3C/svg%3E">
+<title>PMApp 海外生产管理系统</title>
+<style>
+:root {
+  --bg-primary: #1a1a2e;
+  --bg-secondary: #16213e;
+  --bg-card: #1e2a4a;
+  --bg-input: #0f1729;
+  --accent: #e94560;
+  --accent-light: #ff6b81;
+  --accent-blue: #4e8af5;
+  --accent-green: #2ed573;
+  --accent-orange: #ffa502;
+  --accent-purple: #a55eea;
+  --accent-cyan: #00d2d3;
+  --text-primary: #f0f0f5;
+  --text-secondary: #8892b0;
+  --text-muted: #555a6e;
+  --border: #2a3754;
+  --radius: 12px;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Helvetica Neue', sans-serif;
+  background: var(--bg-primary); color: var(--text-primary);
+  font-size: 15px; line-height: 1.5; overflow-x: hidden; -webkit-font-smoothing: antialiased;
+}
+#app { max-width: 430px; margin: 0 auto; min-height: 100vh; position: relative; }
+.page { display: none; padding: calc(var(--safe-top) + 52px) 12px calc(var(--safe-bottom) + 64px); min-height: 100vh; }
+.page.active { display: block; animation: fadeIn 0.3s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Top bar */
+.topbar {
+  position: fixed; top: 0; left: 50%; transform: translateX(-50%);
+  width: 100%; max-width: 430px; z-index: 100;
+  background: rgba(26,26,46,0.92); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: calc(var(--safe-top) + 8px) 16px 8px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.topbar h1 { font-size: 16px; font-weight: 700; }
+.topbar .back-btn { font-size: 24px; color: var(--accent); cursor: pointer; padding: 4px 8px; }
+.topbar .right-action { font-size: 14px; color: var(--accent); cursor: pointer; font-weight: 600; }
+
+/* Tab bar - 7 tabs */
+.tabbar {
+  position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 100%; max-width: 430px; z-index: 100;
+  background: rgba(22,33,62,0.95); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border);
+  display: flex; padding-bottom: var(--safe-bottom);
+}
+.tab {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  padding: 6px 2px; cursor: pointer; transition: color 0.2s;
+  color: var(--text-muted); font-size: 9px; gap: 1px;
+}
+.tab .tab-icon { font-size: 20px; }
+.tab.active { color: var(--accent); }
+
+/* Cards */
+.card { background: var(--bg-card); border-radius: var(--radius); padding: 14px; margin-bottom: 10px; border: 1px solid var(--border); cursor: pointer; transition: transform 0.15s; }
+.card:active { transform: scale(0.98); }
+.card-title { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+.card-meta { display: flex; flex-wrap: wrap; gap: 6px; font-size: 12px; color: var(--text-secondary); }
+.card-desc { font-size: 13px; color: var(--text-secondary); margin-top: 4px; line-height: 1.4; }
+
+/* Badges */
+.badge { display: inline-block; padding: 2px 7px; border-radius: 6px; font-size: 11px; font-weight: 600; }
+.badge-red { background: rgba(233,69,96,0.2); color: var(--accent-light); }
+.badge-green { background: rgba(46,213,115,0.15); color: var(--accent-green); }
+.badge-orange { background: rgba(255,165,2,0.15); color: var(--accent-orange); }
+.badge-blue { background: rgba(78,138,245,0.15); color: var(--accent-blue); }
+.badge-purple { background: rgba(165,94,234,0.15); color: var(--accent-purple); }
+.badge-cyan { background: rgba(0,210,211,0.15); color: var(--accent-cyan); }
+.badge-gray { background: rgba(136,146,176,0.12); color: var(--text-secondary); }
+
+/* Dashboard stats */
+.dash-stats { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+.dash-stat {
+  flex: 1 1 calc(33.33% - 8px); min-width: 95px;
+  background: var(--bg-card); border-radius: var(--radius); padding: 14px 8px;
+  text-align: center; border: 1px solid var(--border);
+}
+.dash-stat-num { font-size: 26px; font-weight: 800; margin-bottom: 2px; }
+.dash-stat-label { font-size: 11px; color: var(--text-secondary); }
+
+/* Section header */
+.sec-header { font-size: 13px; font-weight: 600; color: var(--text-secondary); margin: 16px 0 8px; text-transform: uppercase; letter-spacing: 0.5px; display: flex; justify-content: space-between; align-items: center; }
+.sec-header .sec-action { font-size: 12px; color: var(--accent); cursor: pointer; font-weight: 500; }
+
+/* Home header */
+.home-header { text-align: center; padding: 20px 0 16px; }
+.home-title { font-size: 36px; font-weight: 800; color: var(--accent); letter-spacing: -1px; }
+.home-slogan { font-size: 13px; color: var(--text-secondary); margin-top: 2px; }
+
+/* Banner */
+.banner { border-radius: 8px; padding: 8px 12px; margin: 8px 0 12px; text-align: center; font-size: 12px; }
+.banner-info { background: rgba(78,138,245,0.12); border: 1px solid rgba(78,138,245,0.25); color: #60a5fa; }
+.banner-warn { background: rgba(255,165,2,0.12); border: 1px solid rgba(255,165,2,0.25); color: #fbbf24; }
+.banner-ok { background: rgba(46,213,115,0.12); border: 1px solid rgba(46,213,115,0.25); color: #34d399; }
+
+/* Progress */
+.progress-bar { height: 6px; background: var(--bg-input); border-radius: 3px; overflow: hidden; margin-top: 6px; }
+.progress-fill { height: 100%; border-radius: 3px; transition: width 0.3s; }
+
+/* List item */
+.list-item { display: flex; align-items: center; padding: 12px 14px; border-bottom: 1px solid var(--border); cursor: pointer; }
+.list-item:active { background: var(--bg-secondary); }
+.list-item-icon { font-size: 18px; margin-right: 10px; }
+.list-item-content { flex: 1; min-width: 0; }
+.list-item-title { font-size: 14px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.list-item-sub { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+
+/* Detail */
+.detail-sec { margin-bottom: 16px; }
+.detail-label { font-size: 11px; color: var(--text-secondary); margin-bottom: 3px; text-transform: uppercase; }
+.detail-val { font-size: 14px; margin-bottom: 10px; word-break: break-word; }
+
+/* Loading & empty */
+.loading { text-align: center; padding: 40px; color: var(--text-secondary); }
+.spinner { width: 28px; height: 28px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 10px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.empty { text-align: center; padding: 40px 20px; color: var(--text-muted); }
+.empty-icon { font-size: 40px; margin-bottom: 8px; opacity: 0.3; }
+
+/* Modal */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 200; display: none; align-items: flex-end; justify-content: center; }
+.modal-overlay.show { display: flex; animation: fadeIn 0.2s; }
+.modal { background: var(--bg-secondary); border-radius: 20px 20px 0 0; width: 100%; max-width: 430px; padding: 20px 16px calc(var(--safe-bottom) + 20px); max-height: 85vh; overflow-y: auto; animation: slideUp 0.3s ease; }
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+.modal-handle { width: 36px; height: 4px; background: var(--text-muted); border-radius: 2px; margin: 0 auto 16px; }
+.modal-title { font-size: 17px; font-weight: 700; margin-bottom: 14px; text-align: center; }
+
+/* Toast */
+.toast { position: fixed; bottom: calc(var(--safe-bottom) + 76px); left: 50%; transform: translateX(-50%); background: var(--bg-card); color: var(--text-primary); padding: 10px 20px; border-radius: 20px; border: 1px solid var(--border); font-size: 14px; z-index: 300; opacity: 0; transition: opacity 0.3s; pointer-events: none; max-width: 90%; text-align: center; }
+.toast.show { opacity: 1; }
+
+/* Inputs */
+.input-group { margin-bottom: 14px; }
+.input-group label { display: block; font-size: 13px; color: var(--text-secondary); margin-bottom: 5px; }
+.input-group input, .input-group textarea, .input-group select {
+  width: 100%; padding: 12px 14px; background: var(--bg-input);
+  border: 1px solid var(--border); border-radius: var(--radius);
+  color: var(--text-primary); font-size: 16px; outline: none; transition: border-color 0.2s;
+}
+.input-group input:focus, .input-group textarea:focus, .input-group select:focus { border-color: var(--accent); }
+.input-group textarea { resize: vertical; min-height: 70px; }
+
+/* Buttons */
+.btn { display: block; width: 100%; padding: 13px; border: none; border-radius: var(--radius); font-size: 15px; font-weight: 600; cursor: pointer; transition: opacity 0.2s; }
+.btn-primary { background: var(--accent); color: white; }
+.btn-secondary { background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border); }
+.btn-success { background: var(--accent-green); color: white; }
+.btn:active { opacity: 0.8; }
+.btn:disabled { opacity: 0.5; }
+
+/* Search */
+.search-bar { margin-bottom: 10px; }
+.search-bar input { width: 100%; padding: 10px 14px; background: var(--bg-input); border: 1px solid var(--border); border-radius: 24px; color: var(--text-primary); font-size: 14px; outline: none; }
+.search-bar input:focus { border-color: var(--accent); }
+
+/* Filter chips */
+.filter-row { display: flex; gap: 6px; margin-bottom: 10px; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 4px; }
+.filter-chip { padding: 5px 12px; border-radius: 16px; font-size: 12px; white-space: nowrap; background: var(--bg-card); border: 1px solid var(--border); color: var(--text-secondary); cursor: pointer; }
+.filter-chip.active { background: var(--accent); color: white; border-color: var(--accent); }
+
+/* FAB */
+.fab { position: fixed; bottom: calc(var(--safe-bottom) + 72px); right: 16px; width: 48px; height: 48px; border-radius: 50%; background: var(--accent); color: white; font-size: 26px; border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(233,69,96,0.4); z-index: 90; display: flex; align-items: center; justify-content: center; transition: transform 0.2s; }
+.fab:active { transform: scale(0.9); }
+
+/* Settings */
+.setting-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; border-bottom: 1px solid var(--border); }
+.setting-label { font-size: 14px; }
+.setting-value { font-size: 13px; color: var(--text-secondary); }
+
+/* Message board */
+.msg-item { background: var(--bg-card); border-radius: 10px; padding: 10px 12px; margin-bottom: 8px; border: 1px solid var(--border); }
+.msg-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+.msg-name { font-size: 13px; font-weight: 600; color: var(--accent-blue); }
+.msg-time { font-size: 11px; color: var(--text-muted); }
+.msg-content { font-size: 14px; color: var(--text-primary); word-break: break-word; }
+.msg-delete { font-size: 12px; color: var(--accent); cursor: pointer; margin-top: 4px; }
+
+/* Login form in settings */
+.login-box { background: var(--bg-card); border-radius: var(--radius); padding: 16px; margin-bottom: 12px; border: 1px solid var(--border); }
+.login-box-title { font-size: 15px; font-weight: 600; margin-bottom: 12px; text-align: center; }
+
+/* PTR */
+.ptr-indicator { text-align: center; padding: 10px; color: var(--text-secondary); font-size: 13px; display: none; }
+.ptr-indicator.show { display: block; }
+
+/* Toggle */
+.toggle { position: relative; width: 44px; height: 26px; }
+.toggle input { opacity: 0; width: 0; height: 0; }
+.toggle-slider { position: absolute; cursor: pointer; inset: 0; background: var(--border); border-radius: 26px; transition: 0.3s; }
+.toggle-slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 4px; bottom: 4px; background: white; border-radius: 50%; transition: 0.3s; }
+.toggle input:checked + .toggle-slider { background: var(--accent-green); }
+.toggle input:checked + .toggle-slider:before { transform: translateX(18px); }
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- ═══ 首页 ═══ -->
+<div id="page-home" class="page active">
+  <div class="ptr-indicator" id="ptr-home">↓ 下拉刷新</div>
+  <div class="home-header">
+    <div class="home-title">PMApp</div>
+    <div class="home-slogan">海外生产管理系统</div>
+  </div>
+  <div id="home-banner"></div>
+  <div class="sec-header"><span>总体看板</span></div>
+  <div class="dash-stats" id="home-stats">
+    <div class="dash-stat"><div class="dash-stat-num" id="ds-total" style="color:var(--accent-blue)">-</div><div class="dash-stat-label">总项目</div></div>
+    <div class="dash-stat"><div class="dash-stat-num" id="ds-active" style="color:var(--accent-green)">-</div><div class="dash-stat-label">进行中</div></div>
+    <div class="dash-stat"><div class="dash-stat-num" id="ds-overdue" style="color:var(--accent)">-</div><div class="dash-stat-label">已延期</div></div>
+    <div class="dash-stat"><div class="dash-stat-num" id="ds-qc" style="color:var(--accent-orange)">-</div><div class="dash-stat-label">质检中</div></div>
+    <div class="dash-stat"><div class="dash-stat-num" id="ds-pending" style="color:var(--accent-purple)">-</div><div class="dash-stat-label">待处理</div></div>
+  </div>
+  <div class="sec-header"><span>进行中项目</span><span class="sec-action" onclick="App.navigate('production')">全部 ›</span></div>
+  <div id="home-projects"><div class="loading"><div class="spinner"></div>加载中...</div></div>
+  <div class="sec-header"><span>行业动态</span></div>
+  <div id="home-news"></div>
+  <div class="sec-header"><span>留言板</span></div>
+  <div id="home-messages">
+    <div class="login-box">
+      <div class="input-group"><label>姓名</label><input type="text" id="msg-name" placeholder="输入您的姓名" maxlength="30"></div>
+      <div class="input-group"><label>留言内容</label><textarea id="msg-content" placeholder="输入留言..." maxlength="500"></textarea></div>
+      <button class="btn btn-primary" onclick="App.postMessage()">发布留言</button>
+    </div>
+    <div id="msg-list"><div class="loading"><div class="spinner"></div>加载中...</div></div>
+  </div>
+</div>
+
+<!-- ═══ 计划 ═══ -->
+<div id="page-planning" class="page">
+  <div class="ptr-indicator" id="ptr-planning">↓ 下拉刷新</div>
+  <div class="sec-header"><span>计划任务</span><span class="sec-action" id="plan-task-add" style="display:none" onclick="App.showCreateFor('tasks')">+ 新建</span></div>
+  <div id="plan-tasks"><div class="loading"><div class="spinner"></div>加载中...</div></div>
+  <div class="sec-header"><span>会议安排</span></div>
+  <div id="plan-meetings"><div class="loading"><div class="spinner"></div>加载中...</div></div>
+  <div class="sec-header"><span>出货计划</span></div>
+  <div id="plan-shipping"><div class="loading"><div class="spinner"></div>加载中...</div></div>
+</div>
+
+<!-- ═══ 物料 ═══ -->
+<div id="page-materials" class="page">
+  <div class="ptr-indicator" id="ptr-materials">↓ 下拉刷新</div>
+  <div class="sec-header"><span>物料预警</span><span class="sec-action" id="mat-alert-add" style="display:none" onclick="App.showCreateFor('overseas_material_alerts')">+ 新建</span></div>
+  <div id="mat-alerts"><div class="loading"><div class="spinner"></div>加载中...</div></div>
+  <div class="sec-header"><span>工厂信息</span><span class="sec-action" id="mat-factory-add" style="display:none" onclick="App.showCreateFor('factory_info')">+ 新建</span></div>
+  <div id="mat-factories"><div class="loading"><div class="spinner"></div>加载中...</div></div>
+</div>
+
+<!-- ═══ 生产 ═══ -->
+<div id="page-production" class="page">
+  <div class="ptr-indicator" id="ptr-production">↓ 下拉刷新</div>
+  <div class="search-bar"><input type="text" id="prod-search" placeholder="搜索项目..." oninput="App.renderProduction()"></div>
+  <div class="filter-row" id="prod-filter">
+    <div class="filter-chip active" onclick="App.setProdFilter('all', this)">全部</div>
+    <div class="filter-chip" onclick="App.setProdFilter('NPI', this)">NPI</div>
+    <div class="filter-chip" onclick="App.setProdFilter('EVT', this)">EVT</div>
+    <div class="filter-chip" onclick="App.setProdFilter('DVT', this)">DVT</div>
+    <div class="filter-chip" onclick="App.setProdFilter('PVT', this)">PVT</div>
+    <div class="filter-chip" onclick="App.setProdFilter('MP', this)">量产</div>
+  </div>
+  <div id="prod-list"><div class="loading"><div class="spinner"></div>加载中...</div></div>
+</div>
+
+<!-- ═══ 品质 ═══ -->
+<div id="page-quality" class="page">
+  <div class="ptr-indicator" id="ptr-quality">↓ 下拉刷新</div>
+  <div class="dash-stats" id="quality-stats">
+    <div class="dash-stat"><div class="dash-stat-num" id="qs-total" style="color:var(--accent-blue)">-</div><div class="dash-stat-label">总问题</div></div>
+    <div class="dash-stat"><div class="dash-stat-num" id="qs-open" style="color:var(--accent)">-</div><div class="dash-stat-label">待处理</div></div>
+    <div class="dash-stat"><div class="dash-stat-num" id="qs-progress" style="color:var(--accent-orange)">-</div><div class="dash-stat-label">处理中</div></div>
+    <div class="dash-stat"><div class="dash-stat-num" id="qs-closed" style="color:var(--accent-green)">-</div><div class="dash-stat-label">已关闭</div></div>
+  </div>
+  <div class="search-bar"><input type="text" id="qual-search" placeholder="搜索问题..." oninput="App.renderQuality()"></div>
+  <div class="filter-row" id="qual-filter">
+    <div class="filter-chip active" onclick="App.setQualFilter('all', this)">全部</div>
+    <div class="filter-chip" onclick="App.setQualFilter('open', this)">待处理</div>
+    <div class="filter-chip" onclick="App.setQualFilter('progress', this)">处理中</div>
+    <div class="filter-chip" onclick="App.setQualFilter('closed', this)">已关闭</div>
+  </div>
+  <div id="qual-list"><div class="loading"><div class="spinner"></div>加载中...</div></div>
+</div>
+
+<!-- ═══ 客验 ═══ -->
+<div id="page-inspection" class="page">
+  <div class="ptr-indicator" id="ptr-inspection">↓ 下拉刷新</div>
+  <div class="sec-header"><span>出货检验</span></div>
+  <div id="insp-shipping"><div class="loading"><div class="spinner"></div>加载中...</div></div>
+  <div class="sec-header"><span>检验问题</span></div>
+  <div id="insp-issues"><div class="loading"><div class="spinner"></div>加载中...</div></div>
+</div>
+
+<!-- ═══ 设定 ═══ -->
+<div id="page-settings" class="page">
+  <div class="ptr-indicator" id="ptr-settings">↓ 下拉刷新</div>
+  <div id="settings-login-area"></div>
+  <div id="settings-info" style="display:none">
+    <div class="sec-header"><span>账户</span></div>
+    <div class="setting-row"><span class="setting-label">当前用户</span><span class="setting-value" id="set-user">-</span></div>
+    <div class="setting-row"><span class="setting-label">用户角色</span><span class="setting-value" id="set-role">-</span></div>
+    <div class="setting-row"><span class="setting-label">设备名称</span><span class="setting-value" id="set-device">-</span></div>
+    <div class="sec-header"><span>同步</span></div>
+    <div class="setting-row"><span class="setting-label">上次同步</span><span class="setting-value" id="set-sync">-</span></div>
+    <div class="setting-row"><span class="setting-label">云端记录数</span><span class="setting-value" id="set-count">-</span></div>
+    <div style="padding:12px 0">
+      <button class="btn btn-secondary" onclick="App.syncNow()">🔄 立即同步</button>
+    </div>
+    <div style="padding:0 0 8px">
+      <button class="btn btn-primary" onclick="App.logout()">退出登录</button>
+    </div>
+  </div>
+  <div class="sec-header"><span>关于</span></div>
+  <div class="setting-row"><span class="setting-label">版本</span><span class="setting-value">PMApp v3.0.0</span></div>
+  <div class="setting-row"><span class="setting-label">桌面端版本</span><span class="setting-value">v8.0.0+</span></div>
+</div>
+
+<!-- ═══ Sub-page: Project Detail ═══ -->
+<div id="page-project-detail" class="page">
+  <div id="project-detail-content"></div>
+</div>
+
+<!-- ═══ Sub-page: Generic Detail ═══ -->
+<div id="page-module-detail" class="page">
+  <div id="module-detail-content"></div>
+</div>
+
+<!-- ═══ Sub-page: Generic List ═══ -->
+<div id="page-module-list" class="page">
+  <div class="search-bar"><input type="text" id="ml-search" placeholder="搜索..." oninput="App.renderModuleList()"></div>
+  <div id="module-list-content"></div>
+</div>
+
+<!-- Top bar -->
+<div class="topbar" id="topbar" style="display:none">
+  <span class="back-btn" id="tb-back" onclick="App.goBack()" style="display:none">‹</span>
+  <h1 id="tb-title">PMApp</h1>
+  <span class="right-action" id="tb-action"></span>
+</div>
+
+<!-- Tab bar -->
+<div class="tabbar" id="tabbar" style="display:none">
+  <div class="tab active" onclick="App.navigate('home')" data-page="home"><span class="tab-icon">🏠</span><span>首页</span></div>
+  <div class="tab" onclick="App.navigate('planning')" data-page="planning"><span class="tab-icon">📋</span><span>计划</span></div>
+  <div class="tab" onclick="App.navigate('materials')" data-page="materials"><span class="tab-icon">📦</span><span>物料</span></div>
+  <div class="tab" onclick="App.navigate('production')" data-page="production"><span class="tab-icon">🏭</span><span>生产</span></div>
+  <div class="tab" onclick="App.navigate('quality')" data-page="quality"><span class="tab-icon">✅</span><span>品质</span></div>
+  <div class="tab" onclick="App.navigate('inspection')" data-page="inspection"><span class="tab-icon">🔍</span><span>客验</span></div>
+  <div class="tab" onclick="App.navigate('settings')" data-page="settings"><span class="tab-icon">⚙️</span><span>设定</span></div>
+</div>
+
+<!-- FAB -->
+<button class="fab" id="fab" style="display:none" onclick="App.showCreate()">+</button>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal-overlay" onclick="App.closeModal(event)">
+  <div class="modal" id="modal-content"></div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════
+   PMApp Mobile v3.0 — 7 Tab Layout
+   ═══════════════════════════════════════════════════ */
+const SUPABASE_URL = 'https://nsnmtkukxquhinlmbejg.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5zbm10a3VreHF1aGlubG1iZWpnIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4MDAxMDA3NCwiZXhwIjoyMDk1NTg2MDc0fQ.s4kB_6ieQtx8Hr3cCwqj4h2MlZsLOI7riebJ91DReo0';
+const APP_VERSION = 'v3.0.0';
+
+/* ─── Module Definitions ─── */
+const MODULES = {
+  projects: {
+    title: '项目', icon: '📦', table: 'projects',
+    listFields: [{key:'name',label:'项目名称'},{key:'status',label:'状态',badge:true},{key:'customer_name_zh',label:'客户'},{key:'product_model',label:'型号'},{key:'quantity',label:'数量'},{key:'delivery_date',label:'交期'}],
+    detailFields: [{key:'name',label:'项目名称'},{key:'description',label:'描述'},{key:'status',label:'状态'},{key:'stage',label:'阶段'},{key:'order_no',label:'订单号'},{key:'customer_name_zh',label:'客户(中)'},{key:'customer_name_en',label:'客户(英)'},{key:'product_model',label:'产品型号'},{key:'quantity',label:'数量'},{key:'start_date',label:'开始日期'},{key:'end_date',label:'结束日期'},{key:'delivery_date',label:'交货日期'},{key:'pmo',label:'PMO'},{key:'npm',label:'NPM'},{key:'remarks',label:'备注'}],
+    editFields: [{key:'name',label:'项目名称',type:'text',required:true},{key:'description',label:'描述',type:'textarea'},{key:'status',label:'状态',type:'select',options:[{v:'planning',t:'规划中'},{v:'active',t:'进行中'},{v:'on_hold',t:'暂停'},{v:'completed',t:'已完成'},{v:'cancelled',t:'已取消'}]},{key:'stage',label:'阶段',type:'select',options:[{v:'NPI',t:'NPI'},{v:'EVT',t:'EVT'},{v:'DVT',t:'DVT'},{v:'PVT',t:'PVT'},{v:'MP',t:'量产'}]},{key:'order_no',label:'订单号',type:'text'},{key:'customer_name_zh',label:'客户(中)',type:'text'},{key:'customer_name_en',label:'客户(英)',type:'text'},{key:'product_model',label:'产品型号',type:'text'},{key:'quantity',label:'数量',type:'number'},{key:'start_date',label:'开始日期',type:'date'},{key:'end_date',label:'结束日期',type:'date'},{key:'delivery_date',label:'交货日期',type:'date'},{key:'pmo',label:'PMO',type:'text'},{key:'npm',label:'NPM',type:'text'},{key:'remarks',label:'备注',type:'textarea'}],
+  },
+  issues: {
+    title: '问题', icon: '⚠️', table: 'issues',
+    listFields: [{key:'title',label:'标题'},{key:'severity',label:'严重度',badge:true},{key:'status',label:'状态',badge:true},{key:'issue_type',label:'类型'},{key:'reported_by',label:'报告人'},{key:'created_at',label:'创建时间'}],
+    detailFields: [{key:'title',label:'标题'},{key:'description',label:'描述'},{key:'severity',label:'严重度'},{key:'status',label:'状态'},{key:'issue_type',label:'类型'},{key:'workflow_status',label:'工作流状态'},{key:'reported_by',label:'报告人'},{key:'assigned_to',label:'负责人'},{key:'solution_short',label:'短期对策'},{key:'solution_long',label:'长期对策'},{key:'plan_date',label:'计划解决日期'},{key:'due_date',label:'截止日期'},{key:'priority_score',label:'优先级'},{key:'created_at',label:'创建时间'}],
+    editFields: [{key:'title',label:'标题',type:'text',required:true},{key:'description',label:'描述',type:'textarea'},{key:'severity',label:'严重度',type:'select',options:[{v:'low',t:'低'},{v:'medium',t:'中'},{v:'high',t:'高'},{v:'critical',t:'严重'}]},{key:'status',label:'状态',type:'select',options:[{v:'open',t:'待处理'},{v:'assigned',t:'已指派'},{v:'analyzing',t:'分析中'},{v:'fixing',t:'修复中'},{v:'verifying',t:'验证中'},{v:'closed',t:'已关闭'}]},{key:'issue_type',label:'类型',type:'select',options:[{v:'quality',t:'质量'},{v:'production',t:'生产'},{v:'supply',t:'供应链'},{v:'design',t:'设计'},{v:'inspection',t:'检验'},{v:'other',t:'其他'}]},{key:'assigned_to',label:'负责人',type:'text'},{key:'solution_short',label:'短期对策',type:'textarea'},{key:'solution_long',label:'长期对策',type:'textarea'},{key:'plan_date',label:'计划解决日期',type:'date'},{key:'due_date',label:'截止日期',type:'date'},{key:'priority_score',label:'优先级(1-10)',type:'number'}],
+  },
+  tasks: {
+    title: '任务', icon: '📋', table: 'tasks',
+    listFields: [{key:'title',label:'标题'},{key:'status',label:'状态',badge:true},{key:'priority',label:'优先级',badge:true},{key:'assignee',label:'负责人'},{key:'due_date',label:'截止日期'}],
+    detailFields: [{key:'title',label:'标题'},{key:'description',label:'描述'},{key:'status',label:'状态'},{key:'priority',label:'优先级'},{key:'assignee',label:'负责人'},{key:'start_date',label:'开始日期'},{key:'due_date',label:'截止日期'},{key:'estimated_hours',label:'预估工时'},{key:'actual_hours',label:'实际工时'}],
+    editFields: [{key:'title',label:'标题',type:'text',required:true},{key:'description',label:'描述',type:'textarea'},{key:'status',label:'状态',type:'select',options:[{v:'todo',t:'待办'},{v:'in_progress',t:'进行中'},{v:'review',t:'审核中'},{v:'done',t:'已完成'}]},{key:'priority',label:'优先级',type:'select',options:[{v:'low',t:'低'},{v:'medium',t:'中'},{v:'high',t:'高'},{v:'urgent',t:'紧急'}]},{key:'assignee',label:'负责人',type:'text'},{key:'start_date',label:'开始日期',type:'date'},{key:'due_date',label:'截止日期',type:'date'},{key:'estimated_hours',label:'预估工时',type:'number'}],
+  },
+  factory_info: {
+    title: '工厂信息', icon: '🏭', table: 'factory_info',
+    listFields: [{key:'factory_name',label:'工厂名称'},{key:'region',label:'区域'},{key:'country',label:'国家'},{key:'pm',label:'项目经理'}],
+    detailFields: [{key:'factory_name',label:'工厂名称'},{key:'region',label:'区域'},{key:'country',label:'国家'},{key:'client_project_code',label:'客户项目代码'},{key:'factory_project_code',label:'工厂项目代码'},{key:'pm',label:'项目经理'},{key:'pe',label:'产品工程师'},{key:'te',label:'测试工程师'},{key:'me',label:'制造工程师'},{key:'ee',label:'电气工程师'},{key:'quality',label:'质量工程师'},{key:'daily_production_report',label:'日报链接'},{key:'daily_problem_management',label:'问题管理链接'}],
+    editFields: [{key:'factory_name',label:'工厂名称',type:'text',required:true},{key:'region',label:'区域',type:'text'},{key:'country',label:'国家',type:'text'},{key:'client_project_code',label:'客户项目代码',type:'text'},{key:'factory_project_code',label:'工厂项目代码',type:'text'},{key:'pm',label:'项目经理',type:'text'},{key:'pe',label:'产品工程师',type:'text'},{key:'te',label:'测试工程师',type:'text'},{key:'me',label:'制造工程师',type:'text'},{key:'ee',label:'电气工程师',type:'text'},{key:'quality',label:'质量工程师',type:'text'},{key:'daily_production_report',label:'日报链接',type:'text'},{key:'daily_problem_management',label:'问题管理链接',type:'text'}],
+  },
+  meetings: {
+    title: '会议', icon: '📅', table: 'meetings',
+    listFields: [{key:'room_name',label:'会议室'},{key:'start_time',label:'开始时间'},{key:'end_time',label:'结束时间'},{key:'duration_minutes',label:'时长(分钟)'}],
+    detailFields: [{key:'room_name',label:'会议室'},{key:'room_url',label:'会议链接'},{key:'start_time',label:'开始时间'},{key:'end_time',label:'结束时间'},{key:'duration_minutes',label:'时长(分钟)'},{key:'notes',label:'会议备注'}],
+    editFields: [{key:'room_name',label:'会议室',type:'text',required:true},{key:'room_url',label:'会议链接',type:'text'},{key:'start_time',label:'开始时间',type:'text',placeholder:'2026-07-23 14:00'},{key:'end_time',label:'结束时间',type:'text',placeholder:'2026-07-23 15:00'},{key:'duration_minutes',label:'时长(分钟)',type:'number'},{key:'notes',label:'会议备注',type:'textarea'}],
+  },
+  shipping_plans: {
+    title: '出货计划', icon: '🚢', table: 'shipping_plans',
+    listFields: [{key:'plan_no',label:'计划编号'},{key:'status',label:'状态',badge:true},{key:'destination',label:'目的地'},{key:'planned_ship_date',label:'计划出货日'},{key:'total_boxes',label:'箱数'}],
+    detailFields: [{key:'plan_no',label:'计划编号'},{key:'status',label:'状态'},{key:'shipping_method',label:'运输方式'},{key:'destination',label:'目的地'},{key:'planned_ship_date',label:'计划出货日'},{key:'actual_ship_date',label:'实际出货日'},{key:'total_boxes',label:'总箱数'},{key:'total_pallets',label:'总栈板数'},{key:'total_weight',label:'总重量(kg)'},{key:'tracking_no',label:'追踪号'}],
+    editFields: [{key:'plan_no',label:'计划编号',type:'text',required:true},{key:'status',label:'状态',type:'select',options:[{v:'planned',t:'已计划'},{v:'preparing',t:'准备中'},{v:'packaged',t:'已包装'},{v:'inspected',t:'已检验'},{v:'shipped',t:'已出货'}]},{key:'shipping_method',label:'运输方式',type:'select',options:[{v:'sea',t:'海运'},{v:'air',t:'空运'},{v:'land',t:'陆运'}]},{key:'destination',label:'目的地',type:'text'},{key:'planned_ship_date',label:'计划出货日',type:'date'},{key:'actual_ship_date',label:'实际出货日',type:'date'},{key:'total_boxes',label:'总箱数',type:'number'},{key:'total_pallets',label:'总栈板数',type:'number'},{key:'total_weight',label:'总重量(kg)',type:'number'},{key:'tracking_no',label:'追踪号',type:'text'}],
+  },
+  market_reports: {
+    title: '市场报告', icon: '📊', table: 'market_reports',
+    listFields: [{key:'report_date',label:'报告日期'},{key:'report_content',label:'内容摘要',truncate:60}],
+    detailFields: [{key:'report_date',label:'报告日期'},{key:'report_content',label:'报告内容'},{key:'market_data',label:'市场数据'},{key:'brand_data',label:'品牌数据'},{key:'price_data',label:'价格数据'}],
+    editFields: [{key:'report_date',label:'报告日期',type:'date',required:true},{key:'report_content',label:'报告内容',type:'textarea'},{key:'market_data',label:'市场数据',type:'textarea'},{key:'brand_data',label:'品牌数据',type:'textarea'},{key:'price_data',label:'价格数据',type:'textarea'}],
+  },
+  ai_industry_news: {
+    title: '行业新闻', icon: '📰', table: 'ai_industry_news',
+    listFields: [{key:'news_date',label:'日期'},{key:'title',label:'标题'},{key:'importance',label:'重要性',badge:true},{key:'source',label:'来源'}],
+    detailFields: [{key:'news_date',label:'日期'},{key:'title',label:'标题'},{key:'summary',label:'摘要'},{key:'source',label:'来源'},{key:'url',label:'链接'},{key:'importance',label:'重要性'}],
+    editFields: [{key:'news_date',label:'日期',type:'date',required:true},{key:'title',label:'标题',type:'text',required:true},{key:'summary',label:'摘要',type:'textarea'},{key:'source',label:'来源',type:'text'},{key:'url',label:'链接',type:'text'},{key:'importance',label:'重要性',type:'select',options:[{v:'low',t:'低'},{v:'medium',t:'中'},{v:'high',t:'高'},{v:'critical',t:'重要'}]}],
+  },
+  overseas_material_alerts: {
+    title: '物料预警', icon: '🔔', table: 'overseas_material_alerts',
+    listFields: [{key:'rule_name',label:'规则名称'},{key:'threshold_value',label:'阈值'},{key:'is_enabled',label:'启用',toggle:true},{key:'last_check',label:'最后检查'}],
+    detailFields: [{key:'rule_name',label:'规则名称'},{key:'threshold_value',label:'阈值'},{key:'is_enabled',label:'启用状态'},{key:'last_check',label:'最后检查时间'}],
+    editFields: [{key:'rule_name',label:'规则名称',type:'text',required:true},{key:'threshold_value',label:'阈值',type:'text'},{key:'is_enabled',label:'启用',type:'toggle'}],
+  },
+  users: {
+    title: '用户', icon: '👤', table: 'users',
+    listFields: [{key:'username',label:'用户名'},{key:'display_name',label:'姓名'},{key:'position',label:'职位'},{key:'status',label:'状态',badge:true}],
+    detailFields: [{key:'username',label:'用户名'},{key:'display_name',label:'姓名'},{key:'email',label:'邮箱'},{key:'phone',label:'电话'},{key:'position',label:'职位'},{key:'status',label:'状态'},{key:'last_login',label:'最后登录'},{key:'login_count',label:'登录次数'}],
+    editFields: [{key:'username',label:'用户名',type:'text',required:true},{key:'display_name',label:'姓名',type:'text'},{key:'email',label:'邮箱',type:'text'},{key:'phone',label:'电话',type:'text'},{key:'position',label:'职位',type:'text'},{key:'status',label:'状态',type:'select',options:[{v:'active',t:'启用'},{v:'inactive',t:'禁用'}]}],
+  },
+};
+
+/* ─── Stage progress mapping ─── */
+const STAGE_PROGRESS = { NPI: 10, EVT: 25, DVT: 50, PVT: 75, MP: 100, completed: 100 };
+
+/* ─── App ─── */
+const App = {
+  session: null,
+  currentPage: 'home',
+  pageStack: [],
+  cache: {},
+  deviceId: '',
+  currentModule: null,
+  currentRecordId: null,
+  prodFilter: 'all',
+  qualFilter: 'all',
+  _editingRecord: null,
+  _editingIsCreate: false,
+  _editingModule: null,
+
+  init() {
+    this.deviceId = localStorage.getItem('pmapp_device_id') || this.generateDeviceId();
+    const saved = localStorage.getItem('pmapp_session');
+    if (saved) {
+      try { this.session = JSON.parse(saved); } catch (e) { localStorage.removeItem('pmapp_session'); }
+    }
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').catch(() => {});
+    }
+    this.showApp();
+    this.loadAll();
+    this.setupPTR();
+  },
+
+  generateDeviceId() {
+    const id = 'pwa-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8);
+    localStorage.setItem('pmapp_device_id', id);
+    return id;
+  },
+
+  /* ─── Supabase API ─── */
+  sbHeaders(prefer) {
+    const h = { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json' };
+    if (prefer) h['Prefer'] = prefer;
+    return h;
+  },
+  async sbGet(table, query) {
+    const resp = await fetch(`${SUPABASE_URL}/rest/v1/${table}?${query || ''}`, { headers: this.sbHeaders() });
+    if (!resp.ok) throw new Error(`GET ${table}: ${resp.status}`);
+    return resp.json();
+  },
+  async sbPost(table, data) {
+    const resp = await fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
+      method: 'POST', headers: this.sbHeaders('return=representation'), body: JSON.stringify(data),
+    });
+    if (!resp.ok) throw new Error(`POST ${table}: ${resp.status}`);
+    return resp.json();
+  },
+  async sbPatch(table, query, data) {
+    const resp = await fetch(`${SUPABASE_URL}/rest/v1/${table}?${query}`, {
+      method: 'PATCH', headers: this.sbHeaders('return=minimal'), body: JSON.stringify(data),
+    });
+    if (!resp.ok) throw new Error(`PATCH ${table}: ${resp.status}`);
+  },
+
+  /* ─── Auth ─── */
+  isLoggedIn() { return !!this.session; },
+  isAdmin() { return this.session?.user?.role === 'admin'; },
+  isViewer() { return this.session?.user?.role === 'viewer'; },
+
+  async login(e) {
+    e.preventDefault();
+    const email = document.getElementById('login-email').value.trim();
+    const password = document.getElementById('login-password').value.trim();
+    const errEl = document.getElementById('login-error');
+    const btn = document.getElementById('login-btn');
+    if (!email || !password) { errEl.textContent = '请输入用户名和密码'; return false; }
+    btn.disabled = true; btn.textContent = '登录中...'; errEl.textContent = '';
+    try {
+      const userRecords = await this.sbGet('sync_data', `table_name=eq.users&is_deleted=eq.false&limit=200&select=payload`);
+      const users = userRecords.map(r => { try { return typeof r.payload === 'string' ? JSON.parse(r.payload) : r.payload; } catch { return null; } }).filter(u => u && u.username);
+      const userMap = {};
+      users.forEach(u => { const ex = userMap[u.username]; if (!ex || (u.updated_at || '') > (ex.updated_at || '')) userMap[u.username] = u; });
+      const acc = Object.values(userMap).find(u => u.username === email || u.email === email);
+      if (!acc) throw new Error('账号不存在');
+      if (acc.status === 'inactive' || acc.is_active === 0 || acc.is_active === false) throw new Error('账号已被禁用');
+      const ok = await this.verifyPassword(password, acc.password_hash, acc.salt);
+      if (!ok) throw new Error('密码错误');
+      this.session = { user: { id: acc.id, email: email, username: acc.username, display_name: acc.display_name || acc.username, role: acc.role || 'viewer' } };
+      localStorage.setItem('pmapp_session', JSON.stringify(this.session));
+      this.loadSettings();
+      this.loadHome();
+      this.toast('登录成功');
+    } catch (err) {
+      errEl.textContent = err.message || '登录失败';
+    } finally {
+      btn.disabled = false; btn.textContent = '登录';
+    }
+    return false;
+  },
+
+  async verifyPassword(password, storedHash, salt) {
+    try {
+      if (!storedHash) return true;
+      if (!salt || salt === '') {
+        const enc = new TextEncoder();
+        const digest = await crypto.subtle.digest('SHA-256', enc.encode(password));
+        return Array.from(new Uint8Array(digest)).map(b => b.toString(16).padStart(2, '0')).join('') === storedHash;
+      }
+      const enc = new TextEncoder();
+      const keyMaterial = await crypto.subtle.importKey('raw', enc.encode(password), 'PBKDF2', false, ['deriveBits']);
+      const bits = await crypto.subtle.deriveBits({ name: 'PBKDF2', salt: enc.encode(salt), iterations: 100000, hash: 'SHA-256' }, keyMaterial, 256);
+      return Array.from(new Uint8Array(bits)).map(b => b.toString(16).padStart(2, '0')).join('') === storedHash;
+    } catch (e) { return false; }
+  },
+
+  logout() {
+    if (!confirm('确定要退出登录吗？')) return;
+    localStorage.removeItem('pmapp_session');
+    this.session = null;
+    this.loadSettings();
+    this.loadHome();
+    this.toast('已退出登录');
+  },
+
+  /* ─── Navigation ─── */
+  showApp() {
+    document.getElementById('tabbar').style.display = 'flex';
+    document.getElementById('topbar').style.display = 'flex';
+    this.navigate('home');
+  },
+
+  navigate(page) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    const target = document.getElementById('page-' + page);
+    if (target) target.classList.add('active');
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    const tab = document.querySelector(`.tab[data-page="${page}"]`);
+    if (tab) tab.classList.add('active');
+    const titles = { home: 'PMApp', planning: '计划', materials: '物料', production: '生产', quality: '品质', inspection: '客验', settings: '设定' };
+    document.getElementById('tb-title').textContent = titles[page] || 'PMApp';
+    document.getElementById('tb-back').style.display = 'none';
+    document.getElementById('tb-action').innerHTML = '';
+    document.getElementById('fab').style.display = 'none';
+    if (page === 'home') this.loadHome();
+    else if (page === 'planning') this.loadPlanning();
+    else if (page === 'materials') this.loadMaterials();
+    else if (page === 'production') { this.loadProduction(); if (this.isAdmin()) document.getElementById('fab').style.display = 'flex'; }
+    else if (page === 'quality') { this.loadQuality(); if (this.isAdmin()) document.getElementById('fab').style.display = 'flex'; }
+    else if (page === 'inspection') this.loadInspection();
+    else if (page === 'settings') this.loadSettings();
+    this.currentPage = page;
+    this.currentModule = (page === 'production') ? 'projects' : (page === 'quality') ? 'issues' : null;
+    window.scrollTo(0, 0);
+  },
+
+  goBack() {
+    if (this.pageStack.length > 0) {
+      const prev = this.pageStack.pop();
+      this.navigate(prev);
+    }
+  },
+
+  pushPage(page) {
+    this.pageStack.push(this.currentPage);
+    this.navigate(page);
+  },
+
+  /* ─── Data Loading ─── */
+  async fetchSyncData(tableName, limit) {
+    try {
+      const data = await this.sbGet('sync_data', `table_name=eq.${tableName}&is_deleted=eq.false&order=updated_at.desc&limit=${limit || 500}&select=payload,local_id,supabase_id,updated_at`);
+      const map = {};
+      data.forEach(d => {
+        try {
+          const payload = typeof d.payload === 'string' ? JSON.parse(d.payload) : d.payload;
+          if (payload && payload.id) {
+            if (!map[d.local_id] || (d.updated_at || '') > (map[d.local_id]._updated || '')) {
+              map[d.local_id] = { ...payload, _updated: d.updated_at, _sb_id: d.supabase_id };
+            }
+          }
+        } catch {}
+      });
+      return Object.values(map).sort((a, b) => (b._updated || '').localeCompare(a._updated || ''));
+    } catch (e) { console.error(`Load ${tableName}:`, e); return []; }
+  },
+
+  async loadAll() {
+    const tables = [...Object.keys(MODULES), 'message_board'];
+    await Promise.allSettled(tables.map(t => this.fetchSyncData(t).then(data => { this.cache[t] = data; })));
+    this.loadHome();
+  },
+
+  /* ─── Home Page ─── */
+  loadHome() {
+    // Banner
+    const banner = document.getElementById('home-banner');
+    if (!this.isLoggedIn()) {
+      banner.innerHTML = '<div class="banner banner-warn">⚠️ 尚未登录 — 前往「设定」登录以启用编辑功能</div>';
+    } else if (this.isViewer()) {
+      banner.innerHTML = '<div class="banner banner-info">👁 只读模式 — 您可查看数据及留言</div>';
+    } else if (this.isAdmin()) {
+      banner.innerHTML = '<div class="banner banner-ok">👑 管理员模式 — 可编辑所有数据</div>';
+    }
+
+    // Dashboard stats
+    const projects = this.cache.projects || [];
+    const issues = this.cache.issues || [];
+    const today = new Date().toISOString().slice(0, 10);
+    document.getElementById('ds-total').textContent = projects.length;
+    document.getElementById('ds-active').textContent = projects.filter(p => p.status === 'active').length;
+    document.getElementById('ds-overdue').textContent = projects.filter(p => p.delivery_date && p.delivery_date < today && !['completed', 'cancelled'].includes(p.status)).length;
+    document.getElementById('ds-qc').textContent = projects.filter(p => p.stage === 'PVT' || p.stage === 'DVT').length;
+    document.getElementById('ds-pending').textContent = issues.filter(i => i.status === 'open').length;
+
+    // In-progress projects
+    const projEl = document.getElementById('home-projects');
+    const activeProjects = projects.filter(p => p.status === 'active').slice(0, 5);
+    if (activeProjects.length === 0) {
+      projEl.innerHTML = '<div class="empty"><div class="empty-icon">📦</div>暂无进行中项目</div>';
+    } else {
+      projEl.innerHTML = activeProjects.map(p => {
+        const progress = STAGE_PROGRESS[p.stage] || 0;
+        const pColor = progress >= 75 ? 'var(--accent-green)' : progress >= 50 ? 'var(--accent-orange)' : 'var(--accent-blue)';
+        return `<div class="card" onclick="App.openProjectDetail(${p.id})">
+          <div class="card-title">📦 ${this.esc(p.name)}</div>
+          <div class="card-meta">
+            ${p.stage ? `<span class="badge badge-purple">${this.esc(p.stage)}</span>` : ''}
+            ${p.customer_name_zh ? `<span>👤 ${this.esc(p.customer_name_zh)}</span>` : ''}
+            ${p.delivery_date ? `<span>📅 ${this.esc(p.delivery_date)}</span>` : ''}
+          </div>
+          <div class="progress-bar"><div class="progress-fill" style="width:${progress}%;background:${pColor}"></div></div>
+        </div>`;
+      }).join('');
+    }
+
+    // Industry news
+    const newsEl = document.getElementById('home-news');
+    const news = (this.cache.ai_industry_news || []).slice(0, 5);
+    if (news.length === 0) {
+      newsEl.innerHTML = '<div class="empty"><div class="empty-icon">📰</div>暂无行业动态</div>';
+    } else {
+      newsEl.innerHTML = news.map(n => `<div class="card" onclick="App.openDetail('ai_industry_news', ${n.id})">
+        <div class="card-title">📰 ${this.esc(n.title)}</div>
+        <div class="card-meta">
+          ${n.news_date ? `<span>📅 ${this.esc(n.news_date)}</span>` : ''}
+          ${n.importance ? `<span class="badge ${this.badgeClass(n.importance)}">${this.esc(n.importance)}</span>` : ''}
+          ${n.source ? `<span>📌 ${this.esc(n.source)}</span>` : ''}
+        </div></div>`).join('');
+    }
+
+    // Message board
+    if (this.isLoggedIn()) {
+      const nameEl = document.getElementById('msg-name');
+      if (nameEl && !nameEl.value) nameEl.value = this.session.user.display_name || this.session.user.username || '';
+    }
+    this.renderMessages();
+  },
+
+  /* ─── Message Board ─── */
+  async renderMessages() {
+    if (!this.cache.message_board) {
+      this.cache.message_board = await this.fetchSyncData('message_board');
+    }
+    const messages = (this.cache.message_board || []).sort((a, b) => (b.created_at || '').localeCompare(a.created_at || ''));
+    const el = document.getElementById('msg-list');
+    if (messages.length === 0) {
+      el.innerHTML = '<div class="empty"><div class="empty-icon">💬</div>暂无留言</div>';
+      return;
+    }
+    el.innerHTML = messages.map(m => `<div class="msg-item">
+      <div class="msg-head">
+        <span class="msg-name">${this.esc(m.name || '匿名')}</span>
+        <span class="msg-time">${this.esc(m.created_at || '')}</span>
+      </div>
+      <div class="msg-content">${this.esc(m.content || '')}</div>
+      ${this.isAdmin() ? `<div class="msg-delete" onclick="App.deleteMessage(${m.id})">删除</div>` : ''}
+    </div>`).join('');
+  },
+
+  async postMessage() {
+    const nameEl = document.getElementById('msg-name');
+    const contentEl = document.getElementById('msg-content');
+    const name = nameEl.value.trim();
+    const content = contentEl.value.trim();
+    if (!name) { this.toast('请输入姓名'); return; }
+    if (!content) { this.toast('请输入留言内容'); return; }
+    const now = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    const id = Date.now();
+    try {
+      await this.sbPost('sync_data', {
+        table_name: 'message_board', local_id: String(id),
+        payload: JSON.stringify({ id, name, content, created_at: now }),
+        supabase_id: `msg_${id}_${Math.random().toString(36).slice(2, 8)}`,
+        is_deleted: false, updated_at: new Date().toISOString(), device_id: this.deviceId,
+      });
+      contentEl.value = '';
+      this.cache.message_board = await this.fetchSyncData('message_board');
+      this.renderMessages();
+      this.toast('留言已发布');
+    } catch (e) { this.toast('发布失败: ' + e.message); }
+  },
+
+  async deleteMessage(id) {
+    if (!confirm('确定删除此留言？')) return;
+    try {
+      const records = await this.sbGet('sync_data', `table_name=eq.message_board&is_deleted=eq.false&select=supabase_id,payload`);
+      const rec = records.find(r => { try { const p = typeof r.payload === 'string' ? JSON.parse(r.payload) : r.payload; return p && p.id === id; } catch { return false; } });
+      if (rec) {
+        await this.sbPatch('sync_data', `supabase_id=eq.${rec.supabase_id}`, { is_deleted: true, updated_at: new Date().toISOString() });
+      }
+      this.cache.message_board = await this.fetchSyncData('message_board');
+      this.renderMessages();
+      this.toast('已删除');
+    } catch (e) { this.toast('删除失败: ' + e.message); }
+  },
+
+  /* ─── Project Detail ─── */
+  openProjectDetail(id) {
+    this.pageStack.push(this.currentPage);
+    const projects = this.cache.projects || [];
+    const project = projects.find(p => p.id === id);
+    if (!project) { this.toast('项目不存在'); return; }
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-project-detail').classList.add('active');
+    document.getElementById('tb-title').textContent = project.name || '项目详情';
+    document.getElementById('tb-back').style.display = 'block';
+    document.getElementById('tb-action').innerHTML = '';
+    document.getElementById('fab').style.display = 'none';
+    if (this.isAdmin()) {
+      document.getElementById('tb-action').innerHTML = `<span onclick="App.showEditFor('projects', ${id})">编辑</span>`;
+    }
+    this.currentPage = 'project-detail';
+    this.currentModule = 'projects';
+    this.currentRecordId = id;
+    this.renderProjectDetail(project);
+    window.scrollTo(0, 0);
+  },
+
+  renderProjectDetail(p) {
+    const issues = (this.cache.issues || []).filter(i => i.project_id === p.id || (p.name && i.title && i.title.includes(p.name)));
+    const inspections = issues.filter(i => i.issue_type === 'inspection');
+    const shipping = (this.cache.shipping_plans || []).filter(s => s.plan_no && p.order_no && s.plan_no.includes(p.order_no));
+    const progress = STAGE_PROGRESS[p.stage] || (p.status === 'completed' ? 100 : 0);
+    const pColor = progress >= 75 ? 'var(--accent-green)' : progress >= 50 ? 'var(--accent-orange)' : 'var(--accent-blue)';
+
+    let html = `<div class="card"><div class="card-title" style="font-size:17px">📦 ${this.esc(p.name)}</div>
+      <div class="card-meta">
+        ${p.status ? `<span class="badge ${this.badgeClass(p.status)}">${this.esc(p.status)}</span>` : ''}
+        ${p.stage ? `<span class="badge badge-purple">${this.esc(p.stage)}</span>` : ''}
+        ${p.customer_name_zh ? `<span>👤 ${this.esc(p.customer_name_zh)}</span>` : ''}
+      </div></div>`;
+
+    // 生产进度
+    html += `<div class="card">
+      <div class="card-title">📊 生产进度</div>
+      <div class="progress-bar" style="height:10px;margin:8px 0"><div class="progress-fill" style="width:${progress}%;background:${pColor}"></div></div>
+      <div style="font-size:12px;color:var(--text-secondary);text-align:right">${progress}%</div>
+      <div class="detail-sec" style="margin-top:8px">
+        ${p.start_date ? `<div class="detail-label">开始日期</div><div class="detail-val">${this.esc(p.start_date)}</div>` : ''}
+        ${p.end_date ? `<div class="detail-label">结束日期</div><div class="detail-val">${this.esc(p.end_date)}</div>` : ''}
+        ${p.quantity ? `<div class="detail-label">生产数量</div><div class="detail-val">${this.esc(p.quantity)}</div>` : ''}
+        ${p.product_model ? `<div class="detail-label">产品型号</div><div class="detail-val">${this.esc(p.product_model)}</div>` : ''}
+      </div></div>`;
+
+    // 问题数量
+    html += `<div class="card">
+      <div class="card-title">⚠️ 问题数量 (${issues.length})</div>`;
+    if (issues.length === 0) {
+      html += '<div class="empty" style="padding:16px">暂无问题</div>';
+    } else {
+      html += issues.slice(0, 5).map(i => `<div class="list-item" onclick="App.openDetail('issues', ${i.id})">
+        <span class="list-item-icon">${i.status === 'closed' ? '✅' : '⚠️'}</span>
+        <div class="list-item-content"><div class="list-item-title">${this.esc(i.title)}</div>
+        <div class="list-item-sub">${i.severity ? this.esc(i.severity) : ''} ${i.status ? '· ' + this.esc(i.status) : ''}</div></div></div>`).join('');
+    }
+    html += '</div>';
+
+    // 检验计划
+    html += `<div class="card">
+      <div class="card-title">🔍 检验计划 (${inspections.length})</div>`;
+    if (inspections.length === 0) {
+      html += '<div class="empty" style="padding:16px">暂无检验问题</div>';
+    } else {
+      html += inspections.slice(0, 5).map(i => `<div class="list-item" onclick="App.openDetail('issues', ${i.id})">
+        <span class="list-item-icon">🔍</span>
+        <div class="list-item-content"><div class="list-item-title">${this.esc(i.title)}</div>
+        <div class="list-item-sub">${i.severity ? this.esc(i.severity) : ''} ${i.status ? '· ' + this.esc(i.status) : ''}</div></div></div>`).join('');
+    }
+    html += '</div>';
+
+    // 交付计划
+    html += `<div class="card">
+      <div class="card-title">🚚 交付计划</div>
+      <div class="detail-sec">
+        ${p.delivery_date ? `<div class="detail-label">交货日期</div><div class="detail-val">${this.esc(p.delivery_date)}</div>` : ''}
+        ${p.customer_name_en ? `<div class="detail-label">客户(英)</div><div class="detail-val">${this.esc(p.customer_name_en)}</div>` : ''}
+        ${p.order_no ? `<div class="detail-label">订单号</div><div class="detail-val">${this.esc(p.order_no)}</div>` : ''}
+      </div>`;
+    if (shipping.length > 0) {
+      html += '<div class="detail-label">出货计划</div>';
+      html += shipping.map(s => `<div class="list-item" onclick="App.openDetail('shipping_plans', ${s.id})">
+        <span class="list-item-icon">🚢</span>
+        <div class="list-item-content"><div class="list-item-title">${this.esc(s.plan_no)}</div>
+        <div class="list-item-sub">${s.destination ? this.esc(s.destination) : ''} ${s.planned_ship_date ? '· ' + this.esc(s.planned_ship_date) : ''}</div></div></div>`).join('');
+    }
+    html += '</div>';
+
+    document.getElementById('project-detail-content').innerHTML = html;
+  },
+
+  /* ─── Planning Tab ─── */
+  loadPlanning() {
+    this.updateAdminButtons();
+    // Tasks
+    const tasks = (this.cache.tasks || []).slice(0, 10);
+    const tEl = document.getElementById('plan-tasks');
+    if (tasks.length === 0) { tEl.innerHTML = '<div class="empty"><div class="empty-icon">📋</div>暂无任务</div>'; }
+    else { tEl.innerHTML = tasks.map(t => `<div class="card" onclick="App.openDetail('tasks', ${t.id})">
+      <div class="card-title">📋 ${this.esc(t.title)}</div>
+      <div class="card-meta">
+        ${t.status ? `<span class="badge ${this.badgeClass(t.status)}">${this.esc(t.status)}</span>` : ''}
+        ${t.priority ? `<span class="badge ${this.badgeClass(t.priority)}">${this.esc(t.priority)}</span>` : ''}
+        ${t.assignee ? `<span>👤 ${this.esc(t.assignee)}</span>` : ''}
+        ${t.due_date ? `<span>📅 ${this.esc(t.due_date)}</span>` : ''}
+      </div></div>`).join('');
+    }
+    // Meetings
+    const meetings = (this.cache.meetings || []).slice(0, 10);
+    const mEl = document.getElementById('plan-meetings');
+    if (meetings.length === 0) { mEl.innerHTML = '<div class="empty"><div class="empty-icon">📅</div>暂无会议</div>'; }
+    else { mEl.innerHTML = meetings.map(m => `<div class="card" onclick="App.openDetail('meetings', ${m.id})">
+      <div class="card-title">📅 ${this.esc(m.room_name)}</div>
+      <div class="card-meta">
+        ${m.start_time ? `<span>🕐 ${this.esc(m.start_time)}</span>` : ''}
+        ${m.end_time ? `<span>→ ${this.esc(m.end_time)}</span>` : ''}
+      </div></div>`).join('');
+    }
+    // Shipping
+    const shipping = (this.cache.shipping_plans || []).slice(0, 10);
+    const sEl = document.getElementById('plan-shipping');
+    if (shipping.length === 0) { sEl.innerHTML = '<div class="empty"><div class="empty-icon">🚢</div>暂无出货计划</div>'; }
+    else { sEl.innerHTML = shipping.map(s => `<div class="card" onclick="App.openDetail('shipping_plans', ${s.id})">
+      <div class="card-title">🚢 ${this.esc(s.plan_no)}</div>
+      <div class="card-meta">
+        ${s.status ? `<span class="badge ${this.badgeClass(s.status)}">${this.esc(s.status)}</span>` : ''}
+        ${s.destination ? `<span>📍 ${this.esc(s.destination)}</span>` : ''}
+        ${s.planned_ship_date ? `<span>📅 ${this.esc(s.planned_ship_date)}</span>` : ''}
+      </div></div>`).join('');
+    }
+  },
+
+  /* ─── Materials Tab ─── */
+  loadMaterials() {
+    this.updateAdminButtons();
+    // Alerts
+    const alerts = this.cache.overseas_material_alerts || [];
+    const aEl = document.getElementById('mat-alerts');
+    if (alerts.length === 0) { aEl.innerHTML = '<div class="empty"><div class="empty-icon">🔔</div>暂无预警</div>'; }
+    else { aEl.innerHTML = alerts.map(a => `<div class="card" onclick="App.openDetail('overseas_material_alerts', ${a.id})">
+      <div class="card-title">🔔 ${this.esc(a.rule_name)}</div>
+      <div class="card-meta">
+        ${a.threshold_value ? `<span>阈值: ${this.esc(a.threshold_value)}</span>` : ''}
+        <span class="badge ${a.is_enabled ? 'badge-green' : 'badge-gray'}">${a.is_enabled ? '启用' : '禁用'}</span>
+      </div></div>`).join('');
+    }
+    // Factories
+    const factories = this.cache.factory_info || [];
+    const fEl = document.getElementById('mat-factories');
+    if (factories.length === 0) { fEl.innerHTML = '<div class="empty"><div class="empty-icon">🏭</div>暂无工厂信息</div>'; }
+    else { fEl.innerHTML = factories.map(f => `<div class="card" onclick="App.openDetail('factory_info', ${f.id})">
+      <div class="card-title">🏭 ${this.esc(f.factory_name)}</div>
+      <div class="card-meta">
+        ${f.region ? `<span>📍 ${this.esc(f.region)}</span>` : ''}
+        ${f.country ? `<span>🏳️ ${this.esc(f.country)}</span>` : ''}
+        ${f.pm ? `<span>👤 ${this.esc(f.pm)}</span>` : ''}
+      </div></div>`).join('');
+    }
+  },
+
+  /* ─── Production Tab ─── */
+  loadProduction() {
+    this.renderProduction();
+  },
+
+  setProdFilter(stage, el) {
+    this.prodFilter = stage;
+    document.querySelectorAll('#prod-filter .filter-chip').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    this.renderProduction();
+  },
+
+  renderProduction() {
+    let projects = this.cache.projects || [];
+    const q = document.getElementById('prod-search')?.value?.trim().toLowerCase();
+    if (q) projects = projects.filter(p => p.name?.toLowerCase().includes(q) || p.customer_name_zh?.toLowerCase().includes(q) || p.product_model?.toLowerCase().includes(q));
+    if (this.prodFilter !== 'all') projects = projects.filter(p => p.stage === this.prodFilter);
+    const el = document.getElementById('prod-list');
+    if (projects.length === 0) { el.innerHTML = '<div class="empty"><div class="empty-icon">🏭</div>暂无项目</div>'; return; }
+    el.innerHTML = projects.map(p => {
+      const progress = STAGE_PROGRESS[p.stage] || (p.status === 'completed' ? 100 : 0);
+      const pColor = progress >= 75 ? 'var(--accent-green)' : progress >= 50 ? 'var(--accent-orange)' : 'var(--accent-blue)';
+      return `<div class="card" onclick="App.openProjectDetail(${p.id})">
+        <div class="card-title">📦 ${this.esc(p.name)}</div>
+        <div class="card-meta">
+          ${p.status ? `<span class="badge ${this.badgeClass(p.status)}">${this.esc(p.status)}</span>` : ''}
+          ${p.stage ? `<span class="badge badge-purple">${this.esc(p.stage)}</span>` : ''}
+          ${p.customer_name_zh ? `<span>👤 ${this.esc(p.customer_name_zh)}</span>` : ''}
+          ${p.delivery_date ? `<span>📅 ${this.esc(p.delivery_date)}</span>` : ''}
+        </div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${progress}%;background:${pColor}"></div></div>
+      </div>`;
+    }).join('');
+  },
+
+  /* ─── Quality Tab ─── */
+  loadQuality() {
+    const issues = this.cache.issues || [];
+    document.getElementById('qs-total').textContent = issues.length;
+    document.getElementById('qs-open').textContent = issues.filter(i => i.status === 'open').length;
+    document.getElementById('qs-progress').textContent = issues.filter(i => ['assigned', 'analyzing', 'fixing', 'verifying'].includes(i.status)).length;
+    document.getElementById('qs-closed').textContent = issues.filter(i => i.status === 'closed').length;
+    this.renderQuality();
+  },
+
+  setQualFilter(filter, el) {
+    this.qualFilter = filter;
+    document.querySelectorAll('#qual-filter .filter-chip').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    this.renderQuality();
+  },
+
+  renderQuality() {
+    let issues = this.cache.issues || [];
+    const q = document.getElementById('qual-search')?.value?.trim().toLowerCase();
+    if (q) issues = issues.filter(i => i.title?.toLowerCase().includes(q) || i.description?.toLowerCase().includes(q) || i.assigned_to?.toLowerCase().includes(q));
+    if (this.qualFilter === 'open') issues = issues.filter(i => i.status === 'open');
+    else if (this.qualFilter === 'progress') issues = issues.filter(i => ['assigned', 'analyzing', 'fixing', 'verifying'].includes(i.status));
+    else if (this.qualFilter === 'closed') issues = issues.filter(i => i.status === 'closed');
+    const el = document.getElementById('qual-list');
+    if (issues.length === 0) { el.innerHTML = '<div class="empty"><div class="empty-icon">⚠️</div>暂无问题</div>'; return; }
+    el.innerHTML = issues.map(i => `<div class="card" onclick="App.openDetail('issues', ${i.id})">
+      <div class="card-title">⚠️ ${this.esc(i.title)}</div>
+      <div class="card-meta">
+        ${i.severity ? `<span class="badge ${this.badgeClass(i.severity)}">${this.esc(i.severity)}</span>` : ''}
+        ${i.status ? `<span class="badge ${this.badgeClass(i.status)}">${this.esc(i.status)}</span>` : ''}
+        ${i.issue_type ? `<span class="badge badge-cyan">${this.esc(i.issue_type)}</span>` : ''}
+        ${i.assigned_to ? `<span>👤 ${this.esc(i.assigned_to)}</span>` : ''}
+      </div></div>`).join('');
+  },
+
+  /* ─── Inspection Tab ─── */
+  loadInspection() {
+    // Shipping with inspection status
+    const shipping = this.cache.shipping_plans || [];
+    const sEl = document.getElementById('insp-shipping');
+    if (shipping.length === 0) { sEl.innerHTML = '<div class="empty"><div class="empty-icon">🚢</div>暂无出货计划</div>'; }
+    else {
+      sEl.innerHTML = shipping.map(s => {
+        const inspected = s.status === 'inspected' || s.status === 'shipped';
+        return `<div class="card" onclick="App.openDetail('shipping_plans', ${s.id})">
+          <div class="card-title">🚢 ${this.esc(s.plan_no)}</div>
+          <div class="card-meta">
+            ${s.status ? `<span class="badge ${this.badgeClass(s.status)}">${this.esc(s.status)}</span>` : ''}
+            ${s.destination ? `<span>📍 ${this.esc(s.destination)}</span>` : ''}
+            ${s.planned_ship_date ? `<span>📅 ${this.esc(s.planned_ship_date)}</span>` : ''}
+            ${s.total_boxes ? `<span>📦 ${this.esc(s.total_boxes)}箱</span>` : ''}
+          </div>
+          ${inspected ? '<div style="margin-top:6px"><span class="badge badge-green">✅ 已检验</span></div>' : '<div style="margin-top:6px"><span class="badge badge-orange">⏳ 待检验</span></div>'}
+        </div>`;
+      }).join('');
+    }
+    // Inspection issues
+    const inspIssues = (this.cache.issues || []).filter(i => i.issue_type === 'inspection');
+    const iEl = document.getElementById('insp-issues');
+    if (inspIssues.length === 0) { iEl.innerHTML = '<div class="empty"><div class="empty-icon">🔍</div>暂无检验问题</div>'; }
+    else {
+      iEl.innerHTML = inspIssues.map(i => `<div class="card" onclick="App.openDetail('issues', ${i.id})">
+        <div class="card-title">🔍 ${this.esc(i.title)}</div>
+        <div class="card-meta">
+          ${i.severity ? `<span class="badge ${this.badgeClass(i.severity)}">${this.esc(i.severity)}</span>` : ''}
+          ${i.status ? `<span class="badge ${this.badgeClass(i.status)}">${this.esc(i.status)}</span>` : ''}
+          ${i.assigned_to ? `<span>👤 ${this.esc(i.assigned_to)}</span>` : ''}
+        </div></div>`).join('');
+    }
+  },
+
+  /* ─── Settings ─── */
+  loadSettings() {
+    const loginArea = document.getElementById('settings-login-area');
+    const infoArea = document.getElementById('settings-info');
+    if (!this.isLoggedIn()) {
+      infoArea.style.display = 'none';
+      loginArea.innerHTML = `<div class="login-box">
+        <div class="login-box-title">🔐 登录 PMApp</div>
+        <form onsubmit="return App.login(event)">
+          <div class="input-group"><label>用户名</label><input type="text" id="login-email" placeholder="admin" autocomplete="username" required></div>
+          <div class="input-group"><label>密码</label><input type="password" id="login-password" placeholder="********" autocomplete="current-password" required></div>
+          <button type="submit" class="btn btn-primary" id="login-btn">登录</button>
+          <div style="font-size:12px;color:var(--text-muted);text-align:center;margin-top:10px">使用桌面端同一账号登录</div>
+          <div class="login-error" id="login-error" style="color:var(--accent);font-size:13px;text-align:center;margin-top:8px;min-height:16px"></div>
+        </form>
+      </div>`;
+    } else {
+      loginArea.innerHTML = '';
+      infoArea.style.display = 'block';
+      document.getElementById('set-user').textContent = this.session.user.display_name || this.session.user.username || '-';
+      const role = this.session.user.role;
+      document.getElementById('set-role').textContent = role === 'admin' ? '👑 管理员' : role === 'viewer' ? '👁 只读' : '✏️ ' + role;
+      document.getElementById('set-device').textContent = this.deviceId || '-';
+      document.getElementById('set-sync').textContent = localStorage.getItem('pmapp_last_sync') || '从未';
+      let total = 0;
+      Object.keys(MODULES).forEach(k => total += (this.cache[k] || []).length);
+      total += (this.cache.message_board || []).length;
+      document.getElementById('set-count').textContent = total + ' 条';
+    }
+    this.updateAdminButtons();
+  },
+
+  updateAdminButtons() {
+    const show = this.isAdmin();
+    ['plan-task-add', 'mat-alert-add', 'mat-factory-add'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = show ? '' : 'none';
+    });
+  },
+
+  /* ─── Sync / Force Update ─── */
+  async syncNow() {
+    this.toast('正在更新界面与数据...');
+    try {
+      // Clear all caches
+      if ('caches' in window) {
+        const keys = await caches.keys();
+        await Promise.all(keys.map(k => caches.delete(k)));
+      }
+      // Unregister service worker
+      if ('serviceWorker' in navigator) {
+        const regs = await navigator.serviceWorker.getRegistrations();
+        await Promise.all(regs.map(r => r.unregister()));
+      }
+      // Reload with cache busting
+      const url = window.location.href.split('?')[0] + '?t=' + Date.now();
+      window.location.href = url;
+    } catch (e) {
+      window.location.reload();
+    }
+  },
+
+  /* ─── Generic Detail ─── */
+  openDetail(moduleKey, id) {
+    this.pageStack.push(this.currentPage);
+    const mod = MODULES[moduleKey];
+    if (!mod) return;
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-module-detail').classList.add('active');
+    document.getElementById('tb-title').textContent = mod.title + '详情';
+    document.getElementById('tb-back').style.display = 'block';
+    document.getElementById('tb-action').innerHTML = '';
+    document.getElementById('fab').style.display = 'none';
+    if (this.isAdmin() && mod.editFields) {
+      document.getElementById('tb-action').innerHTML = `<span onclick="App.showEditFor('${moduleKey}', ${id})">编辑</span>`;
+    }
+    this.currentPage = 'module-detail';
+    this.currentModule = moduleKey;
+    this.currentRecordId = id;
+    this.renderDetail(moduleKey, id);
+    window.scrollTo(0, 0);
+  },
+
+  renderDetail(moduleKey, id) {
+    const mod = MODULES[moduleKey];
+    const records = this.cache[moduleKey] || [];
+    const record = records.find(r => r.id === id);
+    const el = document.getElementById('module-detail-content');
+    if (!record) { el.innerHTML = '<div class="empty">记录不存在</div>'; return; }
+    let html = `<div class="card"><div class="card-title" style="font-size:17px">${mod.icon} `;
+    html += this.esc(record[mod.detailFields[0].key] || mod.title + ' #' + id);
+    html += '</div></div><div class="card">';
+    mod.detailFields.forEach(f => {
+      const val = record[f.key];
+      if (val === null || val === undefined || val === '') return;
+      html += `<div class="detail-sec"><div class="detail-label">${this.esc(f.label)}</div>`;
+      if (typeof val === 'string' && val.startsWith('http')) {
+        html += `<div class="detail-val"><a href="${this.esc(val)}" style="color:var(--accent-blue)" target="_blank">${this.esc(val)}</a></div>`;
+      } else {
+        html += `<div class="detail-val">${this.esc(val)}</div>`;
+      }
+      html += '</div>';
+    });
+    html += '</div>';
+    // Related data for projects
+    if (moduleKey === 'projects') {
+      const issues = (this.cache.issues || []).filter(i => i.project_id === id);
+      const tasks = (this.cache.tasks || []).filter(t => t.project_id === id);
+      html += `<div class="sec-header"><span>任务 (${tasks.length})</span></div>`;
+      if (tasks.length === 0) html += '<div class="empty">暂无任务</div>';
+      else html += tasks.map(t => `<div class="list-item" onclick="App.openDetail('tasks', ${t.id})"><span class="list-item-icon">${t.status === 'done' ? '✅' : '📋'}</span><div class="list-item-content"><div class="list-item-title">${this.esc(t.title)}</div><div class="list-item-sub">${this.esc(t.priority || '')} ${t.assignee ? '· ' + this.esc(t.assignee) : ''}</div></div></div>`).join('');
+      html += `<div class="sec-header"><span>问题 (${issues.length})</span></div>`;
+      if (issues.length === 0) html += '<div class="empty">暂无问题</div>';
+      else html += issues.map(i => `<div class="card" onclick="App.openDetail('issues', ${i.id})"><div class="card-title">${this.esc(i.title)}</div><div class="card-meta"><span class="badge ${this.badgeClass(i.severity)}">${this.esc(i.severity)}</span><span class="badge ${this.badgeClass(i.status)}">${this.esc(i.status)}</span></div></div>`).join('');
+    }
+    el.innerHTML = html;
+  },
+
+  /* ─── Edit / Create ─── */
+  showCreate() {
+    if (!this.isAdmin()) { this.toast('只读模式，无法新建'); return; }
+    if (!this.currentModule) return;
+    const mod = MODULES[this.currentModule];
+    if (!mod || !mod.editFields) return;
+    const now = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    const newRec = { id: Date.now(), created_at: now, updated_at: now };
+    if (this.currentModule === 'issues') { newRec.status = 'open'; newRec.severity = 'medium'; newRec.issue_type = 'other'; }
+    if (this.currentModule === 'tasks') { newRec.status = 'todo'; newRec.priority = 'medium'; }
+    if (this.currentModule === 'projects') { newRec.status = 'planning'; newRec.stage = 'NPI'; }
+    if (this.currentModule === 'shipping_plans') { newRec.status = 'planned'; newRec.shipping_method = 'sea'; }
+    if (this.currentModule === 'users') { newRec.status = 'active'; }
+    this._showForm(this.currentModule, newRec, true);
+  },
+
+  showCreateFor(moduleKey) {
+    if (!this.isAdmin()) { this.toast('只读模式'); return; }
+    this.currentModule = moduleKey;
+    this.showCreate();
+  },
+
+  showEditFor(moduleKey, id) {
+    if (!this.isAdmin()) { this.toast('只读模式'); return; }
+    const record = (this.cache[moduleKey] || []).find(r => r.id === id);
+    if (!record) return;
+    this._showForm(moduleKey, record, false);
+  },
+
+  _showForm(moduleKey, record, isCreate) {
+    const mod = MODULES[moduleKey];
+    let html = `<div class="modal-handle"></div><div class="modal-title">${isCreate ? '新建' : '编辑'}${mod.title}</div>`;
+    mod.editFields.forEach(f => {
+      const val = record[f.key] !== undefined ? record[f.key] : '';
+      if (f.type === 'toggle') {
+        html += `<div class="input-group" style="display:flex;justify-content:space-between;align-items:center"><label style="margin-bottom:0">${f.label}</label><label class="toggle"><input type="checkbox" id="edit-${f.key}" ${val ? 'checked' : ''}><span class="toggle-slider"></span></label></div>`;
+      } else if (f.type === 'select') {
+        html += `<div class="input-group"><label>${f.label}</label><select id="edit-${f.key}">`;
+        f.options.forEach(o => { html += `<option value="${o.v}" ${String(val) === o.v ? 'selected' : ''}>${o.t}</option>`; });
+        html += '</select></div>';
+      } else if (f.type === 'textarea') {
+        html += `<div class="input-group"><label>${f.label}</label><textarea id="edit-${f.key}">${this.esc(val)}</textarea></div>`;
+      } else if (f.type === 'number') {
+        html += `<div class="input-group"><label>${f.label}</label><input type="number" id="edit-${f.key}" value="${this.esc(val)}"></div>`;
+      } else if (f.type === 'date') {
+        html += `<div class="input-group"><label>${f.label}</label><input type="date" id="edit-${f.key}" value="${val ? String(val).slice(0, 10) : ''}"></div>`;
+      } else {
+        html += `<div class="input-group"><label>${f.label}${f.required ? ' *' : ''}</label><input type="text" id="edit-${f.key}" value="${this.esc(val)}"></div>`;
+      }
+    });
+    html += `<button class="btn btn-primary" onclick="App.saveRecord('${moduleKey}', ${record.id}, ${isCreate})">保存</button><div style="height:10px"></div><button class="btn btn-secondary" onclick="App.closeModal()">取消</button>`;
+    document.getElementById('modal-content').innerHTML = html;
+    document.getElementById('modal-overlay').classList.add('show');
+    this._editingRecord = record;
+    this._editingIsCreate = isCreate;
+    this._editingModule = moduleKey;
+  },
+
+  async saveRecord(moduleKey, id, isCreate) {
+    const mod = MODULES[moduleKey];
+    const record = this._editingRecord;
+    if (!record) return;
+    const updated = { ...record };
+    mod.editFields.forEach(f => {
+      const el = document.getElementById('edit-' + f.key);
+      if (!el) return;
+      if (f.type === 'toggle') updated[f.key] = el.checked ? 1 : 0;
+      else if (f.type === 'number') updated[f.key] = el.value ? parseFloat(el.value) : null;
+      else updated[f.key] = el.value.trim();
+    });
+    for (const f of mod.editFields) {
+      if (f.required && !updated[f.key]) { this.toast(f.label + '不能为空'); return; }
+    }
+    updated.updated_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    try {
+      let sbId = record._sb_id;
+      if (!sbId) {
+        const existing = await this.sbGet('sync_data', `table_name=eq.${mod.table}&local_id=eq.${id}&is_deleted=eq.false&select=supabase_id&order=updated_at.desc&limit=1`);
+        if (existing.length > 0) sbId = existing[0].supabase_id;
+      }
+      const payload = JSON.stringify(updated);
+      const nowISO = new Date().toISOString();
+      if (sbId) {
+        await this.sbPatch('sync_data', `supabase_id=eq.${sbId}`, { payload, updated_at: nowISO, device_id: this.deviceId });
+      } else {
+        sbId = `${mod.table}_${id}_${Date.now()}`;
+        await this.sbPost('sync_data', { table_name: mod.table, local_id: String(id), payload, supabase_id: sbId, is_deleted: false, updated_at: nowISO, device_id: this.deviceId });
+      }
+      const idx = (this.cache[moduleKey] || []).findIndex(r => r.id === id);
+      if (idx >= 0) this.cache[moduleKey][idx] = { ...updated, _sb_id: sbId, _updated: nowISO };
+      else { this.cache[moduleKey] = this.cache[moduleKey] || []; this.cache[moduleKey].unshift({ ...updated, _sb_id: sbId, _updated: nowISO }); }
+      this.closeModal();
+      // Refresh current view
+      if (this.currentPage === 'project-detail' && moduleKey === 'projects') this.renderProjectDetail(updated);
+      else if (this.currentPage === 'module-detail') this.renderDetail(moduleKey, id);
+      else this.navigate(this.currentPage);
+      this.toast('已保存，桌面端将自动同步');
+    } catch (e) { this.toast('保存失败: ' + e.message); }
+  },
+
+  /* ─── Pull to Refresh ─── */
+  setupPTR() {
+    let startY = 0, pulling = false;
+    const pages = ['home', 'planning', 'materials', 'production', 'quality', 'inspection', 'settings'];
+    document.addEventListener('touchstart', (e) => {
+      if (window.scrollY === 0) { startY = e.touches[0].clientY; pulling = true; }
+    });
+    document.addEventListener('touchmove', (e) => {
+      if (!pulling) return;
+      const diff = e.touches[0].clientY - startY;
+      if (diff > 60 && window.scrollY === 0) {
+        for (const p of pages) {
+          const ind = document.getElementById('ptr-' + p);
+          if (ind && document.getElementById('page-' + p)?.classList.contains('active')) {
+            ind.classList.add('show');
+            ind.textContent = '🔄 释放刷新...';
+            break;
+          }
+        }
+      }
+    });
+    document.addEventListener('touchend', () => {
+      if (!pulling) return;
+      pulling = false;
+      for (const p of pages) {
+        const ind = document.getElementById('ptr-' + p);
+        if (ind && ind.classList.contains('show')) {
+          ind.textContent = '⏳ 同步中...';
+          this.loadAll().then(() => {
+            this.navigate(this.currentPage);
+            setTimeout(() => ind.classList.remove('show'), 500);
+          });
+          break;
+        }
+      }
+    });
+  },
+
+  /* ─── Utilities ─── */
+  esc(s) {
+    if (s === null || s === undefined) return '';
+    return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  },
+
+  badgeClass(val) {
+    const vl = String(val).toLowerCase();
+    if (['closed', 'done', 'completed', 'shipped', 'active', 'enabled', 'inspected'].includes(vl)) return 'badge-green';
+    if (['high', 'critical', 'urgent', 'open', 'cancelled'].includes(vl)) return 'badge-red';
+    if (['medium', 'in_progress', 'preparing', 'assigned', 'analyzing', 'fixing', 'verifying'].includes(vl)) return 'badge-orange';
+    if (['low', 'todo', 'planned', 'planning', 'packaged'].includes(vl)) return 'badge-gray';
+    if (['on_hold', 'review'].includes(vl)) return 'badge-purple';
+    return 'badge-blue';
+  },
+
+  toast(msg) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(this._toastTimer);
+    this._toastTimer = setTimeout(() => el.classList.remove('show'), 2500);
+  },
+
+  closeModal(e) {
+    if (e && e.target.id !== 'modal-overlay') return;
+    document.getElementById('modal-overlay').classList.remove('show');
+    document.getElementById('tb-action').innerHTML = '';
+    if (this.currentPage === 'module-detail' && this.currentModule && this.isAdmin()) {
+      document.getElementById('tb-action').innerHTML = `<span onclick="App.showEditFor('${this.currentModule}', ${this.currentRecordId})">编辑</span>`;
+    } else if (this.currentPage === 'project-detail' && this.isAdmin()) {
+      document.getElementById('tb-action').innerHTML = `<span onclick="App.showEditFor('projects', ${this.currentRecordId})">编辑</span>`;
+    }
+    this._editingRecord = null;
+  },
+};
+
+App.init();
+</script>
+</body>
+</html>
