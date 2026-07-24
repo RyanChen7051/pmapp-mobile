@@ -413,8 +413,12 @@ body {
    PMApp Mobile v3.0 — 7 Tab Layout
    ═══════════════════════════════════════════════════ */
 const SUPABASE_URL = 'https://nsnmtkukxquhinlmbejg.supabase.co';
-const SUPABASE_KEY = ['sb_','secret_','pu1D6C4n','K07UEBR7','tjUXUA_Y','hU62jFI'].join('');
-const APP_VERSION = 'v3.1.0';
+// ⚠️ 浏览器端必须使用 Publishable key (sb_publishable_...)。
+// Secret key (sb_secret_...) 在浏览器中会被 Supabase 返回 HTTP 401。
+// 请将下面占位符替换为你在 Supabase Dashboard → Settings → API Keys → Publishable and secret API keys 中复制的 Publishable key。
+// 或者运行仓库根目录的 update_pwa_key.py 脚本自动更新：python3 update_pwa_key.py <你的_publishable_key>
+const SUPABASE_KEY = '__PUBLISHABLE_KEY__'; // 占位符，部署前必须替换
+const APP_VERSION = 'v3.1.1';
 
 /* ─── Module Definitions ─── */
 const MODULES = {
@@ -555,6 +559,12 @@ const App = {
     const errEl = document.getElementById('login-error');
     const btn = document.getElementById('login-btn');
     if (!email || !password) { errEl.textContent = '请输入用户名和密码'; return false; }
+    // Detect placeholder or secret key (browser-side cannot use sb_secret_)
+    if (!SUPABASE_KEY || SUPABASE_KEY.startsWith('sb_secret_') || SUPABASE_KEY.startsWith('__')) {
+      errEl.innerHTML = 'PWA 未配置有效的 Publishable key。<br>请从 Supabase Dashboard 复制 Publishable key (sb_publishable_...)，然后运行仓库根目录的 <b>update_pwa_key.py</b> 脚本更新。';
+      console.error('[LOGIN] Invalid SUPABASE_KEY:', SUPABASE_KEY.startsWith('__') ? 'placeholder' : (SUPABASE_KEY.startsWith('sb_secret_') ? 'secret key (not allowed in browser)' : 'empty'));
+      return false;
+    }
     btn.disabled = true; btn.textContent = '登录中...'; errEl.textContent = '';
     try {
       console.log('[LOGIN] Starting login for:', email, 'version:', APP_VERSION);

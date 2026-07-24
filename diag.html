@@ -14,13 +14,21 @@ h1 { font-size:18px; margin-bottom:15px; }
 .ok { color:#4ade80; }
 .err { color:#f87171; }
 .warn { color:#fbbf24; }
+.info { color:#8ecae6; }
 button { background:#3a86ff; color:#fff; border:none; padding:10px 20px; border-radius:8px; font-size:14px; cursor:pointer; width:100%; margin-top:8px; }
 button:active { opacity:0.8; }
-.info { color:#8ecae6; font-size:12px; }
+button:disabled { background:#555; }
+.key-status { font-family:monospace; font-size:12px; padding:8px; background:#0f172a; border-radius:6px; margin-bottom:10px; }
 </style>
 </head>
 <body>
 <h1>PMApp 连接诊断</h1>
+
+<div class="card">
+  <h2>API Key 状态</h2>
+  <div id="key-status" class="key-status"></div>
+  <div id="key-instructions" class="result"></div>
+</div>
 
 <div class="card">
   <h2>1. 网络连通性</h2>
@@ -31,13 +39,13 @@ button:active { opacity:0.8; }
 <div class="card">
   <h2>2. Supabase API 测试</h2>
   <div id="api-result" class="result">等待网络测试...</div>
-  <button onclick="testAPI()" id="api-btn" disabled>测试 API</button>
+  <button onclick="testAPI()" id="api-btn">测试 API</button>
 </div>
 
 <div class="card">
   <h2>3. 登录测试 (admin/admin123)</h2>
   <div id="login-result" class="result">等待 API 测试...</div>
-  <button onclick="testLogin()" id="login-btn" disabled>测试登录</button>
+  <button onclick="testLogin()" id="login-btn">测试登录</button>
 </div>
 
 <div class="card">
@@ -54,13 +62,49 @@ document.getElementById('browser-info').textContent =
   'Language: ' + navigator.language;
 
 const SUPABASE_URL = 'https://nsnmtkukxquhinlmbejg.supabase.co';
-const SUPABASE_KEY = ['sb_','secret_','pu1D6C4n','K07UEBR7','tjUXUA_Y','hU62jFI'].join('');
+// 诊断页也使用相同的 key 配置：应为 publishable key (sb_publishable_...)
+// 如果仍是占位符或 secret key，会显示警告。
+const SUPABASE_KEY = '__PUBLISHABLE_KEY__';
+
+function checkKey() {
+  const el = document.getElementById('key-status');
+  const instr = document.getElementById('key-instructions');
+  
+  if (!SUPABASE_KEY || SUPABASE_KEY === '__PUBLISHABLE_KEY__' || SUPABASE_KEY.startsWith('__')) {
+    el.innerHTML = '<span class="err">❌ 未配置 API Key（占位符）</span>';
+    instr.innerHTML = '<span class="warn">PWA 需要 Supabase Publishable key (sb_publishable_...)。<br>请从 Supabase Dashboard → Settings → API Keys → Publishable and secret API keys 复制 Publishable key，然后运行 update_pwa_key.py。</span>';
+    return false;
+  }
+  
+  if (SUPABASE_KEY.startsWith('sb_secret_')) {
+    el.innerHTML = '<span class="err">❌ 当前是 Secret key (sb_secret_...)</span>';
+    instr.innerHTML = '<span class="warn">Secret key 不能在浏览器/PWA 中使用，Supabase 会返回 HTTP 401。<br>请换成 Publishable key (sb_publishable_...)。</span>';
+    return false;
+  }
+  
+  if (SUPABASE_KEY.startsWith('sb_publishable_')) {
+    el.innerHTML = '<span class="ok">✅ 当前是 Publishable key</span>';
+    instr.innerHTML = '<span class="info">Key 前缀正确。如果仍无法登录，请检查网络或 RLS 策略。</span>';
+    return true;
+  }
+  
+  if (SUPABASE_KEY.startsWith('eyJhbGci')) {
+    el.innerHTML = '<span class="warn">⚠️ 当前是旧版 JWT key</span>';
+    instr.innerHTML = '<span class="warn">旧版 JWT key 已被 Supabase 弃用，建议换成 Publishable key (sb_publishable_...)。</span>';
+    return true;
+  }
+  
+  el.innerHTML = '<span class="warn">⚠️ 未知 key 格式</span>';
+  instr.innerHTML = '<span class="warn">请确认使用的是 Publishable key (sb_publishable_...)。</span>';
+  return true;
+}
+
+checkKey();
 
 async function testNetwork() {
   const el = document.getElementById('net-result');
   el.innerHTML = '<span class="warn">测试中...</span>';
   
-  // Test 1: Can we reach Supabase at all?
   try {
     const start = Date.now();
     const resp = await fetch(SUPABASE_URL + '/rest/v1/', { 
@@ -69,7 +113,6 @@ async function testNetwork() {
     });
     const elapsed = Date.now() - start;
     el.innerHTML = '<span class="ok">✅ Supabase 可达 (' + elapsed + 'ms, HTTP ' + resp.status + ')</span>';
-    document.getElementById('api-btn').disabled = false;
   } catch(e) {
     el.innerHTML = '<span class="err">❌ 无法连接 Supabase: ' + e.message + '</span>\n' +
       '<span class="warn">可能原因: 网络限制/DNS问题/Supabase被墙</span>';
@@ -79,6 +122,11 @@ async function testNetwork() {
 async function testAPI() {
   const el = document.getElementById('api-result');
   el.innerHTML = '<span class="warn">查询中...</span>';
+  
+  if (!checkKey()) {
+    el.innerHTML = '<span class="err">❌ API Key 未配置或无效</span>';
+    return;
+  }
   
   try {
     const start = Date.now();
@@ -94,8 +142,10 @@ async function testAPI() {
     if (!resp.ok) {
       const text = await resp.text();
       el.innerHTML = '<span class="err">❌ API 返回 HTTP ' + resp.status + ' ' + resp.statusText + '</span>\n' +
-        '响应: ' + text.substring(0, 200) + '\n' +
-        '<span class="warn">Key: ' + SUPABASE_KEY.substring(0, 15) + '...</span>';
+        '响应: ' + text.substring(0, 200) + '\n';
+      if (resp.status === 401) {
+        el.innerHTML += '<span class="warn">401 表示 API Key 不被允许。请确认使用的是 Publishable key (sb_publishable_...)，而不是 Secret key。</span>';
+      }
       return;
     }
     
@@ -108,9 +158,7 @@ async function testAPI() {
     }
     
     el.innerHTML = '<span class="ok">✅ API 正常 (' + elapsed + 'ms)</span>\n' +
-      '返回 ' + data.length + ' 条记录, ' + userCount + ' 条有用户名\n' +
-      'Key: ' + SUPABASE_KEY.substring(0, 20) + '...';
-    document.getElementById('login-btn').disabled = false;
+      '返回 ' + data.length + ' 条记录, ' + userCount + ' 条有用户名';
   } catch(e) {
     el.innerHTML = '<span class="err">❌ API 请求失败: ' + e.message + '</span>';
   }
@@ -120,8 +168,12 @@ async function testLogin() {
   const el = document.getElementById('login-result');
   el.innerHTML = '<span class="warn">登录测试中...</span>';
   
+  if (!checkKey()) {
+    el.innerHTML = '<span class="err">❌ API Key 未配置或无效</span>';
+    return;
+  }
+  
   try {
-    // Step 1: Fetch all users
     const resp = await fetch(SUPABASE_URL + '/rest/v1/sync_data?table_name=eq.users&is_deleted=eq.false&limit=200&select=payload', {
       headers: {
         'apikey': SUPABASE_KEY,
@@ -138,7 +190,6 @@ async function testLogin() {
     const raw = await resp.json();
     el.innerHTML = '获取到 ' + raw.length + ' 条原始记录\n';
     
-    // Parse users
     const users = [];
     for (const r of raw) {
       let p = r.payload;
@@ -147,14 +198,12 @@ async function testLogin() {
     }
     el.innerHTML += '解析出 ' + users.length + ' 个有效用户\n';
     
-    // Dedup
     const userMap = {};
     users.forEach(u => {
       const ex = userMap[u.username];
       if (!ex || (u.updated_at || '') > (ex.updated_at || '')) userMap[u.username] = u;
     });
     
-    // Find admin
     const acc = Object.values(userMap).find(u => u.username === 'admin' || u.email === 'admin');
     if (!acc) {
       el.innerHTML += '<span class="err">❌ 未找到 admin 账号!</span>\n';
@@ -165,15 +214,13 @@ async function testLogin() {
     el.innerHTML += '<span class="ok">✅ 找到 admin 账号</span>\n';
     el.innerHTML += '  role: ' + (acc.role || '?') + '\n';
     el.innerHTML += '  status: ' + (acc.status || '?') + '\n';
-    el.innerHTML += '  password(plain): ' + (acc.password || 'NONE') + '\n';
-    el.innerHTML += '  password_hash: ' + (acc.password_hash ? acc.password_hash.substring(0,20) + '...' : 'NONE') + '\n';
+    el.innerHTML += '  password(plain): ' + (acc.password ? '已设置' : '无') + '\n';
+    el.innerHTML += '  password_hash: ' + (acc.password_hash ? '已设置' : '无') + '\n';
     
-    // Verify password
     const inputPwd = 'admin123';
     if (acc.password && acc.password === inputPwd) {
-      el.innerHTML += '<span class="ok">✅✅ 密码验证通过! 登录应该成功!</span>';
+      el.innerHTML += '<span class="ok">✅✅ 密码验证通过! 配置正确 key 后登录应该成功!</span>';
     } else if (acc.password_hash) {
-      // Try SHA-256
       const encoder = new TextEncoder();
       const data = encoder.encode(inputPwd);
       const hashBuffer = await crypto.subtle.digest('SHA-256', data);
@@ -181,11 +228,9 @@ async function testLogin() {
       const computed = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
       
       if (computed === acc.password_hash) {
-        el.innerHTML += '<span class="ok">✅✅ SHA-256 密码验证通过! 登录应该成功!</span>';
+        el.innerHTML += '<span class="ok">✅✅ SHA-256 密码验证通过! 配置正确 key 后登录应该成功!</span>';
       } else {
-        el.innerHTML += '<span class="err">❌ SHA-256 不匹配</span>\n';
-        el.innerHTML += '  computed: ' + computed.substring(0,30) + '...\n';
-        el.innerHTML += '  stored:   ' + acc.password_hash.substring(0,30) + '...';
+        el.innerHTML += '<span class="err">❌ SHA-256 不匹配</span>';
       }
     } else {
       el.innerHTML += '<span class="err">❌ 没有密码字段!</span>';
