@@ -1,5 +1,5 @@
-// PMApp PWA Service Worker v11
-const CACHE_NAME = 'pmapp-pwa-v11';
+// PMApp PWA Service Worker v12
+const CACHE_NAME = 'pmapp-pwa-v12';
 const ASSETS = ['./', './index.html', './manifest.json'];
 
 self.addEventListener('install', (e) => {
