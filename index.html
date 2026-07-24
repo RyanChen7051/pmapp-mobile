@@ -586,9 +586,9 @@ const App = {
 
   async verifyPassword(password, storedHash, salt, plainPassword) {
     try {
-      // 1. Check plaintext password first (for PWA-created accounts)
-      if (plainPassword && password === plainPassword) return true;
-      // 2. No hash stored = no password check needed
+      // 1. If plaintext password is set, must match exactly
+      if (plainPassword) return password === plainPassword;
+      // 2. No hash stored = no password check needed (backward compat)
       if (!storedHash) return true;
       // 3. SHA-256 hash without salt (legacy desktop accounts)
       if (!salt || salt === '') {
