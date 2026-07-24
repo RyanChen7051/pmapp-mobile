@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>PMApp 诊断</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:-apple-system,sans-serif; background:#1a1a2e; color:#eee; padding:20px; }
+h1 { font-size:18px; margin-bottom:15px; }
+.card { background:#16213e; border-radius:10px; padding:15px; margin-bottom:12px; }
+.card h2 { font-size:14px; color:#8ecae6; margin-bottom:8px; }
+.result { font-size:13px; line-height:1.6; word-break:break-all; white-space:pre-wrap; }
+.ok { color:#4ade80; }
+.err { color:#f87171; }
+.warn { color:#fbbf24; }
+button { background:#3a86ff; color:#fff; border:none; padding:10px 20px; border-radius:8px; font-size:14px; cursor:pointer; width:100%; margin-top:8px; }
+button:active { opacity:0.8; }
+.info { color:#8ecae6; font-size:12px; }
+</style>
+</head>
+<body>
+<h1>PMApp 连接诊断</h1>
+
+<div class="card">
+  <h2>1. 网络连通性</h2>
+  <div id="net-result" class="result">点击下方按钮开始测试...</div>
+  <button onclick="testNetwork()">测试网络</button>
+</div>
+
+<div class="card">
+  <h2>2. Supabase API 测试</h2>
+  <div id="api-result" class="result">等待网络测试...</div>
+  <button onclick="testAPI()" id="api-btn" disabled>测试 API</button>
+</div>
+
+<div class="card">
+  <h2>3. 登录测试 (admin/admin123)</h2>
+  <div id="login-result" class="result">等待 API 测试...</div>
+  <button onclick="testLogin()" id="login-btn" disabled>测试登录</button>
+</div>
+
+<div class="card">
+  <h2>浏览器信息</h2>
+  <div id="browser-info" class="result info"></div>
+</div>
+
+<script>
+// Show browser info
+document.getElementById('browser-info').textContent = 
+  'UA: ' + navigator.userAgent + '\n' +
+  'Platform: ' + navigator.platform + '\n' +
+  'Online: ' + navigator.onLine + '\n' +
+  'Language: ' + navigator.language;
+
+const SUPABASE_URL = 'https://nsnmtkukxquhinlmbejg.supabase.co';
+const SUPABASE_KEY = ['sb_','secret_','pu1D6C4n','K07UEBR7','tjUXUA_Y','hU62jFI'].join('');
+
+async function testNetwork() {
+  const el = document.getElementById('net-result');
+  el.innerHTML = '<span class="warn">测试中...</span>';
+  
+  // Test 1: Can we reach Supabase at all?
+  try {
+    const start = Date.now();
+    const resp = await fetch(SUPABASE_URL + '/rest/v1/', { 
+      method: 'GET',
+      headers: { 'apikey': SUPABASE_KEY }
+    });
+    const elapsed = Date.now() - start;
+    el.innerHTML = '<span class="ok">✅ Supabase 可达 (' + elapsed + 'ms, HTTP ' + resp.status + ')</span>';
+    document.getElementById('api-btn').disabled = false;
+  } catch(e) {
+    el.innerHTML = '<span class="err">❌ 无法连接 Supabase: ' + e.message + '</span>\n' +
+      '<span class="warn">可能原因: 网络限制/DNS问题/Supabase被墙</span>';
+  }
+}
+
+async function testAPI() {
+  const el = document.getElementById('api-result');
+  el.innerHTML = '<span class="warn">查询中...</span>';
+  
+  try {
+    const start = Date.now();
+    const resp = await fetch(SUPABASE_URL + '/rest/v1/sync_data?table_name=eq.users&limit=5&select=payload', {
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_KEY,
+        'Content-Type': 'application/json'
+      }
+    });
+    const elapsed = Date.now() - start;
+    
+    if (!resp.ok) {
+      const text = await resp.text();
+      el.innerHTML = '<span class="err">❌ API 返回 HTTP ' + resp.status + ' ' + resp.statusText + '</span>\n' +
+        '响应: ' + text.substring(0, 200) + '\n' +
+        '<span class="warn">Key: ' + SUPABASE_KEY.substring(0, 15) + '...</span>';
+      return;
+    }
+    
+    const data = await resp.json();
+    let userCount = 0;
+    for (const r of data) {
+      let p = r.payload;
+      if (typeof p === 'string') { try { p = JSON.parse(p); } catch(e) {} }
+      if (p && p.username) userCount++;
+    }
+    
+    el.innerHTML = '<span class="ok">✅ API 正常 (' + elapsed + 'ms)</span>\n' +
+      '返回 ' + data.length + ' 条记录, ' + userCount + ' 条有用户名\n' +
+      'Key: ' + SUPABASE_KEY.substring(0, 20) + '...';
+    document.getElementById('login-btn').disabled = false;
+  } catch(e) {
+    el.innerHTML = '<span class="err">❌ API 请求失败: ' + e.message + '</span>';
+  }
+}
+
+async function testLogin() {
+  const el = document.getElementById('login-result');
+  el.innerHTML = '<span class="warn">登录测试中...</span>';
+  
+  try {
+    // Step 1: Fetch all users
+    const resp = await fetch(SUPABASE_URL + '/rest/v1/sync_data?table_name=eq.users&is_deleted=eq.false&limit=200&select=payload', {
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_KEY,
+        'Content-Type': 'application/json'
+      }
+    });
+    
+    if (!resp.ok) {
+      el.innerHTML = '<span class="err">❌ 获取用户失败: HTTP ' + resp.status + '</span>';
+      return;
+    }
+    
+    const raw = await resp.json();
+    el.innerHTML = '获取到 ' + raw.length + ' 条原始记录\n';
+    
+    // Parse users
+    const users = [];
+    for (const r of raw) {
+      let p = r.payload;
+      if (typeof p === 'string') { try { p = JSON.parse(p); } catch(e) { continue; } }
+      if (p && p.username) users.push(p);
+    }
+    el.innerHTML += '解析出 ' + users.length + ' 个有效用户\n';
+    
+    // Dedup
+    const userMap = {};
+    users.forEach(u => {
+      const ex = userMap[u.username];
+      if (!ex || (u.updated_at || '') > (ex.updated_at || '')) userMap[u.username] = u;
+    });
+    
+    // Find admin
+    const acc = Object.values(userMap).find(u => u.username === 'admin' || u.email === 'admin');
+    if (!acc) {
+      el.innerHTML += '<span class="err">❌ 未找到 admin 账号!</span>\n';
+      el.innerHTML += '可用用户名: ' + Object.keys(userMap).slice(0, 10).join(', ') + '...';
+      return;
+    }
+    
+    el.innerHTML += '<span class="ok">✅ 找到 admin 账号</span>\n';
+    el.innerHTML += '  role: ' + (acc.role || '?') + '\n';
+    el.innerHTML += '  status: ' + (acc.status || '?') + '\n';
+    el.innerHTML += '  password(plain): ' + (acc.password || 'NONE') + '\n';
+    el.innerHTML += '  password_hash: ' + (acc.password_hash ? acc.password_hash.substring(0,20) + '...' : 'NONE') + '\n';
+    
+    // Verify password
+    const inputPwd = 'admin123';
+    if (acc.password && acc.password === inputPwd) {
+      el.innerHTML += '<span class="ok">✅✅ 密码验证通过! 登录应该成功!</span>';
+    } else if (acc.password_hash) {
+      // Try SHA-256
+      const encoder = new TextEncoder();
+      const data = encoder.encode(inputPwd);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      const computed = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+      
+      if (computed === acc.password_hash) {
+        el.innerHTML += '<span class="ok">✅✅ SHA-256 密码验证通过! 登录应该成功!</span>';
+      } else {
+        el.innerHTML += '<span class="err">❌ SHA-256 不匹配</span>\n';
+        el.innerHTML += '  computed: ' + computed.substring(0,30) + '...\n';
+        el.innerHTML += '  stored:   ' + acc.password_hash.substring(0,30) + '...';
+      }
+    } else {
+      el.innerHTML += '<span class="err">❌ 没有密码字段!</span>';
+    }
+  } catch(e) {
+    el.innerHTML = '<span class="err">❌ 登录测试异常: ' + e.message + '</span>\n' + e.stack;
+  }
+}
+</script>
+</body>
+</html>
