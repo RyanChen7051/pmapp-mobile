@@ -345,6 +345,16 @@ body {
     <div class="setting-row"><span class="setting-label">当前用户</span><span class="setting-value" id="set-user">-</span></div>
     <div class="setting-row"><span class="setting-label">用户角色</span><span class="setting-value" id="set-role">-</span></div>
     <div class="setting-row"><span class="setting-label">设备名称</span><span class="setting-value" id="set-device">-</span></div>
+    <div class="sec-header"><span>高级</span></div>
+    <div class="setting-row"><span class="setting-label">API 代理 URL</span><span class="setting-value" id="set-proxy">-</span></div>
+    <div style="padding:0 12px 8px">
+      <input type="text" id="proxy-url-input" placeholder="https://xxx.trycloudflare.com/proxy" style="width:100%;padding:8px;border-radius:6px;border:1px solid #334155;background:#0f172a;color:#e2e8f0;font-size:13px">
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button class="btn btn-secondary" style="flex:1" onclick="App.saveProxyUrl()">保存代理</button>
+        <button class="btn btn-secondary" style="flex:1" onclick="App.clearProxyUrl()">清除代理</button>
+      </div>
+      <div style="font-size:11px;color:#94a3b8;margin-top:4px">仅临时使用：输入本地代理地址后，PWA 会通过代理访问 Supabase。</div>
+    </div>
     <div class="sec-header"><span>同步</span></div>
     <div class="setting-row"><span class="setting-label">上次同步</span><span class="setting-value" id="set-sync">-</span></div>
     <div class="setting-row"><span class="setting-label">云端记录数</span><span class="setting-value" id="set-count">-</span></div>
@@ -356,7 +366,7 @@ body {
     </div>
   </div>
   <div class="sec-header"><span>关于</span></div>
-  <div class="setting-row"><span class="setting-label">版本</span><span class="setting-value">PMApp v3.1.0</span></div>
+  <div class="setting-row"><span class="setting-label">版本</span><span class="setting-value">PMApp v3.1.2</span></div>
   <div class="setting-row"><span class="setting-label">桌面端版本</span><span class="setting-value">v8.0.0+</span></div>
 </div>
 
@@ -418,7 +428,7 @@ const SUPABASE_URL = 'https://nsnmtkukxquhinlmbejg.supabase.co';
 // 请将下面占位符替换为你在 Supabase Dashboard → Settings → API Keys → Publishable and secret API keys 中复制的 Publishable key。
 // 或者运行仓库根目录的 update_pwa_key.py 脚本自动更新：python3 update_pwa_key.py <你的_publishable_key>
 const SUPABASE_KEY = '__PUBLISHABLE_KEY__'; // 占位符，部署前必须替换
-const APP_VERSION = 'v3.1.1';
+const APP_VERSION = 'v3.1.2';
 
 /* ─── Module Definitions ─── */
 const MODULES = {
@@ -523,25 +533,46 @@ const App = {
   },
 
   /* ─── Supabase API ─── */
+  getProxyUrl() { return localStorage.getItem('pmapp_proxy_url') || ''; },
+  saveProxyUrl() {
+    const url = document.getElementById('proxy-url-input').value.trim();
+    if (!url) { this.toast('请输入代理 URL'); return; }
+    localStorage.setItem('pmapp_proxy_url', url);
+    document.getElementById('set-proxy').textContent = url;
+    this.toast('代理 URL 已保存');
+  },
+  clearProxyUrl() {
+    localStorage.removeItem('pmapp_proxy_url');
+    document.getElementById('set-proxy').textContent = '-';
+    document.getElementById('proxy-url-input').value = '';
+    this.toast('代理 URL 已清除');
+  },
+  apiBaseUrl() {
+    const proxy = this.getProxyUrl();
+    if (proxy) {
+      return proxy.replace(/\/$/, '') + '/rest/v1';
+    }
+    return SUPABASE_URL + '/rest/v1';
+  },
   sbHeaders(prefer) {
     const h = { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json' };
     if (prefer) h['Prefer'] = prefer;
     return h;
   },
   async sbGet(table, query) {
-    const resp = await fetch(`${SUPABASE_URL}/rest/v1/${table}?${query || ''}`, { headers: this.sbHeaders() });
+    const resp = await fetch(`${this.apiBaseUrl()}/${table}?${query || ''}`, { headers: this.sbHeaders() });
     if (!resp.ok) throw new Error(`GET ${table}: ${resp.status}`);
     return resp.json();
   },
   async sbPost(table, data) {
-    const resp = await fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
+    const resp = await fetch(`${this.apiBaseUrl()}/${table}`, {
       method: 'POST', headers: this.sbHeaders('return=representation'), body: JSON.stringify(data),
     });
     if (!resp.ok) throw new Error(`POST ${table}: ${resp.status}`);
     return resp.json();
   },
   async sbPatch(table, query, data) {
-    const resp = await fetch(`${SUPABASE_URL}/rest/v1/${table}?${query}`, {
+    const resp = await fetch(`${this.apiBaseUrl()}/${table}?${query}`, {
       method: 'PATCH', headers: this.sbHeaders('return=minimal'), body: JSON.stringify(data),
     });
     if (!resp.ok) throw new Error(`PATCH ${table}: ${resp.status}`);
@@ -556,12 +587,18 @@ const App = {
     e.preventDefault();
     const email = document.getElementById('login-email').value.trim();
     const password = document.getElementById('login-password').value.trim();
+    const proxyInput = document.getElementById('login-proxy-url');
+    const proxyUrl = proxyInput ? proxyInput.value.trim() : '';
+    if (proxyUrl) {
+      localStorage.setItem('pmapp_proxy_url', proxyUrl);
+      console.log('[LOGIN] Using proxy URL:', proxyUrl);
+    }
     const errEl = document.getElementById('login-error');
     const btn = document.getElementById('login-btn');
     if (!email || !password) { errEl.textContent = '请输入用户名和密码'; return false; }
-    // Detect placeholder or secret key (browser-side cannot use sb_secret_)
-    if (!SUPABASE_KEY || SUPABASE_KEY.startsWith('sb_secret_') || SUPABASE_KEY.startsWith('__')) {
-      errEl.innerHTML = 'PWA 未配置有效的 Publishable key。<br>请从 Supabase Dashboard 复制 Publishable key (sb_publishable_...)，然后运行仓库根目录的 <b>update_pwa_key.py</b> 脚本更新。';
+    // Detect placeholder or secret key, unless proxy is configured
+    if (!proxyUrl && (!SUPABASE_KEY || SUPABASE_KEY.startsWith('sb_secret_') || SUPABASE_KEY.startsWith('__'))) {
+      errEl.innerHTML = 'PWA 未配置有效的 Publishable key。<br>请从 Supabase Dashboard 复制 Publishable key (sb_publishable_...)，然后运行仓库根目录的 <b>update_pwa_key.py</b> 脚本更新。<br><br>临时方案：可在下方「代理 URL」填入本地代理地址。';
       console.error('[LOGIN] Invalid SUPABASE_KEY:', SUPABASE_KEY.startsWith('__') ? 'placeholder' : (SUPABASE_KEY.startsWith('sb_secret_') ? 'secret key (not allowed in browser)' : 'empty'));
       return false;
     }
@@ -1290,12 +1327,16 @@ const App = {
         <form onsubmit="return App.login(event)">
           <div class="input-group"><label>用户名</label><input type="text" id="login-email" placeholder="admin" autocomplete="username" required></div>
           <div class="input-group"><label>密码</label><input type="password" id="login-password" placeholder="********" autocomplete="current-password" required></div>
+          <div class="input-group"><label>代理 URL（可选）</label><input type="text" id="login-proxy-url" placeholder="https://xxx.trycloudflare.com/proxy" autocomplete="off"></div>
           <button type="submit" class="btn btn-primary" id="login-btn">登录</button>
           <div style="font-size:12px;color:var(--text-muted);text-align:center;margin-top:10px">使用桌面端同一账号登录</div>
           <div style="font-size:10px;color:var(--text-muted);text-align:center;margin-top:4px;opacity:0.5">PWA ${APP_VERSION}</div>
           <div class="login-error" id="login-error" style="color:var(--accent);font-size:13px;text-align:center;margin-top:8px;min-height:16px"></div>
         </form>
       </div>`;
+      // Restore saved proxy URL into the login input
+      const savedProxy = App.getProxyUrl ? App.getProxyUrl() : '';
+      setTimeout(() => { const el = document.getElementById('login-proxy-url'); if (el && savedProxy) el.value = savedProxy; }, 0);
     } else {
       loginArea.innerHTML = '';
       infoArea.style.display = 'block';
@@ -1304,6 +1345,8 @@ const App = {
       document.getElementById('set-role').textContent = role === 'admin' ? '👑 管理员' : role === 'viewer' ? '👁 只读' : '✏️ ' + role;
       document.getElementById('set-device').textContent = this.deviceId || '-';
       document.getElementById('set-sync').textContent = localStorage.getItem('pmapp_last_sync') || '从未';
+      document.getElementById('set-proxy').textContent = this.getProxyUrl() || '-';
+      document.getElementById('proxy-url-input').value = this.getProxyUrl() || '';
       let total = 0;
       Object.keys(MODULES).forEach(k => total += (this.cache[k] || []).length);
       total += (this.cache.message_board || []).length;
