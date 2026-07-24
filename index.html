@@ -723,10 +723,12 @@ const App = {
     } else {
       newsEl.innerHTML = news.map(n => `<div class="card" onclick="App.openDetail('ai_industry_news', ${n.id})">
         <div class="card-title">📰 ${this.esc(n.title)}</div>
+        ${n.summary ? `<div style="font-size:12px;color:var(--text-secondary);margin:4px 0;line-height:1.5">${this.esc(n.summary.substring(0,80))}${n.summary.length>80?'...':''}</div>` : ''}
         <div class="card-meta">
           ${n.news_date ? `<span>📅 ${this.esc(n.news_date)}</span>` : ''}
           ${n.importance ? `<span class="badge ${this.badgeClass(n.importance)}">${this.esc(n.importance)}</span>` : ''}
           ${n.source ? `<span>📌 ${this.esc(n.source)}</span>` : ''}
+          ${n.url ? `<a href="${this.esc(n.url)}" target="_blank" onclick="event.stopPropagation()" style="color:var(--accent-blue);font-size:12px;text-decoration:none">查看原文 ↗</a>` : ''}
         </div></div>`).join('');
     }
 
@@ -1352,6 +1354,10 @@ const App = {
       html += '</div>';
     });
     html += '</div>';
+    // "View Source" button for news items
+    if (moduleKey === 'ai_industry_news' && record.url) {
+      html += `<a href="${this.esc(record.url)}" target="_blank" style="display:block;text-align:center;padding:12px;margin:8px 0;background:var(--accent);color:#fff;border-radius:8px;font-size:14px;font-weight:600;text-decoration:none">查看原文 ↗</a>`;
+    }
     // Related data for projects
     if (moduleKey === 'projects') {
       const issues = (this.cache.issues || []).filter(i => i.project_id === id);
