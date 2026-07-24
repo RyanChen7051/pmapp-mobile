@@ -414,7 +414,7 @@ body {
    ═══════════════════════════════════════════════════ */
 const SUPABASE_URL = 'https://nsnmtkukxquhinlmbejg.supabase.co';
 const SUPABASE_KEY = ['sb_','secret_','pu1D6C4n','K07UEBR7','tjUXUA_Y','hU62jFI'].join('');
-const APP_VERSION = 'v3.0.0';
+const APP_VERSION = 'v3.1.0';
 
 /* ─── Module Definitions ─── */
 const MODULES = {
@@ -557,14 +557,22 @@ const App = {
     if (!email || !password) { errEl.textContent = '请输入用户名和密码'; return false; }
     btn.disabled = true; btn.textContent = '登录中...'; errEl.textContent = '';
     try {
+      console.log('[LOGIN] Starting login for:', email, 'version:', APP_VERSION);
       const userRecords = await this.sbGet('sync_data', `table_name=eq.users&is_deleted=eq.false&limit=200&select=payload`);
+      console.log('[LOGIN] Fetched records:', userRecords.length);
       const users = userRecords.map(r => { try { return typeof r.payload === 'string' ? JSON.parse(r.payload) : r.payload; } catch { return null; } }).filter(u => u && u.username);
+      console.log('[LOGIN] Users with username:', users.length, 'usernames:', users.map(u => u.username).slice(0, 10));
       const userMap = {};
       users.forEach(u => { const ex = userMap[u.username]; if (!ex || (u.updated_at || '') > (ex.updated_at || '')) userMap[u.username] = u; });
       const acc = Object.values(userMap).find(u => u.username === email || u.email === email);
-      if (!acc) throw new Error('账号不存在');
+      if (!acc) {
+        console.log('[LOGIN] Account not found. Available:', Object.keys(userMap));
+        throw new Error('账号不存在');
+      }
+      console.log('[LOGIN] Found account:', acc.username, 'role:', acc.role, 'has plain pwd:', !!acc.password, 'has hash:', !!acc.password_hash);
       if (acc.status === 'inactive' || acc.is_active === 0 || acc.is_active === false) throw new Error('账号已被禁用');
       const ok = await this.verifyPassword(password, acc.password_hash, acc.salt, acc.password);
+      console.log('[LOGIN] Password verify result:', ok);
       if (!ok) throw new Error('密码错误');
       this.session = { user: { id: acc.id, email: email, username: acc.username, display_name: acc.display_name || acc.username, role: acc.role || (acc.username === 'admin' ? 'admin' : 'viewer') } };
       localStorage.setItem('pmapp_session', JSON.stringify(this.session));
@@ -572,6 +580,7 @@ const App = {
       this.loadHome();
       this.toast('登录成功');
     } catch (err) {
+      console.error('[LOGIN] Error:', err.message);
       const msg = err.message || '登录失败';
       if (msg.includes('Failed to fetch') || msg.includes('NetworkError') || msg.includes('fetch')) {
         errEl.textContent = '网络连接失败，请检查网络后重试';
@@ -1273,6 +1282,7 @@ const App = {
           <div class="input-group"><label>密码</label><input type="password" id="login-password" placeholder="********" autocomplete="current-password" required></div>
           <button type="submit" class="btn btn-primary" id="login-btn">登录</button>
           <div style="font-size:12px;color:var(--text-muted);text-align:center;margin-top:10px">使用桌面端同一账号登录</div>
+          <div style="font-size:10px;color:var(--text-muted);text-align:center;margin-top:4px;opacity:0.5">PWA ${APP_VERSION}</div>
           <div class="login-error" id="login-error" style="color:var(--accent);font-size:13px;text-align:center;margin-top:8px;min-height:16px"></div>
         </form>
       </div>`;

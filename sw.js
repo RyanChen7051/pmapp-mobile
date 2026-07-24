@@ -1,5 +1,5 @@
-// PMApp PWA Service Worker v13
-const CACHE_NAME = 'pmapp-pwa-v13';
+// PMApp PWA Service Worker v14
+const CACHE_NAME = 'pmapp-pwa-v14';
 const ASSETS = ['./', './index.html', './manifest.json'];
 
 self.addEventListener('install', (e) => {
@@ -29,6 +29,22 @@ self.addEventListener('message', (e) => {
 self.addEventListener('fetch', (e) => {
   const url = new URL(e.request.url);
   if (url.origin === self.location.origin) {
+    // Network-first for navigation requests (HTML pages) - ensures latest UI
+    if (e.request.mode === 'navigate' || e.request.destination === 'document') {
+      e.respondWith(
+        fetch(e.request)
+          .then((resp) => {
+            if (resp.ok) {
+              const respClone = resp.clone();
+              caches.open(CACHE_NAME).then((c) => c.put(e.request, respClone));
+            }
+            return resp;
+          })
+          .catch(() => caches.match(e.request).then((c) => c || caches.match('./')))
+      );
+      return;
+    }
+    // Stale-while-revalidate for other assets
     e.respondWith(
       caches.match(e.request).then((cached) => {
         const fetchPromise = fetch(e.request)
