@@ -433,7 +433,7 @@ const SUPABASE_URL = 'https://nsnmtkukxquhinlmbejg.supabase.co';
 // 请将下面占位符替换为你在 Supabase Dashboard → Settings → API Keys → Publishable and secret API keys 中复制的 Publishable key。
 // 或者运行仓库根目录的 update_pwa_key.py 脚本自动更新：python3 update_pwa_key.py <你的_publishable_key>
 const SUPABASE_KEY = 'sb_publishable_YB5z3cQK-vCg67--oKpSrg_63STgMJW'; // 占位符，部署前必须替换
-const APP_VERSION = 'v3.2.1';
+const APP_VERSION = 'v3.2.2';
 
 /* ─── Module Definitions ─── */
 const MODULES = {
@@ -505,6 +505,7 @@ const STAGE_PROGRESS = { NPI: 10, EVT: 25, DVT: 50, PVT: 75, MP: 100, completed:
 /* ─── Leader account → real name / department mapping (admin-only login panel) ─── */
 // 临时名单，后续新增用户时更新此处即可。只用于 admin 首页的登录活动面板显示。
 const USER_MAP = {
+  'admin': { name: '邦杰', dept: '管理员' },
   'leader1': { name: '镇炎总', dept: 'PMC' },
   'leader2': { name: '宋总', dept: '制造中心' },
   'leader3': { name: '朱总', dept: '总裁办' },
@@ -740,54 +741,69 @@ const App = {
         } catch { return null; }
       }).filter(l => l && l.username);
 
-      if (logs.length === 0) {
-        el.innerHTML = '<div class="empty"><div class="empty-icon">🔒</div>暂无登录记录</div>';
-        return;
-      }
-
-      // Aggregate: last login + total count per user
-      const userMap = {};
+      // Aggregate: last login + total count per username
+      const lastLoginMap = {};
       const countMap = {};
       logs.forEach(l => {
         const u = l.username;
-        // Enrich with USER_MAP for admin panel display
-        const mapped = USER_MAP[u] || {};
-        l._displayName = l.display_name || mapped.name || u;
-        l._dept = mapped.dept || '';
-        if (!userMap[u] || (l.login_time || '') > (userMap[u].login_time || '')) {
-          userMap[u] = l;
+        if (!lastLoginMap[u] || (l.login_time || '') > (lastLoginMap[u].login_time || '')) {
+          lastLoginMap[u] = l;
         }
         countMap[u] = (countMap[u] || 0) + 1;
       });
 
-      const sorted = Object.values(userMap).sort((a, b) => (b.login_time || '').localeCompare(a.login_time || ''));
       const now = Date.now();
+      const userKeys = Object.keys(USER_MAP);
+      let onlineCount = 0, loggedInCount = 0;
 
-      el.innerHTML = sorted.map(u => {
-        const loginTime = u.login_time ? new Date(u.login_time) : null;
-        const timeStr = loginTime ? loginTime.toLocaleString('zh-CN', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }) : '未知';
+      const rows = userKeys.map((key, idx) => {
+        const info = USER_MAP[key];
+        const lastLog = lastLoginMap[key];
+        const count = countMap[key] || 0;
+        const hasLoggedIn = count > 0;
+        if (hasLoggedIn) loggedInCount++;
+        const loginTime = lastLog && lastLog.login_time ? new Date(lastLog.login_time) : null;
         const minsAgo = loginTime ? Math.floor((now - loginTime.getTime()) / 60000) : 9999;
-        const isOnline = minsAgo < 30;
-        const onlineLabel = isOnline ? `<span class="badge badge-green">🟢 在线</span>` : `<span style="color:var(--text-tertiary);font-size:11px">离线</span>`;
-        const count = countMap[u.username] || 1;
-        const roleLabel = u.role === 'admin' ? '👑 管理员' : u.role === 'viewer' ? '👁 只读' : u.role || '';
-        const deptBadge = u._dept ? `<span class="badge badge-gray">${this.esc(u._dept)}</span>` : '';
-        return `<div class="card" style="padding:10px 12px">
-          <div style="display:flex;align-items:center;justify-content:space-between">
-            <div style="font-weight:600;font-size:14px">${this.esc(u._displayName || u.username)}</div>
-            ${onlineLabel}
+        const isOnlineNow = minsAgo < 30;
+        if (isOnlineNow) onlineCount++;
+
+        // Green name = has logged in (上线); Red name = never logged in (未上线)
+        const nameColor = hasLoggedIn ? 'var(--accent-green)' : 'var(--accent)';
+        const statusBadge = isOnlineNow
+          ? '<span class="badge badge-green">🟢 在线</span>'
+          : hasLoggedIn
+            ? '<span class="badge badge-gray">已上线</span>'
+            : '<span class="badge badge-red">未上线</span>';
+
+        const timeStr = loginTime
+          ? loginTime.toLocaleString('zh-CN', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })
+          : '—';
+        const deptBadge = info.dept ? `<span class="badge badge-gray">${this.esc(info.dept)}</span>` : '';
+
+        return `<div class="card" style="padding:8px 12px;display:flex;align-items:center;justify-content:space-between">
+          <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0">
+            <span style="color:var(--text-muted);font-size:12px;width:18px;text-align:center">${idx + 1}</span>
+            <div style="min-width:0">
+              <div style="font-weight:600;font-size:14px;color:${nameColor}">${this.esc(info.name)}</div>
+              <div class="card-meta" style="margin-top:1px">
+                ${deptBadge}
+                <span style="font-size:10px;color:var(--text-muted)">${this.esc(key)}</span>
+              </div>
+            </div>
           </div>
-          <div class="card-meta" style="margin-top:4px">
-            <span>👤 ${this.esc(u.username)}</span>
-            ${deptBadge}
-            <span>${roleLabel}</span>
-          </div>
-          <div class="card-meta" style="margin-top:2px">
-            <span>🕐 最后登录: ${timeStr}</span>
-            <span class="badge badge-blue">登录 ${count} 次</span>
+          <div style="text-align:right;flex-shrink:0">
+            ${statusBadge}
+            <div style="font-size:11px;color:var(--text-secondary);margin-top:2px">登录 ${count} 次</div>
+            <div style="font-size:10px;color:var(--text-muted);margin-top:1px">${timeStr}</div>
           </div>
         </div>`;
       }).join('');
+
+      const summary = `<div style="text-align:center;font-size:12px;color:var(--text-secondary);margin-bottom:8px">
+        共 ${userKeys.length} 人 · <span style="color:var(--accent-green)">已上线 ${loggedInCount}</span> · <span style="color:var(--accent)">未上线 ${userKeys.length - loggedInCount}</span> · 🟢当前在线 ${onlineCount}
+      </div>`;
+
+      el.innerHTML = summary + rows;
     } catch (e) {
       el.innerHTML = `<div class="empty">加载失败: ${this.esc(e.message)}</div>`;
     }
