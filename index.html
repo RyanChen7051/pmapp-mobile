@@ -433,7 +433,7 @@ const SUPABASE_URL = 'https://nsnmtkukxquhinlmbejg.supabase.co';
 // 请将下面占位符替换为你在 Supabase Dashboard → Settings → API Keys → Publishable and secret API keys 中复制的 Publishable key。
 // 或者运行仓库根目录的 update_pwa_key.py 脚本自动更新：python3 update_pwa_key.py <你的_publishable_key>
 const SUPABASE_KEY = 'sb_publishable_YB5z3cQK-vCg67--oKpSrg_63STgMJW'; // 占位符，部署前必须替换
-const APP_VERSION = 'v3.2.3';
+const APP_VERSION = 'v3.2.4';
 
 /* ─── Module Definitions ─── */
 const MODULES = {
@@ -585,6 +585,14 @@ const App = {
     }
     return SUPABASE_URL + '/rest/v1';
   },
+  /* ─── Supabase helpers ─── */
+  uuid() {
+    if (crypto?.randomUUID) return crypto.randomUUID();
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+      const r = Math.random() * 16 | 0; const v = c === 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+  },
   sbHeaders(prefer) {
     const h = { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json' };
     if (prefer) h['Prefer'] = prefer;
@@ -599,7 +607,10 @@ const App = {
     const resp = await fetch(`${this.apiBaseUrl()}/${table}`, {
       method: 'POST', headers: this.sbHeaders('return=representation'), body: JSON.stringify(data),
     });
-    if (!resp.ok) throw new Error(`POST ${table}: ${resp.status}`);
+    if (!resp.ok) {
+      const errBody = await resp.text().catch(() => '');
+      throw new Error(`POST ${table}: ${resp.status} ${errBody.substring(0, 200)}`);
+    }
     return resp.json();
   },
   async sbPatch(table, query, data) {
@@ -654,7 +665,7 @@ const App = {
       if (!ok) throw new Error('密码错误');
       this.session = { user: { id: acc.id, email: email, username: acc.username, display_name: acc.display_name || acc.username, role: acc.role || (acc.username === 'admin' ? 'admin' : 'viewer') } };
       localStorage.setItem('pmapp_session', JSON.stringify(this.session));
-      this.recordLogin(acc.username, acc.display_name || acc.username, acc.role || (acc.username === 'admin' ? 'admin' : 'viewer'));
+      await this.recordLogin(acc.username, acc.display_name || acc.username, acc.role || (acc.username === 'admin' ? 'admin' : 'viewer'));
       this.loadSettings();
       this.loadHome();
       this.toast('登录成功');
@@ -705,8 +716,7 @@ const App = {
   async recordLogin(username, displayName, role) {
     try {
       const nowISO = new Date().toISOString();
-      const ts = Date.now();
-      const sbId = `login_${ts}_${Math.random().toString(36).slice(2, 8)}`;
+      const ts = Math.floor(Date.now() / 1000); // seconds — fits in 32-bit INTEGER
       const payload = JSON.stringify({
         username: username,
         display_name: displayName || username,
@@ -717,9 +727,9 @@ const App = {
       });
       await this.sbPost('sync_data', {
         table_name: 'pwa_login_log',
-        local_id: ts,               // INTEGER column — must be numeric
+        local_id: ts,
         payload: payload,
-        supabase_id: sbId,           // UUID/string column
+        supabase_id: this.uuid(),
         is_deleted: false,
         updated_at: nowISO,
         device_id: this.deviceId
@@ -727,6 +737,7 @@ const App = {
       console.log('[LOGIN] Login activity recorded for:', username);
     } catch (e) {
       console.error('[LOGIN] Failed to record login activity:', e.message);
+      this.toast('登录记录写入失败: ' + e.message, 4000);
     }
   },
 
@@ -987,12 +998,12 @@ const App = {
     if (!name) { this.toast('请输入姓名'); return; }
     if (!content) { this.toast('请输入留言内容'); return; }
     const now = new Date().toISOString().slice(0, 19).replace('T', ' ');
-    const id = Date.now();
+    const id = Math.floor(Date.now() / 1000);
     try {
       await this.sbPost('sync_data', {
-        table_name: 'message_board', local_id: String(id),
+        table_name: 'message_board', local_id: id,
         payload: JSON.stringify({ id, name, content, created_at: now }),
-        supabase_id: `msg_${id}_${Math.random().toString(36).slice(2, 8)}`,
+        supabase_id: this.uuid(),
         is_deleted: false, updated_at: new Date().toISOString(), device_id: this.deviceId,
       });
       contentEl.value = '';
@@ -1682,8 +1693,8 @@ const App = {
       if (sbId) {
         await this.sbPatch('sync_data', `supabase_id=eq.${sbId}`, { payload, updated_at: nowISO, device_id: this.deviceId });
       } else {
-        sbId = `${mod.table}_${id}_${Date.now()}`;
-        await this.sbPost('sync_data', { table_name: mod.table, local_id: String(id), payload, supabase_id: sbId, is_deleted: false, updated_at: nowISO, device_id: this.deviceId });
+        sbId = this.uuid();
+        await this.sbPost('sync_data', { table_name: mod.table, local_id: id, payload, supabase_id: sbId, is_deleted: false, updated_at: nowISO, device_id: this.deviceId });
       }
       const idx = (this.cache[moduleKey] || []).findIndex(r => r.id === id);
       if (idx >= 0) this.cache[moduleKey][idx] = { ...updated, _sb_id: sbId, _updated: nowISO };
