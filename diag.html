@@ -64,13 +64,13 @@ document.getElementById('browser-info').textContent =
 const SUPABASE_URL = 'https://nsnmtkukxquhinlmbejg.supabase.co';
 // 诊断页也使用相同的 key 配置：应为 publishable key (sb_publishable_...)
 // 如果仍是占位符或 secret key，会显示警告。
-const SUPABASE_KEY = '__PUBLISHABLE_KEY__';
+const SUPABASE_KEY = 'sb_publishable_YB5z3cQK-vCg67--oKpSrg_63STgMJW';
 
 function checkKey() {
   const el = document.getElementById('key-status');
   const instr = document.getElementById('key-instructions');
   
-  if (!SUPABASE_KEY || SUPABASE_KEY === '__PUBLISHABLE_KEY__' || SUPABASE_KEY.startsWith('__')) {
+  if (!SUPABASE_KEY || SUPABASE_KEY === 'sb_publishable_YB5z3cQK-vCg67--oKpSrg_63STgMJW' || SUPABASE_KEY.startsWith('__')) {
     el.innerHTML = '<span class="err">❌ 未配置 API Key（占位符）</span>';
     instr.innerHTML = '<span class="warn">PWA 需要 Supabase Publishable key (sb_publishable_...)。<br>请从 Supabase Dashboard → Settings → API Keys → Publishable and secret API keys 复制 Publishable key，然后运行 update_pwa_key.py。</span>';
     return false;
