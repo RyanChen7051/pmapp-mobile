@@ -433,7 +433,7 @@ const SUPABASE_URL = 'https://nsnmtkukxquhinlmbejg.supabase.co';
 // 请将下面占位符替换为你在 Supabase Dashboard → Settings → API Keys → Publishable and secret API keys 中复制的 Publishable key。
 // 或者运行仓库根目录的 update_pwa_key.py 脚本自动更新：python3 update_pwa_key.py <你的_publishable_key>
 const SUPABASE_KEY = 'sb_publishable_YB5z3cQK-vCg67--oKpSrg_63STgMJW'; // 占位符，部署前必须替换
-const APP_VERSION = 'v3.2.0';
+const APP_VERSION = 'v3.2.1';
 
 /* ─── Module Definitions ─── */
 const MODULES = {
@@ -501,6 +501,31 @@ const MODULES = {
 
 /* ─── Stage progress mapping ─── */
 const STAGE_PROGRESS = { NPI: 10, EVT: 25, DVT: 50, PVT: 75, MP: 100, completed: 100 };
+
+/* ─── Leader account → real name / department mapping (admin-only login panel) ─── */
+// 临时名单，后续新增用户时更新此处即可。只用于 admin 首页的登录活动面板显示。
+const USER_MAP = {
+  'leader1': { name: '镇炎总', dept: 'PMC' },
+  'leader2': { name: '宋总', dept: '制造中心' },
+  'leader3': { name: '朱总', dept: '总裁办' },
+  'leader4': { name: '陈科', dept: '开发中心' },
+  'leader5': { name: '张云峰', dept: '独立品牌' },
+  'leader6': { name: 'Jack', dept: '业务' },
+  'leader7': { name: 'Hedy', dept: '独立品牌' },
+  'leader8': { name: 'Lucky', dept: '业务' },
+  'leader9': { name: '蒋思贵', dept: 'PMC' },
+  'leader10': { name: '任森林', dept: '品质' },
+  'leader11': { name: '陈晓斌', dept: '品质' },
+  'leader12': { name: '侯小飞', dept: '工程' },
+  'leader13': { name: '曾长游', dept: 'NPI' },
+  'leader14': { name: '方超', dept: '项目' },
+  'leader15': { name: '兰健美', dept: '采购' },
+  'leader16': { name: 'Tina', dept: '采购' },
+  'leader17': { name: '兰启高', dept: '采购' },
+  'leader18': { name: '杨芳万', dept: '工程' },
+  'leader19': { name: '何东华', dept: '工程' },
+};
+
 
 /* ─── App ─── */
 const App = {
@@ -725,6 +750,10 @@ const App = {
       const countMap = {};
       logs.forEach(l => {
         const u = l.username;
+        // Enrich with USER_MAP for admin panel display
+        const mapped = USER_MAP[u] || {};
+        l._displayName = l.display_name || mapped.name || u;
+        l._dept = mapped.dept || '';
         if (!userMap[u] || (l.login_time || '') > (userMap[u].login_time || '')) {
           userMap[u] = l;
         }
@@ -742,13 +771,15 @@ const App = {
         const onlineLabel = isOnline ? `<span class="badge badge-green">🟢 在线</span>` : `<span style="color:var(--text-tertiary);font-size:11px">离线</span>`;
         const count = countMap[u.username] || 1;
         const roleLabel = u.role === 'admin' ? '👑 管理员' : u.role === 'viewer' ? '👁 只读' : u.role || '';
+        const deptBadge = u._dept ? `<span class="badge badge-gray">${this.esc(u._dept)}</span>` : '';
         return `<div class="card" style="padding:10px 12px">
           <div style="display:flex;align-items:center;justify-content:space-between">
-            <div style="font-weight:600;font-size:14px">${this.esc(u.display_name || u.username)}</div>
+            <div style="font-weight:600;font-size:14px">${this.esc(u._displayName || u.username)}</div>
             ${onlineLabel}
           </div>
           <div class="card-meta" style="margin-top:4px">
             <span>👤 ${this.esc(u.username)}</span>
+            ${deptBadge}
             <span>${roleLabel}</span>
           </div>
           <div class="card-meta" style="margin-top:2px">
