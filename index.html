@@ -193,7 +193,14 @@ body {
 .msg-name { font-size: 13px; font-weight: 600; color: var(--accent-blue); }
 .msg-time { font-size: 11px; color: var(--text-muted); }
 .msg-content { font-size: 14px; color: var(--text-primary); word-break: break-word; }
-.msg-delete { font-size: 12px; color: var(--accent); cursor: pointer; margin-top: 4px; }
+.msg-actions { display: flex; gap: 12px; margin-top: 4px; }
+.msg-trans-btn { font-size: 12px; color: var(--accent-blue); cursor: pointer; user-select: none; }
+.msg-trans-btn:active { opacity: 0.6; }
+.msg-trans-btn.trans-active { color: var(--accent-green); }
+.msg-trans-btn.trans-loading { opacity: 0.5; pointer-events: none; }
+.msg-translation { margin-top: 6px; padding: 8px 10px; background: rgba(59,130,246,0.08); border-left: 3px solid var(--accent-blue); border-radius: 4px; font-size: 13px; color: var(--text-primary); line-height: 1.5; word-break: break-word; }
+.msg-translation .trans-label { font-size: 11px; color: var(--accent-blue); font-weight: 600; margin-right: 4px; }
+.msg-delete { font-size: 12px; color: var(--accent); cursor: pointer; }
 
 /* Login form in settings */
 .login-box { background: var(--bg-card); border-radius: var(--radius); padding: 16px; margin-bottom: 12px; border: 1px solid var(--border); }
@@ -383,8 +390,13 @@ body.rtl .card-meta { flex-direction: row-reverse; }
   </div>
   <div class="sec-header"><span data-i18n="sec_language">界面语言</span></div>
   <div class="lang-grid" id="lang-grid"></div>
+  <div class="sec-header"><span data-i18n="sec_translation">翻译缓存</span></div>
+  <div style="padding:0 12px 8px">
+    <div style="font-size:11px;color:var(--text-muted);margin-bottom:6px" data-i18n="trans_cache_hint">留言翻译结果会缓存在本地，清除后可重新翻译。</div>
+    <button class="btn btn-secondary" onclick="App.doClearTransCache()" data-i18n="btn_clear_trans">清除翻译缓存</button>
+  </div>
   <div class="sec-header"><span data-i18n="sec_about">关于</span></div>
-  <div class="setting-row"><span class="setting-label" data-i18n="lbl_version">版本</span><span class="setting-value">PMApp v3.4.0</span></div>
+  <div class="setting-row"><span class="setting-label" data-i18n="lbl_version">版本</span><span class="setting-value">PMApp v3.5.0</span></div>
   <div class="setting-row"><span class="setting-label" data-i18n="lbl_desktop">桌面端版本</span><span class="setting-value">v8.0.0+</span></div>
 </div>
 
