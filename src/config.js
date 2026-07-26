@@ -1,7 +1,7 @@
 /* ═══ Configuration & Constants ═══ */
 export const SUPABASE_URL = 'https://nsnmtkukxquhinlmbejg.supabase.co';
 export const SUPABASE_KEY = 'sb_publishable_YB5z3cQK-vCg67--oKpSrg_63STgMJW';
-export const APP_VERSION = 'v3.3.0';
+export const APP_VERSION = 'v3.4.0';
 
 export const STAGE_PROGRESS = { NPI: 10, EVT: 25, DVT: 50, PVT: 75, MP: 100, completed: 100 };
 
