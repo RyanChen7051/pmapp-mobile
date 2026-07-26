@@ -54,7 +54,7 @@ export function setupHome(App) {
           ${n.news_date ? `<span>📅 ${this.esc(n.news_date)}</span>` : ''}
           ${n.importance ? `<span class="badge ${this.badgeClass(n.importance)}">${this.esc(n.importance)}</span>` : ''}
           ${n.source ? `<span>📌 ${this.esc(n.source)}</span>` : ''}
-          ${n.url ? `<a href="${this.esc(n.url)}" target="_blank" onclick="event.stopPropagation()" style="color:var(--accent-blue);font-size:12px;text-decoration:none">查看原文 ↗</a>` : ''}
+          ${n.url ? `<a href="${this.esc(n.url)}" target="_blank" onclick="event.stopPropagation()" style="color:var(--accent-blue);font-size:12px;text-decoration:none">${t('view_original')} ↗</a>` : ''}
         </div></div>`).join('');
     }
 
@@ -87,11 +87,15 @@ export function setupHome(App) {
     }
     el.innerHTML = messages.map(m => `<div class="msg-item">
       <div class="msg-head">
-        <span class="msg-name">${this.esc(m.name || '匿名')}</span>
+        <span class="msg-name">${this.esc(m.name || t('anonymous'))}</span>
         <span class="msg-time">${this.esc(m.created_at || '')}</span>
       </div>
       <div class="msg-content">${this.esc(m.content || '')}</div>
-      ${this.isAdmin() ? `<div class="msg-delete" onclick="App.deleteMessage(${m.id})">${t('btn_delete')}</div>` : ''}
+      <div class="msg-actions">
+        <span class="msg-trans-btn" onclick="App.toggleTranslate(this, ${m.id}, ${JSON.stringify((m.content || '').replace(/"/g, '\\"'))})">${t('btn_translate')}</span>
+        ${this.isAdmin() ? `<span class="msg-delete" onclick="App.deleteMessage(${m.id})">${t('btn_delete')}</span>` : ''}
+      </div>
+      <div class="msg-translation" id="trans-${m.id}" style="display:none"></div>
     </div>`).join('');
   };
 
@@ -128,7 +132,7 @@ export function setupHome(App) {
       }
       this.cache.message_board = await this.fetchSyncData('message_board');
       this.renderMessages();
-      this.toast('已删除');
-    } catch (e) { this.toast('删除失败: ' + e.message); }
+      this.toast(t('t_del_ok'));
+    } catch (e) { this.toast(t('t_del_fail') + ' ' + e.message); }
   };
 }
