@@ -1,15 +1,16 @@
 /* ═══ Home Page + Message Board ═══ */
 import { STAGE_PROGRESS, MODULES, APP_VERSION } from './config.js';
+import { t } from './i18n.js';
 
 export function setupHome(App) {
   App.loadHome = function() {
     const banner = document.getElementById('home-banner');
     if (!this.isLoggedIn()) {
-      banner.innerHTML = '<div class="banner banner-warn">⚠️ 尚未登录 — 前往「设定」登录以启用编辑功能</div>';
+      banner.innerHTML = `<div class="banner banner-warn">${t('not_logged_in')}</div>`;
     } else if (this.isViewer()) {
-      banner.innerHTML = '<div class="banner banner-info">👁 只读模式 — 您可查看数据及留言</div>';
+      banner.innerHTML = `<div class="banner banner-info">${t('ro_banner')}</div>`;
     } else if (this.isAdmin()) {
-      banner.innerHTML = '<div class="banner banner-ok">👑 管理员模式 — 可编辑所有数据</div>';
+      banner.innerHTML = `<div class="banner banner-ok">${t('admin_banner')}</div>`;
     }
 
     const projects = this.cache.projects || [];
@@ -24,7 +25,7 @@ export function setupHome(App) {
     const projEl = document.getElementById('home-projects');
     const activeProjects = projects.filter(p => p.status === 'active').slice(0, 5);
     if (activeProjects.length === 0) {
-      projEl.innerHTML = '<div class="empty"><div class="empty-icon">📦</div>暂无进行中项目</div>';
+      projEl.innerHTML = `<div class="empty"><div class="empty-icon">📦</div>${t('empty_active')}</div>`;
     } else {
       projEl.innerHTML = activeProjects.map(p => {
         const progress = STAGE_PROGRESS[p.stage] || 0;
@@ -44,7 +45,7 @@ export function setupHome(App) {
     const newsEl = document.getElementById('home-news');
     const news = (this.cache.ai_industry_news || []).slice(0, 5);
     if (news.length === 0) {
-      newsEl.innerHTML = '<div class="empty"><div class="empty-icon">📰</div>暂无行业动态</div>';
+      newsEl.innerHTML = `<div class="empty"><div class="empty-icon">📰</div>${t('empty_news')}</div>`;
     } else {
       newsEl.innerHTML = news.map(n => `<div class="card" onclick="App.openDetail('ai_industry_news', ${n.id})">
         <div class="card-title">📰 ${this.esc(n.title)}</div>
@@ -81,7 +82,7 @@ export function setupHome(App) {
     const messages = (this.cache.message_board || []).sort((a, b) => (b.created_at || '').localeCompare(a.created_at || ''));
     const el = document.getElementById('msg-list');
     if (messages.length === 0) {
-      el.innerHTML = '<div class="empty"><div class="empty-icon">💬</div>暂无留言</div>';
+      el.innerHTML = `<div class="empty"><div class="empty-icon">💬</div>${t('empty_messages')}</div>`;
       return;
     }
     el.innerHTML = messages.map(m => `<div class="msg-item">
@@ -90,7 +91,7 @@ export function setupHome(App) {
         <span class="msg-time">${this.esc(m.created_at || '')}</span>
       </div>
       <div class="msg-content">${this.esc(m.content || '')}</div>
-      ${this.isAdmin() ? `<div class="msg-delete" onclick="App.deleteMessage(${m.id})">删除</div>` : ''}
+      ${this.isAdmin() ? `<div class="msg-delete" onclick="App.deleteMessage(${m.id})">${t('btn_delete')}</div>` : ''}
     </div>`).join('');
   };
 
@@ -99,8 +100,8 @@ export function setupHome(App) {
     const contentEl = document.getElementById('msg-content');
     const name = nameEl.value.trim();
     const content = contentEl.value.trim();
-    if (!name) { this.toast('请输入姓名'); return; }
-    if (!content) { this.toast('请输入留言内容'); return; }
+    if (!name) { this.toast(t('ph_name')); return; }
+    if (!content) { this.toast(t('ph_msg')); return; }
     const now = new Date().toISOString().slice(0, 19).replace('T', ' ');
     const id = Math.floor(Date.now() / 1000);
     try {
@@ -113,12 +114,12 @@ export function setupHome(App) {
       contentEl.value = '';
       this.cache.message_board = await this.fetchSyncData('message_board');
       this.renderMessages();
-      this.toast('留言已发布');
-    } catch (e) { this.toast('发布失败: ' + e.message); }
+      this.toast(t('t_msg_posted'));
+    } catch (e) { this.toast(t('t_post_fail') + ' ' + e.message); }
   };
 
   App.deleteMessage = async function(id) {
-    if (!confirm('确定删除此留言？')) return;
+    if (!confirm(t('confirm_del_msg'))) return;
     try {
       const records = await this.sbGet('sync_data', `table_name=eq.message_board&is_deleted=eq.false&select=supabase_id,payload`);
       const rec = records.find(r => { try { const p = typeof r.payload === 'string' ? JSON.parse(r.payload) : r.payload; return p && p.id === id; } catch { return false; } });
