@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════
-   PMApp Mobile v3.4.0 — Modular Entry Point with i18n
+   PMApp Mobile v3.5.0 — Modular Entry Point with i18n + Translate
    Assembles all modules into the global App object
    ═══════════════════════════════════════════════════ */
 import { APP_VERSION } from './config.js';
@@ -13,6 +13,7 @@ import { setupDetail } from './detail.js';
 import { setupEdit } from './edit.js';
 import { setupReports } from './reports.js';
 import { setupNavigation, setupUtils } from './navigation.js';
+import { setupTranslate, clearTranslateCache } from './translate.js';
 
 const App = {
   session: null,
@@ -29,6 +30,8 @@ const App = {
   _editingModule: null,
   // i18n
   t, getLang, setLang, LANGUAGES,
+  // Translate
+  clearTranslateCache,
 
   init() {
     initLang();
@@ -76,6 +79,7 @@ setupEdit(App);
 setupReports(App);
 setupNavigation(App);
 setupUtils(App);
+setupTranslate(App);
 
 window.App = App;
 App.init();
