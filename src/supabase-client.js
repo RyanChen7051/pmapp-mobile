@@ -1,22 +1,23 @@
 /* ═══ Supabase Client — API helpers ═══ */
 import { SUPABASE_URL, SUPABASE_KEY } from './config.js';
+import { t } from './i18n.js';
 
 export function setupSupabaseClient(App) {
   App.getProxyUrl = function() { return localStorage.getItem('pmapp_proxy_url') || ''; };
 
   App.saveProxyUrl = function() {
     const url = document.getElementById('proxy-url-input').value.trim();
-    if (!url) { this.toast('请输入代理 URL'); return; }
+    if (!url) { this.toast(t('err_empty')); return; }
     localStorage.setItem('pmapp_proxy_url', url);
     document.getElementById('set-proxy').textContent = url;
-    this.toast('代理 URL 已保存');
+    this.toast(t('t_proxy_saved'));
   };
 
   App.clearProxyUrl = function() {
     localStorage.removeItem('pmapp_proxy_url');
     document.getElementById('set-proxy').textContent = '-';
     document.getElementById('proxy-url-input').value = '';
-    this.toast('代理 URL 已清除');
+    this.toast(t('t_proxy_cleared'));
   };
 
   App.apiBaseUrl = function() {
