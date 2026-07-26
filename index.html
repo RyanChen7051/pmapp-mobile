@@ -210,6 +210,20 @@ body {
 .toggle-slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 4px; bottom: 4px; background: white; border-radius: 50%; transition: 0.3s; }
 .toggle input:checked + .toggle-slider { background: var(--accent-green); }
 .toggle input:checked + .toggle-slider:before { transform: translateX(18px); }
+
+/* RTL support */
+body.rtl { direction: rtl; }
+body.rtl .tabbar .tab { flex-direction: column; }
+body.rtl .topbar .back-btn { transform: scaleX(-1); }
+body.rtl .filter-row { flex-direction: row-reverse; }
+body.rtl .card-meta { flex-direction: row-reverse; }
+
+/* Language selector */
+.lang-grid { display: flex; flex-wrap: wrap; gap: 8px; padding: 0 12px 12px; }
+.lang-item { flex: 1 1 calc(33.33% - 8px); min-width: 100px; display: flex; align-items: center; gap: 6px; padding: 10px 12px; background: var(--bg-card); border: 2px solid var(--border); border-radius: 10px; cursor: pointer; transition: border-color 0.2s; font-size: 13px; }
+.lang-item:active { transform: scale(0.96); }
+.lang-item.active { border-color: var(--accent); background: rgba(233,69,96,0.1); }
+.lang-flag { font-size: 20px; }
 </style>
 </head>
 <body>
@@ -217,162 +231,161 @@ body {
 
 <!-- ═══ 首页 ═══ -->
 <div id="page-home" class="page active">
-  <div class="ptr-indicator" id="ptr-home">&#8595; 下拉刷新</div>
+  <div class="ptr-indicator" id="ptr-home" data-i18n="ptr_pull">↓ 下拉刷新</div>
   <div class="home-header">
     <div class="home-title">PMApp</div>
-    <div class="home-slogan">科奈信海外生产管理系统</div>
+    <div class="home-slogan" data-i18n="app_slogan">科奈信海外生产管理系统</div>
   </div>
   <div id="home-banner"></div>
-  <div class="sec-header"><span>总体看板</span></div>
+  <div class="sec-header"><span data-i18n="dashboard">总体看板</span></div>
   <div class="dash-stats" id="home-stats">
-    <div class="dash-stat"><div class="dash-stat-num" id="ds-total" style="color:var(--accent-blue)">-</div><div class="dash-stat-label">总项目</div></div>
-    <div class="dash-stat"><div class="dash-stat-num" id="ds-active" style="color:var(--accent-green)">-</div><div class="dash-stat-label">进行中</div></div>
-    <div class="dash-stat"><div class="dash-stat-num" id="ds-overdue" style="color:var(--accent)">-</div><div class="dash-stat-label">已延期</div></div>
-    <div class="dash-stat"><div class="dash-stat-num" id="ds-qc" style="color:var(--accent-orange)">-</div><div class="dash-stat-label">质检中</div></div>
-    <div class="dash-stat"><div class="dash-stat-num" id="ds-pending" style="color:var(--accent-purple)">-</div><div class="dash-stat-label">待处理</div></div>
+    <div class="dash-stat"><div class="dash-stat-num" id="ds-total" style="color:var(--accent-blue)">-</div><div class="dash-stat-label" data-i18n="stat_total">总项目</div></div>
+    <div class="dash-stat"><div class="dash-stat-num" id="ds-active" style="color:var(--accent-green)">-</div><div class="dash-stat-label" data-i18n="stat_active">进行中</div></div>
+    <div class="dash-stat"><div class="dash-stat-num" id="ds-overdue" style="color:var(--accent)">-</div><div class="dash-stat-label" data-i18n="stat_overdue">已延期</div></div>
+    <div class="dash-stat"><div class="dash-stat-num" id="ds-qc" style="color:var(--accent-orange)">-</div><div class="dash-stat-label" data-i18n="stat_qc">质检中</div></div>
+    <div class="dash-stat"><div class="dash-stat-num" id="ds-pending" style="color:var(--accent-purple)">-</div><div class="dash-stat-label" data-i18n="stat_pending">待处理</div></div>
   </div>
-  <div class="sec-header"><span>进行中项目</span><span class="sec-action" onclick="App.navigate('production')">全部 ›</span></div>
-  <div id="home-projects"><div class="loading"><div class="spinner"></div>加载中...</div></div>
-  <div class="sec-header"><span>行业动态</span></div>
+  <div class="sec-header"><span data-i18n="active_projects">进行中项目</span><span class="sec-action" onclick="App.navigate('production')" data-i18n="view_all">全部</span></div>
+  <div id="home-projects"><div class="loading"><div class="spinner"></div><span data-i18n="loading">加载中...</span></div></div>
+  <div class="sec-header"><span data-i18n="industry_news">行业动态</span></div>
   <div id="home-news"></div>
-  <div class="sec-header"><span>留言板</span></div>
+  <div class="sec-header"><span data-i18n="message_board">留言板</span></div>
   <div id="home-messages">
     <div class="login-box">
-      <div class="input-group"><label>姓名</label><input type="text" id="msg-name" placeholder="输入您的姓名" maxlength="30"></div>
-      <div class="input-group"><label>留言内容</label><textarea id="msg-content" placeholder="输入留言..." maxlength="500"></textarea></div>
-      <button class="btn btn-primary" onclick="App.postMessage()">发布留言</button>
+      <div class="input-group"><label data-i18n="lbl_name">姓名</label><input type="text" id="msg-name" data-i18n-ph="ph_name" placeholder="输入您的姓名" maxlength="30"></div>
+      <div class="input-group"><label data-i18n="lbl_msg">留言内容</label><textarea id="msg-content" data-i18n-ph="ph_msg" placeholder="输入留言..." maxlength="500"></textarea></div>
+      <button class="btn btn-primary" onclick="App.postMessage()" data-i18n="btn_post">发布留言</button>
     </div>
-    <div id="msg-list"><div class="loading"><div class="spinner"></div>加载中...</div></div>
+    <div id="msg-list"><div class="loading"><div class="spinner"></div><span data-i18n="loading">加载中...</span></div></div>
   </div>
   <!-- Admin-only: Login Activity -->
   <div id="admin-login-section" style="display:none">
-    <div class="sec-header"><span>🔐 登录活动</span><span style="font-size:11px;color:var(--text-secondary);font-weight:normal">仅管理员可见</span></div>
+    <div class="sec-header"><span>🔐 <span data-i18n="login_activity">登录活动</span></span><span style="font-size:11px;color:var(--text-secondary);font-weight:normal" data-i18n="admin_only">仅管理员可见</span></div>
     <div id="admin-login-list"><div class="loading"><div class="spinner"></div>加载中...</div></div>
   </div>
 </div>
 
 <!-- ═══ 计划 ═══ -->
 <div id="page-planning" class="page">
-  <div class="ptr-indicator" id="ptr-planning">&#8595; 下拉刷新</div>
-  <div class="sec-header"><span>计划任务</span><span class="sec-action" id="plan-task-add" style="display:none" onclick="App.showCreateFor('tasks')">+ 新建</span></div>
-  <div id="plan-tasks"><div class="loading"><div class="spinner"></div>加载中...</div></div>
-  <div class="sec-header"><span>会议安排</span></div>
-  <div id="plan-meetings"><div class="loading"><div class="spinner"></div>加载中...</div></div>
-  <div class="sec-header"><span>出货计划</span></div>
-  <div id="plan-shipping"><div class="loading"><div class="spinner"></div>加载中...</div></div>
+  <div class="ptr-indicator" id="ptr-planning" data-i18n="ptr_pull">↓ 下拉刷新</div>
+  <div class="sec-header"><span data-i18n="plan_tasks">计划任务</span><span class="sec-action" id="plan-task-add" style="display:none" onclick="App.showCreateFor('tasks')" data-i18n="btn_new">+ 新建</span></div>
+  <div id="plan-tasks"><div class="loading"><div class="spinner"></div><span data-i18n="loading">加载中...</span></div></div>
+  <div class="sec-header"><span data-i18n="plan_meetings">会议安排</span></div>
+  <div id="plan-meetings"><div class="loading"><div class="spinner"></div><span data-i18n="loading">加载中...</span></div></div>
+  <div class="sec-header"><span data-i18n="plan_shipping">出货计划</span></div>
+  <div id="plan-shipping"><div class="loading"><div class="spinner"></div><span data-i18n="loading">加载中...</span></div></div>
 </div>
 
 <!-- ═══ 物料 ═══ -->
 <div id="page-materials" class="page">
-  <div class="ptr-indicator" id="ptr-materials">&#8595; 下拉刷新</div>
-  <div class="sec-header"><span>物料预警</span><span class="sec-action" id="mat-alert-add" style="display:none" onclick="App.showCreateFor('overseas_material_alerts')">+ 新建</span></div>
-  <div id="mat-alerts"><div class="loading"><div class="spinner"></div>加载中...</div></div>
-  <div class="sec-header"><span>工厂信息</span><span class="sec-action" id="mat-factory-add" style="display:none" onclick="App.showCreateFor('factory_info')">+ 新建</span></div>
-  <div id="mat-factories"><div class="loading"><div class="spinner"></div>加载中...</div></div>
+  <div class="ptr-indicator" id="ptr-materials" data-i18n="ptr_pull">↓ 下拉刷新</div>
+  <div class="sec-header"><span data-i18n="mat_alerts">物料预警</span><span class="sec-action" id="mat-alert-add" style="display:none" onclick="App.showCreateFor('overseas_material_alerts')" data-i18n="btn_new">+ 新建</span></div>
+  <div id="mat-alerts"><div class="loading"><div class="spinner"></div><span data-i18n="loading">加载中...</span></div></div>
+  <div class="sec-header"><span data-i18n="mat_factories">工厂信息</span><span class="sec-action" id="mat-factory-add" style="display:none" onclick="App.showCreateFor('factory_info')" data-i18n="btn_new">+ 新建</span></div>
+  <div id="mat-factories"><div class="loading"><div class="spinner"></div><span data-i18n="loading">加载中...</span></div></div>
 </div>
 
 <!-- ═══ 生产 ═══ -->
 <div id="page-production" class="page">
-  <div class="ptr-indicator" id="ptr-production">&#8595; 下拉刷新</div>
-  <div class="search-bar"><input type="text" id="prod-search" placeholder="搜索项目..." oninput="App.renderProduction()"></div>
+  <div class="ptr-indicator" id="ptr-production" data-i18n="ptr_pull">↓ 下拉刷新</div>
+  <div class="search-bar"><input type="text" id="prod-search" data-i18n-ph="search_projects" placeholder="搜索项目..." oninput="App.renderProduction()"></div>
   <div class="filter-row" id="prod-filter">
-    <div class="filter-chip active" onclick="App.setProdFilter('all', this)">全部</div>
+    <div class="filter-chip active" onclick="App.setProdFilter('all', this)" data-i18n="filter_all">全部</div>
     <div class="filter-chip" onclick="App.setProdFilter('NPI', this)">NPI</div>
     <div class="filter-chip" onclick="App.setProdFilter('EVT', this)">EVT</div>
     <div class="filter-chip" onclick="App.setProdFilter('DVT', this)">DVT</div>
     <div class="filter-chip" onclick="App.setProdFilter('PVT', this)">PVT</div>
-    <div class="filter-chip" onclick="App.setProdFilter('MP', this)">量产</div>
+    <div class="filter-chip" onclick="App.setProdFilter('MP', this)">MP</div>
   </div>
-  <div id="prod-list"><div class="loading"><div class="spinner"></div>加载中...</div></div>
+  <div id="prod-list"><div class="loading"><div class="spinner"></div><span data-i18n="loading">加载中...</span></div></div>
 </div>
 
 <!-- ═══ 品质 ═══ -->
 <div id="page-quality" class="page">
-  <div class="ptr-indicator" id="ptr-quality">&#8595; 下拉刷新</div>
+  <div class="ptr-indicator" id="ptr-quality" data-i18n="ptr_pull">↓ 下拉刷新</div>
   <div class="dash-stats" id="quality-stats">
-    <div class="dash-stat"><div class="dash-stat-num" id="qs-total" style="color:var(--accent-blue)">-</div><div class="dash-stat-label">总问题</div></div>
-    <div class="dash-stat"><div class="dash-stat-num" id="qs-open" style="color:var(--accent)">-</div><div class="dash-stat-label">待处理</div></div>
-    <div class="dash-stat"><div class="dash-stat-num" id="qs-progress" style="color:var(--accent-orange)">-</div><div class="dash-stat-label">处理中</div></div>
-    <div class="dash-stat"><div class="dash-stat-num" id="qs-closed" style="color:var(--accent-green)">-</div><div class="dash-stat-label">已关闭</div></div>
+    <div class="dash-stat"><div class="dash-stat-num" id="qs-total" style="color:var(--accent-blue)">-</div><div class="dash-stat-label" data-i18n="stat_total_issues">总问题</div></div>
+    <div class="dash-stat"><div class="dash-stat-num" id="qs-open" style="color:var(--accent)">-</div><div class="dash-stat-label" data-i18n="stat_open">待处理</div></div>
+    <div class="dash-stat"><div class="dash-stat-num" id="qs-progress" style="color:var(--accent-orange)">-</div><div class="dash-stat-label" data-i18n="stat_progress">处理中</div></div>
+    <div class="dash-stat"><div class="dash-stat-num" id="qs-closed" style="color:var(--accent-green)">-</div><div class="dash-stat-label" data-i18n="stat_closed">已关闭</div></div>
   </div>
-  <div class="search-bar"><input type="text" id="qual-search" placeholder="搜索问题..." oninput="App.renderQuality()"></div>
+  <div class="search-bar"><input type="text" id="qual-search" data-i18n-ph="search_issues" placeholder="搜索问题..." oninput="App.renderQuality()"></div>
   <div class="filter-row" id="qual-filter">
-    <div class="filter-chip active" onclick="App.setQualFilter('all', this)">全部</div>
-    <div class="filter-chip" onclick="App.setQualFilter('open', this)">待处理</div>
-    <div class="filter-chip" onclick="App.setQualFilter('progress', this)">处理中</div>
-    <div class="filter-chip" onclick="App.setQualFilter('closed', this)">已关闭</div>
+    <div class="filter-chip active" onclick="App.setQualFilter('all', this)" data-i18n="filter_all">全部</div>
+    <div class="filter-chip" onclick="App.setQualFilter('open', this)" data-i18n="filter_open">待处理</div>
+    <div class="filter-chip" onclick="App.setQualFilter('progress', this)" data-i18n="filter_progress">处理中</div>
+    <div class="filter-chip" onclick="App.setQualFilter('closed', this)" data-i18n="filter_closed">已关闭</div>
   </div>
-  <div id="qual-list"><div class="loading"><div class="spinner"></div>加载中...</div></div>
+  <div id="qual-list"><div class="loading"><div class="spinner"></div><span data-i18n="loading">加载中...</span></div></div>
 </div>
 
 <!-- ═══ 客验 ═══ -->
 <div id="page-inspection" class="page">
-  <div class="ptr-indicator" id="ptr-inspection">&#8595; 下拉刷新</div>
-  <div class="sec-header"><span>出货检验</span></div>
-  <div id="insp-shipping"><div class="loading"><div class="spinner"></div>加载中...</div></div>
-  <div class="sec-header"><span>检验问题</span></div>
-  <div id="insp-issues"><div class="loading"><div class="spinner"></div>加载中...</div></div>
+  <div class="ptr-indicator" id="ptr-inspection" data-i18n="ptr_pull">↓ 下拉刷新</div>
+  <div class="sec-header"><span data-i18n="insp_shipping">出货检验</span></div>
+  <div id="insp-shipping"><div class="loading"><div class="spinner"></div><span data-i18n="loading">加载中...</span></div></div>
+  <div class="sec-header"><span data-i18n="insp_issues">检验问题</span></div>
+  <div id="insp-issues"><div class="loading"><div class="spinner"></div><span data-i18n="loading">加载中...</span></div></div>
 </div>
 
 <!-- ═══ 周/月报 ═══ -->
 <div id="page-reports" class="page">
-  <div class="ptr-indicator" id="ptr-reports">&#8595; 下拉刷新</div>
-  <!-- Report type toggle -->
+  <div class="ptr-indicator" id="ptr-reports" data-i18n="ptr_pull">↓ 下拉刷新</div>
   <div style="display:flex;gap:8px;padding:10px 12px 6px">
-    <button class="btn btn-primary" id="rpt-tab-weekly" style="flex:1" onclick="App.switchReportType('weekly')">📊 周报</button>
-    <button class="btn btn-secondary" id="rpt-tab-monthly" style="flex:1" onclick="App.switchReportType('monthly')">📈 月报</button>
+    <button class="btn btn-primary" id="rpt-tab-weekly" style="flex:1" onclick="App.switchReportType('weekly')" data-i18n="rpt_weekly">📊 周报</button>
+    <button class="btn btn-secondary" id="rpt-tab-monthly" style="flex:1" onclick="App.switchReportType('monthly')" data-i18n="rpt_monthly">📈 月报</button>
   </div>
-  <!-- Date range picker -->
   <div style="padding:6px 12px 10px">
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
       <input type="date" id="rpt-from" style="flex:1;background:var(--bg-input);border:1px solid var(--border);border-radius:8px;padding:8px 10px;color:var(--text-primary);font-size:13px">
-      <span style="color:var(--text-secondary)">至</span>
+      <span style="color:var(--text-secondary)" data-i18n="date_to">至</span>
       <input type="date" id="rpt-to" style="flex:1;background:var(--bg-input);border:1px solid var(--border);border-radius:8px;padding:8px 10px;color:var(--text-primary);font-size:13px">
     </div>
     <div style="display:flex;gap:8px">
-      <button class="btn btn-primary" style="flex:1" onclick="App.generateReport()">🔍 生成报告</button>
-      <button class="btn btn-secondary" onclick="App.quickDateRange('week')">本周</button>
-      <button class="btn btn-secondary" onclick="App.quickDateRange('month')">本月</button>
+      <button class="btn btn-primary" style="flex:1" onclick="App.generateReport()" data-i18n="btn_generate">🔍 生成报告</button>
+      <button class="btn btn-secondary" onclick="App.quickDateRange('week')" data-i18n="quick_week">本周</button>
+      <button class="btn btn-secondary" onclick="App.quickDateRange('month')" data-i18n="quick_month">本月</button>
     </div>
   </div>
-  <!-- Report content -->
   <div id="rpt-content">
-    <div class="empty"><div class="empty-icon">📊</div>选择日期区间后点击「生成报告」</div>
+    <div class="empty"><div class="empty-icon">📊</div><span data-i18n="rpt_placeholder">选择日期区间后点击「生成报告」</span></div>
   </div>
 </div>
 
 <!-- ═══ 设定 ═══ -->
 <div id="page-settings" class="page">
-  <div class="ptr-indicator" id="ptr-settings">&#8595; 下拉刷新</div>
+  <div class="ptr-indicator" id="ptr-settings" data-i18n="ptr_pull">↓ 下拉刷新</div>
   <div id="settings-login-area"></div>
   <div id="settings-info" style="display:none">
-    <div class="sec-header"><span>账户</span></div>
-    <div class="setting-row"><span class="setting-label">当前用户</span><span class="setting-value" id="set-user">-</span></div>
-    <div class="setting-row"><span class="setting-label">用户角色</span><span class="setting-value" id="set-role">-</span></div>
-    <div class="setting-row"><span class="setting-label">设备名称</span><span class="setting-value" id="set-device">-</span></div>
-    <div class="sec-header"><span>高级</span></div>
-    <div class="setting-row"><span class="setting-label">API 代理 URL</span><span class="setting-value" id="set-proxy">-</span></div>
+    <div class="sec-header"><span data-i18n="sec_account">账户</span></div>
+    <div class="setting-row"><span class="setting-label" data-i18n="lbl_user">当前用户</span><span class="setting-value" id="set-user">-</span></div>
+    <div class="setting-row"><span class="setting-label" data-i18n="lbl_role">用户角色</span><span class="setting-value" id="set-role">-</span></div>
+    <div class="setting-row"><span class="setting-label" data-i18n="lbl_device">设备名称</span><span class="setting-value" id="set-device">-</span></div>
+    <div class="sec-header"><span data-i18n="sec_language">界面语言</span></div>
+    <div class="lang-grid" id="lang-grid"></div>
+    <div class="sec-header"><span data-i18n="sec_advanced">高级</span></div>
+    <div class="setting-row"><span class="setting-label">API Proxy URL</span><span class="setting-value" id="set-proxy">-</span></div>
     <div style="padding:0 12px 8px">
       <input type="text" id="proxy-url-input" placeholder="https://xxx.trycloudflare.com/proxy" style="width:100%;padding:8px;border-radius:6px;border:1px solid #334155;background:#0f172a;color:#e2e8f0;font-size:13px">
       <div style="display:flex;gap:8px;margin-top:8px">
-        <button class="btn btn-secondary" style="flex:1" onclick="App.saveProxyUrl()">保存代理</button>
-        <button class="btn btn-secondary" style="flex:1" onclick="App.clearProxyUrl()">清除代理</button>
+        <button class="btn btn-secondary" style="flex:1" onclick="App.saveProxyUrl()" data-i18n="btn_save_proxy">保存代理</button>
+        <button class="btn btn-secondary" style="flex:1" onclick="App.clearProxyUrl()" data-i18n="btn_clear_proxy">清除代理</button>
       </div>
-      <div style="font-size:11px;color:#94a3b8;margin-top:4px">仅临时使用：输入本地代理地址后，PWA 会通过代理访问 Supabase。</div>
+      <div style="font-size:11px;color:#94a3b8;margin-top:4px" data-i18n="proxy_hint">仅临时使用：输入本地代理地址后，PWA 会通过代理访问 Supabase。</div>
     </div>
-    <div class="sec-header"><span>同步</span></div>
-    <div class="setting-row"><span class="setting-label">上次同步</span><span class="setting-value" id="set-sync">-</span></div>
-    <div class="setting-row"><span class="setting-label">云端记录数</span><span class="setting-value" id="set-count">-</span></div>
+    <div class="sec-header"><span data-i18n="sec_sync">同步</span></div>
+    <div class="setting-row"><span class="setting-label" data-i18n="lbl_sync">上次同步</span><span class="setting-value" id="set-sync">-</span></div>
+    <div class="setting-row"><span class="setting-label" data-i18n="lbl_count">云端记录数</span><span class="setting-value" id="set-count">-</span></div>
     <div style="padding:12px 0">
-      <button class="btn btn-secondary" onclick="App.syncNow()">🔄 立即同步</button>
+      <button class="btn btn-secondary" onclick="App.syncNow()" data-i18n="btn_sync">🔄 立即同步</button>
     </div>
     <div style="padding:0 0 8px">
-      <button class="btn btn-primary" onclick="App.logout()">退出登录</button>
+      <button class="btn btn-primary" onclick="App.logout()" data-i18n="btn_logout">退出登录</button>
     </div>
   </div>
-  <div class="sec-header"><span>关于</span></div>
-  <div class="setting-row"><span class="setting-label">版本</span><span class="setting-value">PMApp v3.3.0</span></div>
-  <div class="setting-row"><span class="setting-label">桌面端版本</span><span class="setting-value">v8.0.0+</span></div>
+  <div class="sec-header"><span data-i18n="sec_about">关于</span></div>
+  <div class="setting-row"><span class="setting-label" data-i18n="lbl_version">版本</span><span class="setting-value">PMApp v3.4.0</span></div>
+  <div class="setting-row"><span class="setting-label" data-i18n="lbl_desktop">桌面端版本</span><span class="setting-value">v8.0.0+</span></div>
 </div>
 
 <!-- ═══ Sub-page: Project Detail ═══ -->
@@ -400,14 +413,14 @@ body {
 
 <!-- Tab bar -->
 <div class="tabbar" id="tabbar" style="display:none">
-  <div class="tab active" onclick="App.navigate('home')" data-page="home"><span class="tab-icon">🏠</span><span>首页</span></div>
-  <div class="tab" onclick="App.navigate('planning')" data-page="planning"><span class="tab-icon">📋</span><span>计划</span></div>
-  <div class="tab" onclick="App.navigate('materials')" data-page="materials"><span class="tab-icon">📦</span><span>物料</span></div>
-  <div class="tab" onclick="App.navigate('production')" data-page="production"><span class="tab-icon">🏭</span><span>生产</span></div>
-  <div class="tab" onclick="App.navigate('quality')" data-page="quality"><span class="tab-icon">✅</span><span>品质</span></div>
-  <div class="tab" onclick="App.navigate('inspection')" data-page="inspection"><span class="tab-icon">🔍</span><span>客验</span></div>
-  <div class="tab" onclick="App.navigate('reports')" data-page="reports"><span class="tab-icon">📊</span><span>周/月报</span></div>
-  <div class="tab" onclick="App.navigate('settings')" data-page="settings"><span class="tab-icon">⚙️</span><span>设定</span></div>
+  <div class="tab active" onclick="App.navigate('home')" data-page="home"><span class="tab-icon">🏠</span><span data-i18n="tab_home">首页</span></div>
+  <div class="tab" onclick="App.navigate('planning')" data-page="planning"><span class="tab-icon">📋</span><span data-i18n="tab_planning">计划</span></div>
+  <div class="tab" onclick="App.navigate('materials')" data-page="materials"><span class="tab-icon">📦</span><span data-i18n="tab_materials">物料</span></div>
+  <div class="tab" onclick="App.navigate('production')" data-page="production"><span class="tab-icon">🏭</span><span data-i18n="tab_production">生产</span></div>
+  <div class="tab" onclick="App.navigate('quality')" data-page="quality"><span class="tab-icon">✅</span><span data-i18n="tab_quality">品质</span></div>
+  <div class="tab" onclick="App.navigate('inspection')" data-page="inspection"><span class="tab-icon">🔍</span><span data-i18n="tab_inspection">客验</span></div>
+  <div class="tab" onclick="App.navigate('reports')" data-page="reports"><span class="tab-icon">📊</span><span data-i18n="tab_reports">周/月报</span></div>
+  <div class="tab" onclick="App.navigate('settings')" data-page="settings"><span class="tab-icon">⚙️</span><span data-i18n="tab_settings">设定</span></div>
 </div>
 
 <!-- FAB -->
