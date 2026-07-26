@@ -1,4 +1,5 @@
 /* ═══ Navigation & Utilities ═══ */
+import { t, applyTranslations } from './i18n.js';
 
 export function setupNavigation(App) {
   App.showApp = function() {
@@ -14,11 +15,13 @@ export function setupNavigation(App) {
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     const tab = document.querySelector(`.tab[data-page="${page}"]`);
     if (tab) tab.classList.add('active');
-    const titles = { home: 'PMApp', planning: '计划', materials: '物料', production: '生产', quality: '品质', inspection: '客验', reports: '周/月报', settings: '设定' };
-    document.getElementById('tb-title').textContent = titles[page] || 'PMApp';
+    const titleKeys = { home: 'app_slogan', planning: 'tab_planning', materials: 'tab_materials', production: 'tab_production', quality: 'tab_quality', inspection: 'tab_inspection', reports: 'tab_reports', settings: 'tab_settings' };
+    document.getElementById('tb-title').textContent = page === 'home' ? 'PMApp' : t(titleKeys[page] || 'app_slogan');
     document.getElementById('tb-back').style.display = 'none';
     document.getElementById('tb-action').innerHTML = '';
     document.getElementById('fab').style.display = 'none';
+    // Re-apply translations for the active page's static elements
+    applyTranslations();
     if (page === 'home') this.loadHome();
     else if (page === 'planning') this.loadPlanning();
     else if (page === 'materials') this.loadMaterials();
@@ -49,9 +52,9 @@ export function setupNavigation(App) {
     document.getElementById('modal-overlay').classList.remove('show');
     document.getElementById('tb-action').innerHTML = '';
     if (this.currentPage === 'module-detail' && this.currentModule && this.isAdmin()) {
-      document.getElementById('tb-action').innerHTML = `<span onclick="App.showEditFor('${this.currentModule}', ${this.currentRecordId})">编辑</span>`;
+      document.getElementById('tb-action').innerHTML = `<span onclick="App.showEditFor('${this.currentModule}', ${this.currentRecordId})">${t('btn_edit')}</span>`;
     } else if (this.currentPage === 'project-detail' && this.isAdmin()) {
-      document.getElementById('tb-action').innerHTML = `<span onclick="App.showEditFor('projects', ${this.currentRecordId})">编辑</span>`;
+      document.getElementById('tb-action').innerHTML = `<span onclick="App.showEditFor('projects', ${this.currentRecordId})">${t('btn_edit')}</span>`;
     }
     this._editingRecord = null;
   };
@@ -95,7 +98,7 @@ export function setupUtils(App) {
           const ind = document.getElementById('ptr-' + p);
           if (ind && document.getElementById('page-' + p)?.classList.contains('active')) {
             ind.classList.add('show');
-            ind.textContent = '🔄 释放刷新...';
+            ind.textContent = t('ptr_release');
             break;
           }
         }
@@ -107,7 +110,7 @@ export function setupUtils(App) {
       for (const p of pages) {
         const ind = document.getElementById('ptr-' + p);
         if (ind && ind.classList.contains('show')) {
-          ind.textContent = '⏳ 同步中...';
+          ind.textContent = t('t_syncing');
           this.loadAll().then(() => {
             this.navigate(this.currentPage);
             setTimeout(() => ind.classList.remove('show'), 500);
