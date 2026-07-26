@@ -205,18 +205,18 @@ export function setupPages(App) {
       total += (this.cache.message_board || []).length;
       document.getElementById('set-count').textContent = total + ' ' + t('records');
 
-      // Render language selector
-      const langGrid = document.getElementById('lang-grid');
-      if (langGrid) {
-        const currentLang = this.getLang();
-        langGrid.innerHTML = Object.entries(this.LANGUAGES).map(([code, info]) => {
-          const active = code === currentLang ? 'active' : '';
-          return `<div class="lang-item ${active}" onclick="App.changeLanguage('${code}')">
-            <span class="lang-flag">${info.flag}</span>
-            <span>${info.name}</span>
-          </div>`;
-        }).join('');
-      }
+    }
+    // Render language selector (always visible)
+    const langGrid = document.getElementById('lang-grid');
+    if (langGrid) {
+      const currentLang = this.getLang();
+      langGrid.innerHTML = Object.entries(this.LANGUAGES).map(([code, info]) => {
+        const active = code === currentLang ? 'active' : '';
+        return `<div class="lang-item ${active}" onclick="App.changeLanguage('${code}')">
+          <span class="lang-flag">${info.flag}</span>
+          <span>${info.name}</span>
+        </div>`;
+      }).join('');
     }
     this.updateAdminButtons();
   };
