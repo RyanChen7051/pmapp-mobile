@@ -1,5 +1,6 @@
 /* ═══ Authentication ═══ */
 import { SUPABASE_KEY, APP_VERSION, USER_MAP } from './config.js';
+import { t } from './i18n.js';
 
 export function setupAuth(App) {
   App.isLoggedIn = function() { return !!this.session; };
@@ -18,13 +19,13 @@ export function setupAuth(App) {
     }
     const errEl = document.getElementById('login-error');
     const btn = document.getElementById('login-btn');
-    if (!email || !password) { errEl.textContent = '请输入用户名和密码'; return false; }
+    if (!email || !password) { errEl.textContent = t('err_empty'); return false; }
     if (!proxyUrl && (!SUPABASE_KEY || SUPABASE_KEY.startsWith('sb_secret_') || SUPABASE_KEY.startsWith('__'))) {
       errEl.innerHTML = 'PWA 未配置有效的 Publishable key。<br>请从 Supabase Dashboard 复制 Publishable key (sb_publishable_...)，然后运行仓库根目录的 <b>update_pwa_key.py</b> 脚本更新。<br><br>临时方案：可在下方「代理 URL」填入本地代理地址。';
       console.error('[LOGIN] Invalid SUPABASE_KEY:', SUPABASE_KEY.startsWith('__') ? 'placeholder' : (SUPABASE_KEY.startsWith('sb_secret_') ? 'secret key (not allowed in browser)' : 'empty'));
       return false;
     }
-    btn.disabled = true; btn.textContent = '登录中...'; errEl.textContent = '';
+    btn.disabled = true; btn.textContent = t('login_loading'); errEl.textContent = '';
     try {
       console.log('[LOGIN] Starting login for:', email, 'version:', APP_VERSION);
       const userRecords = await this.sbGet('sync_data', `table_name=eq.users&is_deleted=eq.false&limit=200&select=payload`);
@@ -36,29 +37,29 @@ export function setupAuth(App) {
       const acc = Object.values(userMap).find(u => u.username === email || u.email === email);
       if (!acc) {
         console.log('[LOGIN] Account not found. Available:', Object.keys(userMap));
-        throw new Error('账号不存在');
+        throw new Error(t('err_notfound'));
       }
       console.log('[LOGIN] Found account:', acc.username, 'role:', acc.role, 'has plain pwd:', !!acc.password, 'has hash:', !!acc.password_hash);
-      if (acc.status === 'inactive' || acc.is_active === 0 || acc.is_active === false) throw new Error('账号已被禁用');
+      if (acc.status === 'inactive' || acc.is_active === 0 || acc.is_active === false) throw new Error(t('err_disabled'));
       const ok = await this.verifyPassword(password, acc.password_hash, acc.salt, acc.password);
       console.log('[LOGIN] Password verify result:', ok);
-      if (!ok) throw new Error('密码错误');
+      if (!ok) throw new Error(t('err_pwd'));
       this.session = { user: { id: acc.id, email: email, username: acc.username, display_name: acc.display_name || acc.username, role: acc.role || (acc.username === 'admin' ? 'admin' : 'viewer') } };
       localStorage.setItem('pmapp_session', JSON.stringify(this.session));
       await this.recordLogin(acc.username, acc.display_name || acc.username, acc.role || (acc.username === 'admin' ? 'admin' : 'viewer'));
       this.loadSettings();
       this.loadHome();
-      this.toast('登录成功');
+      this.toast(t('t_login_ok'));
     } catch (err) {
       console.error('[LOGIN] Error:', err.message);
-      const msg = err.message || '登录失败';
+      const msg = err.message || t('t_login_fail');
       if (msg.includes('Failed to fetch') || msg.includes('NetworkError') || msg.includes('fetch')) {
-        errEl.textContent = '网络连接失败，请检查网络后重试';
+        errEl.textContent = t('t_network_err');
       } else {
         errEl.textContent = msg;
       }
     } finally {
-      btn.disabled = false; btn.textContent = '登录';
+      btn.disabled = false; btn.textContent = t('btn_login');
     }
     return false;
   };
@@ -80,12 +81,12 @@ export function setupAuth(App) {
   };
 
   App.logout = function() {
-    if (!confirm('确定要退出登录吗？')) return;
+    if (!confirm(t('confirm_logout'))) return;
     localStorage.removeItem('pmapp_session');
     this.session = null;
     this.loadSettings();
     this.loadHome();
-    this.toast('已退出登录');
+    this.toast(t('t_logout'));
   };
 
   App.recordLogin = async function(username, displayName, role) {
