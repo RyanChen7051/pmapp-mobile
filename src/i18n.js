@@ -1,0 +1,457 @@
+/* ═══ i18n: Internationalization module for PMApp PWA ═══
+ * Supports 7 languages: zh, en, es, ja, fr, de, ar
+ * Usage: import { t, setLang, getLang, LANGUAGES } from './i18n.js';
+ */
+export const LANGUAGES = {
+  zh: { name: '中文', flag: '🇨🇳', rtl: false },
+  en: { name: 'English', flag: '🇬🇧', rtl: false },
+  es: { name: 'Espanol', flag: '🇪🇸', rtl: false },
+  ja: { name: '日本語', flag: '🇯🇵', rtl: false },
+  fr: { name: 'Francais', flag: '🇫🇷', rtl: false },
+  de: { name: 'Deutsch', flag: '🇩🇪', rtl: false },
+  ar: { name: 'العربية', flag: '🇸🇦', rtl: true },
+};
+
+const STORAGE_KEY = 'pmapp_lang';
+
+// ── Translation table ──
+const I18N = {
+  zh: {
+    // Tabs
+    tab_home: '首页', tab_planning: '计划', tab_materials: '物料', tab_production: '生产',
+    tab_quality: '品质', tab_inspection: '客验', tab_reports: '周/月报', tab_settings: '设定',
+    // Home
+    app_slogan: '科奈信海外生产管理系统', dashboard: '总体看板',
+    stat_total: '总项目', stat_active: '进行中', stat_overdue: '已延期', stat_qc: '质检中', stat_pending: '待处理',
+    active_projects: '进行中项目', view_all: '全部', industry_news: '行业动态',
+    message_board: '留言板', login_activity: '登录活动', admin_only: '仅管理员可见',
+    // Planning
+    plan_tasks: '计划任务', plan_meetings: '会议安排', plan_shipping: '出货计划',
+    // Materials
+    mat_alerts: '物料预警', mat_factories: '工厂信息',
+    // Production
+    search_projects: '搜索项目...', filter_all: '全部',
+    // Quality
+    stat_total_issues: '总问题', stat_open: '待处理', stat_progress: '处理中', stat_closed: '已关闭',
+    search_issues: '搜索问题...', filter_open: '待处理', filter_progress: '处理中', filter_closed: '已关闭',
+    // Inspection
+    insp_shipping: '出货检验', insp_issues: '检验问题', insp_passed: '已检验', insp_pending: '待检验',
+    // Reports
+    rpt_weekly: '📊 周报', rpt_monthly: '📈 月报', date_to: '至',
+    btn_generate: '🔍 生成报告', quick_week: '本周', quick_month: '本月',
+    rpt_placeholder: '选择日期区间后点击「生成报告」', rpt_no_data: '该时段内暂无数据',
+    rpt_generating: '生成报告中...',
+    // Settings
+    login_title: '🔐 登录 PMApp', lbl_username: '用户名', lbl_password: '密码',
+    lbl_proxy: '代理 URL（可选）', login_hint: '使用桌面端同一账号登录', btn_login: '登录',
+    btn_logout: '退出登录', sec_account: '账户', sec_advanced: '高级', sec_sync: '同步',
+    sec_about: '关于', sec_language: '界面语言',
+    lbl_user: '当前用户', lbl_role: '用户角色', lbl_device: '设备名称',
+    lbl_sync: '上次同步', lbl_count: '云端记录数', lbl_version: '版本', lbl_desktop: '桌面端版本',
+    lbl_language: '语言', btn_save_proxy: '保存代理', btn_clear_proxy: '清除代理',
+    btn_sync: '🔄 立即同步', proxy_hint: '仅临时使用：输入本地代理地址后，PWA 会通过代理访问 Supabase。',
+    role_admin: '👑 管理员', role_viewer: '👁 只读',
+    // Language names (native)
+    lang_zh: '中文', lang_en: 'English', lang_es: 'Espanol', lang_ja: '日本語',
+    lang_fr: 'Francais', lang_de: 'Deutsch', lang_ar: 'العربية',
+    // Empty states
+    empty_tasks: '暂无任务', empty_meetings: '暂无会议', empty_shipping: '暂无出货计划',
+    empty_alerts: '暂无预警', empty_factories: '暂无工厂信息', empty_projects: '暂无项目',
+    empty_issues: '暂无问题', empty_insp: '暂无检验问题', empty_active: '暂无进行中项目',
+    empty_news: '暂无行业动态', empty_messages: '暂无留言',
+    // Message board
+    lbl_name: '姓名', lbl_msg: '留言内容', ph_name: '输入您的姓名', ph_msg: '输入留言...',
+    btn_post: '发布留言',
+    // Buttons
+    btn_new: '+ 新建', btn_edit: '编辑', btn_delete: '删除', btn_save: '保存', btn_cancel: '取消',
+    lbl_enabled: '启用', lbl_disabled: '禁用',
+    // Toasts
+    t_proxy_saved: '代理 URL 已保存', t_proxy_cleared: '代理 URL 已清除',
+    t_logout: '已退出登录', t_login_ok: '登录成功', t_login_fail: '登录失败',
+    t_msg_posted: '留言已发布', t_post_fail: '发布失败:', t_save_fail: '保存失败:',
+    t_del_fail: '删除失败:', t_updating: '正在更新界面与数据...', t_readonly: '只读模式，无法新建',
+    t_syncing: '同步中...', t_network_err: '网络连接失败，请检查网络后重试',
+    // PTR
+    ptr_pull: '↓ 下拉刷新', ptr_release: '🔄 释放刷新...',
+    // Auth
+    err_pwd: '密码错误', err_disabled: '账号已被禁用', err_notfound: '账号不存在',
+    err_empty: '请输入用户名和密码', login_loading: '登录中...',
+    never: '从未', confirm_logout: '确定要退出登录吗？', confirm_del_msg: '确定删除此留言？',
+    // Detail
+    detail: '详情', proj_detail: '项目详情', prod_progress: '生产进度',
+    delivery_plan: '交付计划', issue_list: '问题列表', insp_plan: '检验计划',
+    not_found: '记录不存在',
+    ro_banner: '👁 只读模式 — 您可查看数据及留言',
+    admin_banner: '👑 管理员模式 — 可编辑所有数据',
+    not_logged_in: '⚠️ 尚未登录 — 前往「设定」登录以启用编辑功能',
+    // Common
+    search_ph: '搜索...', loading: '加载中...', records: '条',
+  },
+
+  en: {
+    tab_home: 'Home', tab_planning: 'Planning', tab_materials: 'Materials', tab_production: 'Production',
+    tab_quality: 'Quality', tab_inspection: 'Inspection', tab_reports: 'Reports', tab_settings: 'Settings',
+    app_slogan: 'Overseas Production Management System', dashboard: 'Dashboard',
+    stat_total: 'Total', stat_active: 'Active', stat_overdue: 'Delayed', stat_qc: 'QC', stat_pending: 'Pending',
+    active_projects: 'Active Projects', view_all: 'All', industry_news: 'Industry News',
+    message_board: 'Message Board', login_activity: 'Login Activity', admin_only: 'Admin only',
+    plan_tasks: 'Tasks', plan_meetings: 'Meetings', plan_shipping: 'Shipping',
+    mat_alerts: 'Material Alerts', mat_factories: 'Factory Info',
+    search_projects: 'Search projects...', filter_all: 'All',
+    stat_total_issues: 'Total', stat_open: 'Open', stat_progress: 'In Progress', stat_closed: 'Closed',
+    search_issues: 'Search issues...', filter_open: 'Open', filter_progress: 'In Progress', filter_closed: 'Closed',
+    insp_shipping: 'Shipping Inspection', insp_issues: 'Inspection Issues', insp_passed: 'Inspected', insp_pending: 'Pending',
+    rpt_weekly: '📊 Weekly', rpt_monthly: '📈 Monthly', date_to: 'to',
+    btn_generate: '🔍 Generate', quick_week: 'This Week', quick_month: 'This Month',
+    rpt_placeholder: 'Select date range and click "Generate"', rpt_no_data: 'No data in this period',
+    rpt_generating: 'Generating report...',
+    login_title: '🔐 Login to PMApp', lbl_username: 'Username', lbl_password: 'Password',
+    lbl_proxy: 'Proxy URL (optional)', login_hint: 'Use the same account as desktop', btn_login: 'Login',
+    btn_logout: 'Logout', sec_account: 'Account', sec_advanced: 'Advanced', sec_sync: 'Sync',
+    sec_about: 'About', sec_language: 'Interface Language',
+    lbl_user: 'User', lbl_role: 'Role', lbl_device: 'Device',
+    lbl_sync: 'Last Sync', lbl_count: 'Cloud Records', lbl_version: 'Version', lbl_desktop: 'Desktop Version',
+    lbl_language: 'Language', btn_save_proxy: 'Save Proxy', btn_clear_proxy: 'Clear Proxy',
+    btn_sync: '🔄 Sync Now', proxy_hint: 'Temporary: enter a local proxy address for PWA to access Supabase.',
+    role_admin: '👑 Admin', role_viewer: '👁 Viewer',
+    lang_zh: 'Chinese', lang_en: 'English', lang_es: 'Spanish', lang_ja: 'Japanese',
+    lang_fr: 'French', lang_de: 'German', lang_ar: 'Arabic',
+    empty_tasks: 'No tasks', empty_meetings: 'No meetings', empty_shipping: 'No shipping plans',
+    empty_alerts: 'No alerts', empty_factories: 'No factory info', empty_projects: 'No projects',
+    empty_issues: 'No issues', empty_insp: 'No inspection issues', empty_active: 'No active projects',
+    empty_news: 'No news', empty_messages: 'No messages',
+    lbl_name: 'Name', lbl_msg: 'Message', ph_name: 'Enter your name', ph_msg: 'Type a message...',
+    btn_post: 'Post', btn_new: '+ New', btn_edit: 'Edit', btn_delete: 'Delete', btn_save: 'Save', btn_cancel: 'Cancel',
+    lbl_enabled: 'Enabled', lbl_disabled: 'Disabled',
+    t_proxy_saved: 'Proxy URL saved', t_proxy_cleared: 'Proxy URL cleared',
+    t_logout: 'Logged out', t_login_ok: 'Login successful', t_login_fail: 'Login failed',
+    t_msg_posted: 'Message posted', t_post_fail: 'Post failed:', t_save_fail: 'Save failed:',
+    t_del_fail: 'Delete failed:', t_updating: 'Updating...', t_readonly: 'Read-only mode, cannot create',
+    t_syncing: 'Syncing...', t_network_err: 'Network error, check your connection',
+    ptr_pull: '↓ Pull to refresh', ptr_release: '🔄 Release to refresh...',
+    err_pwd: 'Invalid password', err_disabled: 'Account disabled', err_notfound: 'Account not found',
+    err_empty: 'Please enter username and password', login_loading: 'Logging in...',
+    never: 'Never', confirm_logout: 'Are you sure you want to log out?', confirm_del_msg: 'Delete this message?',
+    detail: 'Details', proj_detail: 'Project Details', prod_progress: 'Production Progress',
+    delivery_plan: 'Delivery Plan', issue_list: 'Issues', insp_plan: 'Inspection Plan',
+    not_found: 'Record not found',
+    ro_banner: '👁 Read-only — You can view data and post messages',
+    admin_banner: '👑 Admin — Full edit access',
+    not_logged_in: '⚠️ Not logged in — Go to Settings to login',
+    search_ph: 'Search...', loading: 'Loading...', records: 'records',
+  },
+
+  es: {
+    tab_home: 'Inicio', tab_planning: 'Planificacion', tab_materials: 'Materiales', tab_production: 'Produccion',
+    tab_quality: 'Calidad', tab_inspection: 'Inspeccion', tab_reports: 'Informes', tab_settings: 'Ajustes',
+    app_slogan: 'Sistema de Gestion de Produccion Exterior', dashboard: 'Panel',
+    stat_total: 'Total', stat_active: 'Activo', stat_overdue: 'Retrasado', stat_qc: 'Calidad', stat_pending: 'Pendiente',
+    active_projects: 'Proyectos Activos', view_all: 'Todos', industry_news: 'Noticias',
+    message_board: 'Tablon', login_activity: 'Actividad', admin_only: 'Solo admin',
+    plan_tasks: 'Tareas', plan_meetings: 'Reuniones', plan_shipping: 'Envios',
+    mat_alerts: 'Alertas', mat_factories: 'Fabricas',
+    search_projects: 'Buscar proyectos...', filter_all: 'Todos',
+    stat_total_issues: 'Total', stat_open: 'Abierto', stat_progress: 'En Progreso', stat_closed: 'Cerrado',
+    search_issues: 'Buscar problemas...', filter_open: 'Abierto', filter_progress: 'En Progreso', filter_closed: 'Cerrado',
+    insp_shipping: 'Inspeccion', insp_issues: 'Problemas', insp_passed: 'Inspeccionado', insp_pending: 'Pendiente',
+    rpt_weekly: '📊 Semanal', rpt_monthly: '📈 Mensual', date_to: 'a',
+    btn_generate: '🔍 Generar', quick_week: 'Esta Semana', quick_month: 'Este Mes',
+    rpt_placeholder: 'Seleccione fechas y haga clic en "Generar"', rpt_no_data: 'Sin datos en este periodo',
+    rpt_generating: 'Generando informe...',
+    login_title: '🔐 Iniciar Sesion', lbl_username: 'Usuario', lbl_password: 'Contrasena',
+    lbl_proxy: 'URL Proxy (opcional)', login_hint: 'Use la misma cuenta que el escritorio', btn_login: 'Entrar',
+    btn_logout: 'Salir', sec_account: 'Cuenta', sec_advanced: 'Avanzado', sec_sync: 'Sincronizar',
+    sec_about: 'Acerca de', sec_language: 'Idioma',
+    lbl_user: 'Usuario', lbl_role: 'Rol', lbl_device: 'Dispositivo',
+    lbl_sync: 'Ultima Sync', lbl_count: 'Registros', lbl_version: 'Version', lbl_desktop: 'Version Escritorio',
+    lbl_language: 'Idioma', btn_save_proxy: 'Guardar Proxy', btn_clear_proxy: 'Borrar Proxy',
+    btn_sync: '🔄 Sincronizar', proxy_hint: 'Temporal: introduzca una direccion proxy local.',
+    role_admin: '👑 Admin', role_viewer: '👁 Lector',
+    lang_zh: 'Chino', lang_en: 'Ingles', lang_es: 'Espanol', lang_ja: 'Japones',
+    lang_fr: 'Frances', lang_de: 'Aleman', lang_ar: 'Arabe',
+    empty_tasks: 'Sin tareas', empty_meetings: 'Sin reuniones', empty_shipping: 'Sin envios',
+    empty_alerts: 'Sin alertas', empty_factories: 'Sin fabricas', empty_projects: 'Sin proyectos',
+    empty_issues: 'Sin problemas', empty_insp: 'Sin problemas', empty_active: 'Sin proyectos activos',
+    empty_news: 'Sin noticias', empty_messages: 'Sin mensajes',
+    lbl_name: 'Nombre', lbl_msg: 'Mensaje', ph_name: 'Su nombre', ph_msg: 'Escriba un mensaje...',
+    btn_post: 'Publicar', btn_new: '+ Nuevo', btn_edit: 'Editar', btn_delete: 'Borrar', btn_save: 'Guardar', btn_cancel: 'Cancelar',
+    lbl_enabled: 'Activado', lbl_disabled: 'Desactivado',
+    t_proxy_saved: 'Proxy guardado', t_proxy_cleared: 'Proxy borrado',
+    t_logout: 'Sesion cerrada', t_login_ok: 'Inicio correcto', t_login_fail: 'Inicio fallido',
+    t_msg_posted: 'Mensaje publicado', t_post_fail: 'Fallo:', t_save_fail: 'Fallo al guardar:',
+    t_del_fail: 'Fallo al borrar:', t_updating: 'Actualizando...', t_readonly: 'Solo lectura, no se puede crear',
+    t_syncing: 'Sincronizando...', t_network_err: 'Error de red, compruebe su conexion',
+    ptr_pull: '↓ Deslizar para actualizar', ptr_release: '🔄 Soltar para actualizar...',
+    err_pwd: 'Contrasena incorrecta', err_disabled: 'Cuenta deshabilitada', err_notfound: 'Cuenta no encontrada',
+    err_empty: 'Introduzca usuario y contrasena', login_loading: 'Iniciando...',
+    never: 'Nunca', confirm_logout: '¿Seguro que desea salir?', confirm_del_msg: '¿Borrar este mensaje?',
+    detail: 'Detalles', proj_detail: 'Detalles del Proyecto', prod_progress: 'Progreso de Produccion',
+    delivery_plan: 'Plan de Entrega', issue_list: 'Problemas', insp_plan: 'Plan de Inspeccion',
+    not_found: 'Registro no encontrado',
+    ro_banner: '👁 Solo lectura — Puede ver datos y publicar mensajes',
+    admin_banner: '👑 Admin — Acceso total',
+    not_logged_in: '⚠️ No ha iniciado sesion — Vaya a Ajustes',
+    search_ph: 'Buscar...', loading: 'Cargando...', records: 'registros',
+  },
+
+  ja: {
+    tab_home: 'ホーム', tab_planning: '計画', tab_materials: '資材', tab_production: '生産',
+    tab_quality: '品質', tab_inspection: '検査', tab_reports: 'レポート', tab_settings: '設定',
+    app_slogan: '海外生産管理システム', dashboard: 'ダッシュボード',
+    stat_total: '総プロジェクト', stat_active: '進行中', stat_overdue: '遅延', stat_qc: '品質検査中', stat_pending: '保留中',
+    active_projects: '進行中プロジェクト', view_all: 'すべて', industry_news: '業界ニュース',
+    message_board: '掲示板', login_activity: 'ログイン履歴', admin_only: '管理者のみ',
+    plan_tasks: 'タスク', plan_meetings: '会議', plan_shipping: '出荷計画',
+    mat_alerts: '資材アラート', mat_factories: '工場情報',
+    search_projects: 'プロジェクト検索...', filter_all: 'すべて',
+    stat_total_issues: '総問題', stat_open: '未対応', stat_progress: '対応中', stat_closed: 'クローズ',
+    search_issues: '問題検索...', filter_open: '未対応', filter_progress: '対応中', filter_closed: 'クローズ',
+    insp_shipping: '出荷検査', insp_issues: '検査問題', insp_passed: '検査済', insp_pending: '未検査',
+    rpt_weekly: '📊 週報', rpt_monthly: '📈 月報', date_to: '〜',
+    btn_generate: '🔍 生成', quick_week: '今週', quick_month: '今月',
+    rpt_placeholder: '日付範囲を選択して「生成」をクリック', rpt_no_data: 'この期間にデータはありません',
+    rpt_generating: 'レポート生成中...',
+    login_title: '🔐 PMApp ログイン', lbl_username: 'ユーザー名', lbl_password: 'パスワード',
+    lbl_proxy: 'プロキシURL（任意）', login_hint: 'デスクトップと同じアカウントを使用', btn_login: 'ログイン',
+    btn_logout: 'ログアウト', sec_account: 'アカウント', sec_advanced: '詳細', sec_sync: '同期',
+    sec_about: 'について', sec_language: 'インターフェース言語',
+    lbl_user: 'ユーザー', lbl_role: '役割', lbl_device: 'デバイス',
+    lbl_sync: '最終同期', lbl_count: 'クラウドレコード', lbl_version: 'バージョン', lbl_desktop: 'デスクトップ版',
+    lbl_language: '言語', btn_save_proxy: 'プロキシ保存', btn_clear_proxy: 'プロキシ削除',
+    btn_sync: '🔄 今すぐ同期', proxy_hint: '一時使用：ローカルプロキシアドレスを入力。',
+    role_admin: '👑 管理者', role_viewer: '👁 閲覧',
+    lang_zh: '中国語', lang_en: '英語', lang_es: 'スペイン語', lang_ja: '日本語',
+    lang_fr: 'フランス語', lang_de: 'ドイツ語', lang_ar: 'アラビア語',
+    empty_tasks: 'タスクなし', empty_meetings: '会議なし', empty_shipping: '出荷計画なし',
+    empty_alerts: 'アラートなし', empty_factories: '工場情報なし', empty_projects: 'プロジェクトなし',
+    empty_issues: '問題なし', empty_insp: '検査問題なし', empty_active: '進行中プロジェクトなし',
+    empty_news: 'ニュースなし', empty_messages: 'メッセージなし',
+    lbl_name: '名前', lbl_msg: 'メッセージ', ph_name: 'お名前を入力', ph_msg: 'メッセージを入力...',
+    btn_post: '投稿', btn_new: '+ 新規', btn_edit: '編集', btn_delete: '削除', btn_save: '保存', btn_cancel: 'キャンセル',
+    lbl_enabled: '有効', lbl_disabled: '無効',
+    t_proxy_saved: 'プロキシURL保存済み', t_proxy_cleared: 'プロキシURL削除済み',
+    t_logout: 'ログアウトしました', t_login_ok: 'ログイン成功', t_login_fail: 'ログイン失敗',
+    t_msg_posted: 'メッセージ投稿済み', t_post_fail: '投稿失敗:', t_save_fail: '保存失敗:',
+    t_del_fail: '削除失敗:', t_updating: '更新中...', t_readonly: '閲覧のみモード、作成不可',
+    t_syncing: '同期中...', t_network_err: 'ネットワークエラー、接続を確認してください',
+    ptr_pull: '↓ 引っ張って更新', ptr_release: '🔄 離して更新...',
+    err_pwd: 'パスワードエラー', err_disabled: 'アカウント無効', err_notfound: 'アカウント未検出',
+    err_empty: 'ユーザー名とパスワードを入力', login_loading: 'ログイン中...',
+    never: 'なし', confirm_logout: 'ログアウトしますか？', confirm_del_msg: 'このメッセージを削除しますか？',
+    detail: '詳細', proj_detail: 'プロジェクト詳細', prod_progress: '生産進捗',
+    delivery_plan: '納品計画', issue_list: '問題一覧', insp_plan: '検査計画',
+    not_found: 'レコードが見つかりません',
+    ro_banner: '👁 閲覧のみ — データ閲覧とメッセージ投稿可',
+    admin_banner: '👑 管理者 — 全編集権限',
+    not_logged_in: '⚠️ 未ログイン — 設定でログインしてください',
+    search_ph: '検索...', loading: '読み込み中...', records: '件',
+  },
+
+  fr: {
+    tab_home: 'Accueil', tab_planning: 'Planification', tab_materials: 'Materiaux', tab_production: 'Production',
+    tab_quality: 'Qualite', tab_inspection: 'Inspection', tab_reports: 'Rapports', tab_settings: 'Parametres',
+    app_slogan: 'Systeme de Gestion de Production Etranger', dashboard: 'Tableau de bord',
+    stat_total: 'Total', stat_active: 'Actif', stat_overdue: 'En retard', stat_qc: 'Controle', stat_pending: 'En attente',
+    active_projects: 'Projets Actifs', view_all: 'Tous', industry_news: 'Actualites',
+    message_board: 'Messages', login_activity: 'Connexions', admin_only: 'Admin uniquement',
+    plan_tasks: 'Taches', plan_meetings: 'Reunions', plan_shipping: 'Expeditions',
+    mat_alerts: 'Alertes', mat_factories: 'Usines',
+    search_projects: 'Rechercher projets...', filter_all: 'Tous',
+    stat_total_issues: 'Total', stat_open: 'Ouvert', stat_progress: 'En cours', stat_closed: 'Ferne',
+    search_issues: 'Rechercher problemes...', filter_open: 'Ouvert', filter_progress: 'En cours', filter_closed: 'Ferne',
+    insp_shipping: 'Inspection', insp_issues: 'Problemes', insp_passed: 'Inspekte', insp_pending: 'En attente',
+    rpt_weekly: '📊 Hebdo', rpt_monthly: '📈 Mensuel', date_to: 'a',
+    btn_generate: '🔍 Generer', quick_week: 'Cette Semaine', quick_month: 'Ce Mois',
+    rpt_placeholder: 'Selectionnez les dates et cliquez sur "Generer"', rpt_no_data: 'Aucune donnee dans cette periode',
+    rpt_generating: 'Generation du rapport...',
+    login_title: '🔐 Connexion PMApp', lbl_username: 'Utilisateur', lbl_password: 'Mot de passe',
+    lbl_proxy: 'URL Proxy (optionnel)', login_hint: 'Meme compte que le bureau', btn_login: 'Connexion',
+    btn_logout: 'Deconnexion', sec_account: 'Compte', sec_advanced: 'Avance', sec_sync: 'Sync',
+    sec_about: 'A propos', sec_language: 'Langue',
+    lbl_user: 'Utilisateur', lbl_role: 'Role', lbl_device: 'Appareil',
+    lbl_sync: 'Derniere Sync', lbl_count: 'Enregistrements', lbl_version: 'Version', lbl_desktop: 'Version Bureau',
+    lbl_language: 'Langue', btn_save_proxy: 'Sauver Proxy', btn_clear_proxy: 'Effacer Proxy',
+    btn_sync: '🔄 Sync', proxy_hint: 'Temporaire: saisir une adresse proxy locale.',
+    role_admin: '👑 Admin', role_viewer: '👁 Lecteur',
+    lang_zh: 'Chinois', lang_en: 'Anglais', lang_es: 'Espagnol', lang_ja: 'Japonais',
+    lang_fr: 'Francais', lang_de: 'Allemand', lang_ar: 'Arabe',
+    empty_tasks: 'Aucune tache', empty_meetings: 'Aucune reunion', empty_shipping: 'Aucune expedition',
+    empty_alerts: 'Aucune alerte', empty_factories: 'Aucune usine', empty_projects: 'Aucun projet',
+    empty_issues: 'Aucun probleme', empty_insp: 'Aucun probleme', empty_active: 'Aucun projet actif',
+    empty_news: 'Aucune actualite', empty_messages: 'Aucun message',
+    lbl_name: 'Nom', lbl_msg: 'Message', ph_name: 'Votre nom', ph_msg: 'Tapez un message...',
+    btn_post: 'Publier', btn_new: '+ Nouveau', btn_edit: 'Modifier', btn_delete: 'Supprimer', btn_save: 'Sauver', btn_cancel: 'Annuler',
+    lbl_enabled: 'Active', lbl_disabled: 'Desactive',
+    t_proxy_saved: 'Proxy sauve', t_proxy_cleared: 'Proxy efface',
+    t_logout: 'Deconnecte', t_login_ok: 'Connexion reussie', t_login_fail: 'Connexion echouee',
+    t_msg_posted: 'Message publie', t_post_fail: 'Echec:', t_save_fail: 'Echec sauvegarde:',
+    t_del_fail: 'Echec suppression:', t_updating: 'Mise a jour...', t_readonly: 'Lecture seule, creation impossible',
+    t_syncing: 'Sync en cours...', t_network_err: 'Erreur reseau, verifiez votre connexion',
+    ptr_pull: '↓ Tirer pour actualiser', ptr_release: '🔄 Relacher pour actualiser...',
+    err_pwd: 'Mot de passe invalide', err_disabled: 'Compte desactive', err_notfound: 'Compte introuvable',
+    err_empty: 'Veuillez saisir identifiant et mot de passe', login_loading: 'Connexion...',
+    never: 'Jamais', confirm_logout: 'Voulez-vous vous deconnecter ?', confirm_del_msg: 'Supprimer ce message ?',
+    detail: 'Details', proj_detail: 'Details du Projet', prod_progress: 'Progression Production',
+    delivery_plan: 'Plan de Livraison', issue_list: 'Problemes', insp_plan: 'Plan d\'Inspection',
+    not_found: 'Enregistrement introuvable',
+    ro_banner: '👁 Lecture seule — Vous pouvez consulter et publier',
+    admin_banner: '👑 Admin — Acces complet',
+    not_logged_in: '⚠️ Non connecte — Allez dans Parametres',
+    search_ph: 'Rechercher...', loading: 'Chargement...', records: 'enregistrements',
+  },
+
+  de: {
+    tab_home: 'Start', tab_planning: 'Planung', tab_materials: 'Material', tab_production: 'Produktion',
+    tab_quality: 'Qualitaet', tab_inspection: 'Inspektion', tab_reports: 'Berichte', tab_settings: 'Einstellungen',
+    app_slogan: 'Auslandsproduktions-Verwaltungssystem', dashboard: 'Uebersicht',
+    stat_total: 'Gesamt', stat_active: 'Aktiv', stat_overdue: 'Verspaetet', stat_qc: 'QS', stat_pending: 'Offen',
+    active_projects: 'Aktive Projekte', view_all: 'Alle', industry_news: 'Branchennews',
+    message_board: 'Pinnwand', login_activity: 'Anmeldungen', admin_only: 'Nur Admin',
+    plan_tasks: 'Aufgaben', plan_meetings: 'Meetings', plan_shipping: 'Versand',
+    mat_alerts: 'Warnungen', mat_factories: 'Fabriken',
+    search_projects: 'Projekte suchen...', filter_all: 'Alle',
+    stat_total_issues: 'Gesamt', stat_open: 'Offen', stat_progress: 'In Bearbeitung', stat_closed: 'Geschlossen',
+    search_issues: 'Probleme suchen...', filter_open: 'Offen', filter_progress: 'In Bearbeitung', filter_closed: 'Geschlossen',
+    insp_shipping: 'Versandinspektion', insp_issues: 'Inspektionsprobleme', insp_passed: 'Inspeztiert', insp_pending: 'Ausstehend',
+    rpt_weekly: '📊 Woche', rpt_monthly: '📈 Monat', date_to: 'bis',
+    btn_generate: '🔍 Generieren', quick_week: 'Diese Woche', quick_month: 'Dieser Monat',
+    rpt_placeholder: 'Datenbereich waehlen und "Generieren" klicken', rpt_no_data: 'Keine Daten in diesem Zeitraum',
+    rpt_generating: 'Bericht wird erstellt...',
+    login_title: '🔐 PMApp Anmeldung', lbl_username: 'Benutzername', lbl_password: 'Passwort',
+    lbl_proxy: 'Proxy URL (optional)', login_hint: 'Gleiches Konto wie Desktop', btn_login: 'Anmelden',
+    btn_logout: 'Abmelden', sec_account: 'Konto', sec_advanced: 'Erweitert', sec_sync: 'Sync',
+    sec_about: 'Ueber', sec_language: 'Sprache',
+    lbl_user: 'Benutzer', lbl_role: 'Rolle', lbl_device: 'Geraet',
+    lbl_sync: 'Letzte Sync', lbl_count: 'Cloud-Eintraege', lbl_version: 'Version', lbl_desktop: 'Desktop-Version',
+    lbl_language: 'Sprache', btn_save_proxy: 'Proxy speichern', btn_clear_proxy: 'Proxy loeschen',
+    btn_sync: '🔄 Jetzt sync', proxy_hint: 'Temporaer: lokale Proxy-Adresse eingeben.',
+    role_admin: '👑 Admin', role_viewer: '👁 Leser',
+    lang_zh: 'Chinesisch', lang_en: 'Englisch', lang_es: 'Spanisch', lang_ja: 'Japanisch',
+    lang_fr: 'Franzoesisch', lang_de: 'Deutsch', lang_ar: 'Arabisch',
+    empty_tasks: 'Keine Aufgaben', empty_meetings: 'Keine Meetings', empty_shipping: 'Keine Versande',
+    empty_alerts: 'Keine Warnungen', empty_factories: 'Keine Fabriken', empty_projects: 'Keine Projekte',
+    empty_issues: 'Keine Probleme', empty_insp: 'Keine Probleme', empty_active: 'Keine aktiven Projekte',
+    empty_news: 'Keine News', empty_messages: 'Keine Nachrichten',
+    lbl_name: 'Name', lbl_msg: 'Nachricht', ph_name: 'Ihr Name', ph_msg: 'Nachricht eingeben...',
+    btn_post: 'Senden', btn_new: '+ Neu', btn_edit: 'Bearbeiten', btn_delete: 'Loeschen', btn_save: 'Speichern', btn_cancel: 'Abbrechen',
+    lbl_enabled: 'Aktiv', lbl_disabled: 'Deaktiviert',
+    t_proxy_saved: 'Proxy gespeichert', t_proxy_cleared: 'Proxy geloescht',
+    t_logout: 'Abgemeldet', t_login_ok: 'Anmeldung erfolgreich', t_login_fail: 'Anmeldung fehlgeschlagen',
+    t_msg_posted: 'Nachricht gesendet', t_post_fail: 'Fehlgeschlagen:', t_save_fail: 'Speichern fehlgeschlagen:',
+    t_del_fail: 'Loeschen fehlgeschlagen:', t_updating: 'Aktualisierung...', t_readonly: 'Nur-Lesen-Modus, keine Erstellung',
+    t_syncing: 'Synchronisierung...', t_network_err: 'Netzwerkfehler, Verbindung pruefen',
+    ptr_pull: '↓ Ziehen zum Aktualisieren', ptr_release: '🔄 Loslassen zum Aktualisieren...',
+    err_pwd: 'Falsches Passwort', err_disabled: 'Konto deaktiviert', err_notfound: 'Konto nicht gefunden',
+    err_empty: 'Bitte Benutzername und Passwort eingeben', login_loading: 'Anmeldung...',
+    never: 'Nie', confirm_logout: 'Moechten Sie sich abmelden?', confirm_del_msg: 'Diese Nachricht loeschen?',
+    detail: 'Details', proj_detail: 'Projektdetails', prod_progress: 'Produktionsfortschritt',
+    delivery_plan: 'Lieferplan', issue_list: 'Probleme', insp_plan: 'Inspektionsplan',
+    not_found: 'Eintrag nicht gefunden',
+    ro_banner: '👁 Nur-Lesen — Daten ansehen und Nachrichten senden',
+    admin_banner: '👑 Admin — Voller Zugriff',
+    not_logged_in: '⚠️ Nicht angemeldet — Gehen Sie zu Einstellungen',
+    search_ph: 'Suchen...', loading: 'Laden...', records: 'Eintraege',
+  },
+
+  ar: {
+    tab_home: 'الرئيسية', tab_planning: 'التخطيط', tab_materials: 'المواد', tab_production: 'الإنتاج',
+    tab_quality: 'الجودة', tab_inspection: 'التفتيش', tab_reports: 'التقارير', tab_settings: 'الإعدادات',
+    app_slogan: 'نظام إدارة الإنتاج الخارجي', dashboard: 'لوحة التحكم',
+    stat_total: 'المجموع', stat_active: 'نشط', stat_overdue: 'متأخر', stat_qc: 'فحص', stat_pending: 'معلق',
+    active_projects: 'المشاريع النشطة', view_all: 'الكل', industry_news: 'أخبار الصناعة',
+    message_board: 'لوحة الرسائل', login_activity: 'نشاط الدخول', admin_only: 'للمشرف فقط',
+    plan_tasks: 'المهام', plan_meetings: 'الاجتماعات', plan_shipping: 'الشحن',
+    mat_alerts: 'تنبيهات المواد', mat_factories: 'المصانع',
+    search_projects: 'بحث المشاريع...', filter_all: 'الكل',
+    stat_total_issues: 'المجموع', stat_open: 'مفتوح', stat_progress: 'قيد المعالجة', stat_closed: 'مغلق',
+    search_issues: 'بحث المشاكل...', filter_open: 'مفتوح', filter_progress: 'قيد المعالجة', filter_closed: 'مغلق',
+    insp_shipping: 'تفتيش الشحن', insp_issues: 'مشاكل التفتيش', insp_passed: 'تم التفتيش', insp_pending: 'معلق',
+    rpt_weekly: '📊 أسبوعي', rpt_monthly: '📈 شهري', date_to: 'إلى',
+    btn_generate: '🔍 إنشاء', quick_week: 'هذا الأسبوع', quick_month: 'هذا الشهر',
+    rpt_placeholder: 'اختر نطاق التاريخ وانقر على "إنشاء"', rpt_no_data: 'لا توجد بيانات في هذه الفترة',
+    rpt_generating: 'جاري إنشاء التقرير...',
+    login_title: '🔐 تسجيل الدخول', lbl_username: 'اسم المستخدم', lbl_password: 'كلمة المرور',
+    lbl_proxy: 'عنوان الوكيل (اختياري)', login_hint: 'استخدم نفس حساب سطح المكتب', btn_login: 'دخول',
+    btn_logout: 'خروج', sec_account: 'الحساب', sec_advanced: 'متقدم', sec_sync: 'مزامنة',
+    sec_about: 'حول', sec_language: 'لغة الواجهة',
+    lbl_user: 'المستخدم', lbl_role: 'الدور', lbl_device: 'الجهاز',
+    lbl_sync: 'آخر مزامنة', lbl_count: 'سجلات السحابة', lbl_version: 'الإصدار', lbl_desktop: 'إصدار سطح المكتب',
+    lbl_language: 'اللغة', btn_save_proxy: 'حفظ الوكيل', btn_clear_proxy: 'مسح الوكيل',
+    btn_sync: '🔄 مزامنة الآن', proxy_hint: 'مؤقت: أدخل عنوان وكيل محلي.',
+    role_admin: '👑 مشرف', role_viewer: '👁 مشاهدة',
+    lang_zh: 'الصينية', lang_en: 'الإنجليزية', lang_es: 'الإسبانية', lang_ja: 'اليابانية',
+    lang_fr: 'الفرنسية', lang_de: 'الألمانية', lang_ar: 'العربية',
+    empty_tasks: 'لا توجد مهام', empty_meetings: 'لا توجد اجتماعات', empty_shipping: 'لا توجد خطط شحن',
+    empty_alerts: 'لا توجد تنبيهات', empty_factories: 'لا توجد مصانع', empty_projects: 'لا توجد مشاريع',
+    empty_issues: 'لا توجد مشاكل', empty_insp: 'لا توجد مشاكل تفتيش', empty_active: 'لا توجد مشاريع نشطة',
+    empty_news: 'لا توجد أخبار', empty_messages: 'لا توجد رسائل',
+    lbl_name: 'الاسم', lbl_msg: 'الرسالة', ph_name: 'أدخل اسمك', ph_msg: 'اكتب رسالة...',
+    btn_post: 'نشر', btn_new: '+ جديد', btn_edit: 'تحرير', btn_delete: 'حذف', btn_save: 'حفظ', btn_cancel: 'إلغاء',
+    lbl_enabled: 'مفعّل', lbl_disabled: 'معطّل',
+    t_proxy_saved: 'تم حفظ الوكيل', t_proxy_cleared: 'تم مسح الوكيل',
+    t_logout: 'تم تسجيل الخروج', t_login_ok: 'تسجيل الدخول ناجح', t_login_fail: 'فشل تسجيل الدخول',
+    t_msg_posted: 'تم نشر الرسالة', t_post_fail: 'فشل النشر:', t_save_fail: 'فشل الحفظ:',
+    t_del_fail: 'فشل الحذف:', t_updating: 'جاري التحديث...', t_readonly: 'وضع القراءة فقط، لا يمكن الإنشاء',
+    t_syncing: 'جاري المزامنة...', t_network_err: 'خطأ في الشبكة، تحقق من اتصالك',
+    ptr_pull: '↓ اسحب للتحديث', ptr_release: '🔄 حرر للتحديث...',
+    err_pwd: 'كلمة مرور خاطئة', err_disabled: 'الحساب معطل', err_notfound: 'الحساب غير موجود',
+    err_empty: 'الرجاء إدخال اسم المستخدم وكلمة المرور', login_loading: 'جاري تسجيل الدخول...',
+    never: 'أبداً', confirm_logout: 'هل تريد تسجيل الخروج؟', confirm_del_msg: 'حذف هذه الرسالة؟',
+    detail: 'التفاصيل', proj_detail: 'تفاصيل المشروع', prod_progress: 'تقدم الإنتاج',
+    delivery_plan: 'خطة التسليم', issue_list: 'المشاكل', insp_plan: 'خطة التفتيش',
+    not_found: 'السجل غير موجود',
+    ro_banner: '👁 قراءة فقط — يمكنك عرض البيانات ونشر الرسائل',
+    admin_banner: '👑 مشرف — وصول كامل',
+    not_logged_in: '⚠️ لم تسجل الدخول — اذهب إلى الإعدادات',
+    search_ph: 'بحث...', loading: 'جاري التحميل...', records: 'سجلات',
+  },
+};
+
+// ── Current language ──
+let _lang = localStorage.getItem(STORAGE_KEY) || 'zh';
+
+// ── Public API ──
+export function t(key) {
+  const table = I18N[_lang] || I18N.zh;
+  return table[key] || I18N.zh[key] || I18N.en[key] || key;
+}
+
+export function getLang() {
+  return _lang;
+}
+
+export function setLang(lang) {
+  if (!LANGUAGES[lang]) return;
+  _lang = lang;
+  localStorage.setItem(STORAGE_KEY, lang);
+  // Update HTML lang and dir attributes
+  const html = document.documentElement;
+  html.lang = lang;
+  html.dir = LANGUAGES[lang].rtl ? 'rtl' : 'ltr';
+  // Apply RTL class to body
+  if (LANGUAGES[lang].rtl) {
+    document.body.classList.add('rtl');
+  } else {
+    document.body.classList.remove('rtl');
+  }
+}
+
+export function initLang() {
+  setLang(_lang);
+}
+
+// ── Apply translations to DOM elements with data-i18n attribute ──
+export function applyTranslations() {
+  // Static HTML elements with data-i18n
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    const text = t(key);
+    if (text) el.textContent = text;
+  });
+  // Placeholder text
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+    const key = el.getAttribute('data-i18n-ph');
+    const text = t(key);
+    if (text) el.placeholder = text;
+  });
+}
