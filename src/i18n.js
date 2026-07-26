@@ -68,7 +68,7 @@ const I18N = {
     // Toasts
     t_proxy_saved: '代理 URL 已保存', t_proxy_cleared: '代理 URL 已清除',
     t_logout: '已退出登录', t_login_ok: '登录成功', t_login_fail: '登录失败',
-    t_msg_posted: '留言已发布', t_post_fail: '发布失败:', t_save_fail: '保存失败:',
+    t_msg_posted: '留言已发布', t_post_fail: '发布失败:', t_save_fail: '保存失败:', t_del_ok: '已删除',
     t_del_fail: '删除失败:', t_updating: '正在更新界面与数据...', t_readonly: '只读模式，无法新建',
     t_syncing: '同步中...', t_network_err: '网络连接失败，请检查网络后重试',
     // PTR
@@ -86,6 +86,13 @@ const I18N = {
     not_logged_in: '⚠️ 尚未登录 — 前往「设定」登录以启用编辑功能',
     // Common
     search_ph: '搜索...', loading: '加载中...', records: '条',
+    view_original: '查看原文', anonymous: '匿名',
+    // Translate
+    btn_translate: '🌐 翻译', btn_hide_trans: '🌐 收起翻译', translating: '翻译中...',
+    trans_fail: '翻译失败', translation_label: '翻译',
+    sec_translation: '翻译缓存', btn_clear_trans: '清除翻译缓存',
+    t_trans_cleared: '翻译缓存已清除', t_trans_count: '条翻译缓存',
+    trans_cache_hint: '留言翻译结果会缓存在本地，清除后可重新翻译。',
   },
 
   en: {
@@ -125,7 +132,7 @@ const I18N = {
     lbl_enabled: 'Enabled', lbl_disabled: 'Disabled',
     t_proxy_saved: 'Proxy URL saved', t_proxy_cleared: 'Proxy URL cleared',
     t_logout: 'Logged out', t_login_ok: 'Login successful', t_login_fail: 'Login failed',
-    t_msg_posted: 'Message posted', t_post_fail: 'Post failed:', t_save_fail: 'Save failed:',
+    t_msg_posted: 'Message posted', t_post_fail: 'Post failed:', t_save_fail: 'Save failed:', t_del_ok: 'Deleted',
     t_del_fail: 'Delete failed:', t_updating: 'Updating...', t_readonly: 'Read-only mode, cannot create',
     t_syncing: 'Syncing...', t_network_err: 'Network error, check your connection',
     ptr_pull: '↓ Pull to refresh', ptr_release: '🔄 Release to refresh...',
@@ -139,6 +146,13 @@ const I18N = {
     admin_banner: '👑 Admin — Full edit access',
     not_logged_in: '⚠️ Not logged in — Go to Settings to login',
     search_ph: 'Search...', loading: 'Loading...', records: 'records',
+    view_original: 'View original', anonymous: 'Anonymous',
+    // Translate
+    btn_translate: '🌐 Translate', btn_hide_trans: '🌐 Hide', translating: 'Translating...',
+    trans_fail: 'Translation failed', translation_label: 'Translation',
+    sec_translation: 'Translation Cache', btn_clear_trans: 'Clear Cache',
+    t_trans_cleared: 'Translation cache cleared', t_trans_count: 'cached translations',
+    trans_cache_hint: 'Message translations are cached locally. Clear to re-translate.',
   },
 
   es: {
@@ -178,7 +192,7 @@ const I18N = {
     lbl_enabled: 'Activado', lbl_disabled: 'Desactivado',
     t_proxy_saved: 'Proxy guardado', t_proxy_cleared: 'Proxy borrado',
     t_logout: 'Sesion cerrada', t_login_ok: 'Inicio correcto', t_login_fail: 'Inicio fallido',
-    t_msg_posted: 'Mensaje publicado', t_post_fail: 'Fallo:', t_save_fail: 'Fallo al guardar:',
+    t_msg_posted: 'Mensaje publicado', t_post_fail: 'Fallo:', t_save_fail: 'Fallo al guardar:', t_del_ok: 'Borrado',
     t_del_fail: 'Fallo al borrar:', t_updating: 'Actualizando...', t_readonly: 'Solo lectura, no se puede crear',
     t_syncing: 'Sincronizando...', t_network_err: 'Error de red, compruebe su conexion',
     ptr_pull: '↓ Deslizar para actualizar', ptr_release: '🔄 Soltar para actualizar...',
@@ -192,6 +206,13 @@ const I18N = {
     admin_banner: '👑 Admin — Acceso total',
     not_logged_in: '⚠️ No ha iniciado sesion — Vaya a Ajustes',
     search_ph: 'Buscar...', loading: 'Cargando...', records: 'registros',
+    view_original: 'Ver original', anonymous: 'Anonimo',
+    // Translate
+    btn_translate: '🌐 Traducir', btn_hide_trans: '🌐 Ocultar', translating: 'Traduciendo...',
+    trans_fail: 'Fallo de traduccion', translation_label: 'Traduccion',
+    sec_translation: 'Cache de Traduccion', btn_clear_trans: 'Borrar Cache',
+    t_trans_cleared: 'Cache de traduccion borrada', t_trans_count: 'traducciones en cache',
+    trans_cache_hint: 'Las traducciones se guardan localmente. Borre para volver a traducir.',
   },
 
   ja: {
@@ -231,7 +252,7 @@ const I18N = {
     lbl_enabled: '有効', lbl_disabled: '無効',
     t_proxy_saved: 'プロキシURL保存済み', t_proxy_cleared: 'プロキシURL削除済み',
     t_logout: 'ログアウトしました', t_login_ok: 'ログイン成功', t_login_fail: 'ログイン失敗',
-    t_msg_posted: 'メッセージ投稿済み', t_post_fail: '投稿失敗:', t_save_fail: '保存失敗:',
+    t_msg_posted: 'メッセージ投稿済み', t_post_fail: '投稿失敗:', t_save_fail: '保存失敗:', t_del_ok: '削除済み',
     t_del_fail: '削除失敗:', t_updating: '更新中...', t_readonly: '閲覧のみモード、作成不可',
     t_syncing: '同期中...', t_network_err: 'ネットワークエラー、接続を確認してください',
     ptr_pull: '↓ 引っ張って更新', ptr_release: '🔄 離して更新...',
@@ -245,6 +266,13 @@ const I18N = {
     admin_banner: '👑 管理者 — 全編集権限',
     not_logged_in: '⚠️ 未ログイン — 設定でログインしてください',
     search_ph: '検索...', loading: '読み込み中...', records: '件',
+    view_original: '原文を見る', anonymous: '匿名',
+    // Translate
+    btn_translate: '🌐 翻訳', btn_hide_trans: '🌐 非表示', translating: '翻訳中...',
+    trans_fail: '翻訳失敗', translation_label: '翻訳',
+    sec_translation: '翻訳キャッシュ', btn_clear_trans: 'キャッシュ削除',
+    t_trans_cleared: '翻訳キャッシュを削除しました', t_trans_count: '件のキャッシュ',
+    trans_cache_hint: 'メッセージの翻訳はローカルにキャッシュされます。削除して再翻訳できます。',
   },
 
   fr: {
@@ -284,7 +312,7 @@ const I18N = {
     lbl_enabled: 'Active', lbl_disabled: 'Desactive',
     t_proxy_saved: 'Proxy sauve', t_proxy_cleared: 'Proxy efface',
     t_logout: 'Deconnecte', t_login_ok: 'Connexion reussie', t_login_fail: 'Connexion echouee',
-    t_msg_posted: 'Message publie', t_post_fail: 'Echec:', t_save_fail: 'Echec sauvegarde:',
+    t_msg_posted: 'Message publie', t_post_fail: 'Echec:', t_save_fail: 'Echec sauvegarde:', t_del_ok: 'Supprime',
     t_del_fail: 'Echec suppression:', t_updating: 'Mise a jour...', t_readonly: 'Lecture seule, creation impossible',
     t_syncing: 'Sync en cours...', t_network_err: 'Erreur reseau, verifiez votre connexion',
     ptr_pull: '↓ Tirer pour actualiser', ptr_release: '🔄 Relacher pour actualiser...',
@@ -298,6 +326,13 @@ const I18N = {
     admin_banner: '👑 Admin — Acces complet',
     not_logged_in: '⚠️ Non connecte — Allez dans Parametres',
     search_ph: 'Rechercher...', loading: 'Chargement...', records: 'enregistrements',
+    view_original: 'Voir original', anonymous: 'Anonyme',
+    // Translate
+    btn_translate: '🌐 Traduire', btn_hide_trans: '🌐 Masquer', translating: 'Traduction...',
+    trans_fail: 'Echec de traduction', translation_label: 'Traduction',
+    sec_translation: 'Cache de Traduction', btn_clear_trans: 'Vider Cache',
+    t_trans_cleared: 'Cache de traduction vide', t_trans_count: 'traductions en cache',
+    trans_cache_hint: 'Les traductions sont cachees localement. Videz pour re-traduire.',
   },
 
   de: {
@@ -337,7 +372,7 @@ const I18N = {
     lbl_enabled: 'Aktiv', lbl_disabled: 'Deaktiviert',
     t_proxy_saved: 'Proxy gespeichert', t_proxy_cleared: 'Proxy geloescht',
     t_logout: 'Abgemeldet', t_login_ok: 'Anmeldung erfolgreich', t_login_fail: 'Anmeldung fehlgeschlagen',
-    t_msg_posted: 'Nachricht gesendet', t_post_fail: 'Fehlgeschlagen:', t_save_fail: 'Speichern fehlgeschlagen:',
+    t_msg_posted: 'Nachricht gesendet', t_post_fail: 'Fehlgeschlagen:', t_save_fail: 'Speichern fehlgeschlagen:', t_del_ok: 'Geloescht',
     t_del_fail: 'Loeschen fehlgeschlagen:', t_updating: 'Aktualisierung...', t_readonly: 'Nur-Lesen-Modus, keine Erstellung',
     t_syncing: 'Synchronisierung...', t_network_err: 'Netzwerkfehler, Verbindung pruefen',
     ptr_pull: '↓ Ziehen zum Aktualisieren', ptr_release: '🔄 Loslassen zum Aktualisieren...',
@@ -351,6 +386,13 @@ const I18N = {
     admin_banner: '👑 Admin — Voller Zugriff',
     not_logged_in: '⚠️ Nicht angemeldet — Gehen Sie zu Einstellungen',
     search_ph: 'Suchen...', loading: 'Laden...', records: 'Eintraege',
+    view_original: 'Original anzeigen', anonymous: 'Anonym',
+    // Translate
+    btn_translate: '🌐 Uebersetzen', btn_hide_trans: '🌐 Ausblenden', translating: 'Uebersetze...',
+    trans_fail: 'Uebersetzung fehlgeschlagen', translation_label: 'Uebersetzung',
+    sec_translation: 'Uebersetzungscache', btn_clear_trans: 'Cache loeschen',
+    t_trans_cleared: 'Uebersetzungscache geloescht', t_trans_count: 'uebersetzungen im cache',
+    trans_cache_hint: 'Uebersetzungen werden lokal gespeichert. Loeschen zum Neu-Uebersetzen.',
   },
 
   ar: {
@@ -390,7 +432,7 @@ const I18N = {
     lbl_enabled: 'مفعّل', lbl_disabled: 'معطّل',
     t_proxy_saved: 'تم حفظ الوكيل', t_proxy_cleared: 'تم مسح الوكيل',
     t_logout: 'تم تسجيل الخروج', t_login_ok: 'تسجيل الدخول ناجح', t_login_fail: 'فشل تسجيل الدخول',
-    t_msg_posted: 'تم نشر الرسالة', t_post_fail: 'فشل النشر:', t_save_fail: 'فشل الحفظ:',
+    t_msg_posted: 'تم نشر الرسالة', t_post_fail: 'فشل النشر:', t_save_fail: 'فشل الحفظ:', t_del_ok: 'تم الحذف',
     t_del_fail: 'فشل الحذف:', t_updating: 'جاري التحديث...', t_readonly: 'وضع القراءة فقط، لا يمكن الإنشاء',
     t_syncing: 'جاري المزامنة...', t_network_err: 'خطأ في الشبكة، تحقق من اتصالك',
     ptr_pull: '↓ اسحب للتحديث', ptr_release: '🔄 حرر للتحديث...',
@@ -404,6 +446,13 @@ const I18N = {
     admin_banner: '👑 مشرف — وصول كامل',
     not_logged_in: '⚠️ لم تسجل الدخول — اذهب إلى الإعدادات',
     search_ph: 'بحث...', loading: 'جاري التحميل...', records: 'سجلات',
+    view_original: 'عرض الأصل', anonymous: 'مجهول',
+    // Translate
+    btn_translate: '🌐 ترجمة', btn_hide_trans: '🌐 إخفاء', translating: 'جاري الترجمة...',
+    trans_fail: 'فشل الترجمة', translation_label: 'الترجمة',
+    sec_translation: 'ذاكرة الترجمة', btn_clear_trans: 'مسح الذاكرة',
+    t_trans_cleared: 'تم مسح ذاكرة الترجمة', t_trans_count: 'ترجمات في الذاكرة',
+    trans_cache_hint: 'يتم تخزين الترجمات محلياً. امسح الذاكرة لإعادة الترجمة.',
   },
 };
 
