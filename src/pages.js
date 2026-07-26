@@ -1,5 +1,6 @@
 /* ═══ Tab Pages: Planning, Materials, Production, Quality, Inspection, Settings ═══ */
 import { MODULES, STAGE_PROGRESS, APP_VERSION } from './config.js';
+import { t } from './i18n.js';
 
 export function setupPages(App) {
   /* ─── Planning Tab ─── */
@@ -7,7 +8,7 @@ export function setupPages(App) {
     this.updateAdminButtons();
     const tasks = (this.cache.tasks || []).slice(0, 10);
     const tEl = document.getElementById('plan-tasks');
-    if (tasks.length === 0) { tEl.innerHTML = '<div class="empty"><div class="empty-icon">📋</div>暂无任务</div>'; }
+    if (tasks.length === 0) { tEl.innerHTML = `<div class="empty"><div class="empty-icon">📋</div>${t('empty_tasks')}</div>`; }
     else { tEl.innerHTML = tasks.map(t => `<div class="card" onclick="App.openDetail('tasks', ${t.id})">
       <div class="card-title">📋 ${this.esc(t.title)}</div>
       <div class="card-meta">
@@ -19,7 +20,7 @@ export function setupPages(App) {
     }
     const meetings = (this.cache.meetings || []).slice(0, 10);
     const mEl = document.getElementById('plan-meetings');
-    if (meetings.length === 0) { mEl.innerHTML = '<div class="empty"><div class="empty-icon">📅</div>暂无会议</div>'; }
+    if (meetings.length === 0) { mEl.innerHTML = `<div class="empty"><div class="empty-icon">📅</div>${t('empty_meetings')}</div>`; }
     else { mEl.innerHTML = meetings.map(m => `<div class="card" onclick="App.openDetail('meetings', ${m.id})">
       <div class="card-title">📅 ${this.esc(m.room_name)}</div>
       <div class="card-meta">
@@ -29,7 +30,7 @@ export function setupPages(App) {
     }
     const shipping = (this.cache.shipping_plans || []).slice(0, 10);
     const sEl = document.getElementById('plan-shipping');
-    if (shipping.length === 0) { sEl.innerHTML = '<div class="empty"><div class="empty-icon">🚢</div>暂无出货计划</div>'; }
+    if (shipping.length === 0) { sEl.innerHTML = `<div class="empty"><div class="empty-icon">🚢</div>${t('empty_shipping')}</div>`; }
     else { sEl.innerHTML = shipping.map(s => `<div class="card" onclick="App.openDetail('shipping_plans', ${s.id})">
       <div class="card-title">🚢 ${this.esc(s.plan_no)}</div>
       <div class="card-meta">
@@ -45,17 +46,17 @@ export function setupPages(App) {
     this.updateAdminButtons();
     const alerts = this.cache.overseas_material_alerts || [];
     const aEl = document.getElementById('mat-alerts');
-    if (alerts.length === 0) { aEl.innerHTML = '<div class="empty"><div class="empty-icon">🔔</div>暂无预警</div>'; }
+    if (alerts.length === 0) { aEl.innerHTML = `<div class="empty"><div class="empty-icon">🔔</div>${t('empty_alerts')}</div>`; }
     else { aEl.innerHTML = alerts.map(a => `<div class="card" onclick="App.openDetail('overseas_material_alerts', ${a.id})">
       <div class="card-title">🔔 ${this.esc(a.rule_name)}</div>
       <div class="card-meta">
-        ${a.threshold_value ? `<span>阈值: ${this.esc(a.threshold_value)}</span>` : ''}
-        <span class="badge ${a.is_enabled ? 'badge-green' : 'badge-gray'}">${a.is_enabled ? '启用' : '禁用'}</span>
+        ${a.threshold_value ? `<span>${this.esc(a.threshold_value)}</span>` : ''}
+        <span class="badge ${a.is_enabled ? 'badge-green' : 'badge-gray'}">${a.is_enabled ? t('lbl_enabled') : t('lbl_disabled')}</span>
       </div></div>`).join('');
     }
     const factories = this.cache.factory_info || [];
     const fEl = document.getElementById('mat-factories');
-    if (factories.length === 0) { fEl.innerHTML = '<div class="empty"><div class="empty-icon">🏭</div>暂无工厂信息</div>'; }
+    if (factories.length === 0) { fEl.innerHTML = `<div class="empty"><div class="empty-icon">🏭</div>${t('empty_factories')}</div>`; }
     else { fEl.innerHTML = factories.map(f => `<div class="card" onclick="App.openDetail('factory_info', ${f.id})">
       <div class="card-title">🏭 ${this.esc(f.factory_name)}</div>
       <div class="card-meta">
@@ -82,7 +83,7 @@ export function setupPages(App) {
     if (q) projects = projects.filter(p => p.name?.toLowerCase().includes(q) || p.customer_name_zh?.toLowerCase().includes(q) || p.product_model?.toLowerCase().includes(q));
     if (this.prodFilter !== 'all') projects = projects.filter(p => p.stage === this.prodFilter);
     const el = document.getElementById('prod-list');
-    if (projects.length === 0) { el.innerHTML = '<div class="empty"><div class="empty-icon">🏭</div>暂无项目</div>'; return; }
+    if (projects.length === 0) { el.innerHTML = `<div class="empty"><div class="empty-icon">🏭</div>${t('empty_projects')}</div>`; return; }
     el.innerHTML = projects.map(p => {
       const progress = STAGE_PROGRESS[p.stage] || (p.status === 'completed' ? 100 : 0);
       const pColor = progress >= 75 ? 'var(--accent-green)' : progress >= 50 ? 'var(--accent-orange)' : 'var(--accent-blue)';
@@ -124,7 +125,7 @@ export function setupPages(App) {
     else if (this.qualFilter === 'progress') issues = issues.filter(i => ['assigned', 'analyzing', 'fixing', 'verifying'].includes(i.status));
     else if (this.qualFilter === 'closed') issues = issues.filter(i => i.status === 'closed');
     const el = document.getElementById('qual-list');
-    if (issues.length === 0) { el.innerHTML = '<div class="empty"><div class="empty-icon">⚠️</div>暂无问题</div>'; return; }
+    if (issues.length === 0) { el.innerHTML = `<div class="empty"><div class="empty-icon">⚠️</div>${t('empty_issues')}</div>`; return; }
     el.innerHTML = issues.map(i => `<div class="card" onclick="App.openDetail('issues', ${i.id})">
       <div class="card-title">⚠️ ${this.esc(i.title)}</div>
       <div class="card-meta">
@@ -139,7 +140,7 @@ export function setupPages(App) {
   App.loadInspection = function() {
     const shipping = this.cache.shipping_plans || [];
     const sEl = document.getElementById('insp-shipping');
-    if (shipping.length === 0) { sEl.innerHTML = '<div class="empty"><div class="empty-icon">🚢</div>暂无出货计划</div>'; }
+    if (shipping.length === 0) { sEl.innerHTML = `<div class="empty"><div class="empty-icon">🚢</div>${t('empty_shipping')}</div>`; }
     else {
       sEl.innerHTML = shipping.map(s => {
         const inspected = s.status === 'inspected' || s.status === 'shipped';
@@ -151,13 +152,13 @@ export function setupPages(App) {
             ${s.planned_ship_date ? `<span>📅 ${this.esc(s.planned_ship_date)}</span>` : ''}
             ${s.total_boxes ? `<span>📦 ${this.esc(s.total_boxes)}箱</span>` : ''}
           </div>
-          ${inspected ? '<div style="margin-top:6px"><span class="badge badge-green">✅ 已检验</span></div>' : '<div style="margin-top:6px"><span class="badge badge-orange">⏳ 待检验</span></div>'}
+          ${inspected ? `<div style="margin-top:6px"><span class="badge badge-green">✅ ${t('insp_passed')}</span></div>` : `<div style="margin-top:6px"><span class="badge badge-orange">⏳ ${t('insp_pending')}</span></div>`}
         </div>`;
       }).join('');
     }
     const inspIssues = (this.cache.issues || []).filter(i => i.issue_type === 'inspection');
     const iEl = document.getElementById('insp-issues');
-    if (inspIssues.length === 0) { iEl.innerHTML = '<div class="empty"><div class="empty-icon">🔍</div>暂无检验问题</div>'; }
+    if (inspIssues.length === 0) { iEl.innerHTML = `<div class="empty"><div class="empty-icon">🔍</div>${t('empty_insp')}</div>`; }
     else {
       iEl.innerHTML = inspIssues.map(i => `<div class="card" onclick="App.openDetail('issues', ${i.id})">
         <div class="card-title">🔍 ${this.esc(i.title)}</div>
@@ -176,13 +177,13 @@ export function setupPages(App) {
     if (!this.isLoggedIn()) {
       infoArea.style.display = 'none';
       loginArea.innerHTML = `<div class="login-box">
-        <div class="login-box-title">🔐 登录 PMApp</div>
+        <div class="login-box-title">${t('login_title')}</div>
         <form onsubmit="return App.login(event)">
-          <div class="input-group"><label>用户名</label><input type="text" id="login-email" placeholder="admin" autocomplete="username" required></div>
-          <div class="input-group"><label>密码</label><input type="password" id="login-password" placeholder="********" autocomplete="current-password" required></div>
-          <div class="input-group"><label>代理 URL（可选）</label><input type="text" id="login-proxy-url" placeholder="https://xxx.trycloudflare.com/proxy" autocomplete="off"></div>
-          <button type="submit" class="btn btn-primary" id="login-btn">登录</button>
-          <div style="font-size:12px;color:var(--text-muted);text-align:center;margin-top:10px">使用桌面端同一账号登录</div>
+          <div class="input-group"><label>${t('lbl_username')}</label><input type="text" id="login-email" placeholder="admin" autocomplete="username" required></div>
+          <div class="input-group"><label>${t('lbl_password')}</label><input type="password" id="login-password" placeholder="********" autocomplete="current-password" required></div>
+          <div class="input-group"><label>${t('lbl_proxy')}</label><input type="text" id="login-proxy-url" placeholder="https://xxx.trycloudflare.com/proxy" autocomplete="off"></div>
+          <button type="submit" class="btn btn-primary" id="login-btn">${t('btn_login')}</button>
+          <div style="font-size:12px;color:var(--text-muted);text-align:center;margin-top:10px">${t('login_hint')}</div>
           <div style="font-size:10px;color:var(--text-muted);text-align:center;margin-top:4px;opacity:0.5">PWA ${APP_VERSION}</div>
           <div class="login-error" id="login-error" style="color:var(--accent);font-size:13px;text-align:center;margin-top:8px;min-height:16px"></div>
         </form>
@@ -194,15 +195,28 @@ export function setupPages(App) {
       infoArea.style.display = 'block';
       document.getElementById('set-user').textContent = this.session.user.display_name || this.session.user.username || '-';
       const role = this.session.user.role;
-      document.getElementById('set-role').textContent = role === 'admin' ? '👑 管理员' : role === 'viewer' ? '👁 只读' : '✏️ ' + role;
+      document.getElementById('set-role').textContent = role === 'admin' ? t('role_admin') : role === 'viewer' ? t('role_viewer') : role;
       document.getElementById('set-device').textContent = this.deviceId || '-';
-      document.getElementById('set-sync').textContent = localStorage.getItem('pmapp_last_sync') || '从未';
+      document.getElementById('set-sync').textContent = localStorage.getItem('pmapp_last_sync') || t('never');
       document.getElementById('set-proxy').textContent = this.getProxyUrl() || '-';
       document.getElementById('proxy-url-input').value = this.getProxyUrl() || '';
       let total = 0;
       Object.keys(MODULES).forEach(k => total += (this.cache[k] || []).length);
       total += (this.cache.message_board || []).length;
-      document.getElementById('set-count').textContent = total + ' 条';
+      document.getElementById('set-count').textContent = total + ' ' + t('records');
+
+      // Render language selector
+      const langGrid = document.getElementById('lang-grid');
+      if (langGrid) {
+        const currentLang = this.getLang();
+        langGrid.innerHTML = Object.entries(this.LANGUAGES).map(([code, info]) => {
+          const active = code === currentLang ? 'active' : '';
+          return `<div class="lang-item ${active}" onclick="App.changeLanguage('${code}')">
+            <span class="lang-flag">${info.flag}</span>
+            <span>${info.name}</span>
+          </div>`;
+        }).join('');
+      }
     }
     this.updateAdminButtons();
   };
@@ -217,7 +231,7 @@ export function setupPages(App) {
 
   /* ─── Sync / Force Update ─── */
   App.syncNow = async function() {
-    this.toast('正在更新界面与数据...');
+    this.toast(t('t_updating'));
     try {
       if ('caches' in window) {
         const keys = await caches.keys();
