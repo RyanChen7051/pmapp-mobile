@@ -1,6 +1,6 @@
-// PMApp PWA Service Worker v20
-const CACHE_NAME = 'pmapp-pwa-v20';
-const ASSETS = ['./', './index.html', './manifest.json'];
+// PMApp PWA Service Worker v21
+const CACHE_NAME = 'pmapp-pwa-v21';
+const ASSETS = ['./', './index.html', './bundle.js', './manifest.json'];
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE_NAME).then((c) => c.addAll(ASSETS)).catch(() => {}));
