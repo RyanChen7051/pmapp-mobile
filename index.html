@@ -304,7 +304,7 @@ body.rtl .card-meta { flex-direction: row-reverse; }
 .wclock-card.wc-local { border-color: var(--accent); border-width: 1.5px; }
 
 /* ─── 智能海外助理（内嵌首页） ─── */
-.ai-home-block { display: flex; flex-direction: column; height: 460px; background: #fff; border-radius: 14px; box-shadow: 0 2px 10px rgba(0,0,0,.06); overflow: hidden; margin: 0 0 12px; }
+.ai-home-block { display: flex; flex-direction: column; height: 230px; background: #fff; border-radius: 14px; box-shadow: 0 2px 10px rgba(0,0,0,.06); overflow: hidden; margin: 0 0 12px; }
 .ai-home-head { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-bottom: 1px solid #f0f0f5; }
 .ai-home-head img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; box-shadow: 0 2px 8px rgba(0,0,0,.15); }
 .ai-home-name { font-size: 14px; font-weight: 600; color: #374151; }
@@ -322,15 +322,11 @@ body.rtl .card-meta { flex-direction: row-reverse; }
 .ai-msg-user { align-self: flex-end; background: #ccfbf1; color: #0f3d38; border-bottom-right-radius: 3px; }
 .ai-msg-user::after { content:''; position:absolute; right:-6px; top:12px; width:0; height:0; border-top:6px solid transparent; border-bottom:6px solid transparent; border-left:6px solid #ccfbf1; }
 
-.ai-input-bubble { margin: 0 10px 10px; background: #ccfbf1; border-radius: 14px; border-bottom-right-radius: 3px; padding: 8px 10px; position: relative; }
+.ai-input-bubble { margin: 0 10px 10px; background: #ccfbf1; border-radius: 14px; border-bottom-right-radius: 3px; padding: 10px 12px; position: relative; }
 .ai-input-bubble::after { content:''; position:absolute; right:-6px; bottom:12px; width:0; height:0; border-top:6px solid transparent; border-bottom:6px solid transparent; border-left:6px solid #ccfbf1; }
-.ai-input-row { display: flex; gap: 8px; align-items: stretch; }
-.ai-input-row textarea { flex: 1 1 auto; width: 100%; min-width: 0; resize: none; border: none; border-radius: 10px; padding: 8px; font-size: 14px; font-family: inherit; max-height: 80px; min-height: 34px; line-height: 1.4; background: transparent; outline: none; }
-.ai-input-row .btn { flex: 0 0 auto; align-self: flex-end; white-space: nowrap; }
-
-@media (max-width: 480px) {
-  .ai-home-block { height: calc(100vh - 160px); }
-}
+.ai-input-row { display: flex; flex-direction: column; gap: 6px; }
+.ai-input-row textarea { display: block; width: 100%; box-sizing: border-box; resize: none; border: none; border-radius: 10px; padding: 8px 4px; font-size: 15px; font-family: inherit; max-height: 110px; min-height: 44px; line-height: 1.4; background: transparent; outline: none; }
+.ai-input-row .btn { align-self: flex-end; white-space: nowrap; padding: 6px 18px; }
 </style>
 </head>
 <body>
@@ -644,6 +640,6 @@ body.rtl .card-meta { flex-direction: row-reverse; }
 
 </div>
 
-<script type="module" src="bundle.js?v=43"></script>
+<script type="module" src="bundle.js?v=44"></script>
 </body>
 </html>
