@@ -15,6 +15,7 @@ import { setupReports } from './reports.js';
 import { setupNavigation, setupUtils } from './navigation.js';
 import { setupTranslate, clearTranslateCache } from './translate.js';
 import { setupSyncQueue } from './sync.js';
+import { initAIAssistant } from './ai.js';
 
 const App = {
   session: null,
@@ -58,6 +59,8 @@ const App = {
     this.setupSessionGuard();
     // Re-apply translations after dynamic content loads
     setTimeout(() => applyTranslations(), 500);
+    // AI 助理浮窗（小P）
+    initAIAssistant();
   },
 
   generateDeviceId() {

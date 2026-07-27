@@ -1,0 +1,17 @@
+{
+  "name": "pmapp-ai-backend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "PMApp PWA AI 助理后端（DeepSeek + Supabase）",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "@supabase/supabase-js": "^2.45.4",
+    "express": "^4.19.2",
+    "openai": "^4.56.0"
+  }
+}
