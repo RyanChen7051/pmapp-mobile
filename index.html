@@ -146,6 +146,32 @@ body {
 .modal-handle { width: 36px; height: 4px; background: var(--text-muted); border-radius: 2px; margin: 0 auto 16px; }
 .modal-title { font-size: 17px; font-weight: 700; margin-bottom: 14px; text-align: center; }
 
+/* Reports (周/月报) */
+.rpt-block { background: var(--bg-secondary); margin: 10px 12px; border-radius: 14px; padding: 14px; }
+.rpt-block-title { font-size: 16px; font-weight: 700; color: var(--accent); margin-bottom: 12px; }
+.rpt-field { margin-bottom: 12px; }
+.rpt-field label { display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 6px; }
+.rpt-field input, .rpt-field select { width: 100%; background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; padding: 10px; color: var(--text-primary); font-size: 14px; box-sizing: border-box; }
+.rpt-field input:disabled, .rpt-field input[readonly] { opacity: 0.6; color: var(--text-muted); cursor: not-allowed; }
+.rpt-gen-btn { width: 100%; margin-top: 4px; }
+
+/* Report document (inside modal) */
+.rpt-doc { font-size: 13px; color: var(--text-primary); }
+.rpt-doc .rpt-h { font-size: 15px; font-weight: 700; margin: 18px 0 8px; color: var(--accent); border-left: 3px solid var(--accent); padding-left: 8px; }
+.rpt-doc .rpt-sub { font-size: 12px; color: var(--text-secondary); margin-bottom: 4px; }
+.rpt-doc .rpt-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 5px 0; border-bottom: 1px solid var(--border); font-size: 12px; }
+.rpt-doc .rpt-row:last-child { border-bottom: none; }
+.rpt-doc .rpt-empty { font-size: 12px; color: var(--text-muted); padding: 8px 0; }
+.rpt-doc .rpt-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 8px 0; }
+.rpt-doc .rpt-stat { background: var(--bg-input); border-radius: 10px; padding: 10px; text-align: center; }
+.rpt-doc .rpt-stat .v { font-size: 20px; font-weight: 700; }
+.rpt-doc .rpt-stat .l { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+.rpt-doc .rpt-chart { background: var(--bg-input); border-radius: 10px; padding: 8px; margin: 6px 0; }
+.rpt-doc table { width: 100%; border-collapse: collapse; font-size: 11px; margin: 6px 0; }
+.rpt-doc th, .rpt-doc td { border: 1px solid var(--border); padding: 4px 5px; text-align: left; }
+.rpt-doc th { background: var(--bg-input); color: var(--text-secondary); }
+.rpt-doc .rpt-disclaimer { font-size: 11px; color: var(--text-muted); margin-top: 14px; line-height: 1.5; }
+
 /* Toast */
 .toast { position: fixed; bottom: calc(var(--safe-bottom) + 76px); left: 50%; transform: translateX(-50%); background: var(--bg-card); color: var(--text-primary); padding: 10px 20px; border-radius: 20px; border: 1px solid var(--border); font-size: 14px; z-index: 300; opacity: 0; transition: opacity 0.3s; pointer-events: none; max-width: 90%; text-align: center; }
 .toast.show { opacity: 1; }
@@ -194,7 +220,8 @@ body {
 .msg-name { font-size: 13px; font-weight: 600; color: var(--accent-blue); }
 .msg-time { font-size: 11px; color: var(--text-muted); }
 .msg-content { font-size: 14px; color: var(--text-primary); word-break: break-word; }
-.msg-actions { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 4px; }
+.msg-actions { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+.msg-country { font-size: 12px; color: var(--text-secondary); white-space: nowrap; }
 .msg-delete { margin-left: auto; font-size: 12px; color: var(--accent); cursor: pointer; }
 .msg-trans-btn { font-size: 12px; color: var(--accent-blue); cursor: pointer; user-select: none; }
 .msg-trans-btn:active { opacity: 0.6; }
@@ -361,24 +388,41 @@ body.rtl .card-meta { flex-direction: row-reverse; }
 <!-- ═══ 周/月报 ═══ -->
 <div id="page-reports" class="page">
   <div class="ptr-indicator" id="ptr-reports" data-i18n="ptr_pull">↓ 下拉刷新</div>
-  <div style="display:flex;gap:8px;padding:10px 12px 6px">
-    <button class="btn btn-primary" id="rpt-tab-weekly" style="flex:1" onclick="App.switchReportType('weekly')" data-i18n="rpt_weekly">📊 周报</button>
-    <button class="btn btn-secondary" id="rpt-tab-monthly" style="flex:1" onclick="App.switchReportType('monthly')" data-i18n="rpt_monthly">📈 月报</button>
-  </div>
-  <div style="padding:6px 12px 10px">
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-      <input type="date" id="rpt-from" style="flex:1;background:var(--bg-input);border:1px solid var(--border);border-radius:8px;padding:8px 10px;color:var(--text-primary);font-size:13px">
-      <span style="color:var(--text-secondary)" data-i18n="date_to">至</span>
-      <input type="date" id="rpt-to" style="flex:1;background:var(--bg-input);border:1px solid var(--border);border-radius:8px;padding:8px 10px;color:var(--text-primary);font-size:13px">
+
+  <!-- 周报 -->
+  <div class="rpt-block">
+    <div class="rpt-block-title">📊 海外生产周报</div>
+    <div class="rpt-field">
+      <label data-i18n="rpt_start_date">开始日期（自动计算 7 天）</label>
+      <input type="date" id="rpt-weekly-from" onchange="App.onReportStartChange('weekly')">
     </div>
-    <div style="display:flex;gap:8px">
-      <button class="btn btn-primary" style="flex:1" onclick="App.generateReport()" data-i18n="btn_generate">🔍 生成报告</button>
-      <button class="btn btn-secondary" onclick="App.quickDateRange('week')" data-i18n="quick_week">本周</button>
-      <button class="btn btn-secondary" onclick="App.quickDateRange('month')" data-i18n="quick_month">本月</button>
+    <div class="rpt-field">
+      <label data-i18n="rpt_end_auto">结束日期（自动计算 · 不可修改）</label>
+      <input type="date" id="rpt-weekly-to" disabled readonly>
     </div>
+    <div class="rpt-field">
+      <label data-i18n="rpt_select_project">选择项目</label>
+      <select id="rpt-weekly-project"><option value="all" data-i18n="rpt_all_projects">全部项目</option></select>
+    </div>
+    <button class="btn btn-primary rpt-gen-btn" onclick="App.generateReport('weekly')" data-i18n="rpt_gen_weekly">生成周报</button>
   </div>
-  <div id="rpt-content">
-    <div class="empty"><div class="empty-icon">📊</div><span data-i18n="rpt_placeholder">选择日期区间后点击「生成报告」</span></div>
+
+  <!-- 月报 -->
+  <div class="rpt-block">
+    <div class="rpt-block-title">📈 海外生产月报</div>
+    <div class="rpt-field">
+      <label data-i18n="rpt_start_date_m">开始日期（自动计算 30 天）</label>
+      <input type="date" id="rpt-monthly-from" onchange="App.onReportStartChange('monthly')">
+    </div>
+    <div class="rpt-field">
+      <label data-i18n="rpt_end_auto">结束日期（自动计算 · 不可修改）</label>
+      <input type="date" id="rpt-monthly-to" disabled readonly>
+    </div>
+    <div class="rpt-field">
+      <label data-i18n="rpt_select_project">选择项目</label>
+      <select id="rpt-monthly-project"><option value="all" data-i18n="rpt_all_projects">全部项目</option></select>
+    </div>
+    <button class="btn btn-primary rpt-gen-btn" onclick="App.generateReport('monthly')" data-i18n="rpt_gen_monthly">生成月报</button>
   </div>
 </div>
 
@@ -475,6 +519,6 @@ body.rtl .card-meta { flex-direction: row-reverse; }
 
 </div>
 
-<script type="module" src="bundle.js?v=31"></script>
+<script type="module" src="bundle.js?v=33"></script>
 </body>
 </html>

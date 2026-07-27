@@ -147,10 +147,25 @@ export function setupHome(App) {
       <div class="msg-content">${this.esc(m.content || '')}</div>
       <div class="msg-actions">
         <span class="msg-trans-btn" onclick="App.toggleTranslate(this, ${m.id})">${t('btn_translate')}</span>
+        ${m.country ? `<span class="msg-country">🏳️ ${t('country_label')}${this.esc(m.country)}</span>` : ''}
         ${this.isAdmin() ? `<span class="msg-delete" onclick="App.deleteMessage(${m.id})">${t('btn_delete')}</span>` : ''}
       </div>
       <div class="msg-translation" id="trans-${m.id}" style="display:none"></div>
     </div>`).join('');
+  };
+
+  App.getClientCountry = async function() {
+    if (this._clientCountry !== undefined) return this._clientCountry;
+    const apis = [
+      async () => { const r = await fetch('https://ipwho.is/', { signal: AbortSignal.timeout(5000) }); const d = await r.json(); return (d && d.country) ? d.country : ''; },
+      async () => { const r = await fetch('https://ipapi.co/json/', { signal: AbortSignal.timeout(5000) }); const d = await r.json(); return (d && (d.country_name || d.country)) ? (d.country_name || d.country) : ''; },
+    ];
+    let result = '';
+    for (const fn of apis) {
+      try { result = await fn(); if (result) break; } catch (e) {}
+    }
+    this._clientCountry = result;
+    return result;
   };
 
   App.postMessage = async function() {
@@ -163,9 +178,10 @@ export function setupHome(App) {
     const now = new Date().toISOString().slice(0, 19).replace('T', ' ');
     const id = Math.floor(Date.now() / 1000);
     try {
+      const country = await this.getClientCountry();
       await this.sbPost('sync_data', {
         table_name: 'message_board', local_id: id,
-        payload: JSON.stringify({ id, name, content, created_at: now }),
+        payload: JSON.stringify({ id, name, content, created_at: now, country }),
         supabase_id: this.uuid(),
         is_deleted: false, updated_at: new Date().toISOString(), device_id: this.deviceId,
       });
