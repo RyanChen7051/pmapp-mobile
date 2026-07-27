@@ -194,7 +194,8 @@ body {
 .msg-name { font-size: 13px; font-weight: 600; color: var(--accent-blue); }
 .msg-time { font-size: 11px; color: var(--text-muted); }
 .msg-content { font-size: 14px; color: var(--text-primary); word-break: break-word; }
-.msg-actions { display: flex; gap: 12px; margin-top: 4px; }
+.msg-actions { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 4px; }
+.msg-delete { margin-left: auto; font-size: 12px; color: var(--accent); cursor: pointer; }
 .msg-trans-btn { font-size: 12px; color: var(--accent-blue); cursor: pointer; user-select: none; }
 .msg-trans-btn:active { opacity: 0.6; }
 .msg-trans-btn.trans-active { color: var(--accent-green); }
@@ -474,6 +475,6 @@ body.rtl .card-meta { flex-direction: row-reverse; }
 
 </div>
 
-<script type="module" src="bundle.js?v=30"></script>
+<script type="module" src="bundle.js?v=31"></script>
 </body>
 </html>

@@ -113,11 +113,16 @@ export function setupTranslate(App) {
    * Toggle translation display for a message.
    * @param {HTMLElement} btn - the translate button element
    * @param {string|number} msgId - unique message id
-   * @param {string} content - original message text
    */
-  App.toggleTranslate = async function(btn, msgId, content) {
+  App.toggleTranslate = async function(btn, msgId) {
     const transEl = document.getElementById('trans-' + msgId);
     if (!transEl) return;
+
+    // Resolve original content from the message-board cache (avoids passing
+    // raw text through the HTML attribute, which broke inline JSON quoting).
+    const msg = (this.cache.message_board || []).find(x => x.id === msgId);
+    const content = msg ? (msg.content || '') : '';
+    if (!content) return;
 
     // If translation is visible -> hide
     if (transEl.style.display !== 'none' && transEl.innerHTML) {

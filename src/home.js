@@ -146,7 +146,7 @@ export function setupHome(App) {
       </div>
       <div class="msg-content">${this.esc(m.content || '')}</div>
       <div class="msg-actions">
-        <span class="msg-trans-btn" onclick="App.toggleTranslate(this, ${m.id}, ${JSON.stringify((m.content || '').replace(/"/g, '\\"'))})">${t('btn_translate')}</span>
+        <span class="msg-trans-btn" onclick="App.toggleTranslate(this, ${m.id})">${t('btn_translate')}</span>
         ${this.isAdmin() ? `<span class="msg-delete" onclick="App.deleteMessage(${m.id})">${t('btn_delete')}</span>` : ''}
       </div>
       <div class="msg-translation" id="trans-${m.id}" style="display:none"></div>

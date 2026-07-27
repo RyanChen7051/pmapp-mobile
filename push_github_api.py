@@ -58,7 +58,7 @@ def get_github_token():
     return None
 
 def github_api(method, path, token, data=None):
-    """Make a GitHub API request."""
+    """Make a GitHub API request (bypass VPN proxy)."""
     url = f"https://api.github.com/repos/{REPO}/contents/{path}"
     if data:
         body = json.dumps(data).encode()
@@ -68,8 +68,10 @@ def github_api(method, path, token, data=None):
     req.add_header("Authorization", f"token {token}")
     req.add_header("Accept", "application/vnd.github.v3+json")
     req.add_header("Content-Type", "application/json")
+    # Bypass any system/VPN proxy for direct GitHub API access
+    opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
     try:
-        with urllib.request.urlopen(req, timeout=90) as resp:
+        with opener.open(req, timeout=90) as resp:
             return json.loads(resp.read()) if resp.status != 204 else {}
     except urllib.error.HTTPError as e:
         if e.code == 404:
@@ -115,7 +117,7 @@ def main():
         if not os.path.exists(local_path):
             print(f"  SKIP (not found): {repo_path}")
             continue
-        commit_msg = f"PWA icon update (PMApp + 制造企业出海守护神) - {repo_path}"
+        commit_msg = f"Update PWA user list - {repo_path}"
         if push_file(token, repo_path, local_path, commit_msg):
             success += 1
 
