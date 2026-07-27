@@ -19,6 +19,7 @@ export function setupPages(App) {
       </div></div>`).join('');
     }
     this.renderTodos();
+    this.renderOverdue();
     const shipping = (this.cache.shipping_plans || []).slice(0, 10);
     const sEl = document.getElementById('plan-shipping');
     if (shipping.length === 0) { sEl.innerHTML = `<div class="empty"><div class="empty-icon">🚢</div>${t('empty_shipping')}</div>`; }
@@ -90,6 +91,7 @@ export function setupPages(App) {
     rec.done = !rec.done;
     rec.updated_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
     this.renderTodos();
+    this.renderOverdue();
     try {
       const q = rec._sb_id ? `supabase_id=eq.${rec._sb_id}` : `local_id=eq.${id}`;
       await this.sbPatch('sync_data', q, {
@@ -109,6 +111,31 @@ export function setupPages(App) {
       const q = rec._sb_id ? `supabase_id=eq.${rec._sb_id}` : `local_id=eq.${id}`;
       await this.sbPatch('sync_data', q, { is_deleted: true, updated_at: new Date().toISOString() });
     } catch (e) {}
+  };
+
+  /* ─── 延误计划（自动罗列已到期未完成任务）─── */
+  App.renderOverdue = function() {
+    const el = document.getElementById('plan-overdue');
+    if (!el) return;
+    const now = Date.now();
+    const list = (this.cache.todos || []).filter(r => {
+      if (r.done) return false;
+      const due = r.due_date || '';
+      if (!due) return false;
+      const d = new Date(due.length === 10 ? due + 'T23:59:59' : due);
+      return d.getTime() < now;
+    });
+    if (list.length === 0) { el.innerHTML = `<div class="empty"><div class="empty-icon">🎉</div>${t('overdue_empty')}</div>`; return; }
+    el.innerHTML = list.map(r => `<div class="todo-item overdue-row" data-id="${r.id}">
+      <input type="checkbox" onchange="App.toggleTodo(${r.id})" />
+      <div class="todo-body">
+        <div class="todo-content">${this.esc(r.content || '')}</div>
+        <div class="todo-due">
+          <span>📅 ${this.esc(r.due_date || '')}</span>
+          <span class="todo-overdue" title="${t('todo_overdue')}">⚠️ ${t('todo_overdue')}</span>
+        </div>
+      </div>
+    </div>`).join('');
   };
 
   /* ─── Materials Tab ─── */

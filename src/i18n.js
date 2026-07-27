@@ -26,8 +26,8 @@ const I18N = {
     active_projects: '进行中项目', view_all: '全部', industry_news: '行业动态',
     message_board: '留言板', login_activity: '登录活动', admin_only: '仅管理员可见',
     // Planning
-    plan_tasks: '计划任务', plan_meetings: '会议安排', plan_shipping: '出货计划',
-    todo_title: '待执行任务', todo_ph_content: '输入待执行任务内容...', todo_add: '添加', todo_empty: '暂无待执行任务', todo_no_due: '未设完成时间', todo_overdue: '已逾期未完成',
+    plan_tasks: '生产计划', plan_meetings: '会议安排', plan_shipping: '出货计划',
+    todo_title: '计划任务', todo_ph_content: '输入计划任务内容...', todo_add: '添加', todo_empty: '暂无计划任务', todo_no_due: '未设完成时间', todo_overdue: '已逾期未完成', overdue_title: '延误计划', overdue_empty: '暂无延误计划 🎉',
     // Materials
     mat_alerts: '物料预警', mat_factories: '工厂信息',
     // Production
@@ -123,7 +123,7 @@ const I18N = {
     active_projects: 'Active Projects', view_all: 'All', industry_news: 'Industry News',
     message_board: 'Message Board', login_activity: 'Login Activity', admin_only: 'Admin only',
     plan_tasks: 'Tasks', plan_meetings: 'Meetings', plan_shipping: 'Shipping',
-    todo_title: 'To-Do Tasks', todo_ph_content: 'Enter task content...', todo_add: 'Add', todo_empty: 'No to-do tasks yet', todo_no_due: 'No due time', todo_overdue: 'Overdue / incomplete',
+    todo_title: 'Plan Tasks', todo_ph_content: 'Enter task content...', todo_add: 'Add', todo_empty: 'No plan tasks yet', todo_no_due: 'No due time', todo_overdue: 'Overdue / incomplete', overdue_title: 'Delayed Plans', overdue_empty: 'No delayed plans 🎉',
     mat_alerts: 'Material Alerts', mat_factories: 'Factory Info',
     search_projects: 'Search projects...', filter_all: 'All',
     stat_total_issues: 'Total', stat_open: 'Open', stat_progress: 'In Progress', stat_closed: 'Closed',

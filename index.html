@@ -346,13 +346,15 @@ body.rtl .card-meta { flex-direction: row-reverse; }
   <div class="ptr-indicator" id="ptr-planning" data-i18n="ptr_pull">↓ 下拉刷新</div>
   <div class="sec-header"><span data-i18n="plan_tasks">计划任务</span><span class="sec-action" id="plan-task-add" style="display:none" onclick="App.showCreateFor('tasks')" data-i18n="btn_new">+ 新建</span></div>
   <div id="plan-tasks"><div class="loading"><div class="spinner"></div><span data-i18n="loading">加载中...</span></div></div>
-  <div class="sec-header"><span data-i18n="todo_title">待执行任务</span></div>
+  <div class="sec-header"><span data-i18n="todo_title">计划任务</span></div>
   <div class="todo-add">
-    <input type="text" id="todo-content" class="todo-input" data-i18n-ph="todo_ph_content" placeholder="输入待执行任务内容..." onkeydown="if(event.key==='Enter')App.addTodo()" />
+    <input type="text" id="todo-content" class="todo-input" data-i18n-ph="todo_ph_content" placeholder="输入计划任务内容..." onkeydown="if(event.key==='Enter')App.addTodo()" />
     <input type="date" id="todo-due" class="todo-date" />
     <button class="btn btn-primary todo-add-btn" onclick="App.addTodo()">+ <span data-i18n="todo_add">添加</span></button>
   </div>
   <div id="plan-todos"><div class="loading"><div class="spinner"></div><span data-i18n="loading">加载中...</span></div></div>
+  <div class="sec-header"><span data-i18n="overdue_title">延误计划</span></div>
+  <div id="plan-overdue"><div class="loading"><div class="spinner"></div><span data-i18n="loading">加载中...</span></div></div>
   <div class="sec-header"><span data-i18n="plan_shipping">出货计划</span></div>
   <div id="plan-shipping"><div class="loading"><div class="spinner"></div><span data-i18n="loading">加载中...</span></div></div>
 </div>
