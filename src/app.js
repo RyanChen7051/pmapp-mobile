@@ -59,7 +59,7 @@ const App = {
     this.setupSessionGuard();
     // Re-apply translations after dynamic content loads
     setTimeout(() => applyTranslations(), 500);
-    // AI 助理浮窗（小P）
+    // AI 助理浮窗（智能海外助理）
     initAIAssistant();
   },
 

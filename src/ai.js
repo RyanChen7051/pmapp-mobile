@@ -1,4 +1,4 @@
-/* ═══ AI 助理浮窗（小P）═══
+/* ═══ AI 助理浮窗（智能海外助理）═══
  * 独立于 App，仅用 DOM + fetch + localStorage。
  * 后端地址存 localStorage('pmapp_ai_url')，首次打开浮窗引导设置。
  */
@@ -66,7 +66,7 @@ export function initAIAssistant() {
     inputEl.value = '';
     addMsg('user', text);
     history.push({ role: 'user', content: text });
-    const typing = addMsg('bot', t('ai_thinking') || '小P 正在思考…');
+    const typing = addMsg('bot', t('ai_thinking') || '智能海外助理 正在思考…');
     try {
       const resp = await fetch(url + '/api/chat', {
         method: 'POST',

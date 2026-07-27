@@ -116,7 +116,7 @@ const I18N = {
     ai_greeting: '你好，有什么问题，都可以问我。', ai_input_ph: '输入您的问题…',
     ai_url_required: '请输入 AI 后端地址', ai_url_saved: '✅ 已设置 AI 后端，可以开始提问了。',
     ai_url_missing: '⚠️ 请先在设置中填入 AI 后端地址（部署后端后获得的 CloudStudio 链接）。',
-    ai_thinking: '小P 正在思考…', ai_call_fail: '❌ 调用失败：', ai_call_fail_hint: '请确认后端地址正确且服务已在运行（CloudStudio 端口预览已开启）。',
+    ai_thinking: '智能海外助理 正在思考…', ai_call_fail: '❌ 调用失败：', ai_call_fail_hint: '请确认后端地址正确且服务已在运行（CloudStudio 端口预览已开启）。',
   },
 
   en: {

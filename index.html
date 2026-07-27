@@ -303,7 +303,7 @@ body.rtl .card-meta { flex-direction: row-reverse; }
 .wclock-card.wc-night { background: linear-gradient(160deg, rgba(78,138,245,0.10), rgba(78,138,245,0.02)); }
 .wclock-card.wc-local { border-color: var(--accent); border-width: 1.5px; }
 
-/* ─── AI 助理浮窗（小P） ─── */
+/* ─── AI 助理浮窗（智能海外助理） ─── */
 #ai-fab { position: fixed; right: 16px; bottom: 16px; width: 64px; height: 64px; border-radius: 50%; border: none; padding: 0; background: transparent; cursor: pointer; z-index: 9998; box-shadow: 0 6px 20px rgba(0,0,0,.25); transition: transform .15s; }
 #ai-fab img { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; display: block; border: 2px solid #fff; background: #fff; }
 #ai-fab:active { transform: scale(0.94); }
@@ -337,9 +337,9 @@ body.rtl .card-meta { flex-direction: row-reverse; }
 
 .ai-input-bubble { margin: 0 10px 10px; background: #ccfbf1; border-radius: 14px; border-bottom-right-radius: 3px; padding: 8px 10px; position: relative; }
 .ai-input-bubble::after { content:''; position:absolute; right:-6px; bottom:12px; width:0; height:0; border-top:6px solid transparent; border-bottom:6px solid transparent; border-left:6px solid #ccfbf1; }
-.ai-input-row { display: flex; gap: 8px; }
-.ai-input-row textarea { flex: 1; resize: none; border: none; border-radius: 10px; padding: 8px; font-size: 14px; font-family: inherit; max-height: 80px; min-height: 34px; line-height: 1.4; background: transparent; outline: none; }
-.ai-input-row .btn { align-self: flex-end; white-space: nowrap; }
+.ai-input-row { display: flex; gap: 8px; align-items: stretch; }
+.ai-input-row textarea { flex: 1 1 auto; width: 100%; min-width: 0; resize: none; border: none; border-radius: 10px; padding: 8px; font-size: 14px; font-family: inherit; max-height: 80px; min-height: 34px; line-height: 1.4; background: transparent; outline: none; }
+.ai-input-row .btn { flex: 0 0 auto; align-self: flex-end; white-space: nowrap; }
 
 @media (max-width: 480px) {
   .ai-panel { width: calc(100vw - 24px); right: 12px; bottom: 84px; height: 420px; }
@@ -642,7 +642,7 @@ body.rtl .card-meta { flex-direction: row-reverse; }
 
 </div>
 
-<!-- AI 助理浮窗（小P） -->
+<!-- AI 助理浮窗（智能海外助理） -->
 <button id="ai-fab" aria-label="AI 助理"><img src="ai-avatar.jpg" alt="AI 助理" /></button>
 <div id="ai-panel" class="ai-panel">
   <div class="ai-panel-inner">
@@ -652,7 +652,7 @@ body.rtl .card-meta { flex-direction: row-reverse; }
     </div>
     <div class="ai-chat-col">
       <div class="ai-header">
-        <span>小P</span>
+        <span>智能海外助理</span>
         <span class="ai-header-actions">
           <button id="ai-settings" class="ai-icon-btn" title="设置后端地址">⚙️</button>
           <button id="ai-close" class="ai-icon-btn" title="关闭">✕</button>
@@ -674,6 +674,6 @@ body.rtl .card-meta { flex-direction: row-reverse; }
   </div>
 </div>
 
-<script type="module" src="bundle.js?v=41"></script>
+<script type="module" src="bundle.js?v=42"></script>
 </body>
 </html>
