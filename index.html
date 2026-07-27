@@ -104,6 +104,23 @@ body {
 .sec-header { font-size: 13px; font-weight: 600; color: var(--text-secondary); margin: 16px 0 8px; text-transform: uppercase; letter-spacing: 0.5px; display: flex; justify-content: space-between; align-items: center; }
 .sec-header .sec-action { font-size: 12px; color: var(--accent); cursor: pointer; font-weight: 500; }
 
+/* 待执行任务（checkbox 清单） */
+.todo-add { display: flex; gap: 6px; align-items: center; margin-bottom: 10px; flex-wrap: wrap; }
+.todo-input { flex: 1 1 100%; padding: 9px 12px; background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary); font-size: 14px; outline: none; min-width: 0; }
+.todo-input:focus { border-color: var(--accent); }
+.todo-date { flex: 1 1 auto; padding: 9px 10px; background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary); font-size: 13px; outline: none; }
+.todo-add-btn { flex: 0 0 auto; padding: 9px 14px; font-size: 14px; }
+.todo-item { display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; margin-bottom: 8px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; }
+.todo-item input[type=checkbox] { width: 18px; height: 18px; margin-top: 2px; accent-color: var(--accent-green); flex: 0 0 auto; cursor: pointer; }
+.todo-body { flex: 1 1 auto; min-width: 0; }
+.todo-content { font-size: 14px; color: var(--text-primary); word-break: break-word; }
+.todo-due { font-size: 12px; color: var(--text-secondary); margin-top: 2px; display: flex; align-items: center; gap: 5px; }
+.todo-overdue { color: var(--accent); font-size: 14px; line-height: 1; }
+.todo-item.done .todo-content { text-decoration: line-through; color: var(--text-muted); }
+.todo-item.done .todo-due { color: var(--text-muted); }
+.todo-del { flex: 0 0 auto; font-size: 14px; color: var(--text-muted); cursor: pointer; padding: 2px 4px; }
+.todo-del:active { opacity: 0.6; }
+
 /* Home header */
 .home-header { text-align: center; padding: 20px 0 16px; }
 .home-title { font-size: 36px; font-weight: 800; color: var(--accent); letter-spacing: -1px; }
@@ -329,8 +346,13 @@ body.rtl .card-meta { flex-direction: row-reverse; }
   <div class="ptr-indicator" id="ptr-planning" data-i18n="ptr_pull">↓ 下拉刷新</div>
   <div class="sec-header"><span data-i18n="plan_tasks">计划任务</span><span class="sec-action" id="plan-task-add" style="display:none" onclick="App.showCreateFor('tasks')" data-i18n="btn_new">+ 新建</span></div>
   <div id="plan-tasks"><div class="loading"><div class="spinner"></div><span data-i18n="loading">加载中...</span></div></div>
-  <div class="sec-header"><span data-i18n="plan_meetings">会议安排</span></div>
-  <div id="plan-meetings"><div class="loading"><div class="spinner"></div><span data-i18n="loading">加载中...</span></div></div>
+  <div class="sec-header"><span data-i18n="todo_title">待执行任务</span></div>
+  <div class="todo-add">
+    <input type="text" id="todo-content" class="todo-input" data-i18n-ph="todo_ph_content" placeholder="输入待执行任务内容..." onkeydown="if(event.key==='Enter')App.addTodo()" />
+    <input type="date" id="todo-due" class="todo-date" />
+    <button class="btn btn-primary todo-add-btn" onclick="App.addTodo()">+ <span data-i18n="todo_add">添加</span></button>
+  </div>
+  <div id="plan-todos"><div class="loading"><div class="spinner"></div><span data-i18n="loading">加载中...</span></div></div>
   <div class="sec-header"><span data-i18n="plan_shipping">出货计划</span></div>
   <div id="plan-shipping"><div class="loading"><div class="spinner"></div><span data-i18n="loading">加载中...</span></div></div>
 </div>
@@ -572,6 +594,6 @@ body.rtl .card-meta { flex-direction: row-reverse; }
 
 </div>
 
-<script type="module" src="bundle.js?v=35"></script>
+<script type="module" src="bundle.js?v=36"></script>
 </body>
 </html>

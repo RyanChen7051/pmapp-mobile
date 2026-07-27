@@ -27,6 +27,7 @@ const I18N = {
     message_board: '留言板', login_activity: '登录活动', admin_only: '仅管理员可见',
     // Planning
     plan_tasks: '计划任务', plan_meetings: '会议安排', plan_shipping: '出货计划',
+    todo_title: '待执行任务', todo_ph_content: '输入待执行任务内容...', todo_add: '添加', todo_empty: '暂无待执行任务', todo_no_due: '未设完成时间', todo_overdue: '已逾期未完成',
     // Materials
     mat_alerts: '物料预警', mat_factories: '工厂信息',
     // Production
@@ -122,6 +123,7 @@ const I18N = {
     active_projects: 'Active Projects', view_all: 'All', industry_news: 'Industry News',
     message_board: 'Message Board', login_activity: 'Login Activity', admin_only: 'Admin only',
     plan_tasks: 'Tasks', plan_meetings: 'Meetings', plan_shipping: 'Shipping',
+    todo_title: 'To-Do Tasks', todo_ph_content: 'Enter task content...', todo_add: 'Add', todo_empty: 'No to-do tasks yet', todo_no_due: 'No due time', todo_overdue: 'Overdue / incomplete',
     mat_alerts: 'Material Alerts', mat_factories: 'Factory Info',
     search_projects: 'Search projects...', filter_all: 'All',
     stat_total_issues: 'Total', stat_open: 'Open', stat_progress: 'In Progress', stat_closed: 'Closed',

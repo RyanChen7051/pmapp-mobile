@@ -18,16 +18,7 @@ export function setupPages(App) {
         ${t.due_date ? `<span>📅 ${this.esc(t.due_date)}</span>` : ''}
       </div></div>`).join('');
     }
-    const meetings = (this.cache.meetings || []).slice(0, 10);
-    const mEl = document.getElementById('plan-meetings');
-    if (meetings.length === 0) { mEl.innerHTML = `<div class="empty"><div class="empty-icon">📅</div>${t('empty_meetings')}</div>`; }
-    else { mEl.innerHTML = meetings.map(m => `<div class="card" onclick="App.openDetail('meetings', ${m.id})">
-      <div class="card-title">📅 ${this.esc(m.room_name)}</div>
-      <div class="card-meta">
-        ${m.start_time ? `<span>🕐 ${this.esc(m.start_time)}</span>` : ''}
-        ${m.end_time ? `<span>→ ${this.esc(m.end_time)}</span>` : ''}
-      </div></div>`).join('');
-    }
+    this.renderTodos();
     const shipping = (this.cache.shipping_plans || []).slice(0, 10);
     const sEl = document.getElementById('plan-shipping');
     if (shipping.length === 0) { sEl.innerHTML = `<div class="empty"><div class="empty-icon">🚢</div>${t('empty_shipping')}</div>`; }
@@ -39,6 +30,85 @@ export function setupPages(App) {
         ${s.planned_ship_date ? `<span>📅 ${this.esc(s.planned_ship_date)}</span>` : ''}
       </div></div>`).join('');
     }
+  };
+
+  /* ─── 待执行任务（checkbox 清单）─── */
+  App.renderTodos = function() {
+    const el = document.getElementById('plan-todos');
+    if (!el) return;
+    const list = (this.cache.todos || []).slice(0, 50);
+    if (list.length === 0) { el.innerHTML = `<div class="empty"><div class="empty-icon">✅</div>${t('todo_empty')}</div>`; return; }
+    const now = Date.now();
+    el.innerHTML = list.map(r => {
+      const done = !!r.done;
+      const due = r.due_date || '';
+      let overdue = false;
+      if (due && !done) {
+        const d = new Date(due.length === 10 ? due + 'T23:59:59' : due);
+        overdue = d.getTime() < now;
+      }
+      return `<div class="todo-item ${done ? 'done' : ''}" data-id="${r.id}">
+        <input type="checkbox" ${done ? 'checked' : ''} onchange="App.toggleTodo(${r.id})" />
+        <div class="todo-body">
+          <div class="todo-content">${this.esc(r.content || '')}</div>
+          <div class="todo-due">
+            <span>📅 ${due ? this.esc(due) : t('todo_no_due')}</span>
+            ${overdue ? `<span class="todo-overdue" title="${t('todo_overdue')}">⚠️</span>` : ''}
+          </div>
+        </div>
+        <span class="todo-del" onclick="App.deleteTodo(${r.id})">✕</span>
+      </div>`;
+    }).join('');
+  };
+
+  App.addTodo = async function() {
+    const cEl = document.getElementById('todo-content');
+    const dEl = document.getElementById('todo-due');
+    if (!cEl) return;
+    const content = cEl.value.trim();
+    const due = dEl ? dEl.value : '';
+    if (!content) { this.toast(t('todo_ph_content')); return; }
+    const now = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    const id = Math.floor(Date.now() / 1000);
+    const rec = { id, content, due_date: due, done: false, created_at: now };
+    (this.cache.todos = this.cache.todos || []).unshift(rec);
+    cEl.value = ''; if (dEl) dEl.value = '';
+    this.renderTodos();
+    try {
+      await this.sbPost('sync_data', {
+        table_name: 'todos', local_id: id,
+        payload: JSON.stringify(rec), supabase_id: this.uuid(),
+        is_deleted: false, updated_at: new Date().toISOString(), device_id: this.deviceId,
+      });
+    } catch (e) { /* 离线时由 sync 队列兜底，不抛错 */ }
+  };
+
+  App.toggleTodo = async function(id) {
+    const list = this.cache.todos || [];
+    const rec = list.find(r => r.id === id);
+    if (!rec) return;
+    rec.done = !rec.done;
+    rec.updated_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    this.renderTodos();
+    try {
+      const q = rec._sb_id ? `supabase_id=eq.${rec._sb_id}` : `local_id=eq.${id}`;
+      await this.sbPatch('sync_data', q, {
+        payload: JSON.stringify(rec), updated_at: new Date().toISOString(), device_id: this.deviceId,
+      });
+    } catch (e) {}
+  };
+
+  App.deleteTodo = async function(id) {
+    const list = this.cache.todos || [];
+    const idx = list.findIndex(r => r.id === id);
+    if (idx < 0) return;
+    const rec = list[idx];
+    list.splice(idx, 1);
+    this.renderTodos();
+    try {
+      const q = rec._sb_id ? `supabase_id=eq.${rec._sb_id}` : `local_id=eq.${id}`;
+      await this.sbPatch('sync_data', q, { is_deleted: true, updated_at: new Date().toISOString() });
+    } catch (e) {}
   };
 
   /* ─── Materials Tab ─── */
