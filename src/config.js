@@ -97,4 +97,32 @@ export const MODULES = {
     detailFields: [{key:'username',label:'用户名'},{key:'display_name',label:'姓名'},{key:'email',label:'邮箱'},{key:'phone',label:'电话'},{key:'position',label:'职位'},{key:'status',label:'状态'},{key:'last_login',label:'最后登录'},{key:'login_count',label:'登录次数'}],
     editFields: [{key:'username',label:'用户名',type:'text',required:true},{key:'display_name',label:'姓名',type:'text'},{key:'email',label:'邮箱',type:'text'},{key:'phone',label:'电话',type:'text'},{key:'position',label:'职位',type:'text'},{key:'status',label:'状态',type:'select',options:[{v:'active',t:'启用'},{v:'inactive',t:'禁用'}]}],
   },
+  inspection: {
+    title: '客验', icon: '🔍', table: 'inspection',
+    listFields: [{key:'unit',label:'客验单位'},{key:'item',label:'验货项目'},{key:'inspect_date',label:'验货时间'},{key:'qty',label:'验货数量'},{key:'order_no',label:'验货订单'}],
+    detailFields: [{key:'unit',label:'客验单位'},{key:'item',label:'验货项目'},{key:'inspect_date',label:'验货时间'},{key:'qty',label:'验货数量'},{key:'order_no',label:'验货订单'}],
+    editFields: [
+      {key:'unit',label:'客验单位',type:'text'},
+      {key:'item',label:'验货项目',type:'select',options:[{v:'外观',t:'外观检查'},{v:'功能',t:'功能测试'},{v:'包装',t:'包装检查'},{v:'尺寸',t:'尺寸测量'},{v:'性能',t:'性能测试'},{v:'抽样',t:'抽样检验'}]},
+      {key:'inspect_date',label:'验货时间',type:'date'},
+      {key:'qty',label:'验货数量',type:'number'},
+      {key:'order_no',label:'验货订单',type:'text'},
+    ],
+  },
+  rmd: {
+    title: 'RMD', icon: '📑', table: 'rmd',
+    listFields: [{key:'material_name',label:'物料名'},{key:'material_no',label:'物料编号'},{key:'qty',label:'数量'},{key:'sign_date',label:'签核时间'},{key:'factory',label:'工厂'}],
+    detailFields: [{key:'country',label:'国家'},{key:'factory',label:'工厂'},{key:'sign_date',label:'签核时间'},{key:'project',label:'项目'},{key:'material_name',label:'物料名'},{key:'material_batch',label:'物料批次'},{key:'material_no',label:'物料编号'},{key:'qty',label:'数量'},{key:'internal_confirm',label:'内部确认'}],
+    editFields: [
+      {key:'country',label:'国家',type:'select',options:[{v:'越南',t:'越南'},{v:'印度',t:'印度'}]},
+      {key:'factory',label:'工厂',type:'text'},
+      {key:'sign_date',label:'签核时间',type:'date'},
+      {key:'project',label:'项目',type:'text'},
+      {key:'material_name',label:'物料名',type:'text',required:true},
+      {key:'material_batch',label:'物料批次',type:'text'},
+      {key:'material_no',label:'物料编号',type:'text'},
+      {key:'qty',label:'数量',type:'number'},
+      {key:'internal_confirm',label:'内部确认（部门/人名）',type:'text'},
+    ],
+  },
 };

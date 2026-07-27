@@ -155,6 +155,7 @@ body {
 .rpt-field input, .rpt-field select { width: 100%; background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; padding: 10px; color: var(--text-primary); font-size: 14px; box-sizing: border-box; }
 .rpt-field input:disabled, .rpt-field input[readonly] { opacity: 0.6; color: var(--text-muted); cursor: not-allowed; }
 .rpt-gen-btn { width: 100%; margin-top: 4px; }
+.rpt-chart { background: var(--bg-input); border-radius: 10px; padding: 8px; margin: 6px 0; }
 
 /* Report document (inside modal) */
 .rpt-doc { font-size: 13px; color: var(--text-primary); }
@@ -361,29 +362,79 @@ body.rtl .card-meta { flex-direction: row-reverse; }
 <!-- ═══ 品质 ═══ -->
 <div id="page-quality" class="page">
   <div class="ptr-indicator" id="ptr-quality" data-i18n="ptr_pull">↓ 下拉刷新</div>
-  <div class="dash-stats" id="quality-stats">
-    <div class="dash-stat"><div class="dash-stat-num" id="qs-total" style="color:var(--accent-blue)">-</div><div class="dash-stat-label" data-i18n="stat_total_issues">总问题</div></div>
-    <div class="dash-stat"><div class="dash-stat-num" id="qs-open" style="color:var(--accent)">-</div><div class="dash-stat-label" data-i18n="stat_open">待处理</div></div>
-    <div class="dash-stat"><div class="dash-stat-num" id="qs-progress" style="color:var(--accent-orange)">-</div><div class="dash-stat-label" data-i18n="stat_progress">处理中</div></div>
-    <div class="dash-stat"><div class="dash-stat-num" id="qs-closed" style="color:var(--accent-green)">-</div><div class="dash-stat-label" data-i18n="stat_closed">已关闭</div></div>
+  <div class="filter-row" id="qual-mod-switch">
+    <div class="filter-chip active" onclick="App.setQualModule('issues', this)" data-i18n="qual_mod_issues">问题</div>
+    <div class="filter-chip" onclick="App.setQualModule('inspection', this)" data-i18n="qual_mod_inspection">客验</div>
   </div>
-  <div class="search-bar"><input type="text" id="qual-search" data-i18n-ph="search_issues" placeholder="搜索问题..." oninput="App.renderQuality()"></div>
-  <div class="filter-row" id="qual-filter">
-    <div class="filter-chip active" onclick="App.setQualFilter('all', this)" data-i18n="filter_all">全部</div>
-    <div class="filter-chip" onclick="App.setQualFilter('open', this)" data-i18n="filter_open">待处理</div>
-    <div class="filter-chip" onclick="App.setQualFilter('progress', this)" data-i18n="filter_progress">处理中</div>
-    <div class="filter-chip" onclick="App.setQualFilter('closed', this)" data-i18n="filter_closed">已关闭</div>
+  <div id="qual-issues-block">
+    <div class="dash-stats" id="quality-stats">
+      <div class="dash-stat"><div class="dash-stat-num" id="qs-total" style="color:var(--accent-blue)">-</div><div class="dash-stat-label" data-i18n="stat_total_issues">总问题</div></div>
+      <div class="dash-stat"><div class="dash-stat-num" id="qs-open" style="color:var(--accent)">-</div><div class="dash-stat-label" data-i18n="stat_open">待处理</div></div>
+      <div class="dash-stat"><div class="dash-stat-num" id="qs-progress" style="color:var(--accent-orange)">-</div><div class="dash-stat-label" data-i18n="stat_progress">处理中</div></div>
+      <div class="dash-stat"><div class="dash-stat-num" id="qs-closed" style="color:var(--accent-green)">-</div><div class="dash-stat-label" data-i18n="stat_closed">已关闭</div></div>
+    </div>
+    <div class="search-bar"><input type="text" id="qual-search" data-i18n-ph="search_issues" placeholder="搜索问题..." oninput="App.renderQuality()"></div>
+    <div class="filter-row" id="qual-filter">
+      <div class="filter-chip active" onclick="App.setQualFilter('all', this)" data-i18n="filter_all">全部</div>
+      <div class="filter-chip" onclick="App.setQualFilter('open', this)" data-i18n="filter_open">待处理</div>
+      <div class="filter-chip" onclick="App.setQualFilter('progress', this)" data-i18n="filter_progress">处理中</div>
+      <div class="filter-chip" onclick="App.setQualFilter('closed', this)" data-i18n="filter_closed">已关闭</div>
+    </div>
+    <div id="qual-list"><div class="loading"><div class="spinner"></div><span data-i18n="loading">加载中...</span></div></div>
   </div>
-  <div id="qual-list"><div class="loading"><div class="spinner"></div><span data-i18n="loading">加载中...</span></div></div>
+  <div id="qual-insp-block" style="display:none">
+    <div class="sec-header"><span data-i18n="qual_mod_inspection">客验</span><span class="sec-action" id="qual-insp-add" style="display:none" onclick="App.showCreateFor('inspection')" data-i18n="btn_new">+ 新建</span></div>
+    <div id="qual-insp-list"><div class="loading"><div class="spinner"></div><span data-i18n="loading">加载中...</span></div></div>
+  </div>
 </div>
 
-<!-- ═══ 客验 ═══ -->
+<!-- ═══ RMD ═══ -->
 <div id="page-inspection" class="page">
   <div class="ptr-indicator" id="ptr-inspection" data-i18n="ptr_pull">↓ 下拉刷新</div>
-  <div class="sec-header"><span data-i18n="insp_shipping">出货检验</span></div>
-  <div id="insp-shipping"><div class="loading"><div class="spinner"></div><span data-i18n="loading">加载中...</span></div></div>
-  <div class="sec-header"><span data-i18n="insp_issues">检验问题</span></div>
-  <div id="insp-issues"><div class="loading"><div class="spinner"></div><span data-i18n="loading">加载中...</span></div></div>
+  <div class="rpt-block">
+    <div class="rpt-block-title">📑 RMD 新建</div>
+    <div class="rpt-field">
+      <label>国家</label>
+      <select id="rmd-country"><option value="越南">越南</option><option value="印度">印度</option></select>
+    </div>
+    <div class="rpt-field">
+      <label>工厂</label>
+      <input type="text" id="rmd-factory" placeholder="手动输入工厂名">
+    </div>
+    <div class="rpt-field">
+      <label>签核时间</label>
+      <input type="date" id="rmd-sign_date">
+    </div>
+    <div class="rpt-field">
+      <label>项目</label>
+      <select id="rmd-project"><option value="">（未选）</option></select>
+    </div>
+    <div class="rpt-field">
+      <label>物料名</label>
+      <input type="text" id="rmd-material_name" placeholder="手动输入物料名">
+    </div>
+    <div class="rpt-field">
+      <label>物料批次</label>
+      <input type="text" id="rmd-material_batch" placeholder="手动输入物料批次">
+    </div>
+    <div class="rpt-field">
+      <label>物料编号</label>
+      <input type="text" id="rmd-material_no" placeholder="手动输入物料编号">
+    </div>
+    <div class="rpt-field">
+      <label>数量</label>
+      <input type="number" id="rmd-qty" placeholder="0">
+    </div>
+    <div class="rpt-field">
+      <label>内部确认（部门/人名）</label>
+      <input type="text" id="rmd-internal_confirm" placeholder="如：品质-陈晓斌">
+    </div>
+    <button class="btn btn-primary rpt-gen-btn" onclick="App.saveRmd()">保存 RMD</button>
+  </div>
+  <div class="sec-header"><span>RMD 列表</span></div>
+  <div id="rmd-list"><div class="loading"><div class="spinner"></div><span data-i18n="loading">加载中...</span></div></div>
+  <div class="sec-header"><span>RMD 积累趋势曲线</span></div>
+  <div class="rpt-chart" id="rmd-chart"></div>
 </div>
 
 <!-- ═══ 周/月报 ═══ -->
@@ -521,6 +572,6 @@ body.rtl .card-meta { flex-direction: row-reverse; }
 
 </div>
 
-<script type="module" src="bundle.js?v=34"></script>
+<script type="module" src="bundle.js?v=35"></script>
 </body>
 </html>

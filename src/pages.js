@@ -102,12 +102,48 @@ export function setupPages(App) {
 
   /* ─── Quality Tab ─── */
   App.loadQuality = function() {
+    const mod = this.qualModule || 'issues';
+    const issuesBlock = document.getElementById('qual-issues-block');
+    const inspBlock = document.getElementById('qual-insp-block');
+    if (mod === 'inspection') {
+      if (issuesBlock) issuesBlock.style.display = 'none';
+      if (inspBlock) inspBlock.style.display = '';
+      this.renderInspectionList();
+      this.updateAdminButtons();
+      return;
+    }
+    if (issuesBlock) issuesBlock.style.display = '';
+    if (inspBlock) inspBlock.style.display = 'none';
     const issues = this.cache.issues || [];
     document.getElementById('qs-total').textContent = issues.length;
     document.getElementById('qs-open').textContent = issues.filter(i => i.status === 'open').length;
     document.getElementById('qs-progress').textContent = issues.filter(i => ['assigned', 'analyzing', 'fixing', 'verifying'].includes(i.status)).length;
     document.getElementById('qs-closed').textContent = issues.filter(i => i.status === 'closed').length;
     this.renderQuality();
+    this.updateAdminButtons();
+  };
+
+  App.setQualModule = function(mod, el) {
+    this.qualModule = mod;
+    document.querySelectorAll('#qual-mod-switch .filter-chip').forEach(c => c.classList.remove('active'));
+    if (el) el.classList.add('active');
+    this.currentModule = (mod === 'inspection') ? 'inspection' : 'issues';
+    this.loadQuality();
+  };
+
+  App.renderInspectionList = function() {
+    const list = (this.cache.inspection || []);
+    const el = document.getElementById('qual-insp-list');
+    if (!el) return;
+    if (list.length === 0) { el.innerHTML = `<div class="empty"><div class="empty-icon">🔍</div>${t('empty_insp')}</div>`; return; }
+    el.innerHTML = list.slice().sort((a, b) => (b.inspect_date || '').localeCompare(a.inspect_date || '')).map(r => `<div class="card" onclick="App.openDetail('inspection', ${r.id})">
+      <div class="card-title">🔍 ${this.esc(r.unit || '客验')}</div>
+      <div class="card-meta">
+        ${r.item ? `<span class="badge badge-cyan">${this.esc(r.item)}</span>` : ''}
+        ${r.inspect_date ? `<span>📅 ${this.esc(r.inspect_date)}</span>` : ''}
+        ${r.qty ? `<span>🔢 ${this.esc(r.qty)}</span>` : ''}
+        ${r.order_no ? `<span>📄 ${this.esc(r.order_no)}</span>` : ''}
+      </div></div>`).join('');
   };
 
   App.setQualFilter = function(filter, el) {
@@ -118,6 +154,7 @@ export function setupPages(App) {
   };
 
   App.renderQuality = function() {
+    if ((this.qualModule || 'issues') !== 'issues') return;
     let issues = this.cache.issues || [];
     const q = document.getElementById('qual-search')?.value?.trim().toLowerCase();
     if (q) issues = issues.filter(i => i.title?.toLowerCase().includes(q) || i.description?.toLowerCase().includes(q) || i.assigned_to?.toLowerCase().includes(q));
@@ -136,38 +173,64 @@ export function setupPages(App) {
       </div></div>`).join('');
   };
 
-  /* ─── Inspection Tab ─── */
+  /* ─── RMD Tab ─── */
   App.loadInspection = function() {
-    const shipping = this.cache.shipping_plans || [];
-    const sEl = document.getElementById('insp-shipping');
-    if (shipping.length === 0) { sEl.innerHTML = `<div class="empty"><div class="empty-icon">🚢</div>${t('empty_shipping')}</div>`; }
-    else {
-      sEl.innerHTML = shipping.map(s => {
-        const inspected = s.status === 'inspected' || s.status === 'shipped';
-        return `<div class="card" onclick="App.openDetail('shipping_plans', ${s.id})">
-          <div class="card-title">🚢 ${this.esc(s.plan_no)}</div>
-          <div class="card-meta">
-            ${s.status ? `<span class="badge ${this.badgeClass(s.status)}">${this.esc(s.status)}</span>` : ''}
-            ${s.destination ? `<span>📍 ${this.esc(s.destination)}</span>` : ''}
-            ${s.planned_ship_date ? `<span>📅 ${this.esc(s.planned_ship_date)}</span>` : ''}
-            ${s.total_boxes ? `<span>📦 ${this.esc(s.total_boxes)}箱</span>` : ''}
-          </div>
-          ${inspected ? `<div style="margin-top:6px"><span class="badge badge-green">✅ ${t('insp_passed')}</span></div>` : `<div style="margin-top:6px"><span class="badge badge-orange">⏳ ${t('insp_pending')}</span></div>`}
-        </div>`;
-      }).join('');
+    const projSel = document.getElementById('rmd-project');
+    if (projSel) {
+      const projects = (this.cache.projects || []);
+      projSel.innerHTML = '<option value="">（未选）</option>' + projects.map(p => `<option value="${this.esc(p.name)}">${this.esc(p.name)}</option>`).join('');
     }
-    const inspIssues = (this.cache.issues || []).filter(i => i.issue_type === 'inspection');
-    const iEl = document.getElementById('insp-issues');
-    if (inspIssues.length === 0) { iEl.innerHTML = `<div class="empty"><div class="empty-icon">🔍</div>${t('empty_insp')}</div>`; }
+    const list = (this.cache.rmd || []).slice().sort((a, b) => (b.sign_date || '').localeCompare(a.sign_date || ''));
+    const el = document.getElementById('rmd-list');
+    if (list.length === 0) { el.innerHTML = `<div class="empty"><div class="empty-icon">📑</div>暂无 RMD 记录</div>`; }
     else {
-      iEl.innerHTML = inspIssues.map(i => `<div class="card" onclick="App.openDetail('issues', ${i.id})">
-        <div class="card-title">🔍 ${this.esc(i.title)}</div>
+      el.innerHTML = list.map(r => `<div class="card" onclick="App.openDetail('rmd', ${r.id})">
+        <div class="card-title">📑 ${this.esc(r.material_name || 'RMD')}</div>
         <div class="card-meta">
-          ${i.severity ? `<span class="badge ${this.badgeClass(i.severity)}">${this.esc(i.severity)}</span>` : ''}
-          ${i.status ? `<span class="badge ${this.badgeClass(i.status)}">${this.esc(i.status)}</span>` : ''}
-          ${i.assigned_to ? `<span>👤 ${this.esc(i.assigned_to)}</span>` : ''}
+          ${r.country ? `<span class="badge badge-blue">${this.esc(r.country)}</span>` : ''}
+          ${r.factory ? `<span>🏭 ${this.esc(r.factory)}</span>` : ''}
+          ${r.sign_date ? `<span>📅 ${this.esc(r.sign_date)}</span>` : ''}
+          ${r.qty ? `<span>🔢 ${this.esc(r.qty)}</span>` : ''}
         </div></div>`).join('');
     }
+    const chartEl = document.getElementById('rmd-chart');
+    if (chartEl) chartEl.innerHTML = this._rmdTrend();
+  };
+
+  App.saveRmd = async function() {
+    const get = id => { const e = document.getElementById(id); return e ? (e.value || '').trim() : ''; };
+    const country = get('rmd-country');
+    const factory = get('rmd-factory');
+    const sign_date = get('rmd-sign_date');
+    const project = get('rmd-project');
+    const material_name = get('rmd-material_name');
+    const material_batch = get('rmd-material_batch');
+    const material_no = get('rmd-material_no');
+    const qty = get('rmd-qty');
+    const internal_confirm = get('rmd-internal_confirm');
+    if (!material_name) { this.toast('物料名不能为空'); return; }
+    const now = new Date().toISOString();
+    const id = Math.floor(Date.now() / 1000);
+    const payload = { id, country, factory, sign_date, project, material_name, material_batch, material_no, qty, internal_confirm, created_at: now.slice(0, 19).replace('T', ' ') };
+    try {
+      await this.sbPost('sync_data', { table_name: 'rmd', local_id: id, payload: JSON.stringify(payload), supabase_id: this.uuid(), is_deleted: false, updated_at: now, device_id: this.deviceId });
+      this.cache.rmd = this.cache.rmd || [];
+      this.cache.rmd.unshift(payload);
+      this.toast('已保存 RMD');
+      this.loadInspection();
+      ['rmd-factory', 'rmd-sign_date', 'rmd-material_name', 'rmd-material_batch', 'rmd-material_no', 'rmd-qty', 'rmd-internal_confirm'].forEach(id2 => { const e = document.getElementById(id2); if (e) e.value = ''; });
+    } catch (e) { this.toast('保存失败: ' + e.message); }
+  };
+
+  App._rmdTrend = function() {
+    const list = (this.cache.rmd || []).filter(r => r.sign_date).slice().sort((a, b) => a.sign_date.localeCompare(b.sign_date));
+    if (list.length === 0) return '<div class="empty" style="padding:12px">暂无数据</div>';
+    const map = {};
+    list.forEach(r => { map[r.sign_date] = (map[r.sign_date] || 0) + 1; });
+    const dates = Object.keys(map).sort();
+    let cum = 0;
+    const values = dates.map(d => { cum += map[d]; return cum; });
+    return this._rptLine(dates.map(d => d.length > 5 ? d.slice(5) : d), [{ name: 'RMD 累计', color: '#e94560', values }]);
   };
 
   /* ─── Settings ─── */
@@ -227,6 +290,8 @@ export function setupPages(App) {
       const el = document.getElementById(id);
       if (el) el.style.display = show ? '' : 'none';
     });
+    const qi = document.getElementById('qual-insp-add');
+    if (qi) qi.style.display = (show && (this.qualModule === 'inspection')) ? '' : 'none';
   };
 
   /* ─── Sync / Force Update ─── */

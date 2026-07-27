@@ -26,12 +26,12 @@ export function setupNavigation(App) {
     else if (page === 'planning') this.loadPlanning();
     else if (page === 'materials') this.loadMaterials();
     else if (page === 'production') { this.loadProduction(); if (this.isAdmin()) document.getElementById('fab').style.display = 'flex'; }
-    else if (page === 'quality') { this.loadQuality(); if (this.isAdmin()) document.getElementById('fab').style.display = 'flex'; }
+    else if (page === 'quality') { this.qualModule = this.qualModule || 'issues'; this.loadQuality(); if (this.isAdmin()) document.getElementById('fab').style.display = 'flex'; }
     else if (page === 'inspection') this.loadInspection();
     else if (page === 'reports') this.loadReports();
     else if (page === 'settings') this.loadSettings();
     this.currentPage = page;
-    this.currentModule = (page === 'production') ? 'projects' : (page === 'quality') ? 'issues' : null;
+    this.currentModule = (page === 'production') ? 'projects' : (page === 'quality') ? ((this.qualModule === 'inspection') ? 'inspection' : 'issues') : null;
     window.scrollTo(0, 0);
   };
 
