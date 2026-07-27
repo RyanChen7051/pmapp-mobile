@@ -1,5 +1,5 @@
-// PMApp PWA Service Worker v29
-const CACHE_NAME = 'pmapp-pwa-v29';
+// PMApp PWA Service Worker v30
+const CACHE_NAME = 'pmapp-pwa-v30';
 const ASSETS = ['./', './index.html', './bundle.js', './manifest.json', './icon-192.png', './icon-512.png', './apple-touch-icon.png', './favicon-32.png'];
 
 self.addEventListener('install', (e) => {
