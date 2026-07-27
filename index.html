@@ -55,6 +55,7 @@ body {
 .topbar h1 { font-size: 16px; font-weight: 700; }
 .topbar .back-btn { font-size: 24px; color: var(--accent); cursor: pointer; padding: 4px 8px; }
 .topbar .right-action { font-size: 14px; color: var(--accent); cursor: pointer; font-weight: 600; }
+.sync-badge { margin-left: auto; font-size: 11px; font-weight: 600; color: #fff; background: var(--accent); padding: 2px 8px; border-radius: 10px; white-space: nowrap; }
 
 /* Tab bar - 7 tabs */
 .tabbar {
@@ -491,6 +492,7 @@ body.rtl .card-meta { flex-direction: row-reverse; }
 <div class="topbar" id="topbar" style="display:none">
   <span class="back-btn" id="tb-back" onclick="App.goBack()" style="display:none">‹</span>
   <h1 id="tb-title">PMApp</h1>
+  <span id="sync-badge" class="sync-badge" style="display:none"></span>
   <span class="right-action" id="tb-action"></span>
 </div>
 
@@ -519,6 +521,6 @@ body.rtl .card-meta { flex-direction: row-reverse; }
 
 </div>
 
-<script type="module" src="bundle.js?v=33"></script>
+<script type="module" src="bundle.js?v=34"></script>
 </body>
 </html>

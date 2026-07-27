@@ -94,6 +94,8 @@ const I18N = {
     err_pwd: '密码错误', err_disabled: '账号已被禁用', err_notfound: '账号不存在',
     err_empty: '请输入用户名和密码', login_loading: '登录中...',
     never: '从未', confirm_logout: '确定要退出登录吗？', confirm_del_msg: '确定删除此留言？',
+    sync_pending: '待同步', sync_done: '已同步',
+    auto_logout_night: '已到中国时间 23:59，系统已自动登出', reconnected: '网络已恢复，已自动登录', offline: '网络已断开，请检查连接', auto_login_note: '当日登录有效，次日需重新登录',
     // Detail
     detail: '详情', proj_detail: '项目详情', prod_progress: '生产进度',
     delivery_plan: '交付计划', issue_list: '问题列表', insp_plan: '检验计划',
@@ -173,6 +175,8 @@ const I18N = {
     err_pwd: 'Invalid password', err_disabled: 'Account disabled', err_notfound: 'Account not found',
     err_empty: 'Please enter username and password', login_loading: 'Logging in...',
     never: 'Never', confirm_logout: 'Are you sure you want to log out?', confirm_del_msg: 'Delete this message?',
+    sync_pending: 'Pending', sync_done: 'Synced',
+    auto_logout_night: 'China time 23:59 reached — auto logged out', reconnected: 'Network restored — auto logged in', offline: 'Network disconnected', auto_login_note: 'Login valid for the current day; re-login required next day',
     detail: 'Details', proj_detail: 'Project Details', prod_progress: 'Production Progress',
     delivery_plan: 'Delivery Plan', issue_list: 'Issues', insp_plan: 'Inspection Plan',
     not_found: 'Record not found',

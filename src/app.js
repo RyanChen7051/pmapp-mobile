@@ -14,6 +14,7 @@ import { setupEdit } from './edit.js';
 import { setupReports } from './reports.js';
 import { setupNavigation, setupUtils } from './navigation.js';
 import { setupTranslate, clearTranslateCache } from './translate.js';
+import { setupSyncQueue } from './sync.js';
 
 const App = {
   session: null,
@@ -39,7 +40,14 @@ const App = {
     this.deviceId = localStorage.getItem('pmapp_device_id') || this.generateDeviceId();
     const saved = localStorage.getItem('pmapp_session');
     if (saved) {
-      try { this.session = JSON.parse(saved); } catch (e) { localStorage.removeItem('pmapp_session'); }
+      try {
+        this.session = JSON.parse(saved);
+        // 仅当「登录当天（中国日期）」才恢复会话；跨天则视为失效，要求重新登录
+        if (!this.isSessionValidToday()) {
+          localStorage.removeItem('pmapp_session');
+          this.session = null;
+        }
+      } catch (e) { localStorage.removeItem('pmapp_session'); }
     }
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js').catch(() => {});
@@ -47,6 +55,7 @@ const App = {
     this.showApp();
     this.loadAll();
     this.setupPTR();
+    this.setupSessionGuard();
     // Re-apply translations after dynamic content loads
     setTimeout(() => applyTranslations(), 500);
   },
@@ -80,6 +89,7 @@ setupReports(App);
 setupNavigation(App);
 setupUtils(App);
 setupTranslate(App);
+setupSyncQueue(App);
 
 window.App = App;
 App.init();

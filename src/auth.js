@@ -46,7 +46,10 @@ export function setupAuth(App) {
       console.log('[LOGIN] Password verify result:', ok);
       if (!ok) throw new Error(t('err_pwd'));
       this.session = { user: { id: acc.id, email: email, username: acc.username, display_name: acc.display_name || acc.username, role: acc.role || ((acc.username === 'admin' || acc.username === 'admin2') ? 'admin' : 'viewer') } };
+      // 记录登录当天的中国日期，用于「当日有效、次日需重新登录」判定
+      this.session.loginDate = this.chinaDate();
       localStorage.setItem('pmapp_session', JSON.stringify(this.session));
+      this.scheduleChinaLogout();
       await this.recordLogin(acc.username, acc.display_name || acc.username, acc.role || ((acc.username === 'admin' || acc.username === 'admin2') ? 'admin' : 'viewer'));
       this.loadSettings();
       this.loadHome();
@@ -79,6 +82,66 @@ export function setupAuth(App) {
       const bits = await crypto.subtle.deriveBits({ name: 'PBKDF2', salt: enc.encode(salt), iterations: 100000, hash: 'SHA-256' }, keyMaterial, 256);
       return Array.from(new Uint8Array(bits)).map(b => b.toString(16).padStart(2, '0')).join('') === storedHash;
     } catch (e) { return false; }
+  };
+
+  /* ─── Session Guard: 当日有效 + 中国时间 23:59 自动登出 + 网络重连自动登入 ─── */
+
+  // 当前中国日期 (Asia/Shanghai = UTC+8, 无夏令时)，格式 YYYY-MM-DD
+  App.chinaDate = function() {
+    return new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Shanghai' });
+  };
+
+  // 会话是否为「当天」有效（登录当天中国日期 == 当前中国日期）
+  App.isSessionValidToday = function() {
+    if (!this.session || !this.session.loginDate) return false;
+    return this.session.loginDate === this.chinaDate();
+  };
+
+  // 安排一个定时器：到中国时间当晚 23:59 强制登出
+  App.scheduleChinaLogout = function() {
+    clearTimeout(this._logoutTimer);
+    if (!this.isLoggedIn() || !this.isSessionValidToday()) return;
+    const now = new Date();
+    const [y, m, d] = this.chinaDate().split('-').map(Number);
+    // 中国 23:59 = UTC 15:59（同一日历日，UTC+8）
+    let target = Date.UTC(y, m - 1, d, 23, 59, 0, 0) - 8 * 3600 * 1000;
+    let delay = target - now.getTime();
+    if (delay <= 0) {
+      // 已过今日 23:59（中国时间），顺延到次日
+      target = Date.UTC(y, m - 1, d + 1, 23, 59, 0, 0) - 8 * 3600 * 1000;
+      delay = target - now.getTime();
+    }
+    this._logoutTimer = setTimeout(() => this.forceAutoLogout(), delay);
+  };
+
+  // 强制登出（无确认弹窗，用于定时/自动场景）
+  App.forceAutoLogout = function(reason) {
+    if (!this.isLoggedIn()) { this.scheduleChinaLogout(); return; }
+    localStorage.removeItem('pmapp_session');
+    this.session = null;
+    this.toast(reason || t('auto_logout_night'), 3500);
+    this.navigate('settings'); // 重新渲染登录表单（loadSettings 依赖 isLoggedIn）
+    this.scheduleChinaLogout(); // 重新安排下一次（在登录前为 no-op）
+  };
+
+  // 启动守卫：定时登出 + 网络在线自动重登 / 离线提示
+  App.setupSessionGuard = function() {
+    this.scheduleChinaLogout();
+    const self = this;
+    window.addEventListener('online', () => {
+      if (self.isLoggedIn() && self.isSessionValidToday()) {
+        // 已登录且当日有效：网络恢复后自动重新载入数据（即"自动登入"）
+        self.toast(t('reconnected'), 2000);
+        self.loadAll().catch(() => {});
+      } else if (!self.isLoggedIn()) {
+        // 会话已失效（如跨天）：确保在登录页
+        self.loadSettings();
+        if (self.currentPage === 'settings') self.navigate('settings');
+      }
+    });
+    window.addEventListener('offline', () => {
+      self.toast(t('offline'), 2500);
+    });
   };
 
   App.logout = function() {
