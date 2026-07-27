@@ -21,17 +21,6 @@ export function setupPages(App) {
     this.populateTodoParents();
     this.renderTodos();
     this.renderOverdue();
-    const shipping = (this.cache.shipping_plans || []).slice(0, 10);
-    const sEl = document.getElementById('plan-shipping');
-    if (shipping.length === 0) { sEl.innerHTML = `<div class="empty"><div class="empty-icon">🚢</div>${t('empty_shipping')}</div>`; }
-    else { sEl.innerHTML = shipping.map(s => `<div class="card" onclick="App.openDetail('shipping_plans', ${s.id})">
-      <div class="card-title">🚢 ${this.esc(s.plan_no)}</div>
-      <div class="card-meta">
-        ${s.status ? `<span class="badge ${this.badgeClass(s.status)}">${this.esc(s.status)}</span>` : ''}
-        ${s.destination ? `<span>📍 ${this.esc(s.destination)}</span>` : ''}
-        ${s.planned_ship_date ? `<span>📅 ${this.esc(s.planned_ship_date)}</span>` : ''}
-      </div></div>`).join('');
-    }
   };
 
   /* ─── 待执行任务（checkbox 清单）─── */
