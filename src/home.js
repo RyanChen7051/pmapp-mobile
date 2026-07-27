@@ -2,8 +2,62 @@
 import { STAGE_PROGRESS, MODULES, APP_VERSION } from './config.js';
 import { t } from './i18n.js';
 
+/* ── World Clock ── */
+const WC_CLOCKS = [
+  { city: '中国', flag: '🇨🇳', tz: 'Asia/Shanghai',    accent: '#e94560' },
+  { city: '越南', flag: '🇻🇳', tz: 'Asia/Ho_Chi_Minh', accent: '#2ed573' },
+  { city: '印度', flag: '🇮🇳', tz: 'Asia/Kolkata',     accent: '#ffa502' },
+];
+
+function _tzOffsetMin(tz) {
+  try {
+    const now = new Date();
+    const tzStr = now.toLocaleString('en-US', { timeZone: tz });
+    const utcStr = now.toLocaleString('en-US', { timeZone: 'UTC' });
+    return Math.round((new Date(tzStr) - new Date(utcStr)) / 60000);
+  } catch { return 0; }
+}
+
+function _renderWorldClock() {
+  const el = document.getElementById('world-clock');
+  if (!el) return;
+  const localOffset = -new Date().getTimezoneOffset();
+  const now = new Date();
+
+  el.innerHTML = WC_CLOCKS.map(c => {
+    const parts = new Intl.DateTimeFormat('en-GB', {
+      timeZone: c.tz, hour12: false,
+      hour: '2-digit', minute: '2-digit', second: '2-digit',
+    }).formatToParts(now);
+    const get = type => parts.find(p => p.type === type)?.value || '00';
+    const hh = get('hour'), mm = get('minute'), ss = get('second');
+    const isDay = parseInt(hh) >= 6 && parseInt(hh) < 18;
+    const offMin = _tzOffsetMin(c.tz);
+    const isLocal = offMin === localOffset;
+    const sign = offMin >= 0 ? '+' : '-';
+    const abs = Math.abs(offMin);
+    const oh = Math.floor(abs / 60), om = abs % 60;
+    const offStr = om === 0 ? `UTC${sign}${oh}` : `UTC${sign}${oh}:${String(om).padStart(2,'0')}`;
+    return `<div class="wclock-card ${isDay ? 'wc-day' : 'wc-night'} ${isLocal ? 'wc-local' : ''}" style="border-left:3px solid ${c.accent}">
+      <span class="wc-dn">${isDay ? '☀️' : '🌙'}</span>
+      <div class="wc-flag">${c.flag}</div>
+      <div class="wc-city">${c.city}${isLocal ? ' 📍' : ''}</div>
+      <div class="wc-time">${hh}:${mm}<span class="wc-sec">:${ss}</span></div>
+      <div class="wc-offset" style="color:${c.accent}">${offStr}</div>
+    </div>`;
+  }).join('');
+}
+
+let _wcTimer = null;
+function _startWorldClock() {
+  _renderWorldClock();
+  if (_wcTimer) clearInterval(_wcTimer);
+  _wcTimer = setInterval(_renderWorldClock, 1000);
+}
+
 export function setupHome(App) {
   App.loadHome = function() {
+    _startWorldClock();
     const banner = document.getElementById('home-banner');
     if (!this.isLoggedIn()) {
       banner.innerHTML = `<div class="banner banner-warn">${t('not_logged_in')}</div>`;
@@ -66,7 +120,7 @@ export function setupHome(App) {
 
     const adminSection = document.getElementById('admin-login-section');
     if (adminSection) {
-      if (this.isAdmin()) {
+      if (this.isSuperAdmin()) {
         adminSection.style.display = '';
         this.loadLoginActivity();
       } else {
