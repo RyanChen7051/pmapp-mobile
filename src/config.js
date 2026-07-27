@@ -6,7 +6,8 @@ export const APP_VERSION = 'v3.5.0';
 export const STAGE_PROGRESS = { NPI: 10, EVT: 25, DVT: 50, PVT: 75, MP: 100, completed: 100 };
 
 export const USER_MAP = {
-  'admin': { name: '邦杰', dept: '管理员' },
+  'admin': { name: '陈邦杰', dept: '管理员' },
+  'admin2': { name: 'Imran Ahmed', dept: '管理员' },
   'leader1': { name: '镇炎总', dept: 'PMC' },
   'leader2': { name: '宋总', dept: '制造中心' },
   'leader3': { name: '朱总', dept: '总裁办' },
@@ -26,6 +27,13 @@ export const USER_MAP = {
   'leader17': { name: '兰启高', dept: '采购' },
   'leader18': { name: '杨芳万', dept: '工程' },
   'leader19': { name: '何东华', dept: '工程' },
+  'leader20': { name: '胡冠', dept: '项目' },
+  'leader21': { name: '张丽君', dept: '项目' },
+  'leader22': { name: '田宏', dept: '项目' },
+  'leader23': { name: '曹滂展', dept: '项目' },
+  'leader24': { name: '蒋孝文', dept: '独立品牌' },
+  'leader25': { name: '胡彩莲', dept: '销售' },
+  'leader26': { name: '刘思雨', dept: '项目' },
 };
 
 export const MODULES = {
