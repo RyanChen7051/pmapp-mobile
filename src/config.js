@@ -62,10 +62,10 @@ export const MODULES = {
     editFields: [{key:'factory_name',label:'工厂名称',type:'text',required:true},{key:'region',label:'区域',type:'text'},{key:'country',label:'国家',type:'text'},{key:'client_project_code',label:'客户项目代码',type:'text'},{key:'factory_project_code',label:'工厂项目代码',type:'text'},{key:'pm',label:'项目经理',type:'text'},{key:'pe',label:'产品工程师',type:'text'},{key:'te',label:'测试工程师',type:'text'},{key:'me',label:'制造工程师',type:'text'},{key:'ee',label:'电气工程师',type:'text'},{key:'quality',label:'质量工程师',type:'text'},{key:'daily_production_report',label:'日报链接',type:'text'},{key:'daily_problem_management',label:'问题管理链接',type:'text'}],
   },
   todos: {
-    title: '待执行任务', icon: '✅', table: 'todos',
-    listFields: [{key:'content',label:'任务'},{key:'due_date',label:'完成时间'},{key:'done',label:'完成',toggle:true}],
-    detailFields: [{key:'content',label:'任务'},{key:'due_date',label:'完成时间'},{key:'done',label:'完成'}],
-    editFields: [{key:'content',label:'任务',type:'text',required:true},{key:'due_date',label:'完成时间',type:'date'},{key:'done',label:'完成',type:'text'}],
+    title: '生产计划（子计划）', icon: '✅', table: 'todos',
+    listFields: [{key:'content',label:'任务'},{key:'parent_plan',label:'主计划'},{key:'due_date',label:'完成时间'},{key:'done',label:'完成',toggle:true}],
+    detailFields: [{key:'content',label:'任务'},{key:'parent_plan',label:'主计划'},{key:'due_date',label:'完成时间'},{key:'done',label:'完成'}],
+    editFields: [{key:'content',label:'任务',type:'text',required:true},{key:'parent_plan',label:'主计划',type:'text'},{key:'due_date',label:'完成时间',type:'date'},{key:'done',label:'完成',type:'text'}],
   },
   shipping_plans: {
     title: '出货计划', icon: '🚢', table: 'shipping_plans',

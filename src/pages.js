@@ -18,6 +18,7 @@ export function setupPages(App) {
         ${t.due_date ? `<span>📅 ${this.esc(t.due_date)}</span>` : ''}
       </div></div>`).join('');
     }
+    this.populateTodoParents();
     this.renderTodos();
     this.renderOverdue();
     const shipping = (this.cache.shipping_plans || []).slice(0, 10);
@@ -56,24 +57,35 @@ export function setupPages(App) {
             <span>📅 ${due ? this.esc(due) : t('todo_no_due')}</span>
             ${overdue ? `<span class="todo-overdue" title="${t('todo_overdue')}">⚠️</span>` : ''}
           </div>
+          ${r.parent_plan ? `<div class="todo-parent">🔗 ${this.esc(r.parent_plan)}</div>` : ''}
         </div>
         <span class="todo-del" onclick="App.deleteTodo(${r.id})">✕</span>
       </div>`;
     }).join('');
   };
 
+  App.populateTodoParents = function() {
+    const sel = document.getElementById('todo-parent');
+    if (!sel) return;
+    const tasks = this.cache.tasks || [];
+    sel.innerHTML = `<option value="">${t('todo_parent_none')}</option>` +
+      tasks.map(tk => `<option value="${this.esc(tk.title || '')}">${this.esc((tk.title || '').slice(0, 40))}</option>`).join('');
+  };
+
   App.addTodo = async function() {
     const cEl = document.getElementById('todo-content');
     const dEl = document.getElementById('todo-due');
+    const pEl = document.getElementById('todo-parent');
     if (!cEl) return;
     const content = cEl.value.trim();
     const due = dEl ? dEl.value : '';
     if (!content) { this.toast(t('todo_ph_content')); return; }
     const now = new Date().toISOString().slice(0, 19).replace('T', ' ');
     const id = Math.floor(Date.now() / 1000);
-    const rec = { id, content, due_date: due, done: false, created_at: now };
+    const parent = pEl ? pEl.value : '';
+    const rec = { id, content, parent_plan: parent, due_date: due, done: false, created_at: now };
     (this.cache.todos = this.cache.todos || []).unshift(rec);
-    cEl.value = ''; if (dEl) dEl.value = '';
+    cEl.value = ''; if (dEl) dEl.value = ''; if (pEl) pEl.value = '';
     this.renderTodos();
     try {
       await this.sbPost('sync_data', {
@@ -134,6 +146,7 @@ export function setupPages(App) {
           <span>📅 ${this.esc(r.due_date || '')}</span>
           <span class="todo-overdue" title="${t('todo_overdue')}">⚠️ ${t('todo_overdue')}</span>
         </div>
+        ${r.parent_plan ? `<div class="todo-parent">🔗 ${this.esc(r.parent_plan)}</div>` : ''}
       </div>
     </div>`).join('');
   };

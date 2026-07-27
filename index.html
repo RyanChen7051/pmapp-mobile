@@ -120,6 +120,9 @@ body {
 .todo-item.done .todo-due { color: var(--text-muted); }
 .todo-del { flex: 0 0 auto; font-size: 14px; color: var(--text-muted); cursor: pointer; padding: 2px 4px; }
 .todo-del:active { opacity: 0.6; }
+.todo-parent-sel { flex: 1 1 100%; padding: 9px 12px; background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary); font-size: 14px; outline: none; min-width: 0; }
+.todo-parent-sel:focus { border-color: var(--accent); }
+.todo-parent { font-size: 12px; color: var(--text-secondary); margin-top: 3px; display: flex; align-items: center; gap: 4px; }
 
 /* Home header */
 .home-header { text-align: center; padding: 20px 0 16px; }
@@ -348,7 +351,8 @@ body.rtl .card-meta { flex-direction: row-reverse; }
   <div id="plan-tasks"><div class="loading"><div class="spinner"></div><span data-i18n="loading">加载中...</span></div></div>
   <div class="sec-header"><span data-i18n="todo_title">计划任务</span></div>
   <div class="todo-add">
-    <input type="text" id="todo-content" class="todo-input" data-i18n-ph="todo_ph_content" placeholder="输入计划任务内容..." onkeydown="if(event.key==='Enter')App.addTodo()" />
+    <input type="text" id="todo-content" class="todo-input" data-i18n-ph="todo_ph_content" placeholder="输入子计划内容..." onkeydown="if(event.key==='Enter')App.addTodo()" />
+    <select id="todo-parent" class="todo-parent-sel" data-i18n-ph="todo_parent_label" title="所属主计划"></select>
     <input type="date" id="todo-due" class="todo-date" />
     <button class="btn btn-primary todo-add-btn" onclick="App.addTodo()">+ <span data-i18n="todo_add">添加</span></button>
   </div>
@@ -596,6 +600,6 @@ body.rtl .card-meta { flex-direction: row-reverse; }
 
 </div>
 
-<script type="module" src="bundle.js?v=37"></script>
+<script type="module" src="bundle.js?v=38"></script>
 </body>
 </html>
