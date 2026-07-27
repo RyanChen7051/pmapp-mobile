@@ -77,23 +77,25 @@ export function setupHome(App) {
     document.getElementById('ds-pending').textContent = issues.filter(i => i.status === 'open').length;
 
     const projEl = document.getElementById('home-projects');
-    const activeProjects = projects.filter(p => p.status === 'active').slice(0, 5);
-    if (activeProjects.length === 0) {
-      projEl.innerHTML = `<div class="empty"><div class="empty-icon">📦</div>${t('empty_active')}</div>`;
-    } else {
-      projEl.innerHTML = activeProjects.map(p => {
-        const progress = STAGE_PROGRESS[p.stage] || 0;
-        const pColor = progress >= 75 ? 'var(--accent-green)' : progress >= 50 ? 'var(--accent-orange)' : 'var(--accent-blue)';
-        return `<div class="card" onclick="App.openProjectDetail(${p.id})">
-          <div class="card-title">📦 ${this.esc(p.name)}</div>
-          <div class="card-meta">
-            ${p.stage ? `<span class="badge badge-purple">${this.esc(p.stage)}</span>` : ''}
-            ${p.customer_name_zh ? `<span>👤 ${this.esc(p.customer_name_zh)}</span>` : ''}
-            ${p.delivery_date ? `<span>📅 ${this.esc(p.delivery_date)}</span>` : ''}
-          </div>
-          <div class="progress-bar"><div class="progress-fill" style="width:${progress}%;background:${pColor}"></div></div>
-        </div>`;
-      }).join('');
+    if (projEl) {
+      const activeProjects = projects.filter(p => p.status === 'active').slice(0, 5);
+      if (activeProjects.length === 0) {
+        projEl.innerHTML = `<div class="empty"><div class="empty-icon">📦</div>${t('empty_active')}</div>`;
+      } else {
+        projEl.innerHTML = activeProjects.map(p => {
+          const progress = STAGE_PROGRESS[p.stage] || 0;
+          const pColor = progress >= 75 ? 'var(--accent-green)' : progress >= 50 ? 'var(--accent-orange)' : 'var(--accent-blue)';
+          return `<div class="card" onclick="App.openProjectDetail(${p.id})">
+            <div class="card-title">📦 ${this.esc(p.name)}</div>
+            <div class="card-meta">
+              ${p.stage ? `<span class="badge badge-purple">${this.esc(p.stage)}</span>` : ''}
+              ${p.customer_name_zh ? `<span>👤 ${this.esc(p.customer_name_zh)}</span>` : ''}
+              ${p.delivery_date ? `<span>📅 ${this.esc(p.delivery_date)}</span>` : ''}
+            </div>
+            <div class="progress-bar"><div class="progress-fill" style="width:${progress}%;background:${pColor}"></div></div>
+          </div>`;
+        }).join('');
+      }
     }
 
     const newsEl = document.getElementById('home-news');

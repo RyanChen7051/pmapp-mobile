@@ -1,13 +1,10 @@
-/* ═══ AI 助理浮窗（智能海外助理）═══
- * 独立于 App，仅用 DOM + fetch + localStorage。
- * 后端地址存 localStorage('pmapp_ai_url')，首次打开浮窗引导设置。
+/* ═══ 智能海外助理（内嵌于首页）═══
+ * 取代首页"进行中项目"区块，直接渲染在页面内（不再浮动）。
+ * 后端地址存 localStorage('pmapp_ai_url')，点 ⚙️ 设置。
  */
 import { t } from './i18n.js';
 
 export function initAIAssistant() {
-  const fab = document.getElementById('ai-fab');
-  const panel = document.getElementById('ai-panel');
-  const closeBtn = document.getElementById('ai-close');
   const messagesEl = document.getElementById('ai-messages');
   const inputEl = document.getElementById('ai-input');
   const sendBtn = document.getElementById('ai-send');
@@ -15,7 +12,7 @@ export function initAIAssistant() {
   const settingsBox = document.getElementById('ai-settings-box');
   const urlInput = document.getElementById('ai-url-input');
   const urlSave = document.getElementById('ai-url-save');
-  if (!fab || !panel) return;
+  if (!messagesEl || !inputEl || !sendBtn) return;
 
   const STORE_URL = 'pmapp_ai_url';
   const getUrl = () => (localStorage.getItem(STORE_URL) || '').replace(/\/+$/, '');
@@ -31,13 +28,6 @@ export function initAIAssistant() {
     messagesEl.scrollTop = messagesEl.scrollHeight;
     return div;
   }
-
-  function openPanel() {
-    panel.classList.add('open');
-    if (!getUrl()) { settingsBox.style.display = 'block'; urlInput.focus(); }
-  }
-  fab.addEventListener('click', openPanel);
-  closeBtn.addEventListener('click', () => panel.classList.remove('open'));
 
   settingsBtn.addEventListener('click', () => {
     const show = settingsBox.style.display !== 'block';
@@ -60,7 +50,7 @@ export function initAIAssistant() {
     if (!url) {
       settingsBox.style.display = 'block';
       urlInput.focus();
-      addMsg('bot', t('ai_url_missing') || '⚠️ 请先在设置中填入 AI 后端地址（部署后端后获得的 CloudStudio 链接）。');
+      addMsg('bot', t('ai_url_missing') || '⚠️ 请先点右上角 ⚙️ 填入 AI 后端地址（部署后端后获得的 CloudStudio 链接）。');
       return;
     }
     inputEl.value = '';
@@ -87,5 +77,11 @@ export function initAIAssistant() {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); }
   });
 
-  addMsg('bot', t('ai_greeting') || '你好，有什么问题，都可以问我。');
+  // 首屏问候 + 地址提示（仅在消息区为空时初始化一次）
+  if (messagesEl.children.length === 0) {
+    addMsg('bot', t('ai_greeting') || '你好，有什么问题，都可以问我。');
+    if (!getUrl()) {
+      addMsg('bot', t('ai_url_missing') || '⚠️ 请先点右上角 ⚙️ 填入 AI 后端地址（部署后端后获得的 CloudStudio 链接）。');
+    }
+  }
 }
