@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>PMApp AI 后端</title>
+<style>
+  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; max-width: 720px; margin: 48px auto; padding: 0 20px; color: #1f2937; line-height: 1.6; }
+  h1 { font-size: 22px; }
+  h2 { margin-top: 28px; font-size: 17px; }
+  code { background: #f3f4f8; padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+  pre { background: #0f172a; color: #e2e8f0; padding: 14px; border-radius: 8px; overflow: auto; font-size: 13px; }
+  ul { padding-left: 20px; }
+</style>
+</head>
+<body>
+  <h1>🤖 PMApp AI 助理后端</h1>
+  <p>这是一个 Node.js 服务，为 PWA 里的 AI 浮窗「小P」提供自然语言问答接口，数据全部来自 Supabase 中已存在的模块。</p>
+
+  <h2>运行方式</h2>
+  <pre>cd ai-server
+npm install
+cp .env.example .env      # 编辑并填入 LLM_API_KEY（DeepSeek 免费 key）
+npm start</pre>
+
+  <h2>接口</h2>
+  <ul>
+    <li><code>POST /api/chat</code> — 提问。body: <code>{"messages":[{"role":"user","content":"越南工厂本周有哪些延误的生产子计划？"}]}</code></li>
+    <li><code>GET /api/health</code> — 健康检查</li>
+  </ul>
+
+  <h2>暴露给 PWA</h2>
+  <p>启动后，在 CloudStudio 点击「端口预览」→ 选择端口 <code>3000</code> → 复制生成的公网 URL，
+  打开 PWA 右下角 💬 浮窗 → 点 ⚙️ → 填入该 URL 并保存，即可开始提问。</p>
+</body>
+</html>

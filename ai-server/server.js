@@ -150,6 +150,11 @@ app.post('/api/chat', async (req, res) => {
 
 /* 健康检查 */
 app.get('/api/health', (req, res) => res.json({ ok: true, model: LLM_MODEL, modules: MODULE_KEYS.length }));
+app.get('/', (req, res) => {
+  res.type('html').send(`<pre style="font-family:monospace;padding:20px">PMApp AI backend is running.
+POST /api/chat   body: {"messages":[{"role":"user","content":"越南工厂本周有哪些延误的生产子计划？"}]}
+GET  /api/health  status check</pre>`);
+});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`PMApp AI backend listening on :${PORT} (model=${LLM_MODEL})`));
