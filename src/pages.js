@@ -191,13 +191,17 @@ export function setupPages(App) {
       const progress = STAGE_PROGRESS[p.stage] || (p.status === 'completed' ? 100 : 0);
       const pColor = progress >= 75 ? 'var(--accent-green)' : progress >= 50 ? 'var(--accent-orange)' : 'var(--accent-blue)';
       return `<div class="card" onclick="App.openProjectDetail(${p.id})">
-        <div class="card-title">📦 ${this.esc(p.name)}</div>
-        <div class="prod-info">
-          ${p.order_no ? `<div class="prod-info-row"><span class="prod-info-label">订单号</span><span class="prod-info-val">${this.esc(p.order_no)}</span></div>` : ''}
-          ${p.delivery_date ? `<div class="prod-info-row"><span class="prod-info-label">计划交期</span><span class="prod-info-val">${this.esc(p.delivery_date)}</span></div>` : ''}
+        <div class="card-head">
+          <div class="card-title">📦 ${this.esc(p.name)}</div>
+          ${p.status ? `<span class="badge ${this.badgeClass(p.status)}">${this.esc(p.status)}</span>` : ''}
+        </div>
+        <div class="prod-grid">
+          ${p.order_no ? `<div class="prod-cell"><span class="prod-cell-label">订单号</span><span class="prod-cell-val">${this.esc(p.order_no)}</span></div>` : ''}
+          ${p.delivery_date ? `<div class="prod-cell"><span class="prod-cell-label">计划交期</span><span class="prod-cell-val">${this.esc(p.delivery_date)}</span></div>` : ''}
+          ${p.product_model ? `<div class="prod-cell"><span class="prod-cell-label">型号</span><span class="prod-cell-val">${this.esc(p.product_model)}</span></div>` : ''}
+          ${p.quantity ? `<div class="prod-cell"><span class="prod-cell-label">数量</span><span class="prod-cell-val">${this.esc(p.quantity)}</span></div>` : ''}
         </div>
         <div class="card-meta">
-          ${p.status ? `<span class="badge ${this.badgeClass(p.status)}">${this.esc(p.status)}</span>` : ''}
           ${p.stage ? `<span class="badge badge-purple">${this.esc(p.stage)}</span>` : ''}
           ${p.customer_name_zh ? `<span>👤 ${this.esc(p.customer_name_zh)}</span>` : ''}
         </div>

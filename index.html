@@ -78,10 +78,12 @@ body {
 .card { background: var(--bg-card); border-radius: var(--radius); padding: 14px; margin-bottom: 10px; border: 1px solid var(--border); cursor: pointer; transition: transform 0.15s; }
 .card:active { transform: scale(0.98); }
 .card-title { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
-.prod-info { margin: 2px 0 6px; display: flex; flex-direction: column; gap: 3px; }
-.prod-info-row { display: flex; align-items: baseline; font-size: 12.5px; line-height: 1.45; }
-.prod-info-label { flex: 0 0 auto; min-width: 58px; font-weight: 600; color: var(--text-secondary); }
-.prod-info-val { font-weight: 600; word-break: break-all; }
+.card-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.card-head .card-title { margin-bottom: 0; flex: 1 1 auto; min-width: 0; }
+.prod-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 14px; margin: 6px 0 6px; }
+.prod-cell { display: flex; align-items: baseline; font-size: 12.5px; line-height: 1.4; min-width: 0; }
+.prod-cell-label { flex: 0 0 auto; min-width: 52px; margin-right: 4px; font-weight: 600; color: var(--text-secondary); }
+.prod-cell-val { font-weight: 600; word-break: break-all; }
 .card-meta { display: flex; flex-wrap: wrap; gap: 6px; font-size: 12px; color: var(--text-secondary); }
 .card-desc { font-size: 13px; color: var(--text-secondary); margin-top: 4px; line-height: 1.4; }
 
@@ -651,6 +653,6 @@ body.rtl .card-meta { flex-direction: row-reverse; }
 
 </div>
 
-<script type="module" src="bundle.js?v=56"></script>
+<script type="module" src="bundle.js?v=57"></script>
 </body>
 </html>

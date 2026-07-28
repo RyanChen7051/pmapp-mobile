@@ -99,13 +99,17 @@
         ${s.country?`<span>\u{1F3F3}\uFE0F ${this.esc(s.country)}</span>`:""}
         ${s.pm?`<span>\u{1F464} ${this.esc(s.pm)}</span>`:""}
       </div></div>`).join("")},l.loadProduction=function(){this.renderProduction()},l.setProdFilter=function(e,n){this.prodFilter=e,document.querySelectorAll("#prod-filter .filter-chip").forEach(s=>s.classList.remove("active")),n.classList.add("active"),this.renderProduction()},l.renderProduction=function(){let e=this.cache.projects||[],n=document.getElementById("prod-search")?.value?.trim().toLowerCase();n&&(e=e.filter(a=>a.name?.toLowerCase().includes(n)||a.customer_name_zh?.toLowerCase().includes(n)||a.product_model?.toLowerCase().includes(n))),this.prodFilter!=="all"&&(e=e.filter(a=>a.stage===this.prodFilter));let s=document.getElementById("prod-list");if(e.length===0){s.innerHTML=`<div class="empty"><div class="empty-icon">\u{1F3ED}</div>${_("empty_projects")}</div>`;return}s.innerHTML=e.map(a=>{let i=j[a.stage]||(a.status==="completed"?100:0),o=i>=75?"var(--accent-green)":i>=50?"var(--accent-orange)":"var(--accent-blue)";return`<div class="card" onclick="App.openProjectDetail(${a.id})">
-        <div class="card-title">\u{1F4E6} ${this.esc(a.name)}</div>
-        <div class="prod-info">
-          ${a.order_no?`<div class="prod-info-row"><span class="prod-info-label">\u8BA2\u5355\u53F7</span><span class="prod-info-val">${this.esc(a.order_no)}</span></div>`:""}
-          ${a.delivery_date?`<div class="prod-info-row"><span class="prod-info-label">\u8BA1\u5212\u4EA4\u671F</span><span class="prod-info-val">${this.esc(a.delivery_date)}</span></div>`:""}
+        <div class="card-head">
+          <div class="card-title">\u{1F4E6} ${this.esc(a.name)}</div>
+          ${a.status?`<span class="badge ${this.badgeClass(a.status)}">${this.esc(a.status)}</span>`:""}
+        </div>
+        <div class="prod-grid">
+          ${a.order_no?`<div class="prod-cell"><span class="prod-cell-label">\u8BA2\u5355\u53F7</span><span class="prod-cell-val">${this.esc(a.order_no)}</span></div>`:""}
+          ${a.delivery_date?`<div class="prod-cell"><span class="prod-cell-label">\u8BA1\u5212\u4EA4\u671F</span><span class="prod-cell-val">${this.esc(a.delivery_date)}</span></div>`:""}
+          ${a.product_model?`<div class="prod-cell"><span class="prod-cell-label">\u578B\u53F7</span><span class="prod-cell-val">${this.esc(a.product_model)}</span></div>`:""}
+          ${a.quantity?`<div class="prod-cell"><span class="prod-cell-label">\u6570\u91CF</span><span class="prod-cell-val">${this.esc(a.quantity)}</span></div>`:""}
         </div>
         <div class="card-meta">
-          ${a.status?`<span class="badge ${this.badgeClass(a.status)}">${this.esc(a.status)}</span>`:""}
           ${a.stage?`<span class="badge badge-purple">${this.esc(a.stage)}</span>`:""}
           ${a.customer_name_zh?`<span>\u{1F464} ${this.esc(a.customer_name_zh)}</span>`:""}
         </div>
