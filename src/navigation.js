@@ -15,7 +15,7 @@ export function setupNavigation(App) {
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     const tab = document.querySelector(`.tab[data-page="${page}"]`);
     if (tab) tab.classList.add('active');
-    const titleKeys = { home: 'app_slogan', planning: 'tab_planning', materials: 'tab_materials', production: 'tab_production', quality: 'tab_quality', inspection: 'tab_inspection', reports: 'tab_reports', settings: 'tab_settings' };
+    const titleKeys = { home: 'app_slogan', factory: 'tab_factory', planning: 'tab_planning', materials: 'tab_materials', production: 'tab_production', quality: 'tab_quality', inspection: 'tab_inspection', reports: 'tab_reports', settings: 'tab_settings' };
     document.getElementById('tb-title').textContent = page === 'home' ? 'PMApp' : t(titleKeys[page] || 'app_slogan');
     document.getElementById('tb-back').style.display = 'none';
     document.getElementById('tb-action').innerHTML = '';
@@ -23,6 +23,7 @@ export function setupNavigation(App) {
     // Re-apply translations for the active page's static elements
     applyTranslations();
     if (page === 'home') this.loadHome();
+    else if (page === 'factory') { this.loadFactory(); if (this.isAdmin()) document.getElementById('fab').style.display = 'flex'; }
     else if (page === 'planning') this.loadPlanning();
     else if (page === 'materials') this.loadMaterials();
     else if (page === 'production') { this.loadProduction(); if (this.isAdmin()) document.getElementById('fab').style.display = 'flex'; }
@@ -86,7 +87,7 @@ export function setupUtils(App) {
 
   App.setupPTR = function() {
     let startY = 0, pulling = false;
-    const pages = ['home', 'planning', 'materials', 'production', 'quality', 'inspection', 'settings'];
+    const pages = ['home', 'factory', 'planning', 'materials', 'production', 'quality', 'inspection', 'settings'];
     document.addEventListener('touchstart', (e) => {
       if (window.scrollY === 0) { startY = e.touches[0].clientY; pulling = true; }
     });

@@ -18,7 +18,7 @@ const STORAGE_KEY = 'pmapp_lang';
 const I18N = {
   zh: {
     // Tabs
-    tab_home: '首页', tab_planning: '计划', tab_materials: '物料', tab_production: '生产',
+    tab_home: '首页', tab_planning: '计划', tab_factory: '工厂讯息', tab_materials: '物料', tab_production: '生产',
     tab_quality: '品质', tab_inspection: 'RMD', tab_reports: '周/月报', tab_settings: '设定', qual_mod_issues: '问题', qual_mod_inspection: '客验',
     // Home
     app_slogan: '科奈信海外生产管理系统', dashboard: '总体看板',
@@ -120,7 +120,7 @@ const I18N = {
   },
 
   en: {
-    tab_home: 'Home', tab_planning: 'Planning', tab_materials: 'Materials', tab_production: 'Production',
+    tab_home: 'Home', tab_planning: 'Planning', tab_factory: 'Factory', tab_materials: 'Materials', tab_production: 'Production',
     tab_quality: 'Quality', tab_inspection: 'RMD', tab_reports: 'Reports', tab_settings: 'Settings', qual_mod_issues: 'Issues', qual_mod_inspection: 'Inspection',
     app_slogan: 'Overseas Production Management System', dashboard: 'Dashboard',
     stat_total: 'Total', stat_active: 'Active', stat_overdue: 'Delayed', stat_qc: 'QC', stat_pending: 'Pending',
@@ -204,7 +204,7 @@ const I18N = {
   },
 
   es: {
-    tab_home: 'Inicio', tab_planning: 'Planificacion', tab_materials: 'Materiales', tab_production: 'Produccion',
+    tab_home: 'Inicio', tab_planning: 'Planificacion', tab_factory: 'Fabrica', tab_materials: 'Materiales', tab_production: 'Produccion',
     tab_quality: 'Calidad', tab_inspection: 'RMD', tab_reports: 'Informes', tab_settings: 'Ajustes',
     app_slogan: 'Sistema de Gestion de Produccion Exterior', dashboard: 'Panel',
     stat_total: 'Total', stat_active: 'Activo', stat_overdue: 'Retrasado', stat_qc: 'Calidad', stat_pending: 'Pendiente',
@@ -268,7 +268,7 @@ const I18N = {
   },
 
   ja: {
-    tab_home: 'ホーム', tab_planning: '計画', tab_materials: '資材', tab_production: '生産',
+    tab_home: 'ホーム', tab_planning: '計画', tab_factory: '工場', tab_materials: '資材', tab_production: '生産',
     tab_quality: '品質', tab_inspection: 'RMD', tab_reports: 'レポート', tab_settings: '設定',
     app_slogan: '海外生産管理システム', dashboard: 'ダッシュボード',
     stat_total: '総プロジェクト', stat_active: '進行中', stat_overdue: '遅延', stat_qc: '品質検査中', stat_pending: '保留中',
@@ -332,7 +332,7 @@ const I18N = {
   },
 
   fr: {
-    tab_home: 'Accueil', tab_planning: 'Planification', tab_materials: 'Materiaux', tab_production: 'Production',
+    tab_home: 'Accueil', tab_planning: 'Planification', tab_factory: 'Usine', tab_materials: 'Materiaux', tab_production: 'Production',
     tab_quality: 'Qualite', tab_inspection: 'RMD', tab_reports: 'Rapports', tab_settings: 'Parametres',
     app_slogan: 'Systeme de Gestion de Production Etranger', dashboard: 'Tableau de bord',
     stat_total: 'Total', stat_active: 'Actif', stat_overdue: 'En retard', stat_qc: 'Controle', stat_pending: 'En attente',
@@ -396,7 +396,7 @@ const I18N = {
   },
 
   de: {
-    tab_home: 'Start', tab_planning: 'Planung', tab_materials: 'Material', tab_production: 'Produktion',
+    tab_home: 'Start', tab_planning: 'Planung', tab_factory: 'Fabrik', tab_materials: 'Material', tab_production: 'Produktion',
     tab_quality: 'Qualitaet', tab_inspection: 'RMD', tab_reports: 'Berichte', tab_settings: 'Einstellungen',
     app_slogan: 'Auslandsproduktions-Verwaltungssystem', dashboard: 'Uebersicht',
     stat_total: 'Gesamt', stat_active: 'Aktiv', stat_overdue: 'Verspaetet', stat_qc: 'QS', stat_pending: 'Offen',
@@ -460,7 +460,7 @@ const I18N = {
   },
 
   ar: {
-    tab_home: 'الرئيسية', tab_planning: 'التخطيط', tab_materials: 'المواد', tab_production: 'الإنتاج',
+    tab_home: 'الرئيسية', tab_planning: 'التخطيط', tab_factory: 'مصنع', tab_materials: 'المواد', tab_production: 'الإنتاج',
     tab_quality: 'الجودة', tab_inspection: 'RMD', tab_reports: 'التقارير', tab_settings: 'الإعدادات',
     app_slogan: 'نظام إدارة الإنتاج الخارجي', dashboard: 'لوحة التحكم',
     stat_total: 'المجموع', stat_active: 'نشط', stat_overdue: 'متأخر', stat_qc: 'فحص', stat_pending: 'معلق',

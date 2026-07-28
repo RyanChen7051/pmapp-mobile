@@ -408,8 +408,13 @@ body.rtl .card-meta { flex-direction: row-reverse; }
   <div class="ptr-indicator" id="ptr-materials" data-i18n="ptr_pull">↓ 下拉刷新</div>
   <div class="sec-header"><span data-i18n="mat_alerts">物料预警</span><span class="sec-action" id="mat-alert-add" style="display:none" onclick="App.showCreateFor('overseas_material_alerts')" data-i18n="btn_new">+ 新建</span></div>
   <div id="mat-alerts"><div class="loading"><div class="spinner"></div><span data-i18n="loading">加载中...</span></div></div>
-  <div class="sec-header"><span data-i18n="mat_factories">工厂信息</span><span class="sec-action" id="mat-factory-add" style="display:none" onclick="App.showCreateFor('factory_info')" data-i18n="btn_new">+ 新建</span></div>
-  <div id="mat-factories"><div class="loading"><div class="spinner"></div><span data-i18n="loading">加载中...</span></div></div>
+</div>
+
+<!-- ═══ 工厂讯息 ═══ -->
+<div id="page-factory" class="page">
+  <div class="ptr-indicator" id="ptr-factory" data-i18n="ptr_pull">↓ 下拉刷新</div>
+  <div class="sec-header"><span data-i18n="tab_factory">工厂讯息</span><span class="sec-action" id="factory-add" style="display:none" onclick="App.showCreateFor('factory_info')" data-i18n="btn_new">+ 新建</span></div>
+  <div id="factory-list"><div class="loading"><div class="spinner"></div><span data-i18n="loading">加载中...</span></div></div>
 </div>
 
 <!-- ═══ 生产 ═══ -->
@@ -618,6 +623,7 @@ body.rtl .card-meta { flex-direction: row-reverse; }
 <!-- Tab bar -->
 <div class="tabbar" id="tabbar" style="display:none">
   <div class="tab active" onclick="App.navigate('home')" data-page="home"><span class="tab-icon">🏠</span><span data-i18n="tab_home">首页</span></div>
+  <div class="tab" onclick="App.navigate('factory')" data-page="factory"><span class="tab-icon">🏭</span><span data-i18n="tab_factory">工厂讯息</span></div>
   <div class="tab" onclick="App.navigate('planning')" data-page="planning"><span class="tab-icon">📋</span><span data-i18n="tab_planning">计划</span></div>
   <div class="tab" onclick="App.navigate('materials')" data-page="materials"><span class="tab-icon">📦</span><span data-i18n="tab_materials">物料</span></div>
   <div class="tab" onclick="App.navigate('production')" data-page="production"><span class="tab-icon">🏭</span><span data-i18n="tab_production">生产</span></div>
@@ -640,6 +646,6 @@ body.rtl .card-meta { flex-direction: row-reverse; }
 
 </div>
 
-<script type="module" src="bundle.js?v=47"></script>
+<script type="module" src="bundle.js?v=48"></script>
 </body>
 </html>

@@ -153,17 +153,21 @@ export function setupPages(App) {
         <span class="badge ${a.is_enabled ? 'badge-green' : 'badge-gray'}">${a.is_enabled ? t('lbl_enabled') : t('lbl_disabled')}</span>
       </div></div>`).join('');
     }
+  };
+
+  /* ─── Factory Tab (独立工厂讯息页) ─── */
+  App.loadFactory = function() {
+    this.updateAdminButtons();
     const factories = this.cache.factory_info || [];
-    const fEl = document.getElementById('mat-factories');
-    if (factories.length === 0) { fEl.innerHTML = `<div class="empty"><div class="empty-icon">🏭</div>${t('empty_factories')}</div>`; }
-    else { fEl.innerHTML = factories.map(f => `<div class="card" onclick="App.openDetail('factory_info', ${f.id})">
+    const el = document.getElementById('factory-list');
+    if (factories.length === 0) { el.innerHTML = `<div class="empty"><div class="empty-icon">🏭</div>${t('empty_factories')}</div>`; return; }
+    el.innerHTML = factories.map(f => `<div class="card" onclick="App.openDetail('factory_info', ${f.id})">
       <div class="card-title">🏭 ${this.esc(f.factory_name)}</div>
       <div class="card-meta">
         ${f.region ? `<span>📍 ${this.esc(f.region)}</span>` : ''}
         ${f.country ? `<span>🏳️ ${this.esc(f.country)}</span>` : ''}
         ${f.pm ? `<span>👤 ${this.esc(f.pm)}</span>` : ''}
       </div></div>`).join('');
-    }
   };
 
   /* ─── Production Tab ─── */
@@ -385,7 +389,7 @@ export function setupPages(App) {
 
   App.updateAdminButtons = function() {
     const show = this.isAdmin();
-    ['plan-task-add', 'mat-alert-add', 'mat-factory-add'].forEach(id => {
+    ['plan-task-add', 'mat-alert-add', 'mat-factory-add', 'factory-add'].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.style.display = show ? '' : 'none';
     });
