@@ -192,11 +192,14 @@ export function setupPages(App) {
       const pColor = progress >= 75 ? 'var(--accent-green)' : progress >= 50 ? 'var(--accent-orange)' : 'var(--accent-blue)';
       return `<div class="card" onclick="App.openProjectDetail(${p.id})">
         <div class="card-title">📦 ${this.esc(p.name)}</div>
+        <div class="prod-info">
+          ${p.order_no ? `<div class="prod-info-row"><span class="prod-info-label">订单号</span><span class="prod-info-val">${this.esc(p.order_no)}</span></div>` : ''}
+          ${p.delivery_date ? `<div class="prod-info-row"><span class="prod-info-label">计划交期</span><span class="prod-info-val">${this.esc(p.delivery_date)}</span></div>` : ''}
+        </div>
         <div class="card-meta">
           ${p.status ? `<span class="badge ${this.badgeClass(p.status)}">${this.esc(p.status)}</span>` : ''}
           ${p.stage ? `<span class="badge badge-purple">${this.esc(p.stage)}</span>` : ''}
           ${p.customer_name_zh ? `<span>👤 ${this.esc(p.customer_name_zh)}</span>` : ''}
-          ${p.delivery_date ? `<span>📅 ${this.esc(p.delivery_date)}</span>` : ''}
         </div>
         <div class="progress-bar"><div class="progress-fill" style="width:${progress}%;background:${pColor}"></div></div>
       </div>`;
