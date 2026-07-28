@@ -103,7 +103,7 @@ export function setupDetail(App) {
     document.getElementById('tb-back').style.display = 'block';
     document.getElementById('tb-action').innerHTML = '';
     document.getElementById('fab').style.display = 'none';
-    if (this.isAdmin() && mod.editFields) {
+    if (this.canEdit(moduleKey) && mod.editFields) {
       document.getElementById('tb-action').innerHTML = `<span onclick="App.showEditFor('${moduleKey}', ${id})">编辑</span>`;
     }
     this.currentPage = 'module-detail';

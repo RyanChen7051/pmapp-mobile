@@ -1,5 +1,5 @@
 /* ═══ Authentication ═══ */
-import { SUPABASE_KEY, APP_VERSION, USER_MAP } from './config.js';
+import { SUPABASE_KEY, APP_VERSION, USER_MAP, MODULE_PERMISSIONS, REPORTS_ALL_USERS } from './config.js';
 import { t } from './i18n.js';
 
 export function setupAuth(App) {
@@ -7,6 +7,18 @@ export function setupAuth(App) {
   App.isAdmin = function() { const r = this.session?.user?.role; const u = this.session?.user?.username; return r === 'admin' || (!r && (u === 'admin' || u === 'admin2')); };
   App.isSuperAdmin = function() { return this.session?.user?.username === 'admin'; };
   App.isViewer = function() { return this.session?.user?.role === 'viewer'; };
+
+  /* ─── 模块级编辑权限 ───
+     admin 永远可编辑；其余用户按 MODULE_PERMISSIONS 判断。
+     reports 模块在 REPORTS_ALL_USERS 为真时对所有人开放。 */
+  App.canEdit = function(module) {
+    if (this.isAdmin()) return true;
+    const u = this.session?.user?.username;
+    if (!u || !module) return false;
+    if (module === 'reports') return REPORTS_ALL_USERS === true;
+    const editors = MODULE_PERMISSIONS[module] || [];
+    return editors.includes(u);
+  };
 
   App.login = async function(e) {
     e.preventDefault();

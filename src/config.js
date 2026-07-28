@@ -165,3 +165,17 @@ export const MODULES = {
     ],
   },
 };
+
+/* ═══ 模块级编辑权限 ═══
+   admin（admin/admin2）始终拥有全部模块编辑权。
+   其余用户默认只读；如需开放某模块的「新建/编辑」权限，
+   在该模块键下填入其登录用户名即可。
+   周/月报（reports）开放给所有人：REPORTS_ALL_USERS = true。 */
+export const MODULE_PERMISSIONS = {
+  overseas_material_alerts: ['leader9'],   // 物料栏目（物料预警）→ 蒋思贵
+  issues: ['leader11'],                    // 品质 → 陈晓斌
+  inspection: ['leader11'],                // 品质（客验）→ 陈晓斌
+  doa: ['leader11'],                       // DOA/RMA → 陈晓斌
+  rma: ['leader11'],                       // DOA/RMA → 陈晓斌
+};
+export const REPORTS_ALL_USERS = true;     // 周/月报 → 所有人可生成/使用

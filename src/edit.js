@@ -3,7 +3,7 @@ import { MODULES } from './config.js';
 
 export function setupEdit(App) {
   App.showCreate = function() {
-    if (!this.isAdmin()) { this.toast('只读模式，无法新建'); return; }
+    if (!this.canEdit(this.currentModule)) { this.toast('只读模式，无法新建'); return; }
     if (!this.currentModule) return;
     const mod = MODULES[this.currentModule];
     if (!mod || !mod.editFields) return;
@@ -18,13 +18,13 @@ export function setupEdit(App) {
   };
 
   App.showCreateFor = function(moduleKey) {
-    if (!this.isAdmin()) { this.toast('只读模式'); return; }
+    if (!this.canEdit(moduleKey)) { this.toast('只读模式'); return; }
     this.currentModule = moduleKey;
     this.showCreate();
   };
 
   App.showEditFor = function(moduleKey, id) {
-    if (!this.isAdmin()) { this.toast('只读模式'); return; }
+    if (!this.canEdit(moduleKey)) { this.toast('只读模式'); return; }
     const record = (this.cache[moduleKey] || []).find(r => r.id === id);
     if (!record) return;
     this._showForm(moduleKey, record, false);

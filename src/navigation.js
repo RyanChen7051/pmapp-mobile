@@ -27,7 +27,7 @@ export function setupNavigation(App) {
     else if (page === 'planning') this.loadPlanning();
     else if (page === 'materials') this.loadMaterials();
     else if (page === 'production') { this.loadProduction(); if (this.isAdmin()) document.getElementById('fab').style.display = 'flex'; }
-    else if (page === 'quality') { this.qualModule = this.qualModule || 'issues'; this.loadQuality(); if (this.isAdmin()) document.getElementById('fab').style.display = 'flex'; }
+    else if (page === 'quality') { this.qualModule = this.qualModule || 'issues'; this.loadQuality(); if (this.canEdit(this.qualModule || 'issues')) document.getElementById('fab').style.display = 'flex'; }
     else if (page === 'inspection') this.loadInspection();
     else if (page === 'reports') this.loadReports();
     else if (page === 'settings') this.loadSettings();
@@ -52,7 +52,7 @@ export function setupNavigation(App) {
     if (e && e.target.id !== 'modal-overlay') return;
     document.getElementById('modal-overlay').classList.remove('show');
     document.getElementById('tb-action').innerHTML = '';
-    if (this.currentPage === 'module-detail' && this.currentModule && this.isAdmin()) {
+    if (this.currentPage === 'module-detail' && this.currentModule && this.canEdit(this.currentModule)) {
       document.getElementById('tb-action').innerHTML = `<span onclick="App.showEditFor('${this.currentModule}', ${this.currentRecordId})">${t('btn_edit')}</span>`;
     } else if (this.currentPage === 'project-detail' && this.isAdmin()) {
       document.getElementById('tb-action').innerHTML = `<span onclick="App.showEditFor('projects', ${this.currentRecordId})">${t('btn_edit')}</span>`;

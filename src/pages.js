@@ -476,13 +476,18 @@ export function setupPages(App) {
   };
 
   App.updateAdminButtons = function() {
-    const show = this.isAdmin();
-    ['plan-task-add', 'mat-alert-add', 'mat-factory-add', 'factory-add'].forEach(id => {
+    // 各「+ 新建」按钮按模块权限显示（admin 始终可见；其余按 MODULE_PERMISSIONS）
+    const map = {
+      'plan-task-add': this.isAdmin(),            // 计划任务：未授权额外用户
+      'mat-alert-add': this.canEdit('overseas_material_alerts'), // 物料栏目 → 蒋思贵
+      'mat-factory-add': this.isAdmin(),          // 冗余占位（物料页无此钮）
+      'factory-add': this.isAdmin(),              // 工厂讯息：未授权额外用户
+      'qual-insp-add': this.canEdit('inspection'),// 品质(客验) → 陈晓斌
+    };
+    Object.entries(map).forEach(([id, show]) => {
       const el = document.getElementById(id);
       if (el) el.style.display = show ? '' : 'none';
     });
-    const qi = document.getElementById('qual-insp-add');
-    if (qi) qi.style.display = (show && (this.qualModule === 'inspection')) ? '' : 'none';
   };
 
   /* ─── Sync / Force Update ─── */
