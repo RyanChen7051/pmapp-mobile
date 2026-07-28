@@ -183,6 +183,7 @@ body {
 .rpt-field input:disabled, .rpt-field input[readonly] { opacity: 0.6; color: var(--text-muted); cursor: not-allowed; }
 .rpt-gen-btn { width: 100%; margin-top: 4px; }
 .rpt-chart { background: var(--bg-input); border-radius: 10px; padding: 8px; margin: 6px 0; }
+.rpt-subhead { font-size: 13px; font-weight: 600; color: var(--text-secondary); margin: 12px 12px 2px; }
 
 /* Report document (inside modal) */
 .rpt-doc { font-size: 13px; color: var(--text-primary); }
@@ -468,53 +469,48 @@ body.rtl .card-meta { flex-direction: row-reverse; }
   </div>
 </div>
 
-<!-- ═══ RMD ═══ -->
+<!-- ═══ DOA / RMA ═══ -->
 <div id="page-inspection" class="page">
   <div class="ptr-indicator" id="ptr-inspection" data-i18n="ptr_pull">↓ 下拉刷新</div>
+
+  <!-- DOA -->
   <div class="rpt-block">
-    <div class="rpt-block-title">📑 RMD 新建</div>
-    <div class="rpt-field">
-      <label>国家</label>
-      <select id="rmd-country"><option value="越南">越南</option><option value="印度">印度</option></select>
-    </div>
-    <div class="rpt-field">
-      <label>工厂</label>
-      <input type="text" id="rmd-factory" placeholder="手动输入工厂名">
-    </div>
-    <div class="rpt-field">
-      <label>签核时间</label>
-      <input type="date" id="rmd-sign_date">
-    </div>
-    <div class="rpt-field">
-      <label>项目</label>
-      <select id="rmd-project"><option value="">（未选）</option></select>
-    </div>
-    <div class="rpt-field">
-      <label>物料名</label>
-      <input type="text" id="rmd-material_name" placeholder="手动输入物料名">
-    </div>
-    <div class="rpt-field">
-      <label>物料批次</label>
-      <input type="text" id="rmd-material_batch" placeholder="手动输入物料批次">
-    </div>
-    <div class="rpt-field">
-      <label>物料编号</label>
-      <input type="text" id="rmd-material_no" placeholder="手动输入物料编号">
-    </div>
-    <div class="rpt-field">
-      <label>数量</label>
-      <input type="number" id="rmd-qty" placeholder="0">
-    </div>
-    <div class="rpt-field">
-      <label>内部确认（部门/人名）</label>
-      <input type="text" id="rmd-internal_confirm" placeholder="如：品质-陈晓斌">
-    </div>
-    <button class="btn btn-primary rpt-gen-btn" onclick="App.saveRmd()">保存 RMD</button>
+    <div class="rpt-block-title">DOA · Defect on Arrival / Dead On Arrival</div>
+    <div class="rpt-field"><label>日期</label><input type="date" id="doa-date"></div>
+    <div class="rpt-field"><label>项目</label><select id="doa-project"><option value="">（未选）</option></select></div>
+    <div class="rpt-field"><label>工厂</label><input type="text" id="doa-factory" placeholder="手动输入工厂名"></div>
+    <div class="rpt-field"><label>物料名</label><input type="text" id="doa-material_name" placeholder="手动输入物料名"></div>
+    <div class="rpt-field"><label>物料批次</label><input type="text" id="doa-material_batch" placeholder="手动输入物料批次"></div>
+    <div class="rpt-field"><label>来料数量</label><input type="number" id="doa-received_qty" placeholder="0"></div>
+    <div class="rpt-field"><label>不良数量</label><input type="number" id="doa-defect_qty" placeholder="0"></div>
+    <div class="rpt-field"><label>不良描述</label><textarea id="doa-description" rows="2" placeholder="手动输入不良描述"></textarea></div>
+    <div class="rpt-field"><label>签核</label><input type="text" id="doa-internal_confirm" placeholder="如：品质-陈晓斌"></div>
+    <button class="btn btn-primary rpt-gen-btn" onclick="App.saveDoa()">保存 DOA</button>
   </div>
-  <div class="sec-header"><span>RMD 列表</span></div>
-  <div id="rmd-list"><div class="loading"><div class="spinner"></div><span data-i18n="loading">加载中...</span></div></div>
-  <div class="sec-header"><span>RMD 积累趋势曲线</span></div>
-  <div class="rpt-chart" id="rmd-chart"></div>
+  <div class="sec-header"><span>DOA 列表</span></div>
+  <div id="doa-list"><div class="loading"><div class="spinner"></div><span data-i18n="loading">加载中...</span></div></div>
+
+  <!-- RMA -->
+  <div class="rpt-block">
+    <div class="rpt-block-title">RMA · Return Material Authorization</div>
+    <div class="rpt-field"><label>日期</label><input type="date" id="rma-date"></div>
+    <div class="rpt-field"><label>项目</label><select id="rma-project"><option value="">（未选）</option></select></div>
+    <div class="rpt-field"><label>客户</label><input type="text" id="rma-customer" placeholder="手动输入客户名"></div>
+    <div class="rpt-field"><label>退货数量</label><input type="number" id="rma-return_qty" placeholder="0"></div>
+    <div class="rpt-field"><label>退货原因</label><textarea id="rma-reason" rows="2" placeholder="手动输入退货原因"></textarea></div>
+    <div class="rpt-field"><label>处理状态</label><select id="rma-status"><option value="待处理">待处理</option><option value="维修中">维修中</option><option value="已关闭">已关闭</option></select></div>
+    <div class="rpt-field"><label>描述</label><textarea id="rma-description" rows="2" placeholder="手动输入描述"></textarea></div>
+    <button class="btn btn-primary rpt-gen-btn" onclick="App.saveRma()">保存 RMA</button>
+  </div>
+  <div class="sec-header"><span>RMA 列表</span></div>
+  <div id="rma-list"><div class="loading"><div class="spinner"></div><span data-i18n="loading">加载中...</span></div></div>
+
+  <!-- 曲线分析 -->
+  <div class="sec-header"><span>曲线分析</span></div>
+  <div class="rpt-subhead">DOA 月度不良率趋势（%）</div>
+  <div class="rpt-chart" id="doa-chart"></div>
+  <div class="rpt-subhead">RMA 月度退货数量趋势</div>
+  <div class="rpt-chart" id="rma-chart"></div>
 </div>
 
 <!-- ═══ 周/月报 ═══ -->
@@ -635,7 +631,7 @@ body.rtl .card-meta { flex-direction: row-reverse; }
   <div class="tab" onclick="App.navigate('materials')" data-page="materials"><span class="tab-icon">📦</span><span data-i18n="tab_materials">物料</span></div>
   <div class="tab" onclick="App.navigate('production')" data-page="production"><span class="tab-icon">👷</span><span data-i18n="tab_production">生产</span></div>
   <div class="tab" onclick="App.navigate('quality')" data-page="quality"><span class="tab-icon">✅</span><span data-i18n="tab_quality">品质</span></div>
-  <div class="tab" onclick="App.navigate('inspection')" data-page="inspection"><span class="tab-icon">🔍</span><span data-i18n="tab_inspection">客验</span></div>
+  <div class="tab" onclick="App.navigate('inspection')" data-page="inspection"><span class="tab-icon">⚠️</span><span data-i18n="tab_inspection">DOA/RMA</span></div>
   <div class="tab" onclick="App.navigate('reports')" data-page="reports"><span class="tab-icon">📊</span><span data-i18n="tab_reports">周/月报</span></div>
   <div class="tab" onclick="App.navigate('settings')" data-page="settings"><span class="tab-icon">⚙️</span><span data-i18n="tab_settings">设定</span></div>
 </div>
@@ -653,6 +649,6 @@ body.rtl .card-meta { flex-direction: row-reverse; }
 
 </div>
 
-<script type="module" src="bundle.js?v=57"></script>
+<script type="module" src="bundle.js?v=58"></script>
 </body>
 </html>

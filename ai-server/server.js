@@ -36,7 +36,8 @@ const MODULES_INFO = {
   overseas_material_alerts: '物料预警规则（规则名、阈值、是否启用）',
   users: '用户/人员（用户名、姓名、职位、状态、最后登录）',
   inspection: '客验（客验单位、验货项目、验货时间、数量、订单号）',
-  rmd: 'RMD（国家、工厂、签核时间、项目、物料名/批次/编号、数量、内部确认）',
+  doa: 'DOA 到货不良（日期、项目、工厂、物料名/批次、来料数量、不良数量、不良率、不良描述、签核）',
+  rma: 'RMA 退货（日期、项目、客户、退货数量、退货原因、处理状态、描述）',
 };
 const MODULE_KEYS = Object.keys(MODULES_INFO);
 

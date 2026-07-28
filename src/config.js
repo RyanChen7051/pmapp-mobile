@@ -125,4 +125,43 @@ export const MODULES = {
       {key:'internal_confirm',label:'内部确认（部门/人名）',type:'text'},
     ],
   },
+  doa: {
+    title: 'DOA', icon: '⚠️', table: 'doa',
+    listFields: [{key:'material_name',label:'物料名'},{key:'defect_qty',label:'不良数'},{key:'defect_rate',label:'不良率'},{key:'date',label:'日期'},{key:'factory',label:'工厂'}],
+    detailFields: [
+      {key:'date',label:'日期'},{key:'project',label:'项目'},{key:'factory',label:'工厂'},
+      {key:'material_name',label:'物料名'},{key:'material_batch',label:'物料批次'},
+      {key:'received_qty',label:'来料数量'},{key:'defect_qty',label:'不良数量'},{key:'defect_rate',label:'不良率(%)'},
+      {key:'description',label:'不良描述'},{key:'internal_confirm',label:'签核'},
+    ],
+    editFields: [
+      {key:'date',label:'日期',type:'date'},
+      {key:'project',label:'项目',type:'text'},
+      {key:'factory',label:'工厂',type:'text'},
+      {key:'material_name',label:'物料名',type:'text',required:true},
+      {key:'material_batch',label:'物料批次',type:'text'},
+      {key:'received_qty',label:'来料数量',type:'number'},
+      {key:'defect_qty',label:'不良数量',type:'number'},
+      {key:'description',label:'不良描述',type:'textarea'},
+      {key:'internal_confirm',label:'签核',type:'text'},
+    ],
+  },
+  rma: {
+    title: 'RMA', icon: '↩️', table: 'rma',
+    listFields: [{key:'project',label:'项目'},{key:'return_qty',label:'退货数'},{key:'status',label:'状态'},{key:'date',label:'日期'},{key:'customer',label:'客户'}],
+    detailFields: [
+      {key:'date',label:'日期'},{key:'project',label:'项目'},{key:'customer',label:'客户'},
+      {key:'return_qty',label:'退货数量'},{key:'reason',label:'退货原因'},
+      {key:'status',label:'处理状态'},{key:'description',label:'描述'},
+    ],
+    editFields: [
+      {key:'date',label:'日期',type:'date'},
+      {key:'project',label:'项目',type:'text'},
+      {key:'customer',label:'客户',type:'text'},
+      {key:'return_qty',label:'退货数量',type:'number'},
+      {key:'reason',label:'退货原因',type:'textarea'},
+      {key:'status',label:'处理状态',type:'select',options:[{v:'待处理',t:'待处理'},{v:'维修中',t:'维修中'},{v:'已关闭',t:'已关闭'}]},
+      {key:'description',label:'描述',type:'textarea'},
+    ],
+  },
 };

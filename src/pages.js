@@ -283,64 +283,145 @@ export function setupPages(App) {
       </div></div>`).join('');
   };
 
-  /* ─── RMD Tab ─── */
+  /* ─── DOA / RMA Tab ─── */
   App.loadInspection = function() {
-    const projSel = document.getElementById('rmd-project');
-    if (projSel) {
-      const projects = (this.cache.projects || []);
-      projSel.innerHTML = '<option value="">（未选）</option>' + projects.map(p => `<option value="${this.esc(p.name)}">${this.esc(p.name)}</option>`).join('');
-    }
-    const list = (this.cache.rmd || []).slice().sort((a, b) => (b.sign_date || '').localeCompare(a.sign_date || ''));
-    const el = document.getElementById('rmd-list');
-    if (list.length === 0) { el.innerHTML = `<div class="empty"><div class="empty-icon">📑</div>暂无 RMD 记录</div>`; }
+    const projects = (this.cache.projects || []);
+    const opts = '<option value="">（未选）</option>' + projects.map(p => `<option value="${this.esc(p.name)}">${this.esc(p.name)}</option>`).join('');
+    const dp = document.getElementById('doa-project'); if (dp) dp.innerHTML = opts;
+    const rp = document.getElementById('rma-project'); if (rp) rp.innerHTML = opts;
+
+    const doa = (this.cache.doa || []).slice().sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+    const de = document.getElementById('doa-list');
+    if (doa.length === 0) { de.innerHTML = `<div class="empty"><div class="empty-icon">⚠️</div>暂无 DOA 记录</div>`; }
     else {
-      el.innerHTML = list.map(r => `<div class="card" onclick="App.openDetail('rmd', ${r.id})">
-        <div class="card-title">📑 ${this.esc(r.material_name || 'RMD')}</div>
+      de.innerHTML = doa.map(r => {
+        const rate = (r.received_qty > 0) ? (r.defect_qty / r.received_qty * 100) : 0;
+        return `<div class="card" onclick="App.openDetail('doa', ${r.id})">
+          <div class="card-title">⚠️ ${this.esc(r.material_name || 'DOA')}</div>
+          <div class="card-meta">
+            ${r.date ? `<span>📅 ${this.esc(r.date)}</span>` : ''}
+            ${r.factory ? `<span>🏭 ${this.esc(r.factory)}</span>` : ''}
+            ${r.received_qty ? `<span>来料 ${this.esc(r.received_qty)}</span>` : ''}
+            ${r.defect_qty ? `<span>不良 ${this.esc(r.defect_qty)}</span>` : ''}
+            ${rate ? `<span class="badge badge-red">不良率 ${rate.toFixed(1)}%</span>` : ''}
+          </div></div>`;
+      }).join('');
+    }
+
+    const rma = (this.cache.rma || []).slice().sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+    const re = document.getElementById('rma-list');
+    if (rma.length === 0) { re.innerHTML = `<div class="empty"><div class="empty-icon">↩️</div>暂无 RMA 记录</div>`; }
+    else {
+      re.innerHTML = rma.map(r => `<div class="card" onclick="App.openDetail('rma', ${r.id})">
+        <div class="card-title">↩️ ${this.esc(r.project || r.customer || 'RMA')}</div>
         <div class="card-meta">
-          ${r.country ? `<span class="badge badge-blue">${this.esc(r.country)}</span>` : ''}
-          ${r.factory ? `<span>🏭 ${this.esc(r.factory)}</span>` : ''}
-          ${r.sign_date ? `<span>📅 ${this.esc(r.sign_date)}</span>` : ''}
-          ${r.qty ? `<span>🔢 ${this.esc(r.qty)}</span>` : ''}
+          ${r.date ? `<span>📅 ${this.esc(r.date)}</span>` : ''}
+          ${r.customer ? `<span>👤 ${this.esc(r.customer)}</span>` : ''}
+          ${r.return_qty ? `<span>退 ${this.esc(r.return_qty)}</span>` : ''}
+          ${r.status ? `<span class="badge badge-${r.status === '已关闭' ? 'gray' : 'orange'}">${this.esc(r.status)}</span>` : ''}
         </div></div>`).join('');
     }
-    const chartEl = document.getElementById('rmd-chart');
-    if (chartEl) chartEl.innerHTML = this._rmdTrend();
+
+    const dc = document.getElementById('doa-chart'); if (dc) dc.innerHTML = this._doaTrend();
+    const rc = document.getElementById('rma-chart'); if (rc) rc.innerHTML = this._rmaTrend();
   };
 
-  App.saveRmd = async function() {
+  App._trendChart = function(labels, series) {
+    const W = 320, H = 160, pl = 30, pr = 10, pt = 20, pb = 26;
+    const cw = W - pl - pr, ch = H - pt - pb;
+    let maxY = 1; series.forEach(s => s.values.forEach(v => { if (v > maxY) maxY = v; }));
+    maxY = Math.ceil(maxY * 1.1); if (maxY < 2) maxY = 2;
+    const n = labels.length;
+    const xOf = i => pl + (n <= 1 ? cw / 2 : cw * i / (n - 1));
+    const yOf = v => pt + ch - (v / maxY) * ch;
+    let grid = '';
+    for (let k = 0; k <= 4; k++) {
+      const y = pt + ch * k / 4;
+      grid += `<line x1="${pl}" y1="${y}" x2="${W - pr}" y2="${y}" stroke="#e5e7eb" stroke-width="1"/>`;
+      grid += `<text x="${pl - 4}" y="${y + 3}" fill="#94a3b8" font-size="8" text-anchor="end">${Math.round(maxY * (4 - k) / 4)}</text>`;
+    }
+    const step = Math.max(1, Math.floor(n / 6));
+    let xlab = '';
+    for (let i = 0; i < n; i += step) xlab += `<text x="${xOf(i)}" y="${H - 8}" fill="#94a3b8" font-size="9" text-anchor="middle">${labels[i]}</text>`;
+    let lines = '';
+    series.forEach(s => {
+      const pts = s.values.map((v, i) => `${xOf(i)},${yOf(v)}`).join(' ');
+      lines += `<polyline points="${pts}" fill="none" stroke="${s.color}" stroke-width="2"/>`;
+      s.values.forEach((v, i) => { lines += `<circle cx="${xOf(i)}" cy="${yOf(v)}" r="2.5" fill="${s.color}"/>`; });
+    });
+    let lx = pl, legend = '';
+    series.forEach(s => { legend += `<rect x="${lx}" y="4" width="8" height="8" fill="${s.color}"/><text x="${lx + 11}" y="12" fill="#475569" font-size="9">${s.name}</text>`; lx += 11 + s.name.length * 6 + 12; });
+    return `<svg viewBox="0 0 ${W} ${H}" width="100%" style="display:block">${grid}${xlab}${lines}${legend}</svg>`;
+  };
+
+  App._doaTrend = function() {
+    const list = (this.cache.doa || []).filter(r => r.date && r.received_qty > 0).slice().sort((a, b) => a.date.localeCompare(b.date));
+    if (list.length === 0) return '<div class="empty" style="padding:12px">暂无数据</div>';
+    const map = {};
+    list.forEach(r => { const m = r.date.slice(0, 7); if (!map[m]) map[m] = { rec: 0, def: 0 }; map[m].rec += (+r.received_qty); map[m].def += (+r.defect_qty); });
+    const months = Object.keys(map).sort();
+    const values = months.map(m => +(map[m].def / map[m].rec * 100).toFixed(2));
+    return this._trendChart(months, [{ name: '不良率 %', color: '#e94560', values }]);
+  };
+
+  App._rmaTrend = function() {
+    const list = (this.cache.rma || []).filter(r => r.date && r.return_qty > 0).slice().sort((a, b) => a.date.localeCompare(b.date));
+    if (list.length === 0) return '<div class="empty" style="padding:12px">暂无数据</div>';
+    const map = {};
+    list.forEach(r => { const m = r.date.slice(0, 7); map[m] = (map[m] || 0) + (+r.return_qty); });
+    const months = Object.keys(map).sort();
+    const values = months.map(m => map[m]);
+    return this._trendChart(months, [{ name: '退货数量', color: '#3b82f6', values }]);
+  };
+
+  App.saveDoa = async function() {
     const get = id => { const e = document.getElementById(id); return e ? (e.value || '').trim() : ''; };
-    const country = get('rmd-country');
-    const factory = get('rmd-factory');
-    const sign_date = get('rmd-sign_date');
-    const project = get('rmd-project');
-    const material_name = get('rmd-material_name');
-    const material_batch = get('rmd-material_batch');
-    const material_no = get('rmd-material_no');
-    const qty = get('rmd-qty');
-    const internal_confirm = get('rmd-internal_confirm');
+    const material_name = get('doa-material_name');
     if (!material_name) { this.toast('物料名不能为空'); return; }
     const now = new Date().toISOString();
     const id = Math.floor(Date.now() / 1000);
-    const payload = { id, country, factory, sign_date, project, material_name, material_batch, material_no, qty, internal_confirm, created_at: now.slice(0, 19).replace('T', ' ') };
+    const received = parseFloat(get('doa-received_qty')) || 0;
+    const defect = parseFloat(get('doa-defect_qty')) || 0;
+    const payload = {
+      id, date: get('doa-date'), project: get('doa-project'), factory: get('doa-factory'),
+      material_name, material_batch: get('doa-material_batch'),
+      received_qty: received, defect_qty: defect,
+      defect_rate: received > 0 ? +(defect / received * 100).toFixed(2) : 0,
+      description: get('doa-description'), internal_confirm: get('doa-internal_confirm'),
+      created_at: now.slice(0, 19).replace('T', ' ')
+    };
     try {
-      await this.sbPost('sync_data', { table_name: 'rmd', local_id: id, payload: JSON.stringify(payload), supabase_id: this.uuid(), is_deleted: false, updated_at: now, device_id: this.deviceId });
-      this.cache.rmd = this.cache.rmd || [];
-      this.cache.rmd.unshift(payload);
-      this.toast('已保存 RMD');
+      await this.sbPost('sync_data', { table_name: 'doa', local_id: id, payload: JSON.stringify(payload), supabase_id: this.uuid(), is_deleted: false, updated_at: now, device_id: this.deviceId });
+      this.cache.doa = this.cache.doa || [];
+      this.cache.doa.unshift(payload);
+      this.toast('已保存 DOA');
       this.loadInspection();
-      ['rmd-factory', 'rmd-sign_date', 'rmd-material_name', 'rmd-material_batch', 'rmd-material_no', 'rmd-qty', 'rmd-internal_confirm'].forEach(id2 => { const e = document.getElementById(id2); if (e) e.value = ''; });
+      ['doa-date', 'doa-project', 'doa-factory', 'doa-material_name', 'doa-material_batch', 'doa-received_qty', 'doa-defect_qty', 'doa-description', 'doa-internal_confirm'].forEach(id2 => { const e = document.getElementById(id2); if (e) e.value = ''; });
     } catch (e) { this.toast('保存失败: ' + e.message); }
   };
 
-  App._rmdTrend = function() {
-    const list = (this.cache.rmd || []).filter(r => r.sign_date).slice().sort((a, b) => a.sign_date.localeCompare(b.sign_date));
-    if (list.length === 0) return '<div class="empty" style="padding:12px">暂无数据</div>';
-    const map = {};
-    list.forEach(r => { map[r.sign_date] = (map[r.sign_date] || 0) + 1; });
-    const dates = Object.keys(map).sort();
-    let cum = 0;
-    const values = dates.map(d => { cum += map[d]; return cum; });
-    return this._rptLine(dates.map(d => d.length > 5 ? d.slice(5) : d), [{ name: 'RMD 累计', color: '#e94560', values }]);
+  App.saveRma = async function() {
+    const get = id => { const e = document.getElementById(id); return e ? (e.value || '').trim() : ''; };
+    const project = get('rma-project');
+    const customer = get('rma-customer');
+    if (!project && !customer) { this.toast('项目或客户至少填一项'); return; }
+    const now = new Date().toISOString();
+    const id = Math.floor(Date.now() / 1000);
+    const payload = {
+      id, date: get('rma-date'), project, customer,
+      return_qty: parseFloat(get('rma-return_qty')) || 0,
+      reason: get('rma-reason'), status: get('rma-status'),
+      description: get('rma-description'),
+      created_at: now.slice(0, 19).replace('T', ' ')
+    };
+    try {
+      await this.sbPost('sync_data', { table_name: 'rma', local_id: id, payload: JSON.stringify(payload), supabase_id: this.uuid(), is_deleted: false, updated_at: now, device_id: this.deviceId });
+      this.cache.rma = this.cache.rma || [];
+      this.cache.rma.unshift(payload);
+      this.toast('已保存 RMA');
+      this.loadInspection();
+      ['rma-date', 'rma-project', 'rma-customer', 'rma-return_qty', 'rma-reason', 'rma-status', 'rma-description'].forEach(id2 => { const e = document.getElementById(id2); if (e) e.value = ''; });
+    } catch (e) { this.toast('保存失败: ' + e.message); }
   };
 
   /* ─── Settings ─── */
