@@ -335,6 +335,113 @@ body.rtl .card-meta { flex-direction: row-reverse; }
 .ai-input-bubble textarea { display: block; width: 100%; box-sizing: border-box; resize: none; border: none; border-radius: 10px; padding: 8px 4px; font-size: 15px; font-family: inherit; max-height: 110px; min-height: 44px; line-height: 1.4; background: transparent; outline: none; }
 .ai-send-row { display: flex; justify-content: flex-end; margin: 0 10px 12px; }
 .ai-send-row .btn { white-space: nowrap; padding: 8px 22px; }
+
+/* ═══ 领导电脑端（宽屏自适应 + 驾驶舱）═══ */
+#cockpit { display: block; }
+.sidebar-brand { display: none; }
+
+/* ─── 领导驾驶舱（手机/电脑通用样式）─── */
+.cockpit-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; flex-wrap: wrap; gap: 8px; }
+.cockpit-head h2 { font-size: 20px; font-weight: 800; }
+.cockpit-head .sub { font-size: 12px; color: var(--text-secondary); }
+.cockpit-filter { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+.cockpit-filter select, .cockpit-filter input { flex: 1 1 160px; min-width: 0; padding: 10px 12px; background: var(--bg-input); border: 1px solid var(--border); border-radius: 10px; color: var(--text-primary); font-size: 14px; outline: none; box-sizing: border-box; }
+.cockpit-filter select:focus, .cockpit-filter input:focus { border-color: var(--accent); }
+.kpi-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-bottom: 16px; }
+.kpi-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; cursor: pointer; transition: transform .15s, border-color .15s; }
+.kpi-card:hover { transform: translateY(-2px); border-color: var(--accent); }
+.kpi-num { font-size: 26px; font-weight: 800; line-height: 1; }
+.kpi-label { font-size: 12px; color: var(--text-secondary); margin-top: 6px; }
+.kpi-sub { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+.cockpit-cols { display: grid; grid-template-columns: 1fr; gap: 14px; align-items: start; }
+.cockpit-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; margin-bottom: 14px; }
+.cockpit-card:last-child { margin-bottom: 0; }
+.cockpit-card h3 { font-size: 15px; font-weight: 700; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+.activity-item { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); cursor: pointer; }
+.activity-item:last-child { border-bottom: none; }
+.activity-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 6px; flex: 0 0 auto; }
+.activity-main { flex: 1; min-width: 0; }
+.activity-title { font-size: 14px; font-weight: 600; }
+.activity-meta { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+.mini-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 8px; }
+.mini-table th { text-align: left; color: var(--text-secondary); font-weight: 600; padding: 6px 8px; border-bottom: 1px solid var(--border); font-size: 11px; }
+.mini-table td { padding: 6px 8px; border-bottom: 1px solid var(--border); color: var(--text-primary); vertical-align: top; }
+.mini-table tr:last-child td { border-bottom: none; }
+.mini-table .num { text-align: right; font-weight: 600; }
+.ai-btn { margin-top: 10px; display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; background: rgba(78,138,245,0.15); color: var(--accent-blue); border: 1px solid rgba(78,138,245,0.3); border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; }
+.ai-btn:active { opacity: .7; }
+.ai-conc { margin-top: 10px; padding: 10px 12px; background: rgba(78,138,245,0.08); border-left: 3px solid var(--accent-blue); border-radius: 6px; font-size: 13px; color: var(--text-primary); line-height: 1.55; }
+.ai-conc-bot { white-space: pre-wrap; word-break: break-word; }
+.photo-gallery { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.photo-thumb { width: 84px; height: 84px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border); cursor: pointer; }
+.fl-photos { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0; }
+.fl-photo { position: relative; }
+.fl-photo img { width: 72px; height: 72px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border); }
+.fl-photo .del { position: absolute; top: -6px; right: -6px; width: 20px; height: 20px; border-radius: 50%; background: var(--accent); color: #fff; font-size: 12px; line-height: 20px; text-align: center; cursor: pointer; }
+
+@media (min-width: 860px) {
+  #app { max-width: none; margin: 0; }
+
+  /* 顶栏横跨内容区（右侧） */
+  .topbar {
+    left: 240px; transform: none; width: auto; right: 0; max-width: none;
+    padding: calc(var(--safe-top) + 10px) 28px 10px;
+  }
+  .topbar h1 { font-size: 18px; }
+
+  /* 底部 tabbar → 左侧导航栏 */
+  .tabbar {
+    top: 0; bottom: 0; left: 0; transform: none; width: 240px; max-width: none;
+    flex-direction: column; justify-content: flex-start; align-items: stretch;
+    padding: 0; border-top: none; border-right: 1px solid var(--border);
+    overflow-y: auto; gap: 2px;
+  }
+  .sidebar-brand {
+    display: flex; align-items: center; gap: 10px; padding: 18px 20px;
+    font-size: 17px; font-weight: 800; color: var(--accent);
+    border-bottom: 1px solid var(--border);
+    background: rgba(22,33,62,0.98); position: sticky; top: 0; z-index: 1;
+  }
+  .sidebar-brand .sb-logo { font-size: 26px; }
+  .tab {
+    flex: 0 0 auto; width: 100%; flex-direction: row; justify-content: flex-start;
+    align-items: center; gap: 12px; padding: 13px 20px; font-size: 14px;
+    border-radius: 0; color: var(--text-secondary);
+  }
+  .tab .tab-icon { font-size: 19px; line-height: 1; }
+  .tab.active { color: var(--accent); background: rgba(233,69,96,0.10); box-shadow: inset 3px 0 0 var(--accent); }
+
+  /* 页面内容让出左侧 */
+  .page { padding: calc(var(--safe-top) + 64px) 28px 28px 268px; max-width: none; }
+  .fab { right: 28px; bottom: 28px; }
+
+  /* 隐藏手机专属区块，显示驾驶舱 */
+  .mobile-only { display: none !important; }
+  #cockpit { display: block; }
+
+  /* 列表多列 */
+  #prod-list, #qual-list, #mat-alerts, #factory-list, #plan-tasks, #plan-todos, #plan-overdue,
+  #doa-list, #rma-list, #fieldlog-list, #home-news, .module-list-content, #msg-list {
+    display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px;
+  }
+  #prod-list .loading, #qual-list .loading, .empty { grid-column: 1 / -1; }
+
+  /* 弹窗在宽屏居中放大 */
+  .modal-overlay { align-items: center; }
+  .modal { max-width: 560px; border-radius: 16px; margin: auto; }
+
+  /* 驾驶舱多列（宽屏） */
+  .kpi-grid { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
+  .cockpit-cols { grid-template-columns: 1.4fr 1fr; }
+  .cockpit-head h2 { font-size: 22px; }
+  .kpi-num { font-size: 30px; }
+
+  @media (max-width: 1180px) { .cockpit-cols { grid-template-columns: 1fr; } }
+}
+  /* SW auto-update prompt bar (免强刷优化) */
+  .sw-update-bar{position:fixed;left:50%;transform:translateX(-50%);bottom:72px;z-index:2000;display:flex;align-items:center;gap:12px;background:#1f6feb;color:#fff;padding:10px 14px;border-radius:12px;box-shadow:0 6px 20px rgba(0,0,0,.25);font-size:14px;max-width:92vw}
+  .sw-update-text{white-space:nowrap}
+  .sw-update-btn{background:#fff;color:#1f6feb;border:none;border-radius:8px;padding:6px 14px;font-weight:600;cursor:pointer}
 </style>
 </head>
 <body>
@@ -343,19 +450,10 @@ body.rtl .card-meta { flex-direction: row-reverse; }
 <!-- ═══ 首页 ═══ -->
 <div id="page-home" class="page active">
   <div class="ptr-indicator" id="ptr-home" data-i18n="ptr_pull">↓ 下拉刷新</div>
+  <div class="wclock-strip mobile-only" id="world-clock"></div>
   <div class="home-header">
     <div class="home-title">PMApp</div>
     <div class="home-slogan" data-i18n="app_slogan">科奈信海外生产管理系统</div>
-  </div>
-  <div id="home-banner"></div>
-  <div class="wclock-strip" id="world-clock"></div>
-  <div class="sec-header"><span data-i18n="dashboard">总体看板</span></div>
-  <div class="dash-stats" id="home-stats">
-    <div class="dash-stat"><div class="dash-stat-num" id="ds-total" style="color:var(--accent-blue)">-</div><div class="dash-stat-label" data-i18n="stat_total">总项目</div></div>
-    <div class="dash-stat"><div class="dash-stat-num" id="ds-active" style="color:var(--accent-green)">-</div><div class="dash-stat-label" data-i18n="stat_active">进行中</div></div>
-    <div class="dash-stat"><div class="dash-stat-num" id="ds-overdue" style="color:var(--accent)">-</div><div class="dash-stat-label" data-i18n="stat_overdue">已延期</div></div>
-    <div class="dash-stat"><div class="dash-stat-num" id="ds-qc" style="color:var(--accent-orange)">-</div><div class="dash-stat-label" data-i18n="stat_qc">质检中</div></div>
-    <div class="dash-stat"><div class="dash-stat-num" id="ds-pending" style="color:var(--accent-purple)">-</div><div class="dash-stat-label" data-i18n="stat_pending">待处理</div></div>
   </div>
   <div class="sec-header"><span>🤖 <span data-i18n="ai_title">智能海外助理</span></span><span class="sec-action" id="ai-settings" style="cursor:pointer" title="设置后端地址">⚙️</span></div>
   <div id="ai-home-block" class="ai-home-block">
@@ -376,10 +474,12 @@ body.rtl .card-meta { flex-direction: row-reverse; }
       <button id="ai-send" class="btn btn-primary">发送</button>
     </div>
   </div>
-  <div class="sec-header"><span data-i18n="industry_news">行业动态</span></div>
-  <div id="home-news"></div>
-  <div class="sec-header"><span data-i18n="message_board">留言板</span></div>
-  <div id="home-messages">
+  <div id="cockpit"></div>
+  <div id="home-banner" class="mobile-only"></div>
+  <div class="sec-header mobile-only"><span data-i18n="industry_news">行业动态</span></div>
+  <div id="home-news" class="mobile-only"></div>
+  <div class="sec-header mobile-only"><span data-i18n="message_board">留言板</span></div>
+  <div id="home-messages" class="mobile-only">
     <div class="login-box">
       <div class="input-group"><label data-i18n="lbl_name">姓名</label><input type="text" id="msg-name" data-i18n-ph="ph_name" placeholder="输入您的姓名" maxlength="30"></div>
       <div class="input-group"><label data-i18n="lbl_msg">留言内容</label><textarea id="msg-content" data-i18n-ph="ph_msg" placeholder="输入留言..." maxlength="500"></textarea></div>
@@ -388,7 +488,7 @@ body.rtl .card-meta { flex-direction: row-reverse; }
     <div id="msg-list"><div class="loading"><div class="spinner"></div><span data-i18n="loading">加载中...</span></div></div>
   </div>
   <!-- Admin-only: Login Activity -->
-  <div id="admin-login-section" style="display:none">
+  <div id="admin-login-section" class="mobile-only" style="display:none">
     <div class="sec-header"><span>🔐 <span data-i18n="login_activity">登录活动</span></span><span style="font-size:11px;color:var(--text-secondary);font-weight:normal" data-i18n="admin_only">仅管理员可见</span></div>
     <div id="admin-login-list"><div class="loading"><div class="spinner"></div>加载中...</div></div>
   </div>
@@ -513,6 +613,13 @@ body.rtl .card-meta { flex-direction: row-reverse; }
   <div class="rpt-chart" id="rma-chart"></div>
 </div>
 
+<!-- ═══ 现场记录 ═══ -->
+<div id="page-fieldlog" class="page">
+  <div class="ptr-indicator" id="ptr-fieldlog" data-i18n="ptr_pull">↓ 下拉刷新</div>
+  <div class="sec-header"><span>现场记录</span><span class="sec-action" id="fieldlog-add" style="display:none" onclick="App.showFieldLogEditor(null)">+ 新建</span></div>
+  <div id="fieldlog-list"><div class="loading"><div class="spinner"></div><span data-i18n="loading">加载中...</span></div></div>
+</div>
+
 <!-- ═══ 周/月报 ═══ -->
 <div id="page-reports" class="page">
   <div class="ptr-indicator" id="ptr-reports" data-i18n="ptr_pull">↓ 下拉刷新</div>
@@ -625,6 +732,7 @@ body.rtl .card-meta { flex-direction: row-reverse; }
 
 <!-- Tab bar -->
 <div class="tabbar" id="tabbar" style="display:none">
+  <div class="sidebar-brand"><span class="sb-logo">🛰️</span><span>PMApp 驾驶舱</span></div>
   <div class="tab active" onclick="App.navigate('home')" data-page="home"><span class="tab-icon">🏠</span><span data-i18n="tab_home">首页</span></div>
   <div class="tab" onclick="App.navigate('factory')" data-page="factory"><span class="tab-icon">🏭</span><span data-i18n="tab_factory">工厂讯息</span></div>
   <div class="tab" onclick="App.navigate('planning')" data-page="planning"><span class="tab-icon">📋</span><span data-i18n="tab_planning">计划</span></div>
@@ -632,6 +740,7 @@ body.rtl .card-meta { flex-direction: row-reverse; }
   <div class="tab" onclick="App.navigate('production')" data-page="production"><span class="tab-icon">👷</span><span data-i18n="tab_production">生产</span></div>
   <div class="tab" onclick="App.navigate('quality')" data-page="quality"><span class="tab-icon">✅</span><span data-i18n="tab_quality">品质</span></div>
   <div class="tab" onclick="App.navigate('inspection')" data-page="inspection"><span class="tab-icon">⚠️</span><span data-i18n="tab_inspection">DOA/RMA</span></div>
+  <div class="tab" onclick="App.navigate('fieldlog')" data-page="fieldlog"><span class="tab-icon">📸</span><span>现场</span></div>
   <div class="tab" onclick="App.navigate('reports')" data-page="reports"><span class="tab-icon">📊</span><span data-i18n="tab_reports">周/月报</span></div>
   <div class="tab" onclick="App.navigate('settings')" data-page="settings"><span class="tab-icon">⚙️</span><span data-i18n="tab_settings">设定</span></div>
 </div>
@@ -649,6 +758,6 @@ body.rtl .card-meta { flex-direction: row-reverse; }
 
 </div>
 
-<script type="module" src="bundle.js?v=59"></script>
+<script type="module" src="bundle.js?v=65"></script>
 </body>
 </html>

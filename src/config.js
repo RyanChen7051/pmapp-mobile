@@ -164,6 +164,11 @@ export const MODULES = {
       {key:'description',label:'描述',type:'textarea'},
     ],
   },
+  field_log: {
+    title: '现场记录', icon: '📸', table: 'field_log',
+    listFields: [{key:'project',label:'生产项目'},{key:'factory',label:'生产工厂'},{key:'description',label:'问题叙述',truncate:40},{key:'created_at',label:'记录时间'},{key:'status',label:'状态',badge:true}],
+    detailFields: [{key:'project',label:'生产项目'},{key:'factory',label:'生产工厂'},{key:'description',label:'生产问题叙述'},{key:'status',label:'状态'},{key:'reporter',label:'记录人'},{key:'created_at',label:'记录时间'}],
+  },
 };
 
 /* ═══ 模块级编辑权限 ═══

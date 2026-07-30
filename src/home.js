@@ -68,13 +68,7 @@ export function setupHome(App) {
     }
 
     const projects = this.cache.projects || [];
-    const issues = this.cache.issues || [];
     const today = new Date().toISOString().slice(0, 10);
-    document.getElementById('ds-total').textContent = projects.length;
-    document.getElementById('ds-active').textContent = projects.filter(p => p.status === 'active').length;
-    document.getElementById('ds-overdue').textContent = projects.filter(p => p.delivery_date && p.delivery_date < today && !['completed', 'cancelled'].includes(p.status)).length;
-    document.getElementById('ds-qc').textContent = projects.filter(p => p.stage === 'PVT' || p.stage === 'DVT').length;
-    document.getElementById('ds-pending').textContent = issues.filter(i => i.status === 'open').length;
 
     const projEl = document.getElementById('home-projects');
     if (projEl) {
@@ -129,6 +123,9 @@ export function setupHome(App) {
         adminSection.style.display = 'none';
       }
     }
+
+    // 手机/电脑均渲染领导驾驶舱（响应式自适应）
+    this.renderCockpit();
   };
 
   App.renderMessages = async function() {

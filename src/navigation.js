@@ -15,7 +15,7 @@ export function setupNavigation(App) {
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     const tab = document.querySelector(`.tab[data-page="${page}"]`);
     if (tab) tab.classList.add('active');
-    const titleKeys = { home: 'app_slogan', factory: 'tab_factory', planning: 'tab_planning', materials: 'tab_materials', production: 'tab_production', quality: 'tab_quality', inspection: 'tab_inspection', reports: 'tab_reports', settings: 'tab_settings' };
+    const titleKeys = { home: 'app_slogan', factory: 'tab_factory', planning: 'tab_planning', materials: 'tab_materials', production: 'tab_production', quality: 'tab_quality', inspection: 'tab_inspection', reports: 'tab_reports', fieldlog: 'tab_fieldlog', settings: 'tab_settings' };
     document.getElementById('tb-title').textContent = page === 'home' ? 'PMApp' : t(titleKeys[page] || 'app_slogan');
     document.getElementById('tb-back').style.display = 'none';
     document.getElementById('tb-action').innerHTML = '';
@@ -30,6 +30,7 @@ export function setupNavigation(App) {
     else if (page === 'quality') { this.qualModule = this.qualModule || 'issues'; this.loadQuality(); if (this.canEdit(this.qualModule || 'issues')) document.getElementById('fab').style.display = 'flex'; }
     else if (page === 'inspection') this.loadInspection();
     else if (page === 'reports') this.loadReports();
+    else if (page === 'fieldlog') { this.loadFieldLog(); if (this.isAdmin()) { const fab = document.getElementById('fab'); fab.style.display = 'flex'; fab.setAttribute('onclick', 'App.showFieldLogEditor(null)'); } }
     else if (page === 'settings') this.loadSettings();
     this.currentPage = page;
     this.currentModule = (page === 'production') ? 'projects' : (page === 'quality') ? ((this.qualModule === 'inspection') ? 'inspection' : 'issues') : null;
@@ -53,7 +54,8 @@ export function setupNavigation(App) {
     document.getElementById('modal-overlay').classList.remove('show');
     document.getElementById('tb-action').innerHTML = '';
     if (this.currentPage === 'module-detail' && this.currentModule && this.canEdit(this.currentModule)) {
-      document.getElementById('tb-action').innerHTML = `<span onclick="App.showEditFor('${this.currentModule}', ${this.currentRecordId})">${t('btn_edit')}</span>`;
+      const fn = this.currentModule === 'field_log' ? `App.showFieldLogEditor(${this.currentRecordId})` : `App.showEditFor('${this.currentModule}', ${this.currentRecordId})`;
+      document.getElementById('tb-action').innerHTML = `<span onclick="${fn}">${t('btn_edit')}</span>`;
     } else if (this.currentPage === 'project-detail' && this.isAdmin()) {
       document.getElementById('tb-action').innerHTML = `<span onclick="App.showEditFor('projects', ${this.currentRecordId})">${t('btn_edit')}</span>`;
     }

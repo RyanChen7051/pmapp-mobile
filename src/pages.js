@@ -483,6 +483,7 @@ export function setupPages(App) {
       'mat-factory-add': this.isAdmin(),          // 冗余占位（物料页无此钮）
       'factory-add': this.isAdmin(),              // 工厂讯息：未授权额外用户
       'qual-insp-add': this.canEdit('inspection'),// 品质(客验) → 陈晓斌
+      'fieldlog-add': this.canEdit('field_log'),  // 现场记录 → 管理员(驻点人员)
     };
     Object.entries(map).forEach(([id, show]) => {
       const el = document.getElementById(id);

@@ -103,8 +103,9 @@ export function setupDetail(App) {
     document.getElementById('tb-back').style.display = 'block';
     document.getElementById('tb-action').innerHTML = '';
     document.getElementById('fab').style.display = 'none';
-    if (this.canEdit(moduleKey) && mod.editFields) {
-      document.getElementById('tb-action').innerHTML = `<span onclick="App.showEditFor('${moduleKey}', ${id})">编辑</span>`;
+    if (this.canEdit(moduleKey) && (mod.editFields || moduleKey === 'field_log')) {
+      const fn = moduleKey === 'field_log' ? `App.showFieldLogEditor(${id})` : `App.showEditFor('${moduleKey}', ${id})`;
+      document.getElementById('tb-action').innerHTML = `<span onclick="${fn}">编辑</span>`;
     }
     this.currentPage = 'module-detail';
     this.currentModule = moduleKey;
@@ -146,6 +147,14 @@ export function setupDetail(App) {
       html += `<div class="sec-header"><span>问题 (${issues.length})</span></div>`;
       if (issues.length === 0) html += '<div class="empty">暂无问题</div>';
       else html += issues.map(i => `<div class="card" onclick="App.openDetail('issues', ${i.id})"><div class="card-title">${this.esc(i.title)}</div><div class="card-meta"><span class="badge ${this.badgeClass(i.severity)}">${this.esc(i.severity)}</span><span class="badge ${this.badgeClass(i.status)}">${this.esc(i.status)}</span></div></div>`).join('');
+    }
+    if (moduleKey === 'field_log') {
+      const photos = record.photos || [];
+      if (photos.length) {
+        html += '<div class="sec-header"><span>📷 现场照片 (' + photos.length + ')</span></div><div class="photo-gallery">';
+        html += photos.map(p => `<a href="${this.esc(p.data)}" target="_blank"><img src="${this.esc(p.data)}" class="photo-thumb" alt="${this.esc(p.name || '')}"></a>`).join('');
+        html += '</div>';
+      }
     }
     el.innerHTML = html;
   };
