@@ -62,7 +62,7 @@ export const MODULES = {
     editFields: [{key:'title',label:'标题',type:'text',required:true},{key:'description',label:'描述',type:'textarea'},{key:'severity',label:'严重度',type:'select',options:[{v:'low',t:'低'},{v:'medium',t:'中'},{v:'high',t:'高'},{v:'critical',t:'严重'}]},{key:'status',label:'状态',type:'select',options:[{v:'open',t:'待处理'},{v:'assigned',t:'已指派'},{v:'analyzing',t:'分析中'},{v:'fixing',t:'修复中'},{v:'verifying',t:'验证中'},{v:'closed',t:'已关闭'}]},{key:'issue_type',label:'类型',type:'select',options:[{v:'quality',t:'质量'},{v:'production',t:'生产'},{v:'supply',t:'供应链'},{v:'design',t:'设计'},{v:'inspection',t:'检验'},{v:'other',t:'其他'}]},{key:'assigned_to',label:'负责人',type:'text'},{key:'solution_short',label:'短期对策',type:'textarea'},{key:'solution_long',label:'长期对策',type:'textarea'},{key:'plan_date',label:'计划解决日期',type:'date'},{key:'due_date',label:'截止日期'},{key:'priority_score',label:'优先级(1-10)',type:'number'}],
   },
   factory_process: {
-    title: 'EMS制程问题', icon: '🏭', table: 'factory_process',
+    title: '制程问题', icon: '🏭', table: 'factory_process',
     listFields: [{key:'title',label:'标题'},{key:'severity',label:'严重度',badge:true},{key:'status',label:'状态',badge:true},{key:'issue_type',label:'类型'},{key:'reported_by',label:'报告人'},{key:'created_at',label:'创建时间'}],
     detailFields: [{key:'title',label:'标题'},{key:'description',label:'描述'},{key:'severity',label:'严重度'},{key:'status',label:'状态'},{key:'issue_type',label:'类型'},{key:'workflow_status',label:'工作流状态'},{key:'reported_by',label:'报告人'},{key:'assigned_to',label:'负责人'},{key:'solution_short',label:'短期对策'},{key:'solution_long',label:'长期对策'},{key:'plan_date',label:'计划解决日期'},{key:'due_date',label:'截止日期'},{key:'priority_score',label:'优先级'},{key:'created_at',label:'创建时间'}],
     editFields: [{key:'title',label:'标题',type:'text',required:true},{key:'description',label:'描述',type:'textarea'},{key:'severity',label:'严重度',type:'select',options:[{v:'low',t:'低'},{v:'medium',t:'中'},{v:'high',t:'高'},{v:'critical',t:'严重'}]},{key:'status',label:'状态',type:'select',options:[{v:'open',t:'待处理'},{v:'assigned',t:'已指派'},{v:'analyzing',t:'分析中'},{v:'fixing',t:'修复中'},{v:'verifying',t:'验证中'},{v:'closed',t:'已关闭'}]},{key:'issue_type',label:'类型',type:'select',options:[{v:'quality',t:'质量'},{v:'production',t:'生产'},{v:'supply',t:'供应链'},{v:'design',t:'设计'},{v:'inspection',t:'检验'},{v:'other',t:'其他'}]},{key:'assigned_to',label:'负责人',type:'text'},{key:'solution_short',label:'短期对策',type:'textarea'},{key:'solution_long',label:'长期对策',type:'textarea'},{key:'plan_date',label:'计划解决日期',type:'date'},{key:'due_date',label:'截止日期'},{key:'priority_score',label:'优先级(1-10)',type:'number'}],
@@ -203,6 +203,6 @@ export const MODULE_PERMISSIONS = {
   doa: [],                       // DOA/RMA → 暂未开放
   rma: [],                       // DOA/RMA → 暂未开放
   engineering: [],               // 工程 → 暂未开放
-  factory_process: [],           // EMS制程 → 暂未开放
+  factory_process: [],           // 制程 → 暂未开放
 };
 export const REPORTS_ALL_USERS = true;     // 周/月报 → 所有人（含 leader）可生成/使用
