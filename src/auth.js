@@ -3,9 +3,12 @@ import { SUPABASE_KEY, APP_VERSION, USER_MAP, MODULE_PERMISSIONS, REPORTS_ALL_US
 import { t } from './i18n.js';
 
 export function setupAuth(App) {
+  const ADMIN_USERS = ['admin', 'admin2', 'admin3', 'admin4'];
+  const SUPER_ADMIN_USERS = ['admin', 'admin3', 'admin4'];
+
   App.isLoggedIn = function() { return !!this.session; };
-  App.isAdmin = function() { const r = this.session?.user?.role; const u = this.session?.user?.username; return r === 'admin' || (!r && (u === 'admin' || u === 'admin2')); };
-  App.isSuperAdmin = function() { return this.session?.user?.username === 'admin'; };
+  App.isAdmin = function() { const r = this.session?.user?.role; const u = this.session?.user?.username; return r === 'admin' || (!r && ADMIN_USERS.includes(u)); };
+  App.isSuperAdmin = function() { const u = this.session?.user?.username; return SUPER_ADMIN_USERS.includes(u); };
   App.isViewer = function() { return this.session?.user?.role === 'viewer'; };
 
   /* ─── 模块级编辑权限 ───
@@ -57,12 +60,12 @@ export function setupAuth(App) {
       const ok = await this.verifyPassword(password, acc.password_hash, acc.salt, acc.password);
       console.log('[LOGIN] Password verify result:', ok);
       if (!ok) throw new Error(t('err_pwd'));
-      this.session = { user: { id: acc.id, email: email, username: acc.username, display_name: acc.display_name || acc.username, role: acc.role || ((acc.username === 'admin' || acc.username === 'admin2') ? 'admin' : 'viewer') } };
+      this.session = { user: { id: acc.id, email: email, username: acc.username, display_name: acc.display_name || acc.username, role: acc.role || (ADMIN_USERS.includes(acc.username) ? 'admin' : 'viewer') } };
       // 记录登录当天的中国日期，用于「当日有效、次日需重新登录」判定
       this.session.loginDate = this.chinaDate();
       localStorage.setItem('pmapp_session', JSON.stringify(this.session));
       this.scheduleChinaLogout();
-      await this.recordLogin(acc.username, acc.display_name || acc.username, acc.role || ((acc.username === 'admin' || acc.username === 'admin2') ? 'admin' : 'viewer'));
+      await this.recordLogin(acc.username, acc.display_name || acc.username, acc.role || (ADMIN_USERS.includes(acc.username) ? 'admin' : 'viewer'));
       this.loadSettings();
       this.loadHome();
       this.toast(t('t_login_ok'));
