@@ -20,7 +20,7 @@ const STORAGE_KEY = 'pmapp_lang';
 const I18N = {
   zh: {
     // Tabs
-    tab_home: '首页', tab_planning: '计划', tab_factory: '工厂', tab_engineering: '工程', tab_factory_process: 'EMS制程', tab_materials: '物料', tab_production: '生产',
+    tab_home: '首页', tab_planning: '计划', tab_factory: '工厂', tab_engineering: '工程', tab_factory_process: '制程', tab_materials: '物料', tab_production: '生产',
     tab_quality: '品质', tab_inspection: 'DOA/RMA', tab_reports: '周/月报', tab_settings: '设定', qual_mod_issues: '问题', qual_mod_inspection: '客验',
     // Home
     app_slogan: '科奈信海外生产管理系统', dashboard: '总体看板',
@@ -122,7 +122,7 @@ const I18N = {
   },
 
   en: {
-    tab_home: 'Home', tab_planning: 'Planning', tab_factory: 'Factory', tab_engineering: 'Engineering', tab_factory_process: 'EMS Process', tab_materials: 'Materials', tab_production: 'Production',
+    tab_home: 'Home', tab_planning: 'Planning', tab_factory: 'Factory', tab_engineering: 'Engineering', tab_factory_process: 'Process', tab_materials: 'Materials', tab_production: 'Production',
     tab_quality: 'Quality', tab_inspection: 'DOA/RMA', tab_reports: 'Reports', tab_settings: 'Settings', qual_mod_issues: 'Issues', qual_mod_inspection: 'Inspection',
     app_slogan: 'Overseas Production Management System', dashboard: 'Dashboard',
     stat_total: 'Total', stat_active: 'Active', stat_overdue: 'Delayed', stat_qc: 'QC', stat_pending: 'Pending',
@@ -206,7 +206,7 @@ const I18N = {
   },
 
   es: {
-    tab_home: 'Inicio', tab_planning: 'Planificacion', tab_factory: 'Fabrica', tab_engineering: 'Ingeniería', tab_factory_process: 'Proceso EMS', tab_materials: 'Materiales', tab_production: 'Produccion',
+    tab_home: 'Inicio', tab_planning: 'Planificacion', tab_factory: 'Fabrica', tab_engineering: 'Ingeniería', tab_factory_process: 'Proceso', tab_materials: 'Materiales', tab_production: 'Produccion',
     tab_quality: 'Calidad', tab_inspection: 'DOA/RMA', tab_reports: 'Informes', tab_settings: 'Ajustes',
     app_slogan: 'Sistema de Gestion de Produccion Exterior', dashboard: 'Panel',
     stat_total: 'Total', stat_active: 'Activo', stat_overdue: 'Retrasado', stat_qc: 'Calidad', stat_pending: 'Pendiente',
@@ -270,7 +270,7 @@ const I18N = {
   },
 
   ja: {
-    tab_home: 'ホーム', tab_planning: '計画', tab_factory: '工場', tab_engineering: 'エンジニアリング', tab_factory_process: 'EMSプロセス', tab_materials: '資材', tab_production: '生産',
+    tab_home: 'ホーム', tab_planning: '計画', tab_factory: '工場', tab_engineering: 'エンジニアリング', tab_factory_process: 'プロセス', tab_materials: '資材', tab_production: '生産',
     tab_quality: '品質', tab_inspection: 'DOA/RMA', tab_reports: 'レポート', tab_settings: '設定',
     app_slogan: '海外生産管理システム', dashboard: 'ダッシュボード',
     stat_total: '総プロジェクト', stat_active: '進行中', stat_overdue: '遅延', stat_qc: '品質検査中', stat_pending: '保留中',
@@ -334,7 +334,7 @@ const I18N = {
   },
 
   fr: {
-    tab_home: 'Accueil', tab_planning: 'Planification', tab_factory: 'Usine', tab_engineering: 'Ingénierie', tab_factory_process: 'Processus EMS', tab_materials: 'Materiaux', tab_production: 'Production',
+    tab_home: 'Accueil', tab_planning: 'Planification', tab_factory: 'Usine', tab_engineering: 'Ingénierie', tab_factory_process: 'Procédé', tab_materials: 'Materiaux', tab_production: 'Production',
     tab_quality: 'Qualite', tab_inspection: 'DOA/RMA', tab_reports: 'Rapports', tab_settings: 'Parametres',
     app_slogan: 'Systeme de Gestion de Production Etranger', dashboard: 'Tableau de bord',
     stat_total: 'Total', stat_active: 'Actif', stat_overdue: 'En retard', stat_qc: 'Controle', stat_pending: 'En attente',
@@ -398,7 +398,7 @@ const I18N = {
   },
 
   de: {
-    tab_home: 'Start', tab_planning: 'Planung', tab_factory: 'Fabrik', tab_engineering: 'Engineering', tab_factory_process: 'EMS-Prozess', tab_materials: 'Material', tab_production: 'Produktion',
+    tab_home: 'Start', tab_planning: 'Planung', tab_factory: 'Fabrik', tab_engineering: 'Engineering', tab_factory_process: 'Prozess', tab_materials: 'Material', tab_production: 'Produktion',
     tab_quality: 'Qualitaet', tab_inspection: 'DOA/RMA', tab_reports: 'Berichte', tab_settings: 'Einstellungen',
     app_slogan: 'Auslandsproduktions-Verwaltungssystem', dashboard: 'Uebersicht',
     stat_total: 'Gesamt', stat_active: 'Aktiv', stat_overdue: 'Verspaetet', stat_qc: 'QS', stat_pending: 'Offen',
@@ -462,7 +462,7 @@ const I18N = {
   },
 
   ar: {
-    tab_home: 'الرئيسية', tab_planning: 'التخطيط', tab_factory: 'مصنع', tab_engineering: 'هندسة', tab_factory_process: 'عملية EMS', tab_materials: 'المواد', tab_production: 'الإنتاج',
+    tab_home: 'الرئيسية', tab_planning: 'التخطيط', tab_factory: 'مصنع', tab_engineering: 'هندسة', tab_factory_process: 'عملية', tab_materials: 'المواد', tab_production: 'الإنتاج',
     tab_quality: 'الجودة', tab_inspection: 'DOA/RMA', tab_reports: 'التقارير', tab_settings: 'الإعدادات',
     app_slogan: 'نظام إدارة الإنتاج الخارجي', dashboard: 'لوحة التحكم',
     stat_total: 'المجموع', stat_active: 'نشط', stat_overdue: 'متأخر', stat_qc: 'فحص', stat_pending: 'معلق',
@@ -526,7 +526,7 @@ const I18N = {
   },
 
   vi: {
-    tab_home: 'Trang chủ', tab_planning: 'Kế hoạch', tab_factory: 'Thông tin nhà máy', tab_engineering: 'Kỹ thuật', tab_factory_process: 'Quy trình EMS', tab_materials: 'Vật liệu', tab_production: 'Sản xuất',
+    tab_home: 'Trang chủ', tab_planning: 'Kế hoạch', tab_factory: 'Thông tin nhà máy', tab_engineering: 'Kỹ thuật', tab_factory_process: 'Quy trình', tab_materials: 'Vật liệu', tab_production: 'Sản xuất',
     tab_quality: 'Chất lượng', tab_inspection: 'DOA/RMA', tab_reports: 'Báo cáo', tab_settings: 'Cài đặt', qual_mod_issues: 'Vấn đề', qual_mod_inspection: 'Kiểm khách',
     app_slogan: 'Hệ thống Quản lý Sản xuất Ngoại quốc', dashboard: 'Tổng quan',
     stat_total: 'Tổng dự án', stat_active: 'Đang thực hiện', stat_overdue: 'Quá hạn', stat_qc: 'Đang QC', stat_pending: 'Chờ xử lý',
@@ -610,7 +610,7 @@ const I18N = {
   },
 
   hi: {
-    tab_home: 'होम', tab_planning: 'योजना', tab_factory: 'फ़ैक्टरी जानकारी', tab_engineering: 'इंजीनियरिंग', tab_factory_process: 'EMS प्रक्रिया', tab_materials: 'सामग्री', tab_production: 'उत्पादन',
+    tab_home: 'होम', tab_planning: 'योजना', tab_factory: 'फ़ैक्टरी जानकारी', tab_engineering: 'इंजीनियरिंग', tab_factory_process: 'प्रक्रिया', tab_materials: 'सामग्री', tab_production: 'उत्पादन',
     tab_quality: 'गुणवत्ता', tab_inspection: 'DOA/RMA', tab_reports: 'रिपोर्ट', tab_settings: 'सेटिंग्स', qual_mod_issues: 'मुद्दे', qual_mod_inspection: 'निरीक्षण',
     app_slogan: 'विदेशी उत्पादन प्रबंधन प्रणाली', dashboard: 'डैशबोर्ड',
     stat_total: 'कुल परियोजनाएँ', stat_active: 'चालू', stat_overdue: 'विलंबित', stat_qc: 'QC में', stat_pending: 'लंबित',
