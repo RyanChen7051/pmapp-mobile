@@ -34,6 +34,11 @@ export const USER_MAP = {
   'leader24': { name: '蒋孝文', dept: '独立品牌' },
   'leader25': { name: '胡彩莲', dept: '销售' },
   'leader26': { name: '刘思雨', dept: '项目' },
+  'leader27': { name: '杜为良', dept: '品质' },
+  'leader28': { name: '黄军', dept: '品质' },
+  'leader29': { name: '刁青春', dept: '人事' },
+  'admin3': { name: '殷鹏飞', dept: 'IT' },
+  'admin4': { name: '朱炳兴', dept: 'IT' },
 };
 
 export const MODULES = {
