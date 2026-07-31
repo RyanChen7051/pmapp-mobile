@@ -8,6 +8,8 @@ const GUIDE_TEXTS = {
   materials: '在这里你可以看到物料的各种状态，包含物料运输状态、协力厂物料库存及风险预警。',
   production:'在这里你可以看到每个计划的实际执行状态，与计划功能有所区别。',
   quality:   '在这里你可以看到各项品质问题，包含各种来料的名称、问题点、问题点类别、问题对应负责人、解决状态等讯息。',
+  engineering:'在这里你可以看到各项工程问题，以及现场提报并归类为「工程」的现场问题。',
+  factory_process:'在这里你可以看到各项工厂制程问题，以及现场提报并归类为「EMS 工厂制程」的现场问题。',
   inspection:'在这里你可以看到包含物料来料问题的资料及各类详细讯息统计、产品使用后问题反馈等各类资料。',
   fieldlog:  '这边是给直接人员做问题记录的界面，可直接做问题名称、叙述及问题拍照等等快速功能界面。',
   reports:   '在这里可以快速了解区段时间内的各项海外协力厂生产及交付状态，其中周报的时间区段为7天，月报为30天，可直接点选需求范围的起始时间后生成报告。',
@@ -27,7 +29,7 @@ export function setupNavigation(App) {
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     const tab = document.querySelector(`.tab[data-page="${page}"]`);
     if (tab) tab.classList.add('active');
-    const titleKeys = { home: 'app_slogan', factory: 'tab_factory', planning: 'tab_planning', materials: 'tab_materials', production: 'tab_production', quality: 'tab_quality', inspection: 'tab_inspection', reports: 'tab_reports', fieldlog: 'tab_fieldlog', settings: 'tab_settings' };
+    const titleKeys = { home: 'app_slogan', factory: 'tab_factory', planning: 'tab_planning', materials: 'tab_materials', production: 'tab_production', quality: 'tab_quality', engineering: 'tab_engineering', factory_process: 'tab_factory_process', inspection: 'tab_inspection', reports: 'tab_reports', fieldlog: 'tab_fieldlog', settings: 'tab_settings' };
     document.getElementById('tb-title').textContent = page === 'home' ? 'PMApp' : t(titleKeys[page] || 'app_slogan');
     document.getElementById('tb-back').style.display = 'none';
     document.getElementById('tb-action').innerHTML = '';
@@ -47,13 +49,15 @@ export function setupNavigation(App) {
       else if (page === 'materials') this.loadMaterials();
       else if (page === 'production') { this.loadProduction(); if (this.isAdmin()) document.getElementById('fab').style.display = 'flex'; }
       else if (page === 'quality') { this.qualModule = this.qualModule || 'issues'; this.loadQuality(); if (this.canEdit(this.qualModule || 'issues')) document.getElementById('fab').style.display = 'flex'; }
+      else if (page === 'engineering') this.loadEngineering();
+      else if (page === 'factory_process') this.loadFactoryProcess();
       else if (page === 'inspection') this.loadInspection();
       else if (page === 'reports') this.loadReports();
       else if (page === 'fieldlog') { this.loadFieldLog(); if (this.isAdmin()) { const fab = document.getElementById('fab'); fab.style.display = 'flex'; fab.setAttribute('onclick', 'App.showFieldLogEditor(null)'); } }
       else if (page === 'settings') this.loadSettings();
     } catch (e) { console.error('[navigate] 加载页面失败:', page, e); }
     this.currentPage = page;
-    this.currentModule = (page === 'production') ? 'projects' : (page === 'quality') ? ((this.qualModule === 'inspection') ? 'inspection' : 'issues') : null;
+    this.currentModule = (page === 'production') ? 'projects' : (page === 'quality') ? ((this.qualModule === 'inspection') ? 'inspection' : 'issues') : (page === 'engineering') ? 'engineering' : (page === 'factory_process') ? 'factory_process' : null;
     window.scrollTo(0, 0);
   };
 
@@ -135,7 +139,7 @@ export function setupUtils(App) {
 
   App.setupPTR = function() {
     let startY = 0, pulling = false;
-    const pages = ['home', 'factory', 'planning', 'materials', 'production', 'quality', 'inspection', 'settings'];
+    const pages = ['home', 'factory', 'planning', 'materials', 'production', 'quality', 'engineering', 'factory_process', 'inspection', 'settings'];
     document.addEventListener('touchstart', (e) => {
       if (window.scrollY === 0) { startY = e.touches[0].clientY; pulling = true; }
     });
