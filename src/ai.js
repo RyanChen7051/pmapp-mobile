@@ -174,4 +174,25 @@ export async function initAIAssistant() {
   if (messagesEl.children.length === 0) {
     addMsg('bot', greetingText());
   }
+
+  // 管理员「重建知识库」：触发 kb-ingest 把业务数据向量化入库
+  App.rebuildKnowledgeBase = async function () {
+    const btn = document.getElementById('kb-rebuild-btn');
+    const status = document.getElementById('kb-rebuild-status');
+    if (btn) { btn.disabled = true; btn.textContent = '🔄 重建中…'; }
+    if (status) status.textContent = '正在向量化最新数据，请稍候（可能需要数十秒）…';
+    try {
+      const res = await fetch('https://nsnmtkukxquhinlmbejg.supabase.co/functions/v1/kb-ingest', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY },
+        body: JSON.stringify({ source: 'all' }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (status) status.textContent = data && data.ok ? ('✅ 重建完成，已入库 ' + (data.total ?? 0) + ' 条。') : ('⚠️ ' + JSON.stringify(data).slice(0, 160));
+    } catch (e) {
+      if (status) status.textContent = '❌ 失败：' + e.message;
+    } finally {
+      if (btn) { btn.disabled = false; btn.textContent = '🔄 重建知识库'; }
+    }
+  };
 }
