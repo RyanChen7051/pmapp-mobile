@@ -9,7 +9,7 @@ const GUIDE_TEXTS = {
   production:'在这里你可以看到每个计划的实际执行状态，与计划功能有所区别。',
   quality:   '在这里你可以看到各项品质问题，包含各种来料的名称、问题点、问题点类别、问题对应负责人、解决状态等讯息。',
   engineering:'在这里你可以看到各项工程问题，以及现场提报并归类为「工程」的现场问题。',
-  factory_process:'在这里你可以看到各项工厂制程问题，以及现场提报并归类为「EMS 工厂制程」的现场问题。',
+  factory_process:'在这里你可以看到各项 EMS 制程问题，以及现场提报并归类为「EMS制程」的现场问题。',
   inspection:'在这里你可以看到包含物料来料问题的资料及各类详细讯息统计、产品使用后问题反馈等各类资料。',
   fieldlog:  '这边是给直接人员做问题记录的界面，可直接做问题名称、叙述及问题拍照等等快速功能界面。',
   reports:   '在这里可以快速了解区段时间内的各项海外协力厂生产及交付状态，其中周报的时间区段为7天，月报为30天，可直接点选需求范围的起始时间后生成报告。',
@@ -79,12 +79,12 @@ export function setupNavigation(App) {
     document.body.appendChild(el);
     // 触发进入动画
     requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('show')));
-    // 停留 3 秒后自动消失（仅显示当前页这一条引导语，不会多页同屏）
+    // 停留 2 秒后自动消失（仅显示当前页这一条引导语，不会多页同屏）
     clearTimeout(this._guideTimer);
     this._guideTimer = setTimeout(() => {
       el.classList.remove('show');
       setTimeout(() => el.remove(), 400);
-    }, 3000);
+    }, 2000);
   };
 
   App.goBack = function() {
