@@ -4,6 +4,7 @@
  * 所有人自动共享（不再每台设备各自设置）。本地 localStorage 仅作离线缓存。
  */
 import { t } from './i18n.js';
+import { SUPABASE_KEY } from './config.js';
 
 export async function initAIAssistant() {
   const messagesEl = document.getElementById('ai-messages');
@@ -16,6 +17,8 @@ export async function initAIAssistant() {
   if (!messagesEl || !inputEl || !sendBtn) return;
 
   const STORE_URL = 'pmapp_ai_url';
+  // RAG 检索增强问答端点（Supabase Edge Function，自带知识库，无需额外后端）
+  const RAG_FUNCTION_URL = 'https://nsnmtkukxquhinlmbejg.supabase.co/functions/v1/ai-rag-chat';
   // 缓存：优先本地（离线快），再从 Supabase 全局覆盖
   let cachedUrl = (localStorage.getItem(STORE_URL) || '').replace(/\/+$/, '');
   let aiCfgSbId = null; // ai_config 行的 supabase_id
@@ -38,8 +41,9 @@ export async function initAIAssistant() {
   }
 
   // 仅超级管理员(admin)可见设置齿轮；admin2 / 其他用户不可见、不可修改
+  // 智能助理已改为自带 RAG 函数，无需配置后端地址，因此隐藏设置齿轮
+  if (settingsBtn) settingsBtn.style.display = 'none';
   const isSuper = !!(window.App && App.isSuperAdmin && App.isSuperAdmin());
-  if (!isSuper && settingsBtn) settingsBtn.style.display = 'none';
 
   function greetingText() { return t('ai_greeting') || '你好，有什么问题，都可以问我。'; }
 
@@ -116,35 +120,43 @@ export async function initAIAssistant() {
     clearReset();
     const text = inputEl.value.trim();
     if (!text) return;
-    const url = getUrl();
-    if (!url) {
-      if (isSuper) {
-        settingsBox.style.display = 'block';
-        urlInput.focus();
-        addMsg('bot', t('ai_url_missing') || '⚠️ 请先点右上角 ⚙️ 填入 AI 后端地址。');
-      } else {
-        addMsg('bot', '⚠️ 智能海外助理尚未设定，请联系管理员。');
-      }
-      return;
-    }
     inputEl.value = '';
     addMsg('user', text);
     history.push({ role: 'user', content: text });
     const typing = addMsg('bot', t('ai_thinking') || '智能海外助理 正在思考…');
     try {
-      const resp = await fetch(url + '/api/chat', {
+      // 直接调用自带 RAG 函数（检索知识库 + 智谱生成），无需额外后端
+      const headers = {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_KEY,
+      };
+      // 携带当前登录用户名，供函数端做「已登录用户」门禁与归因
+      const callerName = (window.App && App.session && App.session.user && App.session.user.username) || '';
+      if (callerName) headers['x-pmapp-user'] = callerName;
+      const resp = await fetch(RAG_FUNCTION_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({ messages: history.slice(-20) }),
       });
       const data = await resp.json();
       if (!resp.ok) throw new Error(data.error || ('HTTP ' + resp.status));
       const reply = data.reply || '(无回复)';
       typing.textContent = reply;
+      // 渲染引用来源
+      if (Array.isArray(data.citations) && data.citations.length) {
+        const cite = document.createElement('div');
+        cite.className = 'ai-citations';
+        cite.textContent = '📚 来源：' + data.citations.map(c => `${c.table}#${c.id}`).join('，');
+        cite.style.fontSize = '12px';
+        cite.style.opacity = '0.7';
+        cite.style.marginTop = '4px';
+        typing.parentElement.appendChild(cite);
+      }
       history.push({ role: 'assistant', content: reply });
       scheduleReset(); // 回答完成后约 15 秒自动恢复
     } catch (e) {
-      typing.textContent = (t('ai_call_fail') || '❌ 调用失败：') + e.message + '\n' + (t('ai_call_fail_hint') || '请确认后端地址正确且服务已在运行。');
+      typing.textContent = (t('ai_call_fail') || '❌ 调用失败：') + e.message + '\n' + (t('ai_call_fail_hint') || '请确认网络可访问 Supabase。');
     }
   }
   sendBtn.addEventListener('click', send);
@@ -161,12 +173,5 @@ export async function initAIAssistant() {
   }
   if (messagesEl.children.length === 0) {
     addMsg('bot', greetingText());
-    if (!getUrl()) {
-      if (isSuper) {
-        addMsg('bot', t('ai_url_missing') || '⚠️ 请先点右上角 ⚙️ 填入 AI 后端地址。');
-      } else {
-        addMsg('bot', '⚠️ 智能海外助理尚未设定，请联系管理员。');
-      }
-    }
   }
 }

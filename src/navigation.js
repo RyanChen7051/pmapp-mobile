@@ -1,6 +1,18 @@
 /* ═══ Navigation & Utilities ═══ */
 import { t, applyTranslations } from './i18n.js';
 
+// ── 页面切换引导语（首页/设定页不引导；其余 8 页各对应一条）──
+const GUIDE_TEXTS = {
+  factory:   '在这里你可以快速检视到工厂的直接讯息，包含工厂名称、地址、功能、直接应对人员等。',
+  planning:  '在这里可以知道各项理论计划，包含订单讯息、交付计划、及生产计划等，同时也可以了解延误状态。',
+  materials: '在这里你可以看到物料的各种状态，包含物料运输状态、协力厂物料库存及风险预警。',
+  production:'在这里你可以看到每个计划的实际执行状态，与计划功能有所区别。',
+  quality:   '在这里你可以看到各项品质问题，包含各种来料的名称、问题点、问题点类别、问题对应负责人、解决状态等讯息。',
+  inspection:'在这里你可以看到包含物料来料问题的资料及各类详细讯息统计、产品使用后问题反馈等各类资料。',
+  fieldlog:  '这边是给直接人员做问题记录的界面，可直接做问题名称、叙述及问题拍照等等快速功能界面。',
+  reports:   '在这里可以快速了解区段时间内的各项海外协力厂生产及交付状态，其中周报的时间区段为7天，月报为30天，可直接点选需求范围的起始时间后生成报告。',
+};
+
 export function setupNavigation(App) {
   App.showApp = function() {
     document.getElementById('tabbar').style.display = 'flex';
@@ -35,6 +47,35 @@ export function setupNavigation(App) {
     this.currentPage = page;
     this.currentModule = (page === 'production') ? 'projects' : (page === 'quality') ? ((this.qualModule === 'inspection') ? 'inspection' : 'issues') : null;
     window.scrollTo(0, 0);
+    // 页面切换引导：首页与设定页不引导；同一页重复进入（如刷新/切语言）不重复触发
+    if (GUIDE_TEXTS[page] && page !== this._lastGuidePage) this.showGuide(page);
+    this._lastGuidePage = page;
+  };
+
+  // 悬浮 AI 引导员：顶部出现几秒后自动消失
+  App.showGuide = function(page) {
+    const text = GUIDE_TEXTS[page];
+    if (!text) return;
+    document.getElementById('ai-guide')?.remove();
+    const el = document.createElement('div');
+    el.id = 'ai-guide';
+    el.className = 'ai-guide';
+    el.innerHTML =
+      '<div class="guide-avatar">🤖</div>' +
+      '<div class="guide-body">' +
+        '<div class="guide-title">智能引导 · AI Guide</div>' +
+        '<div class="guide-text">' + text + '</div>' +
+      '</div>' +
+      '<div class="guide-close" onclick="document.getElementById(\'ai-guide\')?.remove()">✕</div>';
+    document.body.appendChild(el);
+    // 触发进入动画
+    requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('show')));
+    // 约 5.5 秒后自动消失
+    clearTimeout(this._guideTimer);
+    this._guideTimer = setTimeout(() => {
+      el.classList.remove('show');
+      setTimeout(() => el.remove(), 400);
+    }, 5500);
   };
 
   App.goBack = function() {
