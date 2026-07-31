@@ -285,14 +285,14 @@ export function setupPages(App) {
       </div></div>`).join('');
   };
 
-  /* ─── 工程 / EMS制程 Tab（与品质·问题同结构）─── */
+  /* ─── 工程 / 制程 Tab（与品质·问题同结构）─── */
   App.renderIssueModule = function (moduleKey, containerId) {
     let issues = this.cache[moduleKey] || [];
     const q = document.getElementById(containerId + '-search')?.value?.trim().toLowerCase();
     if (q) issues = issues.filter(i => i.title?.toLowerCase().includes(q) || i.description?.toLowerCase().includes(q) || i.assigned_to?.toLowerCase().includes(q));
     const el = document.getElementById(containerId);
     if (!el) return;
-    if (issues.length === 0) { el.innerHTML = `<div class="empty"><div class="empty-icon">⚠️</div>暂无${moduleKey === 'engineering' ? '工程' : 'EMS制程'}问题</div>`; return; }
+    if (issues.length === 0) { el.innerHTML = `<div class="empty"><div class="empty-icon">⚠️</div>暂无${moduleKey === 'engineering' ? '工程' : '制程'}问题</div>`; return; }
     el.innerHTML = issues.slice().sort((a, b) => (b.created_at || '').localeCompare(a.created_at || '')).map(i => `<div class="card" onclick="App.openDetail('${moduleKey}', ${i.id})">
       <div class="card-title">⚠️ ${this.esc(i.title)}</div>
       <div class="card-meta">
@@ -312,7 +312,7 @@ export function setupPages(App) {
   App.loadFactoryProcess = function() {
     this.updateAdminButtons();
     this.renderIssueModule('factory_process', 'fp-list');
-    this.renderFieldLogByCategory('fp-fieldlog', 'EMS制程');
+    this.renderFieldLogByCategory('fp-fieldlog', '制程');
   };
 
   /* ─── DOA / RMA Tab ─── */
@@ -516,7 +516,7 @@ export function setupPages(App) {
       'factory-add': this.isAdmin(),              // 工厂讯息：未授权额外用户
       'qual-insp-add': this.canEdit('inspection'),// 品质(客验) → 陈晓斌
       'eng-add': this.canEdit('engineering'),      // 工程 → 陈晓斌
-      'fp-add': this.canEdit('factory_process'),   // EMS制程 → 暂未开放
+      'fp-add': this.canEdit('factory_process'),   // 制程 → 暂未开放
       'fieldlog-add': this.canEdit('field_log'),  // 现场记录 → 管理员(驻点人员)
     };
     Object.entries(map).forEach(([id, show]) => {
