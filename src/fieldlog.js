@@ -126,7 +126,7 @@ export function setupFieldLog(App) {
         <option value="">（未选 / 不归类）</option>
         <option value="工程">工程</option>
         <option value="品质">品质</option>
-        <option value="EMS制程">EMS制程</option>
+        <option value="制程">制程</option>
       </select></div>
       <div class="input-group"><label>生产问题叙述</label><textarea id="fl-description" placeholder="描述产线遇到的状况、异常、数量等…">${this.esc(newRec.description || '')}</textarea></div>
       <div class="input-group"><label>处理状态</label><select id="fl-status">
