@@ -37,6 +37,7 @@ export const USER_MAP = {
   'leader27': { name: '杜为良', dept: '品质' },
   'leader28': { name: '黄军', dept: '品质' },
   'leader29': { name: '刁青春', dept: '人事' },
+  'leader30': { name: '李双', dept: '广西运营' },
   'admin3': { name: '殷鹏飞', dept: 'IT' },
   'admin4': { name: '朱炳兴', dept: 'IT' },
 };
