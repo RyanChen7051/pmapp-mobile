@@ -1,5 +1,5 @@
 /* ═══ 现场记录模块（产线状况实时登录，管理员手机端）═══
- * 面向国外驻点管理员：在产线遇异常时，及时记录「生产项目 / 生产工厂 / 生产问题叙述 / 照片」。
+ * 面向国外驻点管理员：在产线遇异常时，及时记录「生产项目 / 问题发生工厂 / 生产问题叙述 / 照片」。
  * 照片经 Canvas 自动压缩（限宽 1280px、JPEG 0.55）转 base64 存入 sync_data，避免占用系统空间。
  * 权限：admin(admin/admin2) 可新建/编辑；leader 为 viewer（只读）。
  */
@@ -81,7 +81,7 @@ export function setupFieldLog(App) {
     el.innerHTML = list.map(r => `<div class="card" onclick="App.openDetail('field_log', ${r.id})">
       <div class="card-head"><div class="card-title">📸 ${this.esc(r.project || '未指定项目')}</div>
       ${r.status ? `<span class="badge ${r.status === '已处理' ? 'badge-green' : r.status === '处理中' ? 'badge-orange' : 'badge-red'}">${this.esc(r.status)}</span>` : ''}</div>
-      <div class="card-meta"><span>🏭 ${this.esc(r.factory || '—')}</span>${r.photos ? `<span>📷 ${r.photos.length}</span>` : ''}<span>🕒 ${this.esc((r.created_at || '').slice(0, 16))}</span></div>
+      <div class="card-meta"><span>🏭 ${this.esc(r.problem_factory || r.factory || '—')}</span>${r.photos ? `<span>📷 ${r.photos.length}</span>` : ''}<span>🕒 ${this.esc((r.created_at || '').slice(0, 16))}</span></div>
       ${r.description ? `<div class="card-desc">${this.esc((r.description || '').slice(0, 80))}</div>` : ''}
     </div>`).join('');
   };
@@ -97,7 +97,7 @@ export function setupFieldLog(App) {
     el.innerHTML = list.map(r => `<div class="card" onclick="App.openDetail('field_log', ${r.id})">
       <div class="card-head"><div class="card-title">📸 ${this.esc(r.project || '未指定项目')}</div>
       ${r.status ? `<span class="badge ${r.status === '已处理' ? 'badge-green' : r.status === '处理中' ? 'badge-orange' : 'badge-red'}">${this.esc(r.status)}</span>` : ''}</div>
-      <div class="card-meta"><span>🏭 ${this.esc(r.factory || '—')}</span>${r.problem_factory ? `<span>📍 ${this.esc(r.problem_factory)}</span>` : ''}<span>🕒 ${this.esc((r.created_at || '').slice(0, 16))}</span></div>
+      <div class="card-meta"><span>🏭 ${this.esc(r.problem_factory || r.factory || '—')}</span>${r.problem_factory ? `<span>📍 ${this.esc(r.problem_factory)}</span>` : ''}<span>🕒 ${this.esc((r.created_at || '').slice(0, 16))}</span></div>
       ${r.description ? `<div class="card-desc">${this.esc((r.description || '').slice(0, 80))}</div>` : ''}
     </div>`).join('');
   };
@@ -121,13 +121,12 @@ export function setupFieldLog(App) {
     const html = `<div class="modal-handle"></div>
       <div class="modal-title">${rec ? '编辑' : '新建'}现场记录</div>
       <div class="input-group"><label>生产项目</label><select id="fl-project">${projOpts}</select></div>
-      <div class="input-group"><label>生产工厂</label><select id="fl-factory">${facOpts}</select></div>
       <div class="input-group"><label>问题发生工厂</label><select id="fl-problem-factory">${facOpts}</select></div>
       <div class="input-group"><label>问题类别</label><select id="fl-problem-category">
         <option value="">（未选 / 不归类）</option>
         <option value="工程">工程</option>
         <option value="品质">品质</option>
-        <option value="EMS工厂制程">EMS工厂制程</option>
+        <option value="EMS制程">EMS制程</option>
       </select></div>
       <div class="input-group"><label>生产问题叙述</label><textarea id="fl-description" placeholder="描述产线遇到的状况、异常、数量等…">${this.esc(newRec.description || '')}</textarea></div>
       <div class="input-group"><label>处理状态</label><select id="fl-status">
@@ -147,7 +146,6 @@ export function setupFieldLog(App) {
     document.getElementById('modal-overlay').classList.add('show');
     if (rec) {
       const pe = document.getElementById('fl-project'); if (pe && rec.project) pe.value = rec.project;
-      const fe = document.getElementById('fl-factory'); if (fe && rec.factory) fe.value = rec.factory;
       const pef = document.getElementById('fl-problem-factory'); if (pef && rec.problem_factory) pef.value = rec.problem_factory;
       const pcat = document.getElementById('fl-problem-category'); if (pcat && rec.problem_category) pcat.value = rec.problem_category;
     }
@@ -156,15 +154,14 @@ export function setupFieldLog(App) {
 
   App.saveFieldLog = async function (id) {
     const project = (document.getElementById('fl-project')?.value || '').trim();
-    const factory = (document.getElementById('fl-factory')?.value || '').trim();
     const problemFactory = (document.getElementById('fl-problem-factory')?.value || '').trim();
     const problemCategory = document.getElementById('fl-problem-category')?.value || '';
     const description = (document.getElementById('fl-description')?.value || '').trim();
     const status = document.getElementById('fl-status')?.value || '待处理';
-    if (!description && !project && !factory) { this.toast('请至少填写项目/工厂或问题叙述'); return; }
+    if (!description && !project) { this.toast('请至少填写项目或问题叙述'); return; }
     const now = new Date().toISOString();
     const rec = {
-      id, project, factory, problem_factory: problemFactory, problem_category: problemCategory, description, status,
+      id, project, problem_factory: problemFactory, problem_category: problemCategory, description, status,
       photos: this._flPhotos.slice(),
       reporter: this.session?.user?.display_name || this.session?.user?.username || '',
       created_at: now.slice(0, 19).replace('T', ' '),
