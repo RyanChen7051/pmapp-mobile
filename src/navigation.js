@@ -34,22 +34,27 @@ export function setupNavigation(App) {
     document.getElementById('fab').style.display = 'none';
     // Re-apply translations for the active page's static elements
     applyTranslations();
-    if (page === 'home') this.loadHome();
-    else if (page === 'factory') { this.loadFactory(); if (this.isAdmin()) document.getElementById('fab').style.display = 'flex'; }
-    else if (page === 'planning') this.loadPlanning();
-    else if (page === 'materials') this.loadMaterials();
-    else if (page === 'production') { this.loadProduction(); if (this.isAdmin()) document.getElementById('fab').style.display = 'flex'; }
-    else if (page === 'quality') { this.qualModule = this.qualModule || 'issues'; this.loadQuality(); if (this.canEdit(this.qualModule || 'issues')) document.getElementById('fab').style.display = 'flex'; }
-    else if (page === 'inspection') this.loadInspection();
-    else if (page === 'reports') this.loadReports();
-    else if (page === 'fieldlog') { this.loadFieldLog(); if (this.isAdmin()) { const fab = document.getElementById('fab'); fab.style.display = 'flex'; fab.setAttribute('onclick', 'App.showFieldLogEditor(null)'); } }
-    else if (page === 'settings') this.loadSettings();
+    // 页面切换引导：首页与设定页不引导；同一页重复进入（如刷新/切语言）不重复触发
+    // 注意：引导优先于页面加载——若某页 loader 异常（如 reports 的 populateReportProjects 访问未就绪的 cache），
+    // 也不能连引导一起吞掉。故先弹引导，再 try 包裹加载。
+    if (GUIDE_TEXTS[page] && page !== this._lastGuidePage) this.showGuide(page);
+    this._lastGuidePage = page;
+    // 加载页面内容（try 包裹，避免单页异常阻断整段导航逻辑）
+    try {
+      if (page === 'home') this.loadHome();
+      else if (page === 'factory') { this.loadFactory(); if (this.isAdmin()) document.getElementById('fab').style.display = 'flex'; }
+      else if (page === 'planning') this.loadPlanning();
+      else if (page === 'materials') this.loadMaterials();
+      else if (page === 'production') { this.loadProduction(); if (this.isAdmin()) document.getElementById('fab').style.display = 'flex'; }
+      else if (page === 'quality') { this.qualModule = this.qualModule || 'issues'; this.loadQuality(); if (this.canEdit(this.qualModule || 'issues')) document.getElementById('fab').style.display = 'flex'; }
+      else if (page === 'inspection') this.loadInspection();
+      else if (page === 'reports') this.loadReports();
+      else if (page === 'fieldlog') { this.loadFieldLog(); if (this.isAdmin()) { const fab = document.getElementById('fab'); fab.style.display = 'flex'; fab.setAttribute('onclick', 'App.showFieldLogEditor(null)'); } }
+      else if (page === 'settings') this.loadSettings();
+    } catch (e) { console.error('[navigate] 加载页面失败:', page, e); }
     this.currentPage = page;
     this.currentModule = (page === 'production') ? 'projects' : (page === 'quality') ? ((this.qualModule === 'inspection') ? 'inspection' : 'issues') : null;
     window.scrollTo(0, 0);
-    // 页面切换引导：首页与设定页不引导；同一页重复进入（如刷新/切语言）不重复触发
-    if (GUIDE_TEXTS[page] && page !== this._lastGuidePage) this.showGuide(page);
-    this._lastGuidePage = page;
   };
 
   // 悬浮 AI 引导员：顶部出现几秒后自动消失
@@ -61,7 +66,7 @@ export function setupNavigation(App) {
     el.id = 'ai-guide';
     el.className = 'ai-guide';
     el.innerHTML =
-      '<div class="guide-avatar">🤖</div>' +
+      '<img class="guide-avatar" src="ai-avatar.jpg" alt="智能海外助理" />' +
       '<div class="guide-body">' +
         '<div class="guide-title">智能引导 · AI Guide</div>' +
         '<div class="guide-text">' + text + '</div>' +
@@ -70,12 +75,12 @@ export function setupNavigation(App) {
     document.body.appendChild(el);
     // 触发进入动画
     requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('show')));
-    // 停留 2 秒后自动消失（仅显示当前页这一条引导语，不会多页同屏）
+    // 停留 3 秒后自动消失（仅显示当前页这一条引导语，不会多页同屏）
     clearTimeout(this._guideTimer);
     this._guideTimer = setTimeout(() => {
       el.classList.remove('show');
       setTimeout(() => el.remove(), 400);
-    }, 2000);
+    }, 3000);
   };
 
   App.goBack = function() {
