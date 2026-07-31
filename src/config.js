@@ -62,7 +62,7 @@ export const MODULES = {
     editFields: [{key:'title',label:'标题',type:'text',required:true},{key:'description',label:'描述',type:'textarea'},{key:'severity',label:'严重度',type:'select',options:[{v:'low',t:'低'},{v:'medium',t:'中'},{v:'high',t:'高'},{v:'critical',t:'严重'}]},{key:'status',label:'状态',type:'select',options:[{v:'open',t:'待处理'},{v:'assigned',t:'已指派'},{v:'analyzing',t:'分析中'},{v:'fixing',t:'修复中'},{v:'verifying',t:'验证中'},{v:'closed',t:'已关闭'}]},{key:'issue_type',label:'类型',type:'select',options:[{v:'quality',t:'质量'},{v:'production',t:'生产'},{v:'supply',t:'供应链'},{v:'design',t:'设计'},{v:'inspection',t:'检验'},{v:'other',t:'其他'}]},{key:'assigned_to',label:'负责人',type:'text'},{key:'solution_short',label:'短期对策',type:'textarea'},{key:'solution_long',label:'长期对策',type:'textarea'},{key:'plan_date',label:'计划解决日期',type:'date'},{key:'due_date',label:'截止日期'},{key:'priority_score',label:'优先级(1-10)',type:'number'}],
   },
   factory_process: {
-    title: '工厂制程问题', icon: '🏭', table: 'factory_process',
+    title: 'EMS制程问题', icon: '🏭', table: 'factory_process',
     listFields: [{key:'title',label:'标题'},{key:'severity',label:'严重度',badge:true},{key:'status',label:'状态',badge:true},{key:'issue_type',label:'类型'},{key:'reported_by',label:'报告人'},{key:'created_at',label:'创建时间'}],
     detailFields: [{key:'title',label:'标题'},{key:'description',label:'描述'},{key:'severity',label:'严重度'},{key:'status',label:'状态'},{key:'issue_type',label:'类型'},{key:'workflow_status',label:'工作流状态'},{key:'reported_by',label:'报告人'},{key:'assigned_to',label:'负责人'},{key:'solution_short',label:'短期对策'},{key:'solution_long',label:'长期对策'},{key:'plan_date',label:'计划解决日期'},{key:'due_date',label:'截止日期'},{key:'priority_score',label:'优先级'},{key:'created_at',label:'创建时间'}],
     editFields: [{key:'title',label:'标题',type:'text',required:true},{key:'description',label:'描述',type:'textarea'},{key:'severity',label:'严重度',type:'select',options:[{v:'low',t:'低'},{v:'medium',t:'中'},{v:'high',t:'高'},{v:'critical',t:'严重'}]},{key:'status',label:'状态',type:'select',options:[{v:'open',t:'待处理'},{v:'assigned',t:'已指派'},{v:'analyzing',t:'分析中'},{v:'fixing',t:'修复中'},{v:'verifying',t:'验证中'},{v:'closed',t:'已关闭'}]},{key:'issue_type',label:'类型',type:'select',options:[{v:'quality',t:'质量'},{v:'production',t:'生产'},{v:'supply',t:'供应链'},{v:'design',t:'设计'},{v:'inspection',t:'检验'},{v:'other',t:'其他'}]},{key:'assigned_to',label:'负责人',type:'text'},{key:'solution_short',label:'短期对策',type:'textarea'},{key:'solution_long',label:'长期对策',type:'textarea'},{key:'plan_date',label:'计划解决日期',type:'date'},{key:'due_date',label:'截止日期'},{key:'priority_score',label:'优先级(1-10)',type:'number'}],
@@ -184,8 +184,8 @@ export const MODULES = {
   },
   field_log: {
     title: '现场记录', icon: '📸', table: 'field_log',
-    listFields: [{key:'project',label:'生产项目'},{key:'factory',label:'生产工厂'},{key:'description',label:'问题叙述',truncate:40},{key:'created_at',label:'记录时间'},{key:'status',label:'状态',badge:true}],
-    detailFields: [{key:'project',label:'生产项目'},{key:'factory',label:'生产工厂'},{key:'description',label:'生产问题叙述'},{key:'status',label:'状态'},{key:'reporter',label:'记录人'},{key:'created_at',label:'记录时间'}],
+    listFields: [{key:'project',label:'生产项目'},{key:'problem_factory',label:'问题发生工厂'},{key:'description',label:'问题叙述',truncate:40},{key:'created_at',label:'记录时间'},{key:'status',label:'状态',badge:true}],
+    detailFields: [{key:'project',label:'生产项目'},{key:'problem_factory',label:'问题发生工厂'},{key:'description',label:'生产问题叙述'},{key:'status',label:'状态'},{key:'reporter',label:'记录人'},{key:'created_at',label:'记录时间'}],
   },
 };
 
@@ -195,12 +195,14 @@ export const MODULES = {
    在该模块键下填入其登录用户名即可。
    周/月报（reports）开放给所有人：REPORTS_ALL_USERS = true。 */
 export const MODULE_PERMISSIONS = {
-  overseas_material_alerts: ['leader9'],   // 物料栏目（物料预警）→ 蒋思贵
-  issues: ['leader11'],                    // 品质 → 陈晓斌
-  inspection: ['leader11'],                // 品质（客验）→ 陈晓斌
-  doa: ['leader11'],                       // DOA/RMA → 陈晓斌
-  rma: ['leader11'],                       // DOA/RMA → 陈晓斌
-  engineering: ['leader11'],               // 工程 → 陈晓斌
-  factory_process: ['leader11'],           // 工厂制程 → 陈晓斌
+  // 临时基线（2026-07-31）：所有 leader 先恢复只读，待后续按需开放。
+  // 周/月报（reports）对所有人开放由 REPORTS_ALL_USERS 控制，不在此列。
+  overseas_material_alerts: [],   // 物料栏目（物料预警）→ 暂未开放
+  issues: [],                    // 品质 → 暂未开放
+  inspection: [],                // 品质（客验）→ 暂未开放
+  doa: [],                       // DOA/RMA → 暂未开放
+  rma: [],                       // DOA/RMA → 暂未开放
+  engineering: [],               // 工程 → 暂未开放
+  factory_process: [],           // EMS制程 → 暂未开放
 };
-export const REPORTS_ALL_USERS = true;     // 周/月报 → 所有人可生成/使用
+export const REPORTS_ALL_USERS = true;     // 周/月报 → 所有人（含 leader）可生成/使用
