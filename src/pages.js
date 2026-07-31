@@ -518,6 +518,7 @@ export function setupPages(App) {
       'eng-add': this.canEdit('engineering'),      // 工程 → 陈晓斌
       'fp-add': this.canEdit('factory_process'),   // 制程 → 暂未开放
       'fieldlog-add': this.canEdit('field_log'),  // 现场记录 → 管理员(驻点人员)
+      'kb-rebuild-btn': this.isSuperAdmin(),      // 重建知识库 → 仅超级管理员
     };
     Object.entries(map).forEach(([id, show]) => {
       const el = document.getElementById(id);
