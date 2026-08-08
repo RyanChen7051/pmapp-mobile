@@ -145,9 +145,7 @@ const App = {
 
     // 以「北京墙钟」计算的当日档位 key（00:00 档 / 12:00 档），用于在前台补更新时去重
     const slotKey = () => {
-      const d = new Date();
-      const utc = d.getTime() - d.getTimezoneOffset() * 60000;
-      const b = new Date(utc + BEIJING * 60000); // 此 Date 的 UTC 字段 = 北京墙钟
+      const b = new Date(Date.now() + BEIJING * 60000); // 此 Date 的 UTC 字段 = 北京墙钟（北京=UTC+8，与设备时区无关）
       const min = b.getUTCHours() * 60 + b.getUTCMinutes();
       const idx = min < 720 ? 0 : 1; // 0 => 当日 00:00 档, 1 => 当日 12:00 档
       return b.getUTCFullYear() + '-' + (b.getUTCMonth() + 1) + '-' + b.getUTCDate() + '#' + idx;
@@ -170,9 +168,7 @@ const App = {
 
     // 计算到下一个北京 00:00 / 12:00 的毫秒数并定时触发
     const scheduleNext = () => {
-      const d = new Date();
-      const utc = d.getTime() - d.getTimezoneOffset() * 60000;
-      const b = new Date(utc + BEIJING * 60000);
+      const b = new Date(Date.now() + BEIJING * 60000);
       const min = b.getUTCHours() * 60 + b.getUTCMinutes() + b.getUTCSeconds() / 60 + b.getUTCMilliseconds() / 60000;
       let delta = null;
       for (const s of [0, 720]) { // 00:00 与 12:00（北京）
