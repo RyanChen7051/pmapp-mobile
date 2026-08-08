@@ -1,8 +1,8 @@
 #!/bin/bash
-# PMApp PWA v3.3.0 部署脚本 (R10 组件化重构)
+# PMApp PWA v3.7.0 部署脚本
 echo "======================================"
-echo "  PMApp PWA v3.3.0 部署到 GitHub Pages"
-echo "  (R10 组件化重构版)"
+echo "  PMApp PWA v3.7.0 部署到 GitHub Pages"
+echo "  (会议记录功能 + 周/月报栏目改名)"
 echo "======================================"
 echo ""
 
@@ -33,7 +33,7 @@ if [ ! -f "node_modules/esbuild/bin/esbuild" ]; then
     echo "  ⚠ esbuild 未安装，正在安装..."
     /Users/chenbangjie/.workbuddy/binaries/node/versions/22.22.2/bin/npm install esbuild --save-dev --registry https://registry.npmmirror.com 2>&1 | tail -3
 fi
-./node_modules/esbuild/bin/esbuild src/app.js --bundle --outfile=bundle.js --format=iife --target=es2020 --minify --banner:js="/* PMApp Mobile v3.3.0 */"
+./node_modules/esbuild/bin/esbuild src/app.js --bundle --outfile=bundle.js --format=iife --target=es2020 --minify --banner:js="/* PMApp Mobile v3.7.0 — Bundled by esbuild */"
 echo "  bundle.js 大小: $(wc -c < bundle.js) bytes"
 echo ""
 
@@ -46,7 +46,7 @@ git diff --cached --quiet
 if [ $? -eq 0 ]; then
     echo "  无变更需提交"
 else
-    git commit -m "R10: PWA v3.3.0 component refactoring" >/dev/null
+    git commit -m "feat: 周/月报栏目新增会议记录功能 + 顶栏改名周/月报、会议记录 (v3.7.0)" >/dev/null
     echo "  已提交"
 fi
 echo ""
