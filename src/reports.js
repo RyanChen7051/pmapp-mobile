@@ -27,6 +27,8 @@ export function setupReports(App) {
 
   App.loadReports = function() {
     this.populateReportProjects();
+    this.populateMeetingProjects();
+    this.loadMeetingRecords();
     const now = new Date();
     const dow = now.getDay() || 7;
     const mon = new Date(now); mon.setDate(now.getDate() - dow + 1);
@@ -234,5 +236,126 @@ export function setupReports(App) {
     let rows = '';
     days.forEach((d, i) => { rows += `<tr><td>${d}</td><td>${iqc[i]}</td><td>${oqc[i]}</td><td>${iqc[i] + oqc[i]}</td></tr>`; });
     return `<table><thead><tr><th>${t('rpt_date')}</th><th>IQC</th><th>OQC</th><th>${t('rpt_total')}</th></tr></thead><tbody>${rows}</tbody></table>`;
+  };
+
+  /* ═══ 会议记录（独立功能，存 sync_data table_name='meeting_records'） ═══ */
+
+  // 填充会议记录的项目下拉
+  App.populateMeetingProjects = function() {
+    const sel = document.getElementById('mtg-project');
+    if (!sel) return;
+    const projects = this.cache.projects || [];
+    const cur = sel.value;
+    sel.innerHTML = '<option value="">（未选）</option>' +
+      projects.map(p => `<option value="${p.id}">${this.esc(p.name || ('项目' + p.id))}</option>`).join('');
+    if (cur) sel.value = cur;
+  };
+
+  // 加载会议记录列表
+  App.loadMeetingRecords = async function() {
+    try {
+      const data = await this.fetchSyncData('meeting_records');
+      this.cache.meeting_records = data;
+    } catch (e) {
+      this.cache.meeting_records = this.cache.meeting_records || [];
+    }
+    this.renderMeetingList();
+  };
+
+  // 渲染会议记录列表
+  App.renderMeetingList = function() {
+    const el = document.getElementById('mtg-list');
+    if (!el) return;
+    const list = (this.cache.meeting_records || []).slice().sort((a, b) =>
+      (b.meeting_time || b.created_at || '').localeCompare(a.meeting_time || a.created_at || ''));
+    if (!list.length) { el.innerHTML = '<div class="rpt-empty">暂无会议记录</div>'; return; }
+    el.innerHTML = list.map(m => {
+      const proj = m.project_name ? `<span class="badge">${this.esc(m.project_name)}</span>` : '';
+      const pdf = m.pdf_data
+        ? `<a href="${m.pdf_data}" target="_blank" style="color:var(--accent-blue)">📄 ${this.esc(m.pdf_name || 'PDF')}</a>`
+        : (m.pdf_name ? `<span class="rpt-sub">📄 ${this.esc(m.pdf_name)}</span>` : '');
+      const content = (m.content || '').replace(/\n/g, '<br>');
+      return `<div class="rpt-row" style="flex-direction:column;align-items:stretch;gap:4px">
+        <div style="display:flex;justify-content:space-between;gap:8px;align-items:center">
+          <b>${this.esc(m.topic || '未命名会议')}</b>
+          <span class="sec-action" onclick="App.deleteMeeting(${m.id})">删除</span>
+        </div>
+        <div class="rpt-sub">${proj}${m.meeting_time ? ' ｜ 🕒 ' + this.esc(m.meeting_time) : ''}</div>
+        ${content ? `<div style="font-size:12px;color:var(--text-secondary);white-space:normal;word-break:break-word">${content}</div>` : ''}
+        ${pdf ? `<div>${pdf}</div>` : ''}
+      </div>`;
+    }).join('');
+  };
+
+  // 保存会议记录（PDF 仅作为附件保存，不提取文字）
+  App.saveMeeting = async function() {
+    const get = id => { const e = document.getElementById(id); return e ? (e.value || '').trim() : ''; };
+    const topic = get('mtg-topic');
+    if (!topic) { this.toast('请填写会议主题'); return; }
+    const projectEl = document.getElementById('mtg-project');
+    const projectId = projectEl ? projectEl.value : '';
+    const projectName = (projectEl && projectEl.selectedOptions && projectEl.selectedOptions[0]) ? projectEl.selectedOptions[0].textContent : '（未选）';
+    const meeting_time = get('mtg-time') || new Date().toISOString().slice(0, 16);
+    const content = get('mtg-content');
+
+    let pdfName = '', pdfData = null;
+    const fileEl = document.getElementById('mtg-file');
+    if (fileEl && fileEl.files && fileEl.files[0]) {
+      const f = fileEl.files[0];
+      const isPdf = f.type === 'application/pdf' || /\.pdf$/i.test(f.name);
+      if (!isPdf) { this.toast('仅支持 PDF 档案'); return; }
+      if (f.size > 8 * 1024 * 1024) { this.toast('PDF 过大（>8MB），请压缩后上传'); return; }
+      pdfName = f.name;
+      try {
+        pdfData = await new Promise((res, rej) => {
+          const r = new FileReader();
+          r.onload = () => res(r.result);
+          r.onerror = () => rej(r.error);
+          r.readAsDataURL(f);
+        });
+      } catch (e) { this.toast('PDF 读取失败'); return; }
+    }
+
+    const now = new Date().toISOString();
+    const id = Math.floor(Date.now() / 1000);
+    const payload = {
+      id, project_id: projectId, project_name: projectName,
+      topic, meeting_time, content,
+      pdf_name: pdfName, pdf_data: pdfData,
+      created_at: now.slice(0, 19).replace('T', ' ')
+    };
+    try {
+      await this.sbPost('sync_data', {
+        table_name: 'meeting_records', local_id: id,
+        payload: JSON.stringify(payload), supabase_id: this.uuid(),
+        is_deleted: false, updated_at: now, device_id: this.deviceId
+      });
+      this.cache.meeting_records = this.cache.meeting_records || [];
+      this.cache.meeting_records.unshift(payload);
+      this.toast('已保存会议记录');
+      this.renderMeetingList();
+      this.clearMeetingForm();
+    } catch (e) { this.toast('保存失败: ' + e.message); }
+  };
+
+  // 清空表单
+  App.clearMeetingForm = function() {
+    ['mtg-topic', 'mtg-time', 'mtg-content'].forEach(id => { const e = document.getElementById(id); if (e) e.value = ''; });
+    const f = document.getElementById('mtg-file'); if (f) f.value = '';
+  };
+
+  // 删除会议记录
+  App.deleteMeeting = async function(id) {
+    if (!confirm('确定删除该会议记录？')) return;
+    try {
+      const rec = (this.cache.meeting_records || []).find(r => r.id === id);
+      const sbId = rec && rec._sb_id;
+      if (sbId) {
+        await this.sbPatch('sync_data', `supabase_id=eq.${sbId}`, { is_deleted: true, updated_at: new Date().toISOString() });
+      }
+      this.cache.meeting_records = (this.cache.meeting_records || []).filter(r => r.id !== id);
+      this.renderMeetingList();
+      this.toast('已删除');
+    } catch (e) { this.toast('删除失败: ' + e.message); }
   };
 }
