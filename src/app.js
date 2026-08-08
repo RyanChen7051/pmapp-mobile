@@ -60,6 +60,7 @@ const App = {
     this.loadAll();
     this.setupPTR();
     this.setupSessionGuard();
+    this.setupAutoUpdate();
     // 宽屏（领导电脑端）自适应：初次判定 + 监听断点变化
     window.matchMedia('(min-width: 860px)').addEventListener('change', () => this.applyLayout());
     this.applyLayout();
@@ -115,6 +116,82 @@ const App = {
         // controllerchange will then reload the page with the new bundle
       });
     }
+  },
+
+  // ── 每日定时自动更新（北京时间 12:00 / 00:00，领导零操作）──
+  // 到点自动清空 SW 缓存并硬刷新，拉取最新部署版本；若领导正在填表则延后 2 分钟。
+  doScheduledUpdate() {
+    const self = this;
+    const finish = () => { window.location.reload(true); };
+    self.toast('🔄 正在更新到最新版本…');
+    const sw = navigator.serviceWorker;
+    if (sw && sw.controller) {
+      try {
+        const ch = new MessageChannel();
+        let reloaded = false;
+        ch.port1.onmessage = (e) => { if (e.data === 'CACHE_CLEARED' && !reloaded) { reloaded = true; finish(); } };
+        sw.controller.postMessage('CLEAR_CACHE', [ch.port2]);
+        setTimeout(() => { if (!reloaded) { reloaded = true; finish(); } }, 2500);
+      } catch (e) { finish(); }
+    } else {
+      finish();
+    }
+  },
+
+  setupAutoUpdate() {
+    if (!('serviceWorker' in navigator)) return;
+    const BEIJING = 8 * 60; // 北京 = UTC+8（无夏令时）
+    const self = this;
+
+    // 以「北京墙钟」计算的当日档位 key（00:00 档 / 12:00 档），用于在前台补更新时去重
+    const slotKey = () => {
+      const d = new Date();
+      const utc = d.getTime() - d.getTimezoneOffset() * 60000;
+      const b = new Date(utc + BEIJING * 60000); // 此 Date 的 UTC 字段 = 北京墙钟
+      const min = b.getUTCHours() * 60 + b.getUTCMinutes();
+      const idx = min < 720 ? 0 : 1; // 0 => 当日 00:00 档, 1 => 当日 12:00 档
+      return b.getUTCFullYear() + '-' + (b.getUTCMonth() + 1) + '-' + b.getUTCDate() + '#' + idx;
+    };
+
+    // 领导正在操作（弹窗打开 / 正在输入）则不打扰
+    const busy = () => {
+      const ov = document.getElementById('modal-overlay');
+      if (ov && ov.classList.contains('show')) return true;
+      const a = document.activeElement;
+      if (a && (a.tagName === 'INPUT' || a.tagName === 'TEXTAREA' || a.isContentEditable)) return true;
+      return false;
+    };
+
+    let timer = null;
+    const fire = () => {
+      if (busy()) { timer = setTimeout(fire, 120000); return; } // 延时 2 分钟再试
+      self.doScheduledUpdate();
+    };
+
+    // 计算到下一个北京 00:00 / 12:00 的毫秒数并定时触发
+    const scheduleNext = () => {
+      const d = new Date();
+      const utc = d.getTime() - d.getTimezoneOffset() * 60000;
+      const b = new Date(utc + BEIJING * 60000);
+      const min = b.getUTCHours() * 60 + b.getUTCMinutes() + b.getUTCSeconds() / 60 + b.getUTCMilliseconds() / 60000;
+      let delta = null;
+      for (const s of [0, 720]) { // 00:00 与 12:00（北京）
+        let dd = s - min;
+        if (dd <= 0) dd += 1440;
+        if (delta === null || dd < delta) delta = dd;
+      }
+      timer = setTimeout(fire, delta * 60000);
+    };
+
+    // 兜底：app 在后台/锁屏错过了整点，回到前台时补一次
+    let lastVisible = slotKey();
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) { lastVisible = slotKey(); return; }
+      const cur = slotKey();
+      if (cur !== lastVisible) { lastVisible = cur; fire(); }
+    });
+
+    scheduleNext();
   },
 
   generateDeviceId() {
