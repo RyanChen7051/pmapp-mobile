@@ -662,6 +662,34 @@ body.rtl .card-meta { flex-direction: row-reverse; }
 <div id="page-reports" class="page">
   <div class="ptr-indicator" id="ptr-reports" data-i18n="ptr_pull">↓ 下拉刷新</div>
 
+  <!-- 会议记录（独立功能，位于周/月报栏目顶部；不嵌入周/月报文档） -->
+  <div class="sec-header"><span>📝 会议记录</span><span class="sec-action" onclick="App.clearMeetingForm()">清空</span></div>
+  <div class="rpt-block">
+    <div class="rpt-field">
+      <label>项目名称</label>
+      <select id="mtg-project"><option value="">（未选）</option></select>
+    </div>
+    <div class="rpt-field">
+      <label>会议主题 *</label>
+      <input type="text" id="mtg-topic" placeholder="手动填写会议主题">
+    </div>
+    <div class="rpt-field">
+      <label>会议时间</label>
+      <input type="datetime-local" id="mtg-time">
+    </div>
+    <div class="rpt-field">
+      <label>会议记录文案</label>
+      <textarea id="mtg-content" rows="4" placeholder="手动粘贴 / 填写会议记录文案"></textarea>
+    </div>
+    <div class="rpt-field">
+      <label>上传会议记录（仅 PDF）</label>
+      <input type="file" id="mtg-file" accept=".pdf,application/pdf">
+    </div>
+    <button class="btn btn-primary rpt-gen-btn" onclick="App.saveMeeting()">保存会议记录</button>
+  </div>
+  <div class="sec-header"><span>会议记录列表</span></div>
+  <div id="mtg-list"><div class="loading"><div class="spinner"></div><span>加载中...</span></div></div>
+
   <!-- 周报 -->
   <div class="rpt-block">
     <div class="rpt-block-title">📊 海外生产周报</div>
