@@ -33,7 +33,7 @@ if [ ! -f "node_modules/esbuild/bin/esbuild" ]; then
     echo "  ⚠ esbuild 未安装，正在安装..."
     /Users/chenbangjie/.workbuddy/binaries/node/versions/22.22.2/bin/npm install esbuild --save-dev --registry https://registry.npmmirror.com 2>&1 | tail -3
 fi
-./node_modules/esbuild/bin/esbuild src/app.js --bundle --outfile=bundle.js --format=iife --target=es2020 --minify --banner:js="/* PMApp Mobile v3.9.0 — Bundled by esbuild */"
+./node_modules/esbuild/bin/esbuild src/app.js --bundle --outfile=bundle.js --format=iife --target=es2020 --minify --banner:js="/* PMApp Mobile v3.10.0 — Bundled by esbuild */"
 echo "  bundle.js 大小: $(wc -c < bundle.js) bytes"
 echo ""
 
