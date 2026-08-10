@@ -79,12 +79,12 @@ export function setupNavigation(App) {
     document.body.appendChild(el);
     // 触发进入动画
     requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('show')));
-    // 停留 2 秒后自动消失（仅显示当前页这一条引导语，不会多页同屏）
+    // 停留 1.5 秒后自动消失（仅显示当前页这一条引导语，不会多页同屏）
     clearTimeout(this._guideTimer);
     this._guideTimer = setTimeout(() => {
       el.classList.remove('show');
       setTimeout(() => el.remove(), 400);
-    }, 2000);
+    }, 1500);
   };
 
   App.goBack = function() {
