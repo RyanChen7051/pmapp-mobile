@@ -102,6 +102,119 @@ export function setupFieldLog(App) {
     </div>`).join('');
   };
 
+  // ═══ 现场智能参谋 Field Copilot ═══
+  // 离线语义相似度检索：复用自有 field_log / doa / rma 历史，给出 TOP3 相似案例。
+  // 不依赖网络、不依赖云端模型——这是通用平台做不到的（它们没有你们的历史数据）。
+
+  // 中文连续双字 + 拉丁词 提取，用于文本相似度
+  App._cjkBigrams = function (text) {
+    const s = String(text || '').toLowerCase();
+    const set = new Set();
+    const segs = s.match(/[一-鿿]+/g) || [];
+    for (const seg of segs) {
+      for (let i = 0; i < seg.length - 1; i++) set.add(seg.slice(i, i + 2));
+    }
+    const words = s.match(/[a-z0-9]+/g) || [];
+    for (const w of words) if (w.length >= 2) set.add(w);
+    return set;
+  };
+
+  // 加权相似度评分（0-100）
+  App._fieldCopilotScore = function (cur, rec) {
+    let score = 0;
+    const cProj = (cur.project || '').trim();
+    const rProj = (rec.project || '').trim();
+    if (cProj && rProj && cProj === rProj) score += 40;
+    const cFac = (cur.problem_factory || cur.factory || '').trim();
+    const rFac = (rec.problem_factory || rec.factory || '').trim();
+    if (cFac && rFac && cFac === rFac) score += 25;
+    const cCat = (cur.problem_category || '').trim();
+    const rCat = (rec.problem_category || '').trim();
+    if (cCat && rCat && cCat === rCat) score += 15;
+    const cText = this._cjkBigrams(cur.description);
+    const rText = this._cjkBigrams(rec.description || rec.material_name || rec.customer);
+    if (cText.size && rText.size) {
+      let inter = 0;
+      for (const g of cText) if (rText.has(g)) inter++;
+      const jac = inter / (cText.size + rText.size - inter);
+      score += Math.round(jac * 20);
+    }
+    return Math.min(100, score);
+  };
+
+  // 从历史池里取 TOP3 相似案例
+  App._fieldCopilotFind = function (cur) {
+    const pool = [];
+    (this.cache.field_log || []).forEach(r => { if (r.id !== cur.id) pool.push({ r, src: 'field_log', tag: '现场' }); });
+    (this.cache.doa || []).forEach(r => pool.push({ r, src: 'doa', tag: 'DOA' }));
+    (this.cache.rma || []).forEach(r => pool.push({ r, src: 'rma', tag: 'RMA' }));
+    return pool
+      .map(({ r, src, tag }) => ({ r, src, tag, score: this._fieldCopilotScore(cur, r) }))
+      .filter(x => x.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 3);
+  };
+
+  // 渲染相似案例面板（内联样式，零额外 CSS 依赖）
+  App._fieldCopilotRender = function (cur) {
+    const box = document.getElementById('fl-copilot');
+    if (!box) return;
+    const list = this._fieldCopilotFind(cur);
+    if (!list.length) {
+      box.innerHTML = '<div style="font-size:12px;color:var(--text-muted,#9aa0b4);margin:4px 0 8px">🧠 智能参谋：暂无相似历史案例（填好项目/工厂/叙述后会自动匹配）</div>';
+      return;
+    }
+    box.innerHTML = '<div style="font-size:13px;font-weight:600;color:var(--accent-blue,#4f9dff);margin:6px 0 8px">🧠 智能参谋 · 相似历史案例（TOP ' + list.length + '）</div>' + list.map(x => {
+      const r = x.r;
+      const title = r.material_name || r.project || r.customer || '记录';
+      const meta = [r.project || r.material_name, r.problem_factory || r.factory].filter(Boolean).join(' · ');
+      const snippet = (r.description || '').slice(0, 64);
+      return `<div onclick="App.openDetail('${x.src}', ${r.id})" style="border:1px solid var(--border,#333);border-radius:10px;padding:10px;margin-bottom:8px;cursor:pointer;background:var(--bg-elev,#1c1c28)">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+          <span style="font-size:11px;color:#9aa0b4">${x.tag}</span>
+          <span style="font-size:12px;font-weight:600;color:#5fe39b">相似度 ${x.score}%</span>
+        </div>
+        <div style="font-size:13px;font-weight:600;color:var(--text,#eee)">${this.esc(title)}</div>
+        ${meta ? `<div style="font-size:12px;color:#9aa0b4;margin-top:2px">${this.esc(meta)}</div>` : ''}
+        ${snippet ? `<div style="font-size:12px;color:#b8bccd;margin-top:4px;line-height:1.4">${this.esc(snippet)}</div>` : ''}
+      </div>`;
+    }).join('');
+  };
+
+  // 输入时防抖刷新面板
+  App._fieldCopilotRefresh = function () {
+    clearTimeout(this._flCpTimer);
+    this._flCpTimer = setTimeout(() => {
+      const cur = {
+        id: this._flEditingId,
+        project: (document.getElementById('fl-project')?.value || '').trim(),
+        problem_factory: (document.getElementById('fl-problem-factory')?.value || '').trim(),
+        problem_category: document.getElementById('fl-problem-category')?.value || '',
+        description: (document.getElementById('fl-description')?.value || '').trim(),
+      };
+      this._fieldCopilotRender(cur);
+    }, 220);
+  };
+
+  // 记录现场 GPS 定位（无信号/拒绝授权时静默降级）
+  App.flCaptureGPS = function () {
+    if (!navigator.geolocation) { this.toast('此设备不支持定位'); return; }
+    const btn = document.getElementById('fl-gps-btn');
+    if (btn) btn.textContent = '📍 定位中…';
+    navigator.geolocation.getCurrentPosition(
+      pos => {
+        this._flGps = pos.coords.latitude.toFixed(5) + ',' + pos.coords.longitude.toFixed(5);
+        if (btn) btn.textContent = '✅ 已记录 ' + this._flGps;
+        this.toast('现场定位已记录');
+      },
+      err => {
+        if (btn) btn.textContent = '📍 记录现场定位';
+        this.toast('定位失败: ' + err.message);
+      },
+      { enableHighAccuracy: true, timeout: 8000 }
+    );
+  };
+
   // ─── 编辑器（新建 / 编辑）───
   App.showFieldLogEditor = function (id) {
     if (!this.canEdit('field_log')) { this.toast('只读模式，无法新建/编辑'); return; }
@@ -115,20 +228,22 @@ export function setupFieldLog(App) {
       if (!rec) return;
     }
     this._flPhotos = rec && rec.photos ? rec.photos.slice() : [];
+    this._flEditingId = newRec.id; this._flGps = '';
     const nowISO = new Date().toISOString();
     const newRec = rec || { id: Date.now(), created_at: nowISO.slice(0, 19).replace('T', ' '), status: '待处理', reporter: this.session?.user?.display_name || this.session?.user?.username || '' };
 
     const html = `<div class="modal-handle"></div>
       <div class="modal-title">${rec ? '编辑' : '新建'}现场记录</div>
-      <div class="input-group"><label>生产项目</label><select id="fl-project">${projOpts}</select></div>
-      <div class="input-group"><label>问题发生工厂</label><select id="fl-problem-factory">${facOpts}</select></div>
-      <div class="input-group"><label>问题类别</label><select id="fl-problem-category">
+      <div class="input-group"><label>生产项目</label><select id="fl-project" onchange="App._fieldCopilotRefresh()">${projOpts}</select></div>
+      <div class="input-group"><label>问题发生工厂</label><select id="fl-problem-factory" onchange="App._fieldCopilotRefresh()">${facOpts}</select></div>
+      <div class="input-group"><label>问题类别</label><select id="fl-problem-category" onchange="App._fieldCopilotRefresh()">
         <option value="">（未选 / 不归类）</option>
         <option value="工程">工程</option>
         <option value="品质">品质</option>
         <option value="制程">制程</option>
       </select></div>
-      <div class="input-group"><label>生产问题叙述</label><textarea id="fl-description" placeholder="描述产线遇到的状况、异常、数量等…">${this.esc(newRec.description || '')}</textarea></div>
+      <div class="input-group"><label>生产问题叙述</label><textarea id="fl-description" placeholder="描述产线遇到的状况、异常、数量等…" oninput="App._fieldCopilotRefresh()">${this.esc(newRec.description || '')}</textarea></div>
+      <div id="fl-copilot" class="fl-copilot"></div>
       <div class="input-group"><label>处理状态</label><select id="fl-status">
         <option value="待处理" ${newRec.status === '待处理' ? 'selected' : ''}>待处理</option>
         <option value="处理中" ${newRec.status === '处理中' ? 'selected' : ''}>处理中</option>
@@ -139,6 +254,7 @@ export function setupFieldLog(App) {
         <div class="fl-photos" id="fl-photos"></div>
         <div style="font-size:11px;color:var(--text-muted);margin-top:4px">点击上方按钮调用相机/相册，照片将自动缩小后保存。</div>
       </div>
+      <button class="btn btn-secondary" id="fl-gps-btn" onclick="App.flCaptureGPS()" style="margin-bottom:8px">📍 记录现场定位</button>
       <button class="btn btn-primary" onclick="App.saveFieldLog(${newRec.id})">保存</button>
       <div style="height:10px"></div>
       <button class="btn btn-secondary" onclick="App.closeModal()">取消</button>`;
@@ -150,6 +266,7 @@ export function setupFieldLog(App) {
       const pcat = document.getElementById('fl-problem-category'); if (pcat && rec.problem_category) pcat.value = rec.problem_category;
     }
     this._flRenderPhotos();
+    this._fieldCopilotRefresh();
   };
 
   App.saveFieldLog = async function (id) {
@@ -163,6 +280,7 @@ export function setupFieldLog(App) {
     const rec = {
       id, project, problem_factory: problemFactory, problem_category: problemCategory, description, status,
       photos: this._flPhotos.slice(),
+      gps: this._flGps || rec.gps || '',
       reporter: this.session?.user?.display_name || this.session?.user?.username || '',
       created_at: now.slice(0, 19).replace('T', ' '),
       updated_at: now.slice(0, 19).replace('T', ' '),
