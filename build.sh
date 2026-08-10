@@ -14,6 +14,6 @@ $ESBUILD src/app.js \
   --format=iife \
   --target=es2020 \
   --minify \
-  --banner:js="/* PMApp Mobile v3.10.0 — Bundled by esbuild */"
+  --banner:js="/* PMApp Mobile v3.11.0 — Bundled by esbuild */"
 
 echo "Done! bundle.js size: $(wc -c < bundle.js) bytes"
