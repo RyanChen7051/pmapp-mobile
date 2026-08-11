@@ -17,8 +17,9 @@ const GUIDE_TEXTS = {
 
 export function setupNavigation(App) {
   App.showApp = function() {
-    document.getElementById('tabbar').style.display = 'flex';
-    document.getElementById('topbar').style.display = 'flex';
+    // v3.16.0 全 App 极简：不再显示 nav bar / tab bar（按设计稿）
+    // document.getElementById('tabbar').style.display = 'flex';
+    // document.getElementById('topbar').style.display = 'flex';
     this.navigate('home');
   };
 
@@ -26,14 +27,18 @@ export function setupNavigation(App) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     const target = document.getElementById('page-' + page);
     if (target) target.classList.add('active');
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    const tab = document.querySelector(`.tab[data-page="${page}"]`);
-    if (tab) tab.classList.add('active');
+    // v3.16.0 兼容：tab bar 隐藏后不再需要 active 状态切换
+    // document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    // const tab = document.querySelector(`.tab[data-page="${page}"]`);
+    // if (tab) tab.classList.add('active');
     const titleKeys = { home: 'app_slogan', factory: 'tab_factory', planning: 'tab_planning', materials: 'tab_materials', production: 'tab_production', quality: 'tab_quality', engineering: 'tab_engineering', factory_process: 'tab_factory_process', inspection: 'tab_inspection', reports: 'tab_reports', fieldlog: 'tab_fieldlog', settings: 'tab_settings' };
-    document.getElementById('tb-title').textContent = page === 'home' ? 'PMApp' : t(titleKeys[page] || 'app_slogan');
-    document.getElementById('tb-back').style.display = 'none';
-    document.getElementById('tb-action').innerHTML = '';
-    document.getElementById('fab').style.display = 'none';
+    // v3.16.0 兼容：nav bar 隐藏后标题不再写
+    // const tbTitle = document.getElementById('tb-title');
+    // if (tbTitle) tbTitle.textContent = page === 'home' ? 'PMApp' : t(titleKeys[page] || 'app_slogan');
+    // document.getElementById('tb-back').style.display = 'none';
+    // document.getElementById('tb-action').innerHTML = '';
+    const fab = document.getElementById('fab');
+    if (fab) fab.style.display = 'none';
     // Re-apply translations for the active page's static elements
     applyTranslations();
     // 页面切换引导：首页与设定页不引导；同一页重复进入（如刷新/切语言）不重复触发
@@ -44,16 +49,16 @@ export function setupNavigation(App) {
     // 加载页面内容（try 包裹，避免单页异常阻断整段导航逻辑）
     try {
       if (page === 'home') this.loadHome();
-      else if (page === 'factory') { this.loadFactory(); if (this.isAdmin()) document.getElementById('fab').style.display = 'flex'; }
+      else if (page === 'factory') { this.loadFactory(); if (this.isAdmin()) { const fab = document.getElementById('fab'); if (fab) fab.style.display = 'flex'; } }
       else if (page === 'planning') this.loadPlanning();
       else if (page === 'materials') this.loadMaterials();
-      else if (page === 'production') { this.loadProduction(); if (this.isAdmin()) document.getElementById('fab').style.display = 'flex'; }
-      else if (page === 'quality') { this.qualModule = this.qualModule || 'issues'; this.loadQuality(); if (this.canEdit(this.qualModule || 'issues')) document.getElementById('fab').style.display = 'flex'; }
+      else if (page === 'production') { this.loadProduction(); if (this.isAdmin()) { const fab = document.getElementById('fab'); if (fab) fab.style.display = 'flex'; } }
+      else if (page === 'quality') { this.qualModule = this.qualModule || 'issues'; this.loadQuality(); if (this.canEdit(this.qualModule || 'issues')) { const fab = document.getElementById('fab'); if (fab) fab.style.display = 'flex'; } }
       else if (page === 'engineering') this.loadEngineering();
       else if (page === 'factory_process') this.loadFactoryProcess();
       else if (page === 'inspection') this.loadInspection();
       else if (page === 'reports') this.loadReports();
-      else if (page === 'fieldlog') { this.loadFieldLog(); if (this.isAdmin()) { const fab = document.getElementById('fab'); fab.style.display = 'flex'; fab.setAttribute('onclick', 'App.showFieldLogEditor(null)'); } }
+      else if (page === 'fieldlog') { this.loadFieldLog(); if (this.isAdmin()) { const fab = document.getElementById('fab'); if (fab) { fab.style.display = 'flex'; fab.setAttribute('onclick', 'App.showFieldLogEditor(null)'); } } }
       else if (page === 'settings') this.loadSettings();
     } catch (e) { console.error('[navigate] 加载页面失败:', page, e); }
     this.currentPage = page;
@@ -102,12 +107,15 @@ export function setupNavigation(App) {
   App.closeModal = function(e) {
     if (e && e.target.id !== 'modal-overlay') return;
     document.getElementById('modal-overlay').classList.remove('show');
-    document.getElementById('tb-action').innerHTML = '';
+    // v3.16.0 兼容：nav bar 隐藏后不再写 tb-action
+    // document.getElementById('tb-action').innerHTML = '';
     if (this.currentPage === 'module-detail' && this.currentModule && this.canEdit(this.currentModule)) {
       const fn = this.currentModule === 'field_log' ? `App.showFieldLogEditor(${this.currentRecordId})` : `App.showEditFor('${this.currentModule}', ${this.currentRecordId})`;
-      document.getElementById('tb-action').innerHTML = `<span onclick="${fn}">${t('btn_edit')}</span>`;
+      // 兼容旧逻辑
+      // document.getElementById('tb-action').innerHTML = `<span onclick="${fn}">${t('btn_edit')}</span>`;
     } else if (this.currentPage === 'project-detail' && this.isAdmin()) {
-      document.getElementById('tb-action').innerHTML = `<span onclick="App.showEditFor('projects', ${this.currentRecordId})">${t('btn_edit')}</span>`;
+      // 兼容旧逻辑
+      // document.getElementById('tb-action').innerHTML = `<span onclick="App.showEditFor('projects', ${this.currentRecordId})">${t('btn_edit')}</span>`;
     }
     this._editingRecord = null;
   };
