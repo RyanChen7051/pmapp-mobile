@@ -538,10 +538,11 @@ export function setupPages(App) {
         const regs = await navigator.serviceWorker.getRegistrations();
         await Promise.all(regs.map(r => r.unregister()));
       }
-      const url = window.location.href.split('?')[0] + '?t=' + Date.now();
-      window.location.href = url;
+      // 强制硬刷新（绕过 HTTP 缓存）。iOS 主屏 PWA 下 location.href 带 ?t= 跳转常不触发重载，
+      // 改用 reload(true) 更可靠；index.html 引用 bundle.js?v=N 随发版变化，不会命中旧缓存。
+      window.location.reload(true);
     } catch (e) {
-      window.location.reload();
+      window.location.reload(true);
     }
   };
 }
