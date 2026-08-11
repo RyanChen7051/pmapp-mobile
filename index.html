@@ -336,6 +336,20 @@ body.rtl .card-meta { flex-direction: row-reverse; }
 .ai-send-row { display: flex; justify-content: flex-end; margin: 0 10px 12px; }
 .ai-send-row .btn { white-space: nowrap; padding: 8px 22px; }
 
+/* ─── 首页重排：分组卡 / 快捷宫格 / AI 折叠 ─── */
+.home-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 13px; margin: 14px 0; }
+.home-block-head { display: flex; align-items: center; justify-content: space-between; font-size: 14px; font-weight: 600; color: var(--text-primary); cursor: pointer; user-select: none; }
+.ai-head-right { display: flex; align-items: center; gap: 10px; }
+.ai-chev { color: var(--text-secondary); font-size: 12px; transition: transform .25s; display: inline-block; }
+.ai-body { padding-top: 12px; }
+.ai-body.collapsed { display: none; }
+#home-quick { margin: 14px 0; }
+.quick-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+.quick-item { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 11px 2px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; font-size: 11px; color: var(--text-secondary); cursor: pointer; transition: transform .12s, border-color .12s; }
+.quick-item:active { transform: scale(.94); border-color: var(--accent); }
+.quick-item .ic { font-size: 20px; line-height: 1; }
+@media (min-width: 768px) { .quick-grid { grid-template-columns: repeat(10, 1fr); } }
+
 /* ═══ 领导电脑端（宽屏自适应 + 驾驶舱）═══ */
 #cockpit { display: block; }
 .sidebar-brand { display: none; }
@@ -473,26 +487,37 @@ body.rtl .card-meta { flex-direction: row-reverse; }
     <div class="home-title">PMApp</div>
     <div class="home-slogan" data-i18n="app_slogan">科奈信海外生产管理系统</div>
   </div>
-  <div class="sec-header"><span>🤖 <span data-i18n="ai_title">智能海外助理</span></span><span class="sec-action" id="ai-settings" style="cursor:pointer" title="设置后端地址">⚙️</span></div>
-  <div id="ai-home-block" class="ai-home-block">
-    <div id="ai-settings-box" class="ai-settings-box" style="display:none">
-      <div>AI 后端地址：</div>
-      <input id="ai-url-input" type="text" placeholder="https://xxx-3000.app.cloudstudio.work" />
-      <button id="ai-url-save" class="btn btn-primary">保存</button>
+  <div id="cockpit"></div>
+  <div id="home-quick" class="mobile-only"></div>
+  <div class="home-block">
+    <div class="home-block-head" id="ai-head">
+      <span>🤖 <span data-i18n="ai_title">智能海外助理</span></span>
+      <span class="ai-head-right">
+        <span class="sec-action" id="ai-settings" style="cursor:pointer" title="设置后端地址">⚙️</span>
+        <span class="ai-chev" id="ai-chev">▼</span>
+      </span>
     </div>
-    <div class="ai-home-head">
-      <img src="ai-avatar.jpg" alt="智能海外助理" />
-      <div class="ai-home-name" data-i18n="ai_title">智能海外助理</div>
-    </div>
-    <div id="ai-messages" class="ai-messages"></div>
-    <div class="ai-input-bubble">
-      <textarea id="ai-input" rows="1" data-i18n-ph="ai_input_ph" placeholder="输入您的问题…"></textarea>
-    </div>
-    <div class="ai-send-row">
-      <button id="ai-send" class="btn btn-primary">发送</button>
+    <div class="ai-body collapsed" id="ai-body">
+      <div id="ai-home-block" class="ai-home-block">
+        <div id="ai-settings-box" class="ai-settings-box" style="display:none">
+          <div>AI 后端地址：</div>
+          <input id="ai-url-input" type="text" placeholder="https://xxx-3000.app.cloudstudio.work" />
+          <button id="ai-url-save" class="btn btn-primary">保存</button>
+        </div>
+        <div class="ai-home-head">
+          <img src="ai-avatar.jpg" alt="智能海外助理" />
+          <div class="ai-home-name" data-i18n="ai_title">智能海外助理</div>
+        </div>
+        <div id="ai-messages" class="ai-messages"></div>
+        <div class="ai-input-bubble">
+          <textarea id="ai-input" rows="1" data-i18n-ph="ai_input_ph" placeholder="输入您的问题…"></textarea>
+        </div>
+        <div class="ai-send-row">
+          <button id="ai-send" class="btn btn-primary">发送</button>
+        </div>
+      </div>
     </div>
   </div>
-  <div id="cockpit"></div>
   <div id="home-banner" class="mobile-only"></div>
   <div class="sec-header mobile-only"><span data-i18n="industry_news">行业动态</span></div>
   <div id="home-news" class="mobile-only"></div>
@@ -662,34 +687,6 @@ body.rtl .card-meta { flex-direction: row-reverse; }
 <div id="page-reports" class="page">
   <div class="ptr-indicator" id="ptr-reports" data-i18n="ptr_pull">↓ 下拉刷新</div>
 
-  <!-- 会议记录（独立功能，位于周/月报栏目顶部；不嵌入周/月报文档） -->
-  <div class="sec-header"><span>📝 会议记录</span><span class="sec-action" onclick="App.clearMeetingForm()">清空</span></div>
-  <div class="rpt-block">
-    <div class="rpt-field">
-      <label>项目名称</label>
-      <select id="mtg-project"><option value="">（未选）</option></select>
-    </div>
-    <div class="rpt-field">
-      <label>会议主题 *</label>
-      <input type="text" id="mtg-topic" placeholder="手动填写会议主题">
-    </div>
-    <div class="rpt-field">
-      <label>会议时间</label>
-      <input type="datetime-local" id="mtg-time">
-    </div>
-    <div class="rpt-field">
-      <label>会议记录文案</label>
-      <textarea id="mtg-content" rows="4" placeholder="手动粘贴 / 填写会议记录文案"></textarea>
-    </div>
-    <div class="rpt-field">
-      <label>上传会议记录（仅 PDF）</label>
-      <input type="file" id="mtg-file" accept=".pdf,application/pdf">
-    </div>
-    <button class="btn btn-primary rpt-gen-btn" onclick="App.saveMeeting()">保存会议记录</button>
-  </div>
-  <div class="sec-header"><span>会议记录列表</span></div>
-  <div id="mtg-list"><div class="loading"><div class="spinner"></div><span>加载中...</span></div></div>
-
   <!-- 周报 -->
   <div class="rpt-block">
     <div class="rpt-block-title">📊 海外生产周报</div>
@@ -815,7 +812,7 @@ body.rtl .card-meta { flex-direction: row-reverse; }
   <div class="tab" onclick="App.navigate('quality')" data-page="quality"><span class="tab-icon">✅</span><span data-i18n="tab_quality">品质</span></div>
   <div class="tab" onclick="App.navigate('inspection')" data-page="inspection"><span class="tab-icon">⚠️</span><span data-i18n="tab_inspection">DOA/RMA</span></div>
   <div class="tab" onclick="App.navigate('fieldlog')" data-page="fieldlog"><span class="tab-icon">📸</span><span>现场</span></div>
-  <div class="tab" onclick="App.navigate('reports')" data-page="reports"><span class="tab-icon">📊</span><span data-i18n="tab_reports">周/月报</span></div>
+  <div class="tab" onclick="App.navigate('reports')" data-page="reports"><span class="tab-icon">📊</span><span data-i18n="tab_reports">报告</span></div>
   <div class="tab" onclick="App.navigate('settings')" data-page="settings"><span class="tab-icon">⚙️</span><span data-i18n="tab_settings">设定</span></div>
 </div>
 
@@ -832,6 +829,6 @@ body.rtl .card-meta { flex-direction: row-reverse; }
 
 </div>
 
-<script type="module" src="bundle.js?v=75"></script>
+<script type="module" src="bundle.js?v=76"></script>
 </body>
 </html>
