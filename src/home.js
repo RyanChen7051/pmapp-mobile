@@ -126,6 +126,49 @@ export function setupHome(App) {
 
     // 手机/电脑均渲染领导驾驶舱（响应式自适应）
     this.renderCockpit();
+    this.renderQuickEntries();
+    this.setupHomeCollapse();
+  };
+
+  /* ── 首页模块快捷宫格 ── */
+  const QUICK_ENTRIES = [
+    { page: 'factory',         icon: '🏭', i18n: 'tab_factory',         label: '工厂' },
+    { page: 'planning',        icon: '📋', i18n: 'tab_planning',        label: '计划' },
+    { page: 'materials',       icon: '📦', i18n: 'tab_materials',       label: '物料' },
+    { page: 'production',      icon: '👷', i18n: 'tab_production',      label: '生产' },
+    { page: 'engineering',     icon: '🔧', i18n: 'tab_engineering',     label: '工程' },
+    { page: 'factory_process', icon: '⚙️', i18n: 'tab_factory_process', label: '制程' },
+    { page: 'quality',         icon: '✅', i18n: 'tab_quality',         label: '品质' },
+    { page: 'inspection',      icon: '⚠️', i18n: 'tab_inspection',      label: 'DOA/RMA' },
+    { page: 'fieldlog',        icon: '📸', i18n: null,                  label: '现场' },
+    { page: 'reports',         icon: '📊', i18n: 'tab_reports',         label: '报告' },
+  ];
+
+  App.renderQuickEntries = function() {
+    const el = document.getElementById('home-quick');
+    if (!el) return;
+    el.innerHTML = `<div class="quick-grid">` + QUICK_ENTRIES.map(q => {
+      let name = q.label;
+      if (q.i18n) { try { const v = t(q.i18n); if (v && v !== q.i18n) name = v; } catch {} }
+      return `<div class="quick-item" onclick="App.navigate('${q.page}')">
+        <span class="ic">${q.icon}</span><span>${name}</span>
+      </div>`;
+    }).join('') + `</div>`;
+  };
+
+  /* ── 首页 AI 区块折叠（默认收起）── */
+  App.setupHomeCollapse = function() {
+    const head = document.getElementById('ai-head');
+    const body = document.getElementById('ai-body');
+    const chev = document.getElementById('ai-chev');
+    if (!head || !body || head.dataset.bound === '1') return;
+    head.dataset.bound = '1';
+    head.addEventListener('click', (e) => {
+      // 点齿轮不触发折叠
+      if (e.target && e.target.id === 'ai-settings') return;
+      const collapsed = body.classList.toggle('collapsed');
+      if (chev) chev.style.transform = collapsed ? '' : 'rotate(180deg)';
+    });
   };
 
   App.renderMessages = async function() {
