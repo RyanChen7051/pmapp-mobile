@@ -10,13 +10,9 @@ export function setupDetail(App) {
     if (!project) { this.toast('项目不存在'); return; }
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.getElementById('page-project-detail').classList.add('active');
-    document.getElementById('tb-title').textContent = project.name || '项目详情';
-    document.getElementById('tb-back').style.display = 'block';
-    document.getElementById('tb-action').innerHTML = '';
-    document.getElementById('fab').style.display = 'none';
-    if (this.isAdmin()) {
-      document.getElementById('tb-action').innerHTML = `<span onclick="App.showEditFor('projects', ${id})">编辑</span>`;
-    }
+    // v3.16.0 nav bar 隐藏，标题/返回/编辑移到 detail 工具栏（见 renderProjectDetail）
+    const fab = document.getElementById('fab');
+    if (fab) fab.style.display = 'none';
     this.currentPage = 'project-detail';
     this.currentModule = 'projects';
     this.currentRecordId = id;
@@ -30,8 +26,15 @@ export function setupDetail(App) {
     const shipping = (this.cache.shipping_plans || []).filter(s => s.plan_no && p.order_no && s.plan_no.includes(p.order_no));
     const progress = STAGE_PROGRESS[p.stage] || (p.status === 'completed' ? 100 : 0);
     const pColor = progress >= 75 ? 'var(--accent-green)' : progress >= 50 ? 'var(--accent-orange)' : 'var(--accent-blue)';
+    const canEdit = this.isAdmin();
 
-    let html = `<div class="card"><div class="card-title" style="font-size:17px">📦 ${this.esc(p.name)}</div>
+    // v3.16.0 顶部工具栏（替代 nav bar tb-back/tb-action）
+    let html = `<div class="detail-toolbar">
+      <span class="back-link" onclick="App.goBack()">← <span data-i18n="btn_back">返回</span></span>
+      ${canEdit ? `<span class="edit-link" onclick="App.showEditFor('projects', ${p.id})">✎ <span data-i18n="btn_edit">编辑</span></span>` : ''}
+    </div>`;
+
+    html += `<div class="card"><div class="card-title" style="font-size:17px">📦 ${this.esc(p.name)}</div>
       <div class="card-meta">
         ${p.status ? `<span class="badge ${this.badgeClass(p.status)}">${this.esc(p.status)}</span>` : ''}
         ${p.stage ? `<span class="badge badge-purple">${this.esc(p.stage)}</span>` : ''}
@@ -99,14 +102,12 @@ export function setupDetail(App) {
     if (!mod) return;
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.getElementById('page-module-detail').classList.add('active');
-    document.getElementById('tb-title').textContent = mod.title + '详情';
-    document.getElementById('tb-back').style.display = 'block';
-    document.getElementById('tb-action').innerHTML = '';
-    document.getElementById('fab').style.display = 'none';
-    if (this.canEdit(moduleKey) && (mod.editFields || moduleKey === 'field_log')) {
-      const fn = moduleKey === 'field_log' ? `App.showFieldLogEditor(${id})` : `App.showEditFor('${moduleKey}', ${id})`;
-      document.getElementById('tb-action').innerHTML = `<span onclick="${fn}">编辑</span>`;
-    }
+    // v3.16.0 nav bar 隐藏，标题/返回/编辑移到 detail 工具栏（见 renderDetail）
+    // document.getElementById('tb-title').textContent = mod.title + '详情';
+    // document.getElementById('tb-back').style.display = 'block';
+    // document.getElementById('tb-action').innerHTML = '';
+    const fab = document.getElementById('fab');
+    if (fab) fab.style.display = 'none';
     this.currentPage = 'module-detail';
     this.currentModule = moduleKey;
     this.currentRecordId = id;
@@ -120,7 +121,13 @@ export function setupDetail(App) {
     const record = records.find(r => r.id === id);
     const el = document.getElementById('module-detail-content');
     if (!record) { el.innerHTML = '<div class="empty">记录不存在</div>'; return; }
-    let html = `<div class="card"><div class="card-title" style="font-size:17px">${mod.icon} `;
+    const canEdit = this.canEdit(moduleKey) && (mod.editFields || moduleKey === 'field_log');
+    // v3.16.0 顶部工具栏（替代 nav bar tb-back/tb-action）
+    let html = `<div class="detail-toolbar">
+      <span class="back-link" onclick="App.goBack()">← <span data-i18n="btn_back">返回</span></span>
+      ${canEdit ? `<span class="edit-link" onclick="${moduleKey === 'field_log' ? `App.showFieldLogEditor(${id})` : `App.showEditFor('${moduleKey}', ${id})`}">✎ <span data-i18n="btn_edit">编辑</span></span>` : ''}
+    </div>`;
+    html += `<div class="card"><div class="card-title" style="font-size:17px">${mod.icon} `;
     html += this.esc(record[mod.detailFields[0].key] || mod.title + ' #' + id);
     html += '</div></div><div class="card">';
     mod.detailFields.forEach(f => {
