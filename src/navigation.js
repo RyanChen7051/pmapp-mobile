@@ -39,6 +39,9 @@ export function setupNavigation(App) {
     // document.getElementById('tb-action').innerHTML = '';
     const fab = document.getElementById('fab');
     if (fab) fab.style.display = 'none';
+    // v3.16.1 悬浮「回首页」按钮：非首页时显示
+    const homeFab = document.getElementById('home-fab');
+    if (homeFab) homeFab.style.display = (page === 'home') ? 'none' : 'flex';
     // Re-apply translations for the active page's static elements
     applyTranslations();
     // 页面切换引导：首页与设定页不引导；同一页重复进入（如刷新/切语言）不重复触发
@@ -97,6 +100,12 @@ export function setupNavigation(App) {
       const prev = this.pageStack.pop();
       this.navigate(prev);
     }
+  };
+
+  // v3.16.1 一键回首页（清空 pageStack，避免「返回链」再次把用户带回深页）
+  App.goHome = function() {
+    this.pageStack = [];
+    this.navigate('home');
   };
 
   App.pushPage = function(page) {
