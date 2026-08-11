@@ -36,6 +36,7 @@ export function setupReports(App) {
     const mf = document.getElementById('rpt-monthly-from');
     if (wf && !wf.value) { wf.value = wfrom; this.onReportStartChange('weekly'); }
     if (mf && !mf.value) { mf.value = mfrom; this.onReportStartChange('monthly'); }
+    this.loadMeetings && this.loadMeetings();
   };
 
   // ── 点击生成按钮：弹窗展示报告 ──
