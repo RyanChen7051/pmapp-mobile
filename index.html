@@ -39,32 +39,20 @@ body {
   font-size: 15px; line-height: 1.5; overflow-x: hidden; -webkit-font-smoothing: antialiased;
 }
 #app { max-width: 430px; margin: 0 auto; min-height: 100vh; position: relative; }
-.page { display: none; padding: calc(var(--safe-top) + 52px) 12px calc(var(--safe-bottom) + 64px); min-height: 100vh; }
+/* 全 App 极简：v3.16.0 取消顶部 nav bar 和底部 tab bar（按设计稿） */
+.page { display: none; padding: calc(var(--safe-top) + 8px) 12px calc(var(--safe-bottom) + 12px); min-height: 100vh; }
 .page.active { display: block; animation: fadeIn 0.3s ease; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
-/* Top bar */
-.topbar {
-  position: fixed; top: 0; left: 50%; transform: translateX(-50%);
-  width: 100%; max-width: 430px; z-index: 100;
-  background: rgba(26,26,46,0.92); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--border);
-  padding: calc(var(--safe-top) + 8px) 16px 8px;
-  display: flex; align-items: center; justify-content: space-between;
-}
+/* Top bar - v3.16.0 全 App 隐藏，按设计稿极简 */
+.topbar { display: none !important; }
 .topbar h1 { font-size: 16px; font-weight: 700; }
 .topbar .back-btn { font-size: 24px; color: var(--accent); cursor: pointer; padding: 4px 8px; }
 .topbar .right-action { font-size: 14px; color: var(--accent); cursor: pointer; font-weight: 600; }
 .sync-badge { margin-left: auto; font-size: 11px; font-weight: 600; color: #fff; background: var(--accent); padding: 2px 8px; border-radius: 10px; white-space: nowrap; }
 
-/* Tab bar - 7 tabs */
-.tabbar {
-  position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
-  width: 100%; max-width: 430px; z-index: 100;
-  background: rgba(22,33,62,0.95); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-  border-top: 1px solid var(--border);
-  display: flex; padding-bottom: var(--safe-bottom);
-}
+/* Tab bar - v3.16.0 全 App 隐藏 */
+.tabbar { display: none !important; }
 .tab {
   flex: 1; display: flex; flex-direction: column; align-items: center;
   padding: 6px 1px; cursor: pointer; transition: color 0.2s;
@@ -130,6 +118,19 @@ body {
 .todo-parent-sel { flex: 1 1 100%; padding: 9px 12px; background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary); font-size: 14px; outline: none; min-width: 0; }
 .todo-parent-sel:focus { border-color: var(--accent); }
 .todo-parent { font-size: 12px; color: var(--text-secondary); margin-top: 3px; display: flex; align-items: center; gap: 4px; }
+
+/* v3.16.0 计划页设计稿风（替代 sec-header 大写样式） */
+.plan-sec { font-size: 15px; font-weight: 700; color: var(--text-primary); margin: 20px 2px 10px; display: flex; justify-content: space-between; align-items: center; }
+.plan-sec .plan-sec-action { font-size: 13px; color: var(--accent); cursor: pointer; font-weight: 500; padding: 4px 10px; border-radius: 6px; }
+.plan-sec .plan-sec-action:active { background: rgba(233,69,96,.12); }
+
+.plan-add { display: flex; flex-direction: column; gap: 8px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 14px; margin-bottom: 14px; }
+.plan-add-input { padding: 11px 12px; background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary); font-size: 14px; outline: none; }
+.plan-add-input:focus { border-color: var(--accent); }
+.plan-add-row { display: flex; gap: 8px; }
+.plan-add-sel { flex: 1 1 auto; min-width: 0; padding: 10px; background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary); font-size: 13px; outline: none; }
+.plan-add-date { flex: 1 1 auto; min-width: 0; padding: 10px; background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary); font-size: 13px; outline: none; }
+.plan-add-btn { width: 100%; padding: 11px 14px; font-size: 14px; font-weight: 600; }
 
 /* Home header */
 .home-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 2px 4px; gap: 10px; }
@@ -403,20 +404,12 @@ body.rtl .card-meta { flex-direction: row-reverse; }
 @media (min-width: 860px) {
   #app { max-width: none; margin: 0; }
 
-  /* 顶栏横跨内容区（右侧） */
-  .topbar {
-    left: 240px; transform: none; width: auto; right: 0; max-width: none;
-    padding: calc(var(--safe-top) + 10px) 28px 10px;
-  }
-  .topbar h1 { font-size: 18px; }
+  /* v3.16.0 宽屏也隐藏 nav/tab bar，按设计稿极简 */
+  .topbar { display: none !important; }
+  .tabbar { display: none !important; }
 
-  /* 底部 tabbar → 左侧导航栏 */
-  .tabbar {
-    top: 0; bottom: 0; left: 0; transform: none; width: 240px; max-width: none;
-    flex-direction: column; justify-content: flex-start; align-items: stretch;
-    padding: 0; border-top: none; border-right: 1px solid var(--border);
-    overflow-y: auto; gap: 2px;
-  }
+  /* 页面内容去掉左侧 sidebar 偏移 */
+  .page { padding: calc(var(--safe-top) + 12px) 28px 28px 28px; max-width: none; }
   .sidebar-brand {
     display: flex; align-items: center; gap: 10px; padding: 18px 20px;
     font-size: 17px; font-weight: 800; color: var(--accent);
@@ -463,6 +456,43 @@ body.rtl .card-meta { flex-direction: row-reverse; }
   .sw-update-bar{position:fixed;left:50%;transform:translateX(-50%);bottom:72px;z-index:2000;display:flex;align-items:center;gap:12px;background:#1f6feb;color:#fff;padding:10px 14px;border-radius:12px;box-shadow:0 6px 20px rgba(0,0,0,.25);font-size:14px;max-width:92vw}
   .sw-update-text{white-space:nowrap}
   .sw-update-btn{background:#fff;color:#1f6feb;border:none;border-radius:8px;padding:6px 14px;font-weight:600;cursor:pointer}
+
+  /* v3.16.0 悬浮同步按钮（替代 nav bar 顶部同步入口） */
+  .sync-fab{
+    position:fixed;right:14px;bottom:24px;z-index:1900;
+    width:46px;height:46px;border-radius:50%;
+    background:linear-gradient(135deg,#1f6feb 0%,#0d5fcc 100%);
+    box-shadow:0 6px 20px rgba(31,111,235,.4),0 2px 6px rgba(0,0,0,.3);
+    display:flex;align-items:center;justify-content:center;
+    color:#fff;font-size:22px;cursor:pointer;border:none;
+    transition:transform .2s ease;
+  }
+  .sync-fab:active{transform:scale(0.92);}
+  .sync-fab .sync-icon{font-size:20px;line-height:1;}
+  .sync-fab .sync-fab-badge{
+    position:absolute;top:-2px;right:-2px;min-width:18px;height:18px;border-radius:9px;
+    background:#e94560;color:#fff;font-size:11px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;padding:0 4px;
+    box-shadow:0 2px 4px rgba(0,0,0,.4);
+  }
+  .sync-fab.spinning .sync-icon{display:inline-block;animation:syncSpin 0.9s linear infinite;}
+  @keyframes syncSpin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+
+  /* v3.16.0 详情页工具栏（替代 nav bar tb-back/tb-action） */
+  .detail-toolbar{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:6px 4px 14px;border-bottom:1px solid var(--border);margin-bottom:14px;
+  }
+  .detail-toolbar .back-link{
+    font-size:14px;color:var(--accent);cursor:pointer;font-weight:600;
+    padding:6px 10px;border-radius:8px;
+  }
+  .detail-toolbar .back-link:active{background:rgba(233,69,96,.1);}
+  .detail-toolbar .edit-link{
+    font-size:14px;color:var(--accent-blue);cursor:pointer;font-weight:600;
+    padding:6px 12px;border-radius:8px;background:rgba(78,138,245,.12);
+  }
+  .detail-toolbar .edit-link:active{background:rgba(78,138,245,.22);}
 
   /* ── AI 页面引导浮层 ── */
   .ai-guide{
@@ -549,17 +579,19 @@ body.rtl .card-meta { flex-direction: row-reverse; }
 <!-- ═══ 计划 ═══ -->
 <div id="page-planning" class="page">
   <div class="ptr-indicator" id="ptr-planning" data-i18n="ptr_pull">↓ 下拉刷新</div>
-  <div class="sec-header"><span data-i18n="plan_tasks">计划任务</span><span class="sec-action" id="plan-task-add" style="display:none" onclick="App.showCreateFor('tasks')" data-i18n="btn_new">+ 新建</span></div>
+  <div class="plan-sec"><span>📋 <span data-i18n="plan_tasks">计划任务</span></span><span class="plan-sec-action" id="plan-task-add" style="display:none" onclick="App.showCreateFor('tasks')" data-i18n="btn_new">+ 新建</span></div>
   <div id="plan-tasks"><div class="loading"><div class="spinner"></div><span data-i18n="loading">加载中...</span></div></div>
-  <div class="sec-header"><span data-i18n="todo_title">计划任务</span></div>
-  <div class="todo-add">
-    <input type="text" id="todo-content" class="todo-input" data-i18n-ph="todo_ph_content" placeholder="输入子计划内容..." onkeydown="if(event.key==='Enter')App.addTodo()" />
-    <select id="todo-parent" class="todo-parent-sel" data-i18n-ph="todo_parent_label" title="所属主计划"></select>
-    <input type="date" id="todo-due" class="todo-date" />
-    <button class="btn btn-primary todo-add-btn" onclick="App.addTodo()">+ <span data-i18n="todo_add">添加</span></button>
+  <div class="plan-sec"><span>✅ <span data-i18n="todo_title">待执行子计划</span></span></div>
+  <div class="plan-add">
+    <input type="text" id="todo-content" class="plan-add-input" data-i18n-ph="todo_ph_content" placeholder="输入子计划内容..." onkeydown="if(event.key==='Enter')App.addTodo()" />
+    <div class="plan-add-row">
+      <select id="todo-parent" class="plan-add-sel" data-i18n-ph="todo_parent_label" title="所属主计划"></select>
+      <input type="date" id="todo-due" class="plan-add-date" />
+    </div>
+    <button class="btn btn-primary plan-add-btn" onclick="App.addTodo()">+ <span data-i18n="todo_add">添加</span></button>
   </div>
   <div id="plan-todos"><div class="loading"><div class="spinner"></div><span data-i18n="loading">加载中...</span></div></div>
-  <div class="sec-header"><span data-i18n="overdue_title">延误计划</span></div>
+  <div class="plan-sec"><span>⚠️ <span data-i18n="overdue_title">延误计划</span></span></div>
   <div id="plan-overdue"><div class="loading"><div class="spinner"></div><span data-i18n="loading">安排加载中...</span></div></div>
 </div>
 
@@ -811,7 +843,7 @@ body.rtl .card-meta { flex-direction: row-reverse; }
   <div id="module-list-content"></div>
 </div>
 
-<!-- Top bar -->
+<!-- Top bar (v3.16.0 保留 DOM 以兼容旧代码引用，CSS 隐藏) -->
 <div class="topbar" id="topbar" style="display:none">
   <span class="back-btn" id="tb-back" onclick="App.goBack()" style="display:none">‹</span>
   <h1 id="tb-title">PMApp</h1>
@@ -819,7 +851,7 @@ body.rtl .card-meta { flex-direction: row-reverse; }
   <span class="right-action" id="tb-action"></span>
 </div>
 
-<!-- Tab bar -->
+<!-- Tab bar (v3.16.0 保留 DOM 以兼容，CSS 隐藏) -->
 <div class="tabbar" id="tabbar" style="display:none">
   <div class="sidebar-brand"><span class="sb-logo">🛰️</span><span>PMApp 驾驶舱</span></div>
   <div class="tab active" onclick="App.navigate('home')" data-page="home"><span class="tab-icon">🏠</span><span data-i18n="tab_home">首页</span></div>
@@ -839,6 +871,12 @@ body.rtl .card-meta { flex-direction: row-reverse; }
 <!-- FAB -->
 <button class="fab" id="fab" style="display:none" onclick="App.showCreate()">+</button>
 
+<!-- v3.16.0 悬浮同步按钮（替代 nav bar 同步入口） -->
+<button class="sync-fab" id="sync-fab" onclick="App.syncNow()" title="立即同步">
+  <span class="sync-icon">🔄</span>
+  <span class="sync-fab-badge" id="sync-fab-badge" style="display:none">0</span>
+</button>
+
 <!-- Modal -->
 <div class="modal-overlay" id="modal-overlay" onclick="App.closeModal(event)">
   <div class="modal" id="modal-content"></div>
@@ -849,6 +887,6 @@ body.rtl .card-meta { flex-direction: row-reverse; }
 
 </div>
 
-<script type="module" src="bundle.js?v=79"></script>
+<script type="module" src="bundle.js?v=80"></script>
 </body>
 </html>
