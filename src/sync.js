@@ -33,16 +33,20 @@ export function setupSyncQueue(App) {
     this.updateSyncBadge();
   };
 
-  // 顶部栏「待同步 N」标识
+  // 顶部栏「待同步 N」标识 — v3.16.0 同时驱动悬浮按钮
   App.updateSyncBadge = function() {
     const n = readOutbox().length;
-    const el = document.getElementById('sync-badge');
-    if (!el) return;
-    if (n > 0) {
-      el.style.display = '';
-      el.textContent = (this.t('sync_pending') || '待同步') + ' ' + n;
-    } else {
-      el.style.display = 'none';
+    // 兼容旧 nav bar 内的 sync-badge（CSS 已隐藏，DOM 保留）
+    const oldEl = document.getElementById('sync-badge');
+    if (oldEl) {
+      if (n > 0) { oldEl.style.display = ''; oldEl.textContent = (this.t('sync_pending') || '待同步') + ' ' + n; }
+      else { oldEl.style.display = 'none'; }
+    }
+    // v3.16.0 主显示：悬浮同步按钮的角标
+    const fabEl = document.getElementById('sync-fab-badge');
+    if (fabEl) {
+      if (n > 0) { fabEl.style.display = 'flex'; fabEl.textContent = n > 99 ? '99+' : String(n); }
+      else { fabEl.style.display = 'none'; }
     }
   };
 
