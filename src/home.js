@@ -38,13 +38,7 @@ function _renderWorldClock() {
     const abs = Math.abs(offMin);
     const oh = Math.floor(abs / 60), om = abs % 60;
     const offStr = om === 0 ? `UTC${sign}${oh}` : `UTC${sign}${oh}:${String(om).padStart(2,'0')}`;
-    return `<div class="wclock-card ${isDay ? 'wc-day' : 'wc-night'} ${isLocal ? 'wc-local' : ''}" style="border-left:3px solid ${c.accent}">
-      <span class="wc-dn">${isDay ? '☀️' : '🌙'}</span>
-      <div class="wc-flag">${c.flag}</div>
-      <div class="wc-city">${c.city}${isLocal ? ' 📍' : ''}</div>
-      <div class="wc-time">${hh}:${mm}<span class="wc-sec">:${ss}</span></div>
-      <div class="wc-offset" style="color:${c.accent}">${offStr}</div>
-    </div>`;
+    return `<div class="wc"><span class="wc-flag">${c.flag}</span><b>${hh}:${mm}</b></div>`;
   }).join('');
 }
 
@@ -132,16 +126,16 @@ export function setupHome(App) {
 
   /* ── 首页模块快捷宫格 ── */
   const QUICK_ENTRIES = [
-    { page: 'factory',         icon: '🏭', i18n: 'tab_factory',         label: '工厂' },
-    { page: 'planning',        icon: '📋', i18n: 'tab_planning',        label: '计划' },
-    { page: 'materials',       icon: '📦', i18n: 'tab_materials',       label: '物料' },
-    { page: 'production',      icon: '👷', i18n: 'tab_production',      label: '生产' },
-    { page: 'engineering',     icon: '🔧', i18n: 'tab_engineering',     label: '工程' },
-    { page: 'factory_process', icon: '⚙️', i18n: 'tab_factory_process', label: '制程' },
-    { page: 'quality',         icon: '✅', i18n: 'tab_quality',         label: '品质' },
-    { page: 'inspection',      icon: '⚠️', i18n: 'tab_inspection',      label: 'DOA/RMA' },
-    { page: 'fieldlog',        icon: '📸', i18n: null,                  label: '现场' },
-    { page: 'reports',         icon: '📊', i18n: 'tab_reports',         label: '报告' },
+    { page: 'planning',        icon: '📅',  i18n: 'tab_planning',        label: '计划' },
+    { page: 'materials',       icon: '📦',  i18n: 'tab_materials',       label: '物料' },
+    { page: 'production',      icon: '⚙️', i18n: 'tab_production',      label: '生产' },
+    { page: 'engineering',     icon: '🛠️', i18n: 'tab_engineering',     label: '工程' },
+    { page: 'factory_process', icon: '🔧',  i18n: 'tab_factory_process', label: '制程' },
+    { page: 'quality',         icon: '✅',  i18n: 'tab_quality',         label: '品质' },
+    { page: 'inspection',      icon: '🔁',  i18n: 'tab_inspection',      label: 'DOA' },
+    { page: 'fieldlog',        icon: '📍',  i18n: null,                  label: '现场' },
+    { page: 'reports',         icon: '📊',  i18n: 'tab_reports',         label: '报告' },
+    { page: 'settings',        icon: '⚙️', i18n: 'tab_settings',        label: '设定' },
   ];
 
   App.renderQuickEntries = function() {
