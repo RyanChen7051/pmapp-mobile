@@ -77,23 +77,32 @@ const App = {
     navigator.serviceWorker.addEventListener('controllerchange', () => {
       if (refreshing) return;
       refreshing = true;
+      // 新 SW 接管后自动刷新，拉取最新 bundle（发版零操作，根治 iOS 主屏 PWA 不更新）
       window.location.reload();
     });
 
-    navigator.serviceWorker.register('sw.js').catch(() => {});
+    // updateViaCache:'none' 确保每次都向服务器验证 sw.js 字节，绕过 iOS 对 SW 脚本的缓存
+    navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' }).catch(() => {});
 
     navigator.serviceWorker.ready.then((reg) => {
+      // 启动即检查一次更新（不等 60s 定时器），让发版尽快生效
+      reg.update().catch(() => {});
       reg.addEventListener('updatefound', () => {
         const installing = reg.installing;
         if (!installing) return;
         installing.addEventListener('statechange', () => {
-          if (installing.state === 'installed' && navigator.serviceWorker.controller) {
-            // A new version is installed and waiting to take over
-            this.showUpdatePrompt(reg.waiting);
+          if (installing.state === 'installed') {
+            if (navigator.serviceWorker.controller) {
+              // 新版本就绪 → 自动 SKIP_WAITING 接管，随后的 controllerchange 会自动刷新
+              installing.postMessage('SKIP_WAITING');
+            } else {
+              // 首次安装，无旧控制器，直接刷新
+              window.location.reload();
+            }
           }
         });
       });
-      // Periodically check for new deploys while the tab stays open
+      // 周期性检查新部署；切回前台时也检查
       setInterval(() => { reg.update().catch(() => {}); }, 60000);
       document.addEventListener('visibilitychange', () => {
         if (!document.hidden) reg.update().catch(() => {});
