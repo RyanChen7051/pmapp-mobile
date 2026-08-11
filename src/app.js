@@ -252,3 +252,14 @@ setupFieldLog(App);
 
 window.App = App;
 App.init();
+
+// v3.16.0 URL 路由：?goto=planning / #planning 启动后自动跳到指定页（用于深链接分享 + 截图工具）
+(function _applyInitialRoute() {
+  const qs = new URLSearchParams(location.search);
+  const fromQuery = qs.get('goto');
+  const fromHash = (location.hash || '').replace('#', '').trim();
+  const target = fromQuery || fromHash;
+  if (target && App.navigate && ['home','factory','planning','materials','production','quality','engineering','factory_process','inspection','reports','fieldlog','settings'].includes(target)) {
+    setTimeout(() => App.navigate(target), 800);
+  }
+})();
