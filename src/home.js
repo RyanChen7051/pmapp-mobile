@@ -132,7 +132,8 @@ export function setupHome(App) {
     { page: 'engineering',     icon: '🛠️', i18n: 'tab_engineering',     label: '工程' },
     { page: 'factory_process', icon: '🔧',  i18n: 'tab_factory_process', label: '制程' },
     { page: 'quality',         icon: '✅',  i18n: 'tab_quality',         label: '品质' },
-    { page: 'inspection',      icon: '🔁',  i18n: 'tab_inspection',      label: 'DOA' },
+    // v3.16.0 第 7 项用 label 直出 "DOA"，避免被 tab_inspection='DOA/RMA' 词条覆盖
+    { page: 'inspection',      icon: '🔁',  i18n: null,                  label: 'DOA' },
     { page: 'fieldlog',        icon: '📍',  i18n: null,                  label: '现场' },
     { page: 'reports',         icon: '📊',  i18n: 'tab_reports',         label: '报告' },
     { page: 'settings',        icon: '⚙️', i18n: 'tab_settings',        label: '设定' },
