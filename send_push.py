@@ -29,8 +29,14 @@ def fetch_subscriptions():
         'Authorization': f'Bearer {SUPABASE_KEY}',
         'Content-Type': 'application/json',
     })
-    with urllib.request.urlopen(req, timeout=15) as r:
-        return json.loads(r.read().decode('utf-8'))
+    try:
+        with urllib.request.urlopen(req, timeout=15) as r:
+            return json.loads(r.read().decode('utf-8'))
+    except urllib.error.HTTPError as e:
+        if e.code == 404:
+            print('⚠️ 订阅表 push_subscriptions 不存在。请先在 Supabase SQL Editor 中执行本仓库的 push_setup.sql。')
+            sys.exit(1)
+        raise
 
 def main():
     ap = argparse.ArgumentParser()
