@@ -27,10 +27,10 @@ export function setupNavigation(App) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     const target = document.getElementById('page-' + page);
     if (target) target.classList.add('active');
-    // v3.16.0 兼容：tab bar 隐藏后不再需要 active 状态切换
-    // document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    // const tab = document.querySelector(`.tab[data-page="${page}"]`);
-    // if (tab) tab.classList.add('active');
+    // 桌面版侧栏：高亮当前页（手机版 tabbar 隐藏，无副作用）
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    const tab = document.querySelector(`.tab[data-page="${page}"]`);
+    if (tab) tab.classList.add('active');
     const titleKeys = { home: 'app_slogan', factory: 'tab_factory', planning: 'tab_planning', materials: 'tab_materials', production: 'tab_production', quality: 'tab_quality', engineering: 'tab_engineering', factory_process: 'tab_factory_process', inspection: 'tab_inspection', reports: 'tab_reports', fieldlog: 'tab_fieldlog', settings: 'tab_settings' };
     // v3.16.0 兼容：nav bar 隐藏后标题不再写
     // const tbTitle = document.getElementById('tb-title');

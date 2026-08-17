@@ -401,35 +401,59 @@ body.rtl .card-meta { flex-direction: row-reverse; }
 .fl-photo img { width: 72px; height: 72px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border); }
 .fl-photo .del { position: absolute; top: -6px; right: -6px; width: 20px; height: 20px; border-radius: 50%; background: var(--accent); color: #fff; font-size: 12px; line-height: 20px; text-align: center; cursor: pointer; }
 
-@media (min-width: 860px) {
+/* ═══ 电脑版 / 手机横屏：左侧固定导航 + 内容区 ═══
+ * 触发：桌面 (≥768px) 或 手机横屏 (landscape, ≤1024px)
+ * → 电脑端直接显示电脑版；手机竖屏仍是手机版；手机横屏自动变电脑版。 */
+@media (min-width: 768px), (orientation: landscape) and (max-width: 1024px) {
   #app { max-width: none; margin: 0; }
 
-  /* v3.16.0 宽屏也隐藏 nav/tab bar，按设计稿极简 */
+  /* 极简设计：不显示旧顶部 nav bar */
   .topbar { display: none !important; }
-  .tabbar { display: none !important; }
 
-  /* 页面内容去掉左侧 sidebar 偏移 */
-  .page { padding: calc(var(--safe-top) + 12px) 28px 28px 28px; max-width: none; }
+  /* ── 左侧导航栏（复用 .tabbar 作为侧栏）── */
+  .tabbar {
+    display: flex !important;
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    width: 232px;
+    flex-direction: column;
+    background: var(--bg-secondary);
+    border-right: 1px solid var(--border);
+    z-index: 100;
+    overflow-y: auto;
+    padding: 0;
+  }
   .sidebar-brand {
-    display: flex; align-items: center; gap: 10px; padding: 18px 20px;
+    display: flex !important;
+    align-items: center; gap: 10px;
+    padding: 18px 20px;
     font-size: 17px; font-weight: 800; color: var(--accent);
     border-bottom: 1px solid var(--border);
-    background: rgba(22,33,62,0.98); position: sticky; top: 0; z-index: 1;
+    position: sticky; top: 0;
+    background: var(--bg-secondary);
+    z-index: 2;
   }
   .sidebar-brand .sb-logo { font-size: 26px; }
   .tab {
-    flex: 0 0 auto; width: 100%; flex-direction: row; justify-content: flex-start;
-    align-items: center; gap: 12px; padding: 13px 20px; font-size: 14px;
+    flex: 0 0 auto; width: 100%;
+    flex-direction: row; justify-content: flex-start; align-items: center;
+    gap: 12px; padding: 13px 20px; font-size: 14px;
     border-radius: 0; color: var(--text-secondary);
+    white-space: nowrap; cursor: pointer;
   }
   .tab .tab-icon { font-size: 19px; line-height: 1; }
+  .tab:hover { background: rgba(255,255,255,0.04); color: var(--text-primary); }
   .tab.active { color: var(--accent); background: rgba(233,69,96,0.10); box-shadow: inset 3px 0 0 var(--accent); }
 
-  /* 页面内容让出左侧 */
-  .page { padding: calc(var(--safe-top) + 64px) 28px 28px 268px; max-width: none; }
-  .fab { right: 28px; bottom: 28px; }
+  /* 内容区让出左侧导航 */
+  .page { padding: 22px 30px 30px 262px; max-width: none; }
 
-  /* 隐藏手机专属区块，显示驾驶舱 */
+  /* 悬浮按钮（桌面靠右下） */
+  .fab { right: 28px; bottom: 28px; }
+  .sync-fab { right: 28px; bottom: 28px; }
+  .home-fab { right: 86px; bottom: 28px; }
+
+  /* 隐藏手机专属区块 */
   .mobile-only { display: none !important; }
   #cockpit { display: block; }
 
@@ -904,6 +928,6 @@ body.rtl .card-meta { flex-direction: row-reverse; }
 
 </div>
 
-<script type="module" src="bundle.js?v=81"></script>
+<script type="module" src="bundle.js?v=82"></script>
 </body>
 </html>

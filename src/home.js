@@ -27,17 +27,10 @@ function _renderWorldClock() {
   el.innerHTML = WC_CLOCKS.map(c => {
     const parts = new Intl.DateTimeFormat('en-GB', {
       timeZone: c.tz, hour12: false,
-      hour: '2-digit', minute: '2-digit', second: '2-digit',
+      hour: '2-digit', minute: '2-digit',
     }).formatToParts(now);
     const get = type => parts.find(p => p.type === type)?.value || '00';
-    const hh = get('hour'), mm = get('minute'), ss = get('second');
-    const isDay = parseInt(hh) >= 6 && parseInt(hh) < 18;
-    const offMin = _tzOffsetMin(c.tz);
-    const isLocal = offMin === localOffset;
-    const sign = offMin >= 0 ? '+' : '-';
-    const abs = Math.abs(offMin);
-    const oh = Math.floor(abs / 60), om = abs % 60;
-    const offStr = om === 0 ? `UTC${sign}${oh}` : `UTC${sign}${oh}:${String(om).padStart(2,'0')}`;
+    const hh = get('hour'), mm = get('minute');
     return `<div class="wc"><span class="wc-flag">${c.flag}</span><b>${hh}:${mm}</b></div>`;
   }).join('');
 }

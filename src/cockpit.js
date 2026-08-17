@@ -40,16 +40,13 @@ export function setupCockpit(App) {
       <div class="kpi-label">${label}</div>
     </div>`;
 
+    // v3.16.2 桌面版与手机版统一：标题区上移至 home-header，驾驶舱只保留 KPI 卡片
     el.innerHTML = `
-      <div class="cockpit-head">
-        <div><h2>领导驾驶舱</h2></div>
-        <div class="sub">实时概览</div>
-      </div>
       <div class="kpi-grid kpi-grid-4">${[
-        kpi(active,            '进行中项目', 'var(--acc)',  'production'),
-        kpi(openIssues,        '待处理问题', 'var(--red)',  'quality'),
-        kpi(thisWeek,          '本周出货',   'var(--grn)',  'production'),
-        kpi(defectRate.toFixed(1) + '%', '缺陷率', 'var(--org)', 'inspection'),
+        kpi(active,            '进行中项目', 'var(--accent)',       'production'),
+        kpi(openIssues,        '待处理问题', 'var(--accent)',       'quality'),
+        kpi(thisWeek,          '本周出货',   'var(--accent-green)', 'production'),
+        kpi(defectRate.toFixed(1) + '%', '缺陷率', 'var(--accent-orange)', 'inspection'),
       ].join('')}</div>
     `;
   };
