@@ -1,5 +1,5 @@
-// PMApp PWA Service Worker v84
-const VERSION = 'v84';
+// PMApp PWA Service Worker v85
+const VERSION = 'v85';
 const CACHE_NAME = 'pmapp-pwa-' + VERSION;
 const ASSETS = ['./', './index.html', './bundle.js', './manifest.json', './icon-192-v2.png', './icon-512-v2.png', './apple-touch-icon-v2.png', './favicon-32-v2.png'];
 
