@@ -20,6 +20,7 @@ import { initAIAssistant } from './ai.js';
 import { setupCockpit } from './cockpit.js';
 import { setupCharts } from './charts.js';
 import { setupFieldLog } from './fieldlog.js';
+import { setupPush } from './push.js';
 
 const App = {
   session: null,
@@ -69,6 +70,8 @@ const App = {
     setTimeout(() => applyTranslations(), 500);
     // AI 助理浮窗（智能海外助理）
     initAIAssistant();
+    // Web Push：若已授权则静默确保订阅存在（自愈换设备/过期）
+    this.ensurePushSubscription();
   },
 
   // Register SW and keep the app auto-updating without manual hard refresh
@@ -249,6 +252,7 @@ setupSyncQueue(App);
 setupCockpit(App);
 setupCharts(App);
 setupFieldLog(App);
+setupPush(App);
 
 window.App = App;
 App.init();

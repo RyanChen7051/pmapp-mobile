@@ -505,6 +505,7 @@ export function setupPages(App) {
       }).join('');
     }
     this.updateAdminButtons();
+    this.renderPushSettings();
   };
 
   App.updateAdminButtons = function() {

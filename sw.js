@@ -1,5 +1,5 @@
-// PMApp PWA Service Worker v83
-const VERSION = 'v83';
+// PMApp PWA Service Worker v84
+const VERSION = 'v84';
 const CACHE_NAME = 'pmapp-pwa-' + VERSION;
 const ASSETS = ['./', './index.html', './bundle.js', './manifest.json', './icon-192-v2.png', './icon-512-v2.png', './apple-touch-icon-v2.png', './favicon-32-v2.png'];
 
@@ -27,6 +27,35 @@ self.addEventListener('message', (e) => {
       });
     });
   }
+});
+
+/* ─── Web Push（Apple Watch 镜像通知路径 A）─── */
+self.addEventListener('push', (e) => {
+  let data = { title: 'PMApp', body: '您有一条新提醒', url: './', tag: 'pmapp' };
+  try { if (e.data) Object.assign(data, e.data.json()); } catch (_) {}
+  e.waitUntil(
+    self.registration.showNotification(data.title, {
+      body: data.body,
+      icon: './icon-192-v2.png',
+      badge: './favicon-32-v2.png',
+      tag: data.tag || 'pmapp',
+      renotify: !!data.tag,
+      data: { url: data.url || './' },
+    })
+  );
+});
+
+self.addEventListener('notificationclick', (e) => {
+  e.notification.close();
+  const target = (e.notification.data && e.notification.data.url) || './';
+  e.waitUntil(
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((cs) => {
+      for (const c of cs) {
+        if ('focus' in c) { c.navigate(target); return c.focus(); }
+      }
+      if (self.clients.openWindow) return self.clients.openWindow(target);
+    })
+  );
 });
 
 self.addEventListener('fetch', (e) => {

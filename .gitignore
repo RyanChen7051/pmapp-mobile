@@ -1,3 +1,9 @@
 node_modules/
 index.html.bak
 package-lock.json
+
+# 密钥：VAPID 私钥（切勿提交/推送）
+vapid_keys.json
+*.local.json
+secrets.json
+.env
