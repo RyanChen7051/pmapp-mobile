@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PMApp 电脑版设计稿 | Desktop Mockup</title>
+<style>
+:root {
+  --bg-primary: #1a1a2e;
+  --bg-secondary: #16213e;
+  --bg-card: #1e2a4a;
+  --bg-input: #0f1729;
+  --accent: #e94560;
+  --accent-light: #ff6b81;
+  --accent-blue: #4e8af5;
+  --accent-green: #2ed573;
+  --accent-orange: #ffa502;
+  --accent-purple: #a55eea;
+  --accent-cyan: #00d2d3;
+  --text-primary: #f0f0f5;
+  --text-secondary: #8892b0;
+  --text-muted: #555a6e;
+  --border: #2a3754;
+  --radius: 12px;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Helvetica Neue', sans-serif;
+  background: #0b0d17;
+  color: var(--text-primary);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 20px; gap: 12px;
+}
+
+/* 外层模拟窗口 */
+.frame-wrap {
+  width: min(1200px, calc(100vw - 40px));
+  height: min(820px, calc(100vh - 120px));
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  box-shadow: 0 24px 70px rgba(0,0,0,.55);
+  background: var(--bg-primary);
+  transition: width .35s ease, height .35s ease;
+}
+.frame-wrap.phone-landscape {
+  width: 852px;
+  height: 420px;
+}
+
+/* macOS 标题栏 */
+.titlebar {
+  height: 40px;
+  background: rgba(22,33,62,.95);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 14px 0 16px;
+  -webkit-app-region: drag;
+}
+.titlebar .traffic { display: flex; gap: 8px; }
+.titlebar .traffic span {
+  width: 12px; height: 12px; border-radius: 50%; display: block;
+}
+.titlebar .t-red { background: #ff5f57; }
+.titlebar .t-yellow { background: #febc2e; }
+.titlebar .t-green { background: #28c840; }
+.titlebar .win-title { font-size: 13px; color: var(--text-secondary); font-weight: 500; }
+
+/* 应用主体 */
+.app-layout { display: flex; height: calc(100% - 40px); }
+
+/* 左侧导航栏 */
+.sidebar {
+  width: 220px;
+  background: var(--bg-secondary);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+}
+.sidebar-brand {
+  height: 70px;
+  display: flex; align-items: center; gap: 10px;
+  padding: 0 20px;
+  border-bottom: 1px solid var(--border);
+  color: var(--accent);
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+.sidebar-brand .logo { font-size: 24px; }
+.sidebar-brand small {
+  display: block; font-size: 10px; color: var(--text-secondary); font-weight: 500; margin-top: 2px;
+}
+.nav { flex: 1; overflow-y: auto; padding: 12px 10px; }
+.nav-group { margin-bottom: 14px; }
+.nav-group-title {
+  font-size: 10px; color: var(--text-muted); text-transform: uppercase;
+  letter-spacing: 0.8px; padding: 0 14px; margin-bottom: 6px;
+}
+.nav-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 14px; border-radius: 8px;
+  color: var(--text-secondary); font-size: 14px;
+  cursor: pointer; margin-bottom: 3px;
+  transition: background .12s, color .12s;
+}
+.nav-item:hover { background: rgba(255,255,255,.04); color: var(--text-primary); }
+.nav-item.active {
+  background: rgba(233,69,96,.13); color: var(--accent);
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+.nav-item .ic { font-size: 18px; width: 22px; text-align: center; line-height: 1; }
+.sidebar-footer {
+  padding: 12px 14px; border-top: 1px solid var(--border);
+  font-size: 12px; color: var(--text-muted);
+  display: flex; align-items: center; gap: 8px;
+}
+.sidebar-footer .dot-online {
+  width: 7px; height: 7px; border-radius: 50%; background: var(--accent-green); box-shadow: 0 0 6px var(--accent-green);
+}
+
+/* 右侧主内容区 */
+.main { flex: 1; display: flex; flex-direction: column; min-width: 0; background: var(--bg-primary); }
+
+/* 顶部状态栏 */
+.topbar {
+  height: 64px;
+  background: rgba(22,33,62,.55);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 26px;
+  backdrop-filter: blur(8px);
+}
+.topbar-left { display: flex; align-items: baseline; gap: 14px; }
+.topbar-left h1 { font-size: 20px; font-weight: 800; }
+.topbar-left .sub { font-size: 13px; color: var(--text-secondary); }
+.topbar-right { display: flex; align-items: center; gap: 18px; }
+.clocks { display: flex; gap: 8px; }
+.clock {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 18px; padding: 5px 11px;
+  display: flex; align-items: center; gap: 5px;
+  font-size: 12px; color: var(--text-primary);
+}
+.clock b { font-weight: 700; letter-spacing: 0.3px; }
+.user-pill {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 20px; padding: 5px 12px 5px 5px;
+  font-size: 13px; color: var(--text-primary); cursor: pointer;
+}
+.user-pill .avatar {
+  width: 26px; height: 26px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--accent-purple));
+  display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;
+}
+
+/* 内容滚动区 */
+.content { flex: 1; overflow-y: auto; padding: 24px 28px; }
+.content::-webkit-scrollbar { width: 8px; }
+.content::-webkit-scrollbar-track { background: transparent; }
+.content::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+/* 页面头 */
+.page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+.page-header h2 { font-size: 22px; font-weight: 800; }
+.page-header .live-tag {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 12px; color: var(--text-secondary);
+  background: var(--bg-card); border: 1px solid var(--border);
+  padding: 5px 12px; border-radius: 20px;
+}
+.live-tag span { width: 6px; height: 6px; border-radius: 50%; background: var(--accent-green); animation: pulse 1.4s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.35} }
+
+/* 筛选条 */
+.filter-bar {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;
+}
+.filter-bar select, .filter-bar input {
+  background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px;
+  color: var(--text-primary); padding: 8px 12px; font-size: 13px; outline: none;
+}
+.filter-bar select:focus, .filter-bar input:focus { border-color: var(--accent); }
+.filter-bar .spacer { flex: 1; }
+.filter-bar .btn-text {
+  background: rgba(233,69,96,.12); color: var(--accent-light);
+  border: 1px solid rgba(233,69,96,.25); border-radius: 8px;
+  padding: 8px 14px; font-size: 13px; font-weight: 600; cursor: pointer;
+}
+
+/* KPI 卡片 */
+.kpi-row {
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px;
+  margin-bottom: 22px;
+}
+.kpi-card {
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 18px; cursor: pointer;
+  transition: transform .15s, border-color .15s, box-shadow .15s;
+}
+.kpi-card:hover { transform: translateY(-2px); border-color: var(--accent); box-shadow: 0 8px 20px rgba(0,0,0,.18); }
+.kpi-card .kpi-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 10px; }
+.kpi-card .kpi-icon { width: 34px; height: 34px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+.kpi-card .kpi-trend { font-size: 11px; color: var(--text-muted); }
+.kpi-num { font-size: 30px; font-weight: 800; line-height: 1; }
+.kpi-label { font-size: 13px; color: var(--text-secondary); margin-top: 8px; }
+
+/* 主内容栅格 */
+.dashboard-grid {
+  display: grid; grid-template-columns: 1.6fr 1fr; gap: 20px;
+}
+.panel {
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 18px; margin-bottom: 20px;
+}
+.panel:last-child { margin-bottom: 0; }
+.panel h3 {
+  font-size: 15px; font-weight: 700; margin-bottom: 14px;
+  display: flex; align-items: center; gap: 8px;
+}
+.panel h3 .r { margin-left: auto; font-size: 12px; color: var(--accent); cursor: pointer; font-weight: 500; }
+
+/* 表格 */
+.data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.data-table th {
+  text-align: left; color: var(--text-secondary); font-weight: 600;
+  padding: 8px; border-bottom: 1px solid var(--border); font-size: 11px; text-transform: uppercase; letter-spacing: .4px;
+}
+.data-table td { padding: 10px 8px; border-bottom: 1px solid var(--border); color: var(--text-primary); }
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:hover td { background: rgba(255,255,255,.02); }
+.data-table .project { font-weight: 600; }
+.data-table .muted { color: var(--text-secondary); }
+.badge {
+  display: inline-block; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 600;
+}
+.badge-red { background: rgba(233,69,96,.15); color: var(--accent-light); }
+.badge-green { background: rgba(46,213,115,.14); color: var(--accent-green); }
+.badge-orange { background: rgba(255,165,2,.14); color: var(--accent-orange); }
+.badge-blue { background: rgba(78,138,245,.14); color: var(--accent-blue); }
+.badge-gray { background: rgba(136,146,176,.12); color: var(--text-secondary); }
+
+/* 活动列表 */
+.activity-list { display: flex; flex-direction: column; gap: 12px; }
+.activity-item { display: flex; gap: 12px; align-items: flex-start; }
+.activity-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 6px; flex: 0 0 auto; }
+.activity-main { flex: 1; }
+.activity-title { font-size: 13px; font-weight: 600; line-height: 1.4; }
+.activity-meta { font-size: 11px; color: var(--text-secondary); margin-top: 3px; }
+
+/* 快捷操作 */
+.quick-actions { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.qa-btn {
+  background: var(--bg-input); border: 1px solid var(--border); border-radius: 10px;
+  padding: 12px; text-align: left; cursor: pointer; color: var(--text-primary);
+  transition: border-color .12s, background .12s;
+}
+.qa-btn:hover { border-color: var(--accent); background: rgba(233,69,96,.06); }
+.qa-btn .ic { font-size: 20px; margin-bottom: 6px; display: block; }
+.qa-btn .lab { font-size: 13px; font-weight: 600; }
+.qa-btn .sub { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+
+/* 底部悬浮同步按钮（保留手机版习惯，PC 放右下角） */
+.sync-fab {
+  position: fixed; right: 34px; bottom: 34px;
+  width: 50px; height: 50px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent-blue) 0%, #0d5fcc 100%);
+  box-shadow: 0 8px 24px rgba(31,111,235,.4), 0 2px 6px rgba(0,0,0,.3);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 22px; cursor: pointer; border: none;
+  z-index: 100;
+}
+
+/* 模拟图控制条 */
+.controls {
+  display: flex; align-items: center; gap: 12px;
+  color: var(--text-secondary); font-size: 13px;
+}
+.controls button {
+  background: var(--bg-card); border: 1px solid var(--border); color: var(--text-primary);
+  padding: 7px 14px; border-radius: 8px; cursor: pointer; font-size: 13px;
+}
+.controls button.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+/* 横屏适配：保持 PC 布局，仅压缩间距 */
+@media (max-width: 900px) {
+  .kpi-row { grid-template-columns: repeat(2, 1fr); }
+  .dashboard-grid { grid-template-columns: 1fr; }
+  .content { padding: 16px; }
+}
+</style>
+</head>
+<body>
+
+<div class="controls">
+  <span>预览模式：</span>
+  <button class="active" id="btn-desktop" onclick="setMode('desktop')">电脑版（≥768px / 手机横屏）</button>
+  <button id="btn-landscape" onclick="setMode('landscape')">手机横屏（852px）</button>
+</div>
+
+<div class="frame-wrap" id="frame">
+  <div class="titlebar">
+    <div class="traffic"><span class="t-red"></span><span class="t-yellow"></span><span class="t-green"></span></div>
+    <div class="win-title">PMApp 电脑版</div>
+    <div style="width:40px"></div>
+  </div>
+
+  <div class="app-layout">
+    <!-- 左侧导航 -->
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <span class="logo">🛰️</span>
+        <div>PMApp<small>海外生产管理系统</small></div>
+      </div>
+      <nav class="nav">
+        <div class="nav-group">
+          <div class="nav-group-title">核心</div>
+          <div class="nav-item active"><span class="ic">🏠</span>领导驾驶舱</div>
+          <div class="nav-item"><span class="ic">📊</span>数据看板</div>
+          <div class="nav-item"><span class="ic">🤖</span>智能海外助理</div>
+        </div>
+        <div class="nav-group">
+          <div class="nav-group-title">业务模块</div>
+          <div class="nav-item"><span class="ic">👷</span>生产项目</div>
+          <div class="nav-item"><span class="ic">✅</span>品质问题</div>
+          <div class="nav-item"><span class="ic">🔧</span>工程变更</div>
+          <div class="nav-item"><span class="ic">🏭</span>制程管理</div>
+          <div class="nav-item"><span class="ic">📦</span>物料预警</div>
+          <div class="nav-item"><span class="ic">🏭</span>工厂信息</div>
+          <div class="nav-item"><span class="ic">📋</span>计划任务</div>
+          <div class="nav-item"><span class="ic">⚠️</span>DOA / RMA</div>
+          <div class="nav-item"><span class="ic">📸</span>现场记录</div>
+        </div>
+        <div class="nav-group">
+          <div class="nav-group-title">输出</div>
+          <div class="nav-item"><span class="ic">📑</span>周/月报</div>
+          <div class="nav-item"><span class="ic">📝</span>会议记录</div>
+          <div class="nav-item"><span class="ic">⚙️</span>设定</div>
+        </div>
+      </nav>
+      <div class="sidebar-footer"><span class="dot-online"></span>同步正常 · v3.16.2</div>
+    </aside>
+
+    <!-- 右侧主内容 -->
+    <main class="main">
+      <header class="topbar">
+        <div class="topbar-left">
+          <h1>领导驾驶舱</h1>
+          <span class="sub">实时概览 · 2026-08-17</span>
+        </div>
+        <div class="topbar-right">
+          <div class="clocks">
+            <div class="clock"><span>🇨🇳</span><b>13:59</b></div>
+            <div class="clock"><span>🇩🇪</span><b>07:59</b></div>
+            <div class="clock"><span>🇺🇸</span><b>01:59</b></div>
+          </div>
+          <div class="user-pill">
+            <div class="avatar">C</div>
+            <span>管理员</span>
+          </div>
+        </div>
+      </header>
+
+      <section class="content">
+        <div class="page-header">
+          <h2>今日全局</h2>
+          <div class="live-tag"><span></span>数据实时同步中</div>
+        </div>
+
+        <div class="filter-bar">
+          <select><option>全部项目</option><option>GUNBASE 瞄准镜</option><option>FEYACHI 支架</option></select>
+          <select><option>全部工厂</option><option>东莞 A 厂</option><option>深圳 B 厂</option></select>
+          <input type="date" value="2026-08-17">
+          <div class="spacer"></div>
+          <button class="btn-text">+ 新建项目</button>
+        </div>
+
+        <!-- KPI 卡片 -->
+        <div class="kpi-row">
+          <div class="kpi-card">
+            <div class="kpi-top">
+              <div class="kpi-icon" style="background:rgba(233,69,96,.15)">🚀</div>
+              <div class="kpi-trend">环比 +2</div>
+            </div>
+            <div class="kpi-num" style="color:var(--accent-light)">12</div>
+            <div class="kpi-label">进行中项目</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-top">
+              <div class="kpi-icon" style="background:rgba(233,69,96,.15)">🔥</div>
+              <div class="kpi-trend">待处理</div>
+            </div>
+            <div class="kpi-num" style="color:var(--accent-light)">8</div>
+            <div class="kpi-label">待处理问题</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-top">
+              <div class="kpi-icon" style="background:rgba(46,213,115,.15)">📦</div>
+              <div class="kpi-trend">本周</div>
+            </div>
+            <div class="kpi-num" style="color:var(--accent-green)">3</div>
+            <div class="kpi-label">本周出货</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-top">
+              <div class="kpi-icon" style="background:rgba(255,165,2,.15)">⚠️</div>
+              <div class="kpi-trend">-0.3%</div>
+            </div>
+            <div class="kpi-num" style="color:var(--accent-orange)">2.4%</div>
+            <div class="kpi-label">缺陷率</div>
+          </div>
+        </div>
+
+        <div class="dashboard-grid">
+          <div class="left-col">
+            <div class="panel">
+              <h3>🔥 近期重点关注项目 <span class="r">查看全部 →</span></h3>
+              <table class="data-table">
+                <thead>
+                  <tr><th>项目</th><th>阶段</th><th>工厂</th><th>进度</th><th>状态</th></tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="project">GUNBASE 4×32 瞄准镜</td>
+                    <td><span class="badge badge-blue">PVT</span></td>
+                    <td class="muted">东莞 A 厂</td>
+                    <td class="muted">78%</td>
+                    <td><span class="badge badge-green">正常</span></td>
+                  </tr>
+                  <tr>
+                    <td class="project">FEYACHI 支架 V2</td>
+                    <td><span class="badge badge-purple">DVT</span></td>
+                    <td class="muted">深圳 B 厂</td>
+                    <td class="muted">45%</td>
+                    <td><span class="badge badge-orange">有风险</span></td>
+                  </tr>
+                  <tr>
+                    <td class="project">GUNBASE 红点瞄准镜</td>
+                    <td><span class="badge badge-blue">EVT</span></td>
+                    <td class="muted">东莞 A 厂</td>
+                    <td class="muted">32%</td>
+                    <td><span class="badge badge-red">延期</span></td>
+                  </tr>
+                  <tr>
+                    <td class="project">硅胶模具迭代</td>
+                    <td><span class="badge badge-gray">NPI</span></td>
+                    <td class="muted">惠州 C 厂</td>
+                    <td class="muted">12%</td>
+                    <td><span class="badge badge-green">正常</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="panel">
+              <h3>📦 本周出货计划 <span class="r">+ 新建出货</span></h3>
+              <table class="data-table">
+                <thead>
+                  <tr><th>日期</th><th>项目</th><th>数量</th><th>目的地</th><th>状态</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>08-18</td><td class="project">GUNBASE 4×32</td><td>1,200</td><td class="muted">德国</td><td><span class="badge badge-blue">待出</span></td></tr>
+                  <tr><td>08-19</td><td class="project">FEYACHI 支架 V2</td><td>800</td><td class="muted">中东</td><td><span class="badge badge-green">已就绪</span></td></tr>
+                  <tr><td>08-20</td><td class="project">GUNBASE 红点</td><td>500</td><td class="muted">美国</td><td><span class="badge badge-orange">备货中</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="right-col">
+            <div class="panel">
+              <h3>🕓 最新动态</h3>
+              <div class="activity-list">
+                <div class="activity-item">
+                  <div class="activity-dot" style="background:var(--accent)"></div>
+                  <div class="activity-main">
+                    <div class="activity-title">品质部门创建了新问题 #Q-20260817-03</div>
+                    <div class="activity-meta">10 分钟前 · GUNBASE 红点瞄准镜</div>
+                  </div>
+                </div>
+                <div class="activity-item">
+                  <div class="activity-dot" style="background:var(--accent-green)"></div>
+                  <div class="activity-main">
+                    <div class="activity-title">东莞 A 厂完成了 PVT 试产报告</div>
+                    <div class="activity-meta">32 分钟前 · 4×32 瞄准镜</div>
+                  </div>
+                </div>
+                <div class="activity-item">
+                  <div class="activity-dot" style="background:var(--accent-orange)"></div>
+                  <div class="activity-main">
+                    <div class="activity-title">物料预警：硅胶库存低于安全水位</div>
+                    <div class="activity-meta">1 小时前 · 惠州 C 厂</div>
+                  </div>
+                </div>
+                <div class="activity-item">
+                  <div class="activity-dot" style="background:var(--accent-blue)"></div>
+                  <div class="activity-main">
+                    <div class="activity-title">系统同步完成，新增 14 条记录</div>
+                    <div class="activity-meta">2 小时前</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="panel">
+              <h3>⚡ 快捷操作</h3>
+              <div class="quick-actions">
+                <div class="qa-btn"><span class="ic">📋</span><div class="lab">新建任务</div><div class="sub">计划 / 子计划</div></div>
+                <div class="qa-btn"><span class="ic">🔥</span><div class="lab">登记问题</div><div class="sub">品质 / 现场</div></div>
+                <div class="qa-btn"><span class="ic">⚠️</span><div class="lab">DOA 录入</div><div class="sub">来料不良</div></div>
+                <div class="qa-btn"><span class="ic">📑</span><div class="lab">生成周报</div><div class="sub">自动汇总</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<button class="sync-fab" title="立即同步">🔄</button>
+
+<script>
+function setMode(mode){
+  const frame = document.getElementById('frame');
+  const bd = document.getElementById('btn-desktop');
+  const bl = document.getElementById('btn-landscape');
+  if(mode === 'landscape'){
+    frame.classList.add('phone-landscape');
+    bl.classList.add('active'); bd.classList.remove('active');
+  } else {
+    frame.classList.remove('phone-landscape');
+    bd.classList.add('active'); bl.classList.remove('active');
+  }
+}
+</script>
+</body>
+</html>

@@ -23,7 +23,7 @@ const I18N = {
     tab_home: '首页', tab_planning: '计划', tab_factory: '工厂', tab_engineering: '工程', tab_factory_process: '制程', tab_materials: '物料', tab_production: '生产',
     tab_quality: '品质', tab_inspection: 'DOA/RMA', tab_reports: '报告', tab_settings: '设定', qual_mod_issues: '问题', qual_mod_inspection: '客验',
     // Home
-    app_slogan: '科奈信海外生产管理系统', dashboard: '总体看板',
+    app_slogan: '海外生产管理系统', dashboard: '总体看板',
     stat_total: '总项目', stat_active: '进行中', stat_overdue: '已延期', stat_qc: '质检中', stat_pending: '待处理',
     active_projects: '进行中项目', view_all: '全部', industry_news: '行业动态',
     message_board: '留言板', login_activity: '登录活动', admin_only: '仅管理员可见',
