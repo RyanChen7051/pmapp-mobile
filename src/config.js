@@ -4,7 +4,7 @@ export const SUPABASE_KEY = 'sb_publishable_YB5z3cQK-vCg67--oKpSrg_63STgMJW';
 export const APP_VERSION = 'v3.16.3';
 
 // Web Push VAPID 公钥（客户端订阅用；私钥仅服务端发送端持有，绝不提交前端）
-export const VAPID_PUBLIC = 'Bkw9h6GBGS8RZevyn5ut95tuK3EyJs-zwQDV55s2b4h4rlMJVDd-y_Yp9Z9MIWSrZbgDP0WXyrkZLCNhHn5Tl9w';
+export const VAPID_PUBLIC = 'BBEsbi_NqN1vqWfwbYx3XV-qUVTqgJNbaNg71TR2tx0k8158CViUZnLfdiLosv6n_sycP2S3yexNFYFzKHChL_c';
 
 export const STAGE_PROGRESS = { NPI: 10, EVT: 25, DVT: 50, PVT: 75, MP: 100, completed: 100 };
 
