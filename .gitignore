@@ -7,3 +7,26 @@ vapid_keys.json
 *.local.json
 secrets.json
 .env
+
+# 运行时临时文件
+.push_watchdog.log
+.push_watchdog.pid
+.push_watchdog.lock
+.push_watchdog_state.json
+.push_log.json
+*.log
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# 生成文档/脚本
+*.pdf
+_e2e_test.mjs
+make_mockup_pdf.py
+make_pwa_manual.py
+make_windows_guide.py
+make_windows_guide_en.py
+mockup_analysis_dashboard.html
+vercel.json
