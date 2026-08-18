@@ -4,7 +4,7 @@ import { t } from './i18n.js';
 
 export function setupAuth(App) {
   const ADMIN_USERS = ['admin', 'admin2', 'admin3', 'admin4'];
-  const SUPER_ADMIN_USERS = ['admin', 'admin3', 'admin4'];
+  const SUPER_ADMIN_USERS = ['admin'];
 
   App.isLoggedIn = function() { return !!this.session; };
   App.isAdmin = function() { const r = this.session?.user?.role; const u = this.session?.user?.username; return r === 'admin' || (!r && ADMIN_USERS.includes(u)); };
