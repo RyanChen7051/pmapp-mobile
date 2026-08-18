@@ -1,7 +1,7 @@
 /* ═══ Configuration & Constants ═══ */
 export const SUPABASE_URL = 'https://nsnmtkukxquhinlmbejg.supabase.co';
 export const SUPABASE_KEY = 'sb_publishable_YB5z3cQK-vCg67--oKpSrg_63STgMJW';
-export const APP_VERSION = 'v3.16.4';
+export const APP_VERSION = 'v3.16.5';
 
 // Web Push VAPID 公钥（客户端订阅用；私钥仅服务端发送端持有，绝不提交前端）
 export const VAPID_PUBLIC = 'BBEsbi_NqN1vqWfwbYx3XV-qUVTqgJNbaNg71TR2tx0k8158CViUZnLfdiLosv6n_sycP2S3yexNFYFzKHChL_c';
@@ -41,6 +41,13 @@ export const USER_MAP = {
   'leader28': { name: '黄军', dept: '品质' },
   'leader29': { name: '刁青春', dept: '人事' },
   'leader30': { name: '李双', dept: '广西运营' },
+  'leader31': { name: '罗操华', dept: '工程' },
+  'leader32': { name: '张永红', dept: '工程' },
+  'leader33': { name: '汤庭云', dept: '工程' },
+  'leader34': { name: '章博', dept: '工程' },
+  'leader35': { name: '袁时洋', dept: '工程' },
+  'leader36': { name: '许三长', dept: '工程' },
+  'leader37': { name: '刘秀婉', dept: '工程' },
   'admin3': { name: '殷鹏飞', dept: 'IT' },
   'admin4': { name: '朱炳兴', dept: 'IT' },
 };
