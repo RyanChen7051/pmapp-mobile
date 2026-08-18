@@ -1,7 +1,7 @@
 /* ═══ Configuration & Constants ═══ */
 export const SUPABASE_URL = 'https://nsnmtkukxquhinlmbejg.supabase.co';
 export const SUPABASE_KEY = 'sb_publishable_YB5z3cQK-vCg67--oKpSrg_63STgMJW';
-export const APP_VERSION = 'v3.16.6';
+export const APP_VERSION = 'v3.16.7';
 
 // Web Push VAPID 公钥（客户端订阅用；私钥仅服务端发送端持有，绝不提交前端）
 export const VAPID_PUBLIC = 'BBEsbi_NqN1vqWfwbYx3XV-qUVTqgJNbaNg71TR2tx0k8158CViUZnLfdiLosv6n_sycP2S3yexNFYFzKHChL_c';
@@ -52,6 +52,7 @@ export const USER_MAP = {
   'leader39': { name: '王俊辉', dept: '品质' },
   'leader40': { name: '夏灿华', dept: '品质' },
   'leader41': { name: '李建辉', dept: '品质' },
+  'leader42': { name: '刘小虎', dept: '品质' },
   'admin3': { name: '殷鹏飞', dept: 'IT' },
   'admin4': { name: '朱炳兴', dept: 'IT' },
 };
