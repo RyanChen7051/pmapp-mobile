@@ -11,16 +11,13 @@ export function setupAuth(App) {
   App.isSuperAdmin = function() { const u = this.session?.user?.username; return SUPER_ADMIN_USERS.includes(u); };
   App.isViewer = function() { return this.session?.user?.role === 'viewer'; };
 
-  /* ─── 模块级编辑权限 ───
-     admin 永远可编辑；其余用户按 MODULE_PERMISSIONS 判断。
-     reports 模块在 REPORTS_ALL_USERS 为真时对所有人开放。 */
+  /* ─── 模块级编辑权限（精确权限模型）───
+     管理员 admin(超级管理员)：可看、可改、可调整结构。
+     管理员 admin2/admin3/admin4(受限管理员)：UI 与 admin 完全一致，但写入被拦截（只读模式）。
+     其余用户(viewer)：纯查看，无编辑 UI。
+     => 可见性用 isAdmin()；实际写入统一用 canEdit()，仅超级管理员为真。 */
   App.canEdit = function(module) {
-    if (this.isAdmin()) return true;
-    const u = this.session?.user?.username;
-    if (!u || !module) return false;
-    if (module === 'reports') return REPORTS_ALL_USERS === true;
-    const editors = MODULE_PERMISSIONS[module] || [];
-    return editors.includes(u);
+    return this.isSuperAdmin();
   };
 
   App.login = async function(e) {

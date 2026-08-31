@@ -56,7 +56,7 @@ export function setupNavigation(App) {
       else if (page === 'planning') this.loadPlanning();
       else if (page === 'materials') this.loadMaterials();
       else if (page === 'production') { this.loadProduction(); if (this.isAdmin()) { const fab = document.getElementById('fab'); if (fab) fab.style.display = 'flex'; } }
-      else if (page === 'quality') { this.qualModule = this.qualModule || 'issues'; this.loadQuality(); if (this.canEdit(this.qualModule || 'issues')) { const fab = document.getElementById('fab'); if (fab) fab.style.display = 'flex'; } }
+      else if (page === 'quality') { this.qualModule = this.qualModule || 'issues'; this.loadQuality(); if (this.isAdmin()) { const fab = document.getElementById('fab'); if (fab) fab.style.display = 'flex'; } }
       else if (page === 'engineering') this.loadEngineering();
       else if (page === 'factory_process') this.loadFactoryProcess();
       else if (page === 'inspection') this.loadInspection();
@@ -118,7 +118,7 @@ export function setupNavigation(App) {
     document.getElementById('modal-overlay').classList.remove('show');
     // v3.16.0 兼容：nav bar 隐藏后不再写 tb-action
     // document.getElementById('tb-action').innerHTML = '';
-    if (this.currentPage === 'module-detail' && this.currentModule && this.canEdit(this.currentModule)) {
+    if (this.currentPage === 'module-detail' && this.currentModule && this.isAdmin()) {
       const fn = this.currentModule === 'field_log' ? `App.showFieldLogEditor(${this.currentRecordId})` : `App.showEditFor('${this.currentModule}', ${this.currentRecordId})`;
       // 兼容旧逻辑
       // document.getElementById('tb-action').innerHTML = `<span onclick="${fn}">${t('btn_edit')}</span>`;

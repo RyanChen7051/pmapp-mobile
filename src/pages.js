@@ -509,22 +509,53 @@ export function setupPages(App) {
   };
 
   App.updateAdminButtons = function() {
-    // 各「+ 新建」按钮按模块权限显示（admin 始终可见；其余按 MODULE_PERMISSIONS）
+    // 各「+ 新建」按钮按可见性显示：admin(含 admin2/3/4) 一律可见，UI 与超级管理员一致；
+    // 实际写入在各自 handler 内由 canEdit() 拦截（仅超级管理员可保存）。
     const map = {
-      'plan-task-add': this.isAdmin(),            // 计划任务：未授权额外用户
-      'mat-alert-add': this.canEdit('overseas_material_alerts'), // 物料栏目 → 蒋思贵
+      'plan-task-add': this.isAdmin(),            // 计划任务
+      'mat-alert-add': this.isAdmin(),            // 物料栏目
       'mat-factory-add': this.isAdmin(),          // 冗余占位（物料页无此钮）
-      'factory-add': this.isAdmin(),              // 工厂讯息：未授权额外用户
-      'qual-insp-add': this.canEdit('inspection'),// 品质(客验) → 陈晓斌
-      'eng-add': this.canEdit('engineering'),      // 工程 → 陈晓斌
-      'fp-add': this.canEdit('factory_process'),   // 制程 → 暂未开放
-      'fieldlog-add': this.canEdit('field_log'),  // 现场记录 → 管理员(驻点人员)
+      'factory-add': this.isAdmin(),              // 工厂讯息
+      'qual-insp-add': this.isAdmin(),            // 品质(客验)
+      'eng-add': this.isAdmin(),                  // 工程
+      'fp-add': this.isAdmin(),                   // 制程
+      'fieldlog-add': this.isAdmin(),             // 现场记录
       'kb-rebuild-btn': this.isSuperAdmin(),      // 重建知识库 → 仅超级管理员
     };
     Object.entries(map).forEach(([id, show]) => {
       const el = document.getElementById(id);
       if (el) el.style.display = show ? '' : 'none';
     });
+  };
+
+  /* ─── 通用模块列表搜索（page-module-list 的搜索框，index.html 直接调用）──── */
+  App.renderModuleList = function() {
+    const el = document.getElementById('module-list-content');
+    if (!el) return;
+    const qEl = document.getElementById('ml-search');
+    const q = qEl ? (qEl.value || '').trim().toLowerCase() : '';
+    const keys = Object.keys(MODULES).filter(k =>
+      !q || (MODULES[k].title || k).toLowerCase().includes(q) || k.toLowerCase().includes(q)
+    );
+    if (!keys.length) { el.innerHTML = '<div class="empty">未找到匹配模块</div>'; return; }
+    el.innerHTML = keys.map(k =>
+      '<div class="ml-item" onclick="App.openModuleFromSearch(\'' + k + '\')">' +
+        '<div class="ml-item-title">' + this.esc(MODULES[k].title || k) + '</div>' +
+        '<div class="ml-item-sub">' + this.esc((this.cache[k] || []).length + ' 条') + '</div>' +
+      '</div>'
+    ).join('');
+  };
+
+  // 从模块搜索点击进入：有数据则打开首条详情，否则提示
+  App.openModuleFromSearch = function(k) {
+    const first = (this.cache[k] || [])[0];
+    if (first && first.id != null) {
+      this.pushPage('module-detail');
+      this.currentModule = k;
+      this.renderDetail(k, first.id);
+    } else {
+      this.toast('该模块暂无可查看数据');
+    }
   };
 
   /* ─── Sync / Force Update ─── */
