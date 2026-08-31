@@ -1,4 +1,5 @@
 /* ═══ Reports (周/月报) ═══ */
+import { t } from './i18n.js';
 
 export function setupReports(App) {
   // ── 填充项目下拉（周报 + 月报）──
