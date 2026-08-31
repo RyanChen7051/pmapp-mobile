@@ -227,10 +227,10 @@ export function setupFieldLog(App) {
       rec = (this.cache.field_log || []).find(r => r.id === id);
       if (!rec) return;
     }
-    this._flPhotos = rec && rec.photos ? rec.photos.slice() : [];
-    this._flEditingId = newRec.id; this._flGps = '';
     const nowISO = new Date().toISOString();
     const newRec = rec || { id: Date.now(), created_at: nowISO.slice(0, 19).replace('T', ' '), status: '待处理', reporter: this.session?.user?.display_name || this.session?.user?.username || '' };
+    this._flPhotos = rec && rec.photos ? rec.photos.slice() : [];
+    this._flEditingId = newRec.id; this._flGps = '';
 
     const html = `<div class="modal-handle"></div>
       <div class="modal-title">${rec ? '编辑' : '新建'}现场记录</div>
@@ -280,7 +280,7 @@ export function setupFieldLog(App) {
     const rec = {
       id, project, problem_factory: problemFactory, problem_category: problemCategory, description, status,
       photos: this._flPhotos.slice(),
-      gps: this._flGps || rec.gps || '',
+      gps: this._flGps || (rec ? rec.gps : '') || '',
       reporter: this.session?.user?.display_name || this.session?.user?.username || '',
       created_at: now.slice(0, 19).replace('T', ' '),
       updated_at: now.slice(0, 19).replace('T', ' '),
