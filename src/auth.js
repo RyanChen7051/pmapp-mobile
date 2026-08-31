@@ -17,7 +17,13 @@ export function setupAuth(App) {
      其余用户(viewer)：纯查看，无编辑 UI。
      => 可见性用 isAdmin()；实际写入统一用 canEdit()，仅超级管理员为真。 */
   App.canEdit = function(module) {
-    return this.isSuperAdmin();
+    if (this.isSuperAdmin()) return true;
+    // 现场记录：admin2 与 admin 同权可写入（驻点人员账号使用，admin2 也能新建/编辑/保存）
+    if (module === 'field_log') {
+      const u = this.session?.user?.username;
+      if (u === 'admin2') return true;
+    }
+    return false;
   };
 
   App.login = async function(e) {
