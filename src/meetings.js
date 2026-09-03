@@ -50,7 +50,7 @@ export function setupMeetings(App) {
           await this.sbPost('sync_data', { table_name: 'meetings', local_id: id, payload, supabase_id: sbId, is_deleted: false, updated_at: nowISO, device_id: this.deviceId });
         }
       } else {
-        const lid = Date.now();
+        const lid = Math.floor(Date.now() / 1000);
         const sbId = this.uuid();
         await this.sbPost('sync_data', { table_name: 'meetings', local_id: lid, payload, supabase_id: sbId, is_deleted: false, updated_at: nowISO, device_id: this.deviceId });
       }

@@ -8,7 +8,7 @@ export function setupEdit(App) {
     const mod = MODULES[this.currentModule];
     if (!mod || !mod.editFields) return;
     const now = new Date().toISOString().slice(0, 19).replace('T', ' ');
-    const newRec = { id: Date.now(), created_at: now, updated_at: now };
+    const newRec = { id: Math.floor(Date.now() / 1000), created_at: now, updated_at: now };
     if (this.currentModule === 'issues') { newRec.status = 'open'; newRec.severity = 'medium'; newRec.issue_type = 'other'; }
     if (this.currentModule === 'tasks') { newRec.status = 'todo'; newRec.priority = 'medium'; }
     if (this.currentModule === 'projects') { newRec.status = 'planning'; newRec.stage = 'NPI'; }
