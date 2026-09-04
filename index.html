@@ -569,7 +569,7 @@ body.rtl .card-meta { flex-direction: row-reverse; }
     <div class="home-block-head" id="ai-head">
       <span>🤖 <span data-i18n="ai_title">智能海外助理</span></span>
       <span class="ai-head-right">
-        <span class="sec-action" id="ai-settings" style="cursor:pointer" title="设置后端地址">⚙️</span>
+        <span class="sec-action" id="ai-settings" style="cursor:pointer" data-tr-title="设置后端地址" title="设置后端地址">⚙️</span>
         <span class="ai-chev" id="ai-chev">▼</span>
       </span>
     </div>
@@ -622,7 +622,7 @@ body.rtl .card-meta { flex-direction: row-reverse; }
   <div class="plan-add">
     <input type="text" id="todo-content" class="plan-add-input" data-i18n-ph="todo_ph_content" placeholder="输入子计划内容..." onkeydown="if(event.key==='Enter')App.addTodo()" />
     <div class="plan-add-row">
-      <select id="todo-parent" class="plan-add-sel" data-i18n-ph="todo_parent_label" title="所属主计划"></select>
+      <select id="todo-parent" class="plan-add-sel" data-i18n-ph="todo_parent_label" data-tr-title="所属主计划" title="所属主计划"></select>
       <input type="date" id="todo-due" class="plan-add-date" />
     </div>
     <button class="btn btn-primary plan-add-btn" onclick="App.addTodo()">+ <span data-i18n="todo_add">添加</span></button>
@@ -717,31 +717,31 @@ body.rtl .card-meta { flex-direction: row-reverse; }
   <!-- DOA -->
   <div class="rpt-block">
     <div class="rpt-block-title">DOA · Defect on Arrival / Dead On Arrival</div>
-    <div class="rpt-field"><label>日期</label><input type="date" id="doa-date"></div>
-    <div class="rpt-field"><label>项目</label><select id="doa-project"><option value="">（未选）</option></select></div>
-    <div class="rpt-field"><label>工厂</label><input type="text" id="doa-factory" placeholder="手动输入工厂名"></div>
-    <div class="rpt-field"><label>物料名</label><input type="text" id="doa-material_name" placeholder="手动输入物料名"></div>
-    <div class="rpt-field"><label>物料批次</label><input type="text" id="doa-material_batch" placeholder="手动输入物料批次"></div>
-    <div class="rpt-field"><label>来料数量</label><input type="number" id="doa-received_qty" placeholder="0"></div>
-    <div class="rpt-field"><label>不良数量</label><input type="number" id="doa-defect_qty" placeholder="0"></div>
-    <div class="rpt-field"><label>不良描述</label><textarea id="doa-description" rows="2" placeholder="手动输入不良描述"></textarea></div>
-    <div class="rpt-field"><label>签核</label><input type="text" id="doa-internal_confirm" placeholder="如：品质-陈晓斌"></div>
-    <button class="btn btn-primary rpt-gen-btn" onclick="App.saveDoa()">保存 DOA</button>
+    <div class="rpt-field"><label data-tr="日期">日期</label><input type="date" id="doa-date"></div>
+    <div class="rpt-field"><label data-tr="项目">项目</label><select id="doa-project"><option value="" data-tr="（未选）">（未选）</option></select></div>
+    <div class="rpt-field"><label data-tr="工厂">工厂</label><input type="text" id="doa-factory" data-tr-ph="手动输入工厂名" placeholder="手动输入工厂名"></div>
+    <div class="rpt-field"><label data-tr="物料名">物料名</label><input type="text" id="doa-material_name" data-tr-ph="手动输入物料名" placeholder="手动输入物料名"></div>
+    <div class="rpt-field"><label data-tr="物料批次">物料批次</label><input type="text" id="doa-material_batch" data-tr-ph="手动输入物料批次" placeholder="手动输入物料批次"></div>
+    <div class="rpt-field"><label data-tr="来料数量">来料数量</label><input type="number" id="doa-received_qty" placeholder="0"></div>
+    <div class="rpt-field"><label data-tr="不良数量">不良数量</label><input type="number" id="doa-defect_qty" placeholder="0"></div>
+    <div class="rpt-field"><label data-tr="不良描述">不良描述</label><textarea id="doa-description" rows="2" data-tr-ph="手动输入不良描述" placeholder="手动输入不良描述"></textarea></div>
+    <div class="rpt-field"><label data-tr="签核">签核</label><input type="text" id="doa-internal_confirm" data-tr-ph="如：品质-陈晓斌" placeholder="如：品质-陈晓斌"></div>
+    <button class="btn btn-primary rpt-gen-btn" onclick="App.saveDoa()" data-tr="保存 DOA">保存 DOA</button>
   </div>
-  <div class="sec-header"><span>DOA 列表</span></div>
+  <div class="sec-header"><span data-tr="DOA 列表">DOA 列表</span></div>
   <div id="doa-list"><div class="loading"><div class="spinner"></div><span data-i18n="loading">加载中...</span></div></div>
 
   <!-- RMA -->
   <div class="rpt-block">
     <div class="rpt-block-title">RMA · Return Material Authorization</div>
-    <div class="rpt-field"><label>日期</label><input type="date" id="rma-date"></div>
-    <div class="rpt-field"><label>项目</label><select id="rma-project"><option value="">（未选）</option></select></div>
-    <div class="rpt-field"><label>客户</label><input type="text" id="rma-customer" placeholder="手动输入客户名"></div>
-    <div class="rpt-field"><label>退货数量</label><input type="number" id="rma-return_qty" placeholder="0"></div>
-    <div class="rpt-field"><label>退货原因</label><textarea id="rma-reason" rows="2" placeholder="手动输入退货原因"></textarea></div>
-    <div class="rpt-field"><label>处理状态</label><select id="rma-status"><option value="待处理">待处理</option><option value="维修中">维修中</option><option value="已关闭">已关闭</option></select></div>
-    <div class="rpt-field"><label>描述</label><textarea id="rma-description" rows="2" placeholder="手动输入描述"></textarea></div>
-    <button class="btn btn-primary rpt-gen-btn" onclick="App.saveRma()">保存 RMA</button>
+    <div class="rpt-field"><label data-tr="日期">日期</label><input type="date" id="rma-date"></div>
+    <div class="rpt-field"><label data-tr="项目">项目</label><select id="rma-project"><option value="" data-tr="（未选）">（未选）</option></select></div>
+    <div class="rpt-field"><label data-tr="客户">客户</label><input type="text" id="rma-customer" data-tr-ph="手动输入客户名" placeholder="手动输入客户名"></div>
+    <div class="rpt-field"><label data-tr="退货数量">退货数量</label><input type="number" id="rma-return_qty" placeholder="0"></div>
+    <div class="rpt-field"><label data-tr="退货原因">退货原因</label><textarea id="rma-reason" rows="2" data-tr-ph="手动输入退货原因" placeholder="手动输入退货原因"></textarea></div>
+    <div class="rpt-field"><label data-tr="处理状态">处理状态</label><select id="rma-status"><option value="待处理" data-tr="待处理">待处理</option><option value="维修中" data-tr="维修中">维修中</option><option value="已关闭" data-tr="已关闭">已关闭</option></select></div>
+    <div class="rpt-field"><label data-tr="描述">描述</label><textarea id="rma-description" rows="2" data-tr-ph="手动输入描述" placeholder="手动输入描述"></textarea></div>
+    <button class="btn btn-primary rpt-gen-btn" onclick="App.saveRma()" data-tr="保存 RMA">保存 RMA</button>
   </div>
   <div class="sec-header"><span>RMA 列表</span></div>
   <div id="rma-list"><div class="loading"><div class="spinner"></div><span data-i18n="loading">加载中...</span></div></div>
@@ -757,7 +757,7 @@ body.rtl .card-meta { flex-direction: row-reverse; }
 <!-- ═══ 现场记录 ═══ -->
 <div id="page-fieldlog" class="page">
   <div class="ptr-indicator" id="ptr-fieldlog" data-i18n="ptr_pull">↓ 下拉刷新</div>
-  <div class="sec-header"><span>现场记录</span><span class="sec-action" id="fieldlog-add" style="display:none" onclick="App.showFieldLogEditor(null)">+ 新建</span></div>
+  <div class="sec-header"><span data-tr="现场记录">现场记录</span><span class="sec-action" id="fieldlog-add" style="display:none" onclick="App.showFieldLogEditor(null)" data-tr="+ 新建">+ 新建</span></div>
   <div id="fieldlog-list"><div class="loading"><div class="spinner"></div><span data-i18n="loading">加载中...</span></div></div>
 </div>
 
@@ -878,7 +878,7 @@ body.rtl .card-meta { flex-direction: row-reverse; }
 
 <!-- ═══ Sub-page: Generic List ═══ -->
 <div id="page-module-list" class="page">
-  <div class="search-bar"><input type="text" id="ml-search" placeholder="搜索..." oninput="App.renderModuleList()"></div>
+  <div class="search-bar"><input type="text" id="ml-search" data-tr-ph="搜索..." placeholder="搜索..." oninput="App.renderModuleList()"></div>
   <div id="module-list-content"></div>
 </div>
 
@@ -911,13 +911,13 @@ body.rtl .card-meta { flex-direction: row-reverse; }
 <button class="fab" id="fab" style="display:none" onclick="App.showCreate()">+</button>
 
 <!-- v3.16.0 悬浮同步按钮（替代 nav bar 同步入口） -->
-<button class="sync-fab" id="sync-fab" onclick="App.syncNow()" title="立即同步">
+<button class="sync-fab" id="sync-fab" onclick="App.syncNow()" data-tr-title="立即同步" title="立即同步">
   <span class="sync-icon">🔄</span>
   <span class="sync-fab-badge" id="sync-fab-badge" style="display:none">0</span>
 </button>
 
 <!-- v3.16.1 悬浮「回首页」按钮（非首页时显示） -->
-<button class="home-fab" id="home-fab" style="display:none" onclick="App.goHome()" title="回首页">
+<button class="home-fab" id="home-fab" style="display:none" onclick="App.goHome()" data-tr-title="回首页" title="回首页">
   <span>🏠</span>
 </button>
 
@@ -931,6 +931,6 @@ body.rtl .card-meta { flex-direction: row-reverse; }
 
 </div>
 
-<script type="module" src="bundle.js?v=96"></script>
+<script type="module" src="bundle.js?v=98"></script>
 </body>
 </html>

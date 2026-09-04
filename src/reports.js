@@ -1,5 +1,5 @@
 /* ═══ Reports (周/月报) ═══ */
-import { t } from './i18n.js';
+import { t, tr } from './i18n.js';
 
 export function setupReports(App) {
   // ── 填充项目下拉（周报 + 月报）──
@@ -10,7 +10,7 @@ export function setupReports(App) {
       if (!sel) return;
       const cur = sel.value;
       sel.innerHTML = '<option value="all">' + t('rpt_all_projects') + '</option>' +
-        projects.map(p => `<option value="${p.id}">${this.esc(p.name || ('项目' + p.id))}</option>`).join('');
+        projects.map(p => `<option value="${p.id}">${this.esc(p.name || tr('项目') + ' ' + p.id)}</option>`).join('');
       if (cur) sel.value = cur;
     });
   };
@@ -72,7 +72,7 @@ export function setupReports(App) {
     const factories = this.cache.factory_info || [];
 
     const scoped = projectSel && projectSel !== 'all' ? projects.filter(p => String(p.id) === String(projectSel)) : projects;
-    const projectName = scoped.length === 1 ? (scoped[0].name || ('项目' + scoped[0].id)) : t('rpt_all_projects');
+    const projectName = scoped.length === 1 ? (scoped[0].name || (tr('项目') + ' ' + scoped[0].id)) : t('rpt_all_projects');
     const scopeNote = (projectSel && projectSel !== 'all') ? `<div class="rpt-sub">${t('rpt_scope_note')}</div>` : '';
 
     const projIn = scoped.filter(p => inRange(p.updated_at, from, to) || inRange(p.created_at, from, to) || inRange(p.start_date, from, to) || inRange(p.delivery_date, from, to));
@@ -118,7 +118,7 @@ export function setupReports(App) {
       ${projIn.length ? `<div style="margin:6px 0">${projIn.slice(0, 8).map(p => {
         const st = p.status ? `<span class="badge ${this.badgeClass(p.status)}">${this.esc(p.status)}</span>` : '';
         const dd = p.delivery_date ? `<span style="color:var(--text-secondary)">📅 ${this.esc(p.delivery_date)}</span>` : '';
-        return `<div class="rpt-row"><span>${this.esc(p.name || '未命名')}</span><span>${st} ${dd}</span></div>`;
+        return `<div class="rpt-row"><span>${this.esc(p.name || tr('未命名'))}</span><span>${st} ${dd}</span></div>`;
       }).join('')}</div>` : `<div class="rpt-empty">${t('rpt_no_project')}</div>`}
 
       <div class="rpt-h">${t('rpt_material')}</div>
@@ -140,7 +140,7 @@ export function setupReports(App) {
       ${issuesIn.length ? `<div style="margin:6px 0">${issuesIn.slice(0, 6).map(i => {
         const sev = i.severity ? `<span class="badge ${this.badgeClass(i.severity)}">${this.esc(i.severity)}</span>` : '';
         const st = i.status ? `<span class="badge ${this.badgeClass(i.status)}">${this.esc(i.status)}</span>` : '';
-        return `<div class="rpt-row"><span>⚠️ ${this.esc(i.title || '无标题')}</span><span>${sev}${st}</span></div>`;
+        return `<div class="rpt-row"><span>⚠️ ${this.esc(i.title || tr('无标题'))}</span><span>${sev}${st}</span></div>`;
       }).join('')}</div>` : `<div class="rpt-empty">${t('rpt_no_issue')}</div>`}
 
       <div class="rpt-h">${t('rpt_defect')}</div>

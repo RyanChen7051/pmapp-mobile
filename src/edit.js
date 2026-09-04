@@ -1,9 +1,10 @@
 /* ═══ Edit / Create Forms ═══ */
 import { MODULES } from './config.js';
+import { tr } from './i18n.js';
 
 export function setupEdit(App) {
   App.showCreate = function() {
-    if (!this.canEdit(this.currentModule)) { this.toast('只读模式，无法新建'); return; }
+    if (!this.canEdit(this.currentModule)) { this.toast(tr('只读模式，无法新建')); return; }
     if (!this.currentModule) return;
     const mod = MODULES[this.currentModule];
     if (!mod || !mod.editFields) return;
@@ -18,13 +19,13 @@ export function setupEdit(App) {
   };
 
   App.showCreateFor = function(moduleKey) {
-    if (!this.canEdit(moduleKey)) { this.toast('只读模式'); return; }
+    if (!this.canEdit(moduleKey)) { this.toast(tr('只读模式')); return; }
     this.currentModule = moduleKey;
     this.showCreate();
   };
 
   App.showEditFor = function(moduleKey, id) {
-    if (!this.canEdit(moduleKey)) { this.toast('只读模式'); return; }
+    if (!this.canEdit(moduleKey)) { this.toast(tr('只读模式')); return; }
     const record = (this.cache[moduleKey] || []).find(r => r.id === id);
     if (!record) return;
     this._showForm(moduleKey, record, false);
@@ -32,26 +33,26 @@ export function setupEdit(App) {
 
   App._showForm = function(moduleKey, record, isCreate) {
     const mod = MODULES[moduleKey];
-    let html = `<div class="modal-handle"></div><div class="modal-title">${isCreate ? '新建' : '编辑'}${mod.title}</div>`;
+    let html = `<div class="modal-handle"></div><div class="modal-title">${isCreate ? tr('新建') : tr('编辑')}${tr(mod.title)}</div>`;
     mod.editFields.forEach(f => {
       const val = record[f.key] !== undefined ? record[f.key] : '';
       if (f.type === 'toggle') {
-        html += `<div class="input-group" style="display:flex;justify-content:space-between;align-items:center"><label style="margin-bottom:0">${f.label}</label><label class="toggle"><input type="checkbox" id="edit-${f.key}" ${val ? 'checked' : ''}><span class="toggle-slider"></span></label></div>`;
+        html += `<div class="input-group" style="display:flex;justify-content:space-between;align-items:center"><label style="margin-bottom:0">${tr(f.label)}</label><label class="toggle"><input type="checkbox" id="edit-${f.key}" ${val ? 'checked' : ''}><span class="toggle-slider"></span></label></div>`;
       } else if (f.type === 'select') {
-        html += `<div class="input-group"><label>${f.label}</label><select id="edit-${f.key}">`;
-        f.options.forEach(o => { html += `<option value="${o.v}" ${String(val) === o.v ? 'selected' : ''}>${o.t}</option>`; });
+        html += `<div class="input-group"><label>${tr(f.label)}</label><select id="edit-${f.key}">`;
+        f.options.forEach(o => { html += `<option value="${o.v}" ${String(val) === o.v ? 'selected' : ''}>${tr(o.t)}</option>`; });
         html += '</select></div>';
       } else if (f.type === 'textarea') {
-        html += `<div class="input-group"><label>${f.label}</label><textarea id="edit-${f.key}">${this.esc(val)}</textarea></div>`;
+        html += `<div class="input-group"><label>${tr(f.label)}</label><textarea id="edit-${f.key}">${this.esc(val)}</textarea></div>`;
       } else if (f.type === 'number') {
-        html += `<div class="input-group"><label>${f.label}</label><input type="number" id="edit-${f.key}" value="${this.esc(val)}"></div>`;
+        html += `<div class="input-group"><label>${tr(f.label)}</label><input type="number" id="edit-${f.key}" value="${this.esc(val)}"></div>`;
       } else if (f.type === 'date') {
-        html += `<div class="input-group"><label>${f.label}</label><input type="date" id="edit-${f.key}" value="${val ? String(val).slice(0, 10) : ''}"></div>`;
+        html += `<div class="input-group"><label>${tr(f.label)}</label><input type="date" id="edit-${f.key}" value="${val ? String(val).slice(0, 10) : ''}"></div>`;
       } else {
-        html += `<div class="input-group"><label>${f.label}${f.required ? ' *' : ''}</label><input type="text" id="edit-${f.key}" value="${this.esc(val)}"></div>`;
+        html += `<div class="input-group"><label>${tr(f.label)}${f.required ? ' *' : ''}</label><input type="text" id="edit-${f.key}" value="${this.esc(val)}"></div>`;
       }
     });
-    html += `<button class="btn btn-primary" onclick="App.saveRecord('${moduleKey}', ${record.id}, ${isCreate})">保存</button><div style="height:10px"></div><button class="btn btn-secondary" onclick="App.closeModal()">取消</button>`;
+    html += `<button class="btn btn-primary" onclick="App.saveRecord('${moduleKey}', ${record.id}, ${isCreate})">${tr('保存')}</button><div style="height:10px"></div><button class="btn btn-secondary" onclick="App.closeModal()">${tr('取消')}</button>`;
     document.getElementById('modal-content').innerHTML = html;
     document.getElementById('modal-overlay').classList.add('show');
     this._editingRecord = record;
@@ -72,7 +73,7 @@ export function setupEdit(App) {
       else updated[f.key] = el.value.trim();
     });
     for (const f of mod.editFields) {
-      if (f.required && !updated[f.key]) { this.toast(f.label + '不能为空'); return; }
+      if (f.required && !updated[f.key]) { this.toast(tr(f.label) + ' ' + tr('不能为空')); return; }
     }
     updated.updated_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
     try {
@@ -96,7 +97,7 @@ export function setupEdit(App) {
       if (this.currentPage === 'project-detail' && moduleKey === 'projects') this.renderProjectDetail(updated);
       else if (this.currentPage === 'module-detail') this.renderDetail(moduleKey, id);
       else this.navigate(this.currentPage);
-      this.toast('已保存，桌面端将自动同步');
-    } catch (e) { this.toast('保存失败: ' + e.message); }
+      this.toast(tr('已保存，桌面端将自动同步'));
+    } catch (e) { this.toast(tr('保存失败: ') + e.message); }
   };
 }

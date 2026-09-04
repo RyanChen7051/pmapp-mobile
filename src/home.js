@@ -1,6 +1,6 @@
 /* ═══ Home Page + Message Board ═══ */
 import { STAGE_PROGRESS, MODULES, APP_VERSION } from './config.js';
-import { t } from './i18n.js';
+import { t, tr } from './i18n.js';
 
 /* ── World Clock ── */
 const WC_CLOCKS = [
@@ -128,6 +128,7 @@ export function setupHome(App) {
     // v3.16.0 第 7 项用 label 直出 "DOA"，避免被 tab_inspection='DOA/RMA' 词条覆盖
     { page: 'inspection',      icon: '🔁',  i18n: null,                  label: 'DOA' },
     { page: 'fieldlog',        icon: '📍',  i18n: null,                  label: '现场' },
+    // label 均可经 DICT 反查翻译（i18n key 优先）
     { page: 'reports',         icon: '📊',  i18n: 'tab_reports',         label: '报告' },
     { page: 'settings',        icon: '⚙️', i18n: 'tab_settings',        label: '设定' },
   ];
@@ -136,7 +137,7 @@ export function setupHome(App) {
     const el = document.getElementById('home-quick');
     if (!el) return;
     el.innerHTML = `<div class="quick-grid">` + QUICK_ENTRIES.map(q => {
-      let name = q.label;
+      let name = tr(q.label);
       if (q.i18n) { try { const v = t(q.i18n); if (v && v !== q.i18n) name = v; } catch {} }
       return `<div class="quick-item" onclick="App.navigate('${q.page}')">
         <span class="ic">${q.icon}</span><span>${name}</span>

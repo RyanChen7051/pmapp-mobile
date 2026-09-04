@@ -1,5 +1,5 @@
 /* ═══ Navigation & Utilities ═══ */
-import { t, applyTranslations } from './i18n.js';
+import { t, tr, applyTranslations } from './i18n.js';
 
 // ── 页面切换引导语（首页/设定页不引导；其余 8 页各对应一条）──
 const GUIDE_TEXTS = {
@@ -78,10 +78,10 @@ export function setupNavigation(App) {
     el.id = 'ai-guide';
     el.className = 'ai-guide';
     el.innerHTML =
-      '<img class="guide-avatar" src="ai-avatar.jpg" alt="智能海外助理" />' +
+      '<img class="guide-avatar" src="ai-avatar.jpg" alt="' + tr('智能海外助理') + '" />' +
       '<div class="guide-body">' +
-        '<div class="guide-title">智能引导 · AI Guide</div>' +
-        '<div class="guide-text">' + text + '</div>' +
+        '<div class="guide-title">' + tr('智能引导 · AI Guide') + '</div>' +
+        '<div class="guide-text">' + tr(text) + '</div>' +
       '</div>' +
       '<div class="guide-close" onclick="document.getElementById(\'ai-guide\')?.remove()">✕</div>';
     document.body.appendChild(el);

@@ -1,5 +1,6 @@
 /* ═══ Detail Pages: Project Detail + Generic Detail ═══ */
 import { MODULES, STAGE_PROGRESS } from './config.js';
+import { tr } from './i18n.js';
 
 export function setupDetail(App) {
   /* ─── Project Detail ─── */
@@ -7,7 +8,7 @@ export function setupDetail(App) {
     this.pageStack.push(this.currentPage);
     const projects = this.cache.projects || [];
     const project = projects.find(p => p.id === id);
-    if (!project) { this.toast('项目不存在'); return; }
+    if (!project) { this.toast(tr('项目不存在')); return; }
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.getElementById('page-project-detail').classList.add('active');
     // v3.16.0 nav bar 隐藏，标题/返回/编辑移到 detail 工具栏（见 renderProjectDetail）
@@ -46,16 +47,16 @@ export function setupDetail(App) {
       <div class="progress-bar" style="height:10px;margin:8px 0"><div class="progress-fill" style="width:${progress}%;background:${pColor}"></div></div>
       <div style="font-size:12px;color:var(--text-secondary);text-align:right">${progress}%</div>
       <div class="detail-sec" style="margin-top:8px">
-        ${p.start_date ? `<div class="detail-label">开始日期</div><div class="detail-val">${this.esc(p.start_date)}</div>` : ''}
-        ${p.end_date ? `<div class="detail-label">结束日期</div><div class="detail-val">${this.esc(p.end_date)}</div>` : ''}
-        ${p.quantity ? `<div class="detail-label">生产数量</div><div class="detail-val">${this.esc(p.quantity)}</div>` : ''}
-        ${p.product_model ? `<div class="detail-label">产品型号</div><div class="detail-val">${this.esc(p.product_model)}</div>` : ''}
+        ${p.start_date ? `<div class="detail-label">${tr('开始日期')}</div><div class="detail-val">${this.esc(p.start_date)}</div>` : ''}
+        ${p.end_date ? `<div class="detail-label">${tr('结束日期')}</div><div class="detail-val">${this.esc(p.end_date)}</div>` : ''}
+        ${p.quantity ? `<div class="detail-label">${tr('生产数量')}</div><div class="detail-val">${this.esc(p.quantity)}</div>` : ''}
+        ${p.product_model ? `<div class="detail-label">${tr('产品型号')}</div><div class="detail-val">${this.esc(p.product_model)}</div>` : ''}
       </div></div>`;
 
     html += `<div class="card">
       <div class="card-title">⚠️ 问题数量 (${issues.length})</div>`;
     if (issues.length === 0) {
-      html += '<div class="empty" style="padding:16px">暂无问题</div>';
+      html += `<div class="empty" style="padding:16px">${tr('暂无问题')}</div>`;
     } else {
       html += issues.slice(0, 5).map(i => `<div class="list-item" onclick="App.openDetail('issues', ${i.id})">
         <span class="list-item-icon">${i.status === 'closed' ? '✅' : '⚠️'}</span>
@@ -67,7 +68,7 @@ export function setupDetail(App) {
     html += `<div class="card">
       <div class="card-title">🔍 检验计划 (${inspections.length})</div>`;
     if (inspections.length === 0) {
-      html += '<div class="empty" style="padding:16px">暂无检验问题</div>';
+      html += `<div class="empty" style="padding:16px">${tr('暂无检验问题')}</div>`;
     } else {
       html += inspections.slice(0, 5).map(i => `<div class="list-item" onclick="App.openDetail('issues', ${i.id})">
         <span class="list-item-icon">🔍</span>
@@ -79,12 +80,12 @@ export function setupDetail(App) {
     html += `<div class="card">
       <div class="card-title">🚚 交付计划</div>
       <div class="detail-sec">
-        ${p.delivery_date ? `<div class="detail-label">交货日期</div><div class="detail-val">${this.esc(p.delivery_date)}</div>` : ''}
-        ${p.customer_name_en ? `<div class="detail-label">客户(英)</div><div class="detail-val">${this.esc(p.customer_name_en)}</div>` : ''}
-        ${p.order_no ? `<div class="detail-label">订单号</div><div class="detail-val">${this.esc(p.order_no)}</div>` : ''}
+        ${p.delivery_date ? `<div class="detail-label">${tr('交货日期')}</div><div class="detail-val">${this.esc(p.delivery_date)}</div>` : ''}
+        ${p.customer_name_en ? `<div class="detail-label">${tr('客户(英)')}</div><div class="detail-val">${this.esc(p.customer_name_en)}</div>` : ''}
+        ${p.order_no ? `<div class="detail-label">${tr('订单号')}</div><div class="detail-val">${this.esc(p.order_no)}</div>` : ''}
       </div>`;
     if (shipping.length > 0) {
-      html += '<div class="detail-label">出货计划</div>';
+      html += `<div class="detail-label">${tr('出货计划')}</div>`;
       html += shipping.map(s => `<div class="list-item" onclick="App.openDetail('shipping_plans', ${s.id})">
         <span class="list-item-icon">🚢</span>
         <div class="list-item-content"><div class="list-item-title">${this.esc(s.plan_no)}</div>
@@ -120,7 +121,7 @@ export function setupDetail(App) {
     const records = this.cache[moduleKey] || [];
     const record = records.find(r => r.id === id);
     const el = document.getElementById('module-detail-content');
-    if (!record) { el.innerHTML = '<div class="empty">记录不存在</div>'; return; }
+    if (!record) { el.innerHTML = `<div class="empty">${tr('记录不存在')}</div>`; return; }
     const canEdit = this.canEdit(moduleKey) && (mod.editFields || moduleKey === 'field_log');
     // v3.16.0 顶部工具栏（替代 nav bar tb-back/tb-action）
     let html = `<div class="detail-toolbar">
@@ -133,7 +134,7 @@ export function setupDetail(App) {
     mod.detailFields.forEach(f => {
       const val = record[f.key];
       if (val === null || val === undefined || val === '') return;
-      html += `<div class="detail-sec"><div class="detail-label">${this.esc(f.label)}</div>`;
+      html += `<div class="detail-sec"><div class="detail-label">${tr(f.label)}</div>`;
       if (typeof val === 'string' && val.startsWith('http')) {
         html += `<div class="detail-val"><a href="${this.esc(val)}" style="color:var(--accent-blue)" target="_blank">${this.esc(val)}</a></div>`;
       } else {
@@ -148,17 +149,17 @@ export function setupDetail(App) {
     if (moduleKey === 'projects') {
       const issues = (this.cache.issues || []).filter(i => i.project_id === id);
       const tasks = (this.cache.tasks || []).filter(t => t.project_id === id);
-      html += `<div class="sec-header"><span>任务 (${tasks.length})</span></div>`;
-      if (tasks.length === 0) html += '<div class="empty">暂无任务</div>';
+      html += `<div class="sec-header"><span>${tr('任务')} (${tasks.length})</span></div>`;
+      if (tasks.length === 0) html += `<div class="empty">${tr('暂无任务')}</div>`;
       else html += tasks.map(t => `<div class="list-item" onclick="App.openDetail('tasks', ${t.id})"><span class="list-item-icon">${t.status === 'done' ? '✅' : '📋'}</span><div class="list-item-content"><div class="list-item-title">${this.esc(t.title)}</div><div class="list-item-sub">${this.esc(t.priority || '')} ${t.assignee ? '· ' + this.esc(t.assignee) : ''}</div></div></div>`).join('');
-      html += `<div class="sec-header"><span>问题 (${issues.length})</span></div>`;
-      if (issues.length === 0) html += '<div class="empty">暂无问题</div>';
+      html += `<div class="sec-header"><span>${tr('问题')} (${issues.length})</span></div>`;
+      if (issues.length === 0) html += `<div class="empty">${tr('暂无问题')}</div>`;
       else html += issues.map(i => `<div class="card" onclick="App.openDetail('issues', ${i.id})"><div class="card-title">${this.esc(i.title)}</div><div class="card-meta"><span class="badge ${this.badgeClass(i.severity)}">${this.esc(i.severity)}</span><span class="badge ${this.badgeClass(i.status)}">${this.esc(i.status)}</span></div></div>`).join('');
     }
     if (moduleKey === 'field_log') {
       const photos = record.photos || [];
       if (photos.length) {
-        html += '<div class="sec-header"><span>📷 现场照片 (' + photos.length + ')</span></div><div class="photo-gallery">';
+        html += `<div class="sec-header"><span>📷 ${tr('现场照片')} (${photos.length})</span></div><div class="photo-gallery">`;
         html += photos.map(p => `<a href="${this.esc(p.data)}" target="_blank"><img src="${this.esc(p.data)}" class="photo-thumb" alt="${this.esc(p.name || '')}"></a>`).join('');
         html += '</div>';
       }

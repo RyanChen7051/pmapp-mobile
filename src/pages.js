@@ -1,6 +1,6 @@
 /* ═══ Tab Pages: Planning, Materials, Production, Quality, Inspection, Settings ═══ */
 import { MODULES, STAGE_PROGRESS, APP_VERSION } from './config.js';
-import { t } from './i18n.js';
+import { t, tr } from './i18n.js';
 
 export function setupPages(App) {
   /* ─── Planning Tab ─── */
@@ -12,8 +12,8 @@ export function setupPages(App) {
     else { tEl.innerHTML = tasks.map(t => `<div class="card" onclick="App.openDetail('tasks', ${t.id})">
       <div class="card-title">📋 ${this.esc(t.title)}</div>
       <div class="card-meta">
-        ${t.status ? `<span class="badge ${this.badgeClass(t.status)}">${this.esc(t.status)}</span>` : ''}
-        ${t.priority ? `<span class="badge ${this.badgeClass(t.priority)}">${this.esc(t.priority)}</span>` : ''}
+        ${t.status ? `<span class="badge ${this.badgeClass(t.status)}">${this.esc(tr(t.status))}</span>` : ''}
+        ${t.priority ? `<span class="badge ${this.badgeClass(t.priority)}">${this.esc(tr(t.priority))}</span>` : ''}
         ${t.assignee ? `<span>👤 ${this.esc(t.assignee)}</span>` : ''}
         ${t.due_date ? `<span>📅 ${this.esc(t.due_date)}</span>` : ''}
       </div></div>`).join('');
@@ -193,13 +193,13 @@ export function setupPages(App) {
       return `<div class="card" onclick="App.openProjectDetail(${p.id})">
         <div class="card-head">
           <div class="card-title">📦 ${this.esc(p.name)}</div>
-          ${p.status ? `<span class="badge ${this.badgeClass(p.status)}">${this.esc(p.status)}</span>` : ''}
+          ${p.status ? `<span class="badge ${this.badgeClass(p.status)}">${this.esc(tr(p.status))}</span>` : ''}
         </div>
         <div class="prod-grid">
-          ${p.order_no ? `<div class="prod-cell"><span class="prod-cell-label">订单号</span><span class="prod-cell-val">${this.esc(p.order_no)}</span></div>` : ''}
-          ${p.delivery_date ? `<div class="prod-cell"><span class="prod-cell-label">计划交期</span><span class="prod-cell-val">${this.esc(p.delivery_date)}</span></div>` : ''}
-          ${p.product_model ? `<div class="prod-cell"><span class="prod-cell-label">型号</span><span class="prod-cell-val">${this.esc(p.product_model)}</span></div>` : ''}
-          ${p.quantity ? `<div class="prod-cell"><span class="prod-cell-label">数量</span><span class="prod-cell-val">${this.esc(p.quantity)}</span></div>` : ''}
+          ${p.order_no ? `<div class="prod-cell"><span class="prod-cell-label">${tr('订单号')}</span><span class="prod-cell-val">${this.esc(p.order_no)}</span></div>` : ''}
+          ${p.delivery_date ? `<div class="prod-cell"><span class="prod-cell-label">${tr('计划交期')}</span><span class="prod-cell-val">${this.esc(p.delivery_date)}</span></div>` : ''}
+          ${p.product_model ? `<div class="prod-cell"><span class="prod-cell-label">${tr('型号')}</span><span class="prod-cell-val">${this.esc(p.product_model)}</span></div>` : ''}
+          ${p.quantity ? `<div class="prod-cell"><span class="prod-cell-label">${tr('数量')}</span><span class="prod-cell-val">${this.esc(p.quantity)}</span></div>` : ''}
         </div>
         <div class="card-meta">
           ${p.stage ? `<span class="badge badge-purple">${this.esc(p.stage)}</span>` : ''}
@@ -249,9 +249,9 @@ export function setupPages(App) {
     if (!el) return;
     if (list.length === 0) { el.innerHTML = `<div class="empty"><div class="empty-icon">🔍</div>${t('empty_insp')}</div>`; return; }
     el.innerHTML = list.slice().sort((a, b) => (b.inspect_date || '').localeCompare(a.inspect_date || '')).map(r => `<div class="card" onclick="App.openDetail('inspection', ${r.id})">
-      <div class="card-title">🔍 ${this.esc(r.unit || '客验')}</div>
+      <div class="card-title">🔍 ${this.esc(r.unit ? tr(r.unit) : tr('客验'))}</div>
       <div class="card-meta">
-        ${r.item ? `<span class="badge badge-cyan">${this.esc(r.item)}</span>` : ''}
+        ${r.item ? `<span class="badge badge-cyan">${this.esc(tr(r.item))}</span>` : ''}
         ${r.inspect_date ? `<span>📅 ${this.esc(r.inspect_date)}</span>` : ''}
         ${r.qty ? `<span>🔢 ${this.esc(r.qty)}</span>` : ''}
         ${r.order_no ? `<span>📄 ${this.esc(r.order_no)}</span>` : ''}
@@ -278,9 +278,9 @@ export function setupPages(App) {
     el.innerHTML = issues.map(i => `<div class="card" onclick="App.openDetail('issues', ${i.id})">
       <div class="card-title">⚠️ ${this.esc(i.title)}</div>
       <div class="card-meta">
-        ${i.severity ? `<span class="badge ${this.badgeClass(i.severity)}">${this.esc(i.severity)}</span>` : ''}
-        ${i.status ? `<span class="badge ${this.badgeClass(i.status)}">${this.esc(i.status)}</span>` : ''}
-        ${i.issue_type ? `<span class="badge badge-cyan">${this.esc(i.issue_type)}</span>` : ''}
+        ${i.severity ? `<span class="badge ${this.badgeClass(i.severity)}">${this.esc(tr(i.severity))}</span>` : ''}
+        ${i.status ? `<span class="badge ${this.badgeClass(i.status)}">${this.esc(tr(i.status))}</span>` : ''}
+        ${i.issue_type ? `<span class="badge badge-cyan">${this.esc(tr(i.issue_type))}</span>` : ''}
         ${i.assigned_to ? `<span>👤 ${this.esc(i.assigned_to)}</span>` : ''}
       </div></div>`).join('');
   };
@@ -292,13 +292,13 @@ export function setupPages(App) {
     if (q) issues = issues.filter(i => i.title?.toLowerCase().includes(q) || i.description?.toLowerCase().includes(q) || i.assigned_to?.toLowerCase().includes(q));
     const el = document.getElementById(containerId);
     if (!el) return;
-    if (issues.length === 0) { el.innerHTML = `<div class="empty"><div class="empty-icon">⚠️</div>暂无${moduleKey === 'engineering' ? '工程' : '制程'}问题</div>`; return; }
+    if (issues.length === 0) { el.innerHTML = `<div class="empty"><div class="empty-icon">⚠️</div>${tr(moduleKey === 'engineering' ? '工程' : '制程')}${tr('问题')}</div>`; return; }
     el.innerHTML = issues.slice().sort((a, b) => (b.created_at || '').localeCompare(a.created_at || '')).map(i => `<div class="card" onclick="App.openDetail('${moduleKey}', ${i.id})">
       <div class="card-title">⚠️ ${this.esc(i.title)}</div>
       <div class="card-meta">
-        ${i.severity ? `<span class="badge ${this.badgeClass(i.severity)}">${this.esc(i.severity)}</span>` : ''}
-        ${i.status ? `<span class="badge ${this.badgeClass(i.status)}">${this.esc(i.status)}</span>` : ''}
-        ${i.issue_type ? `<span class="badge badge-cyan">${this.esc(i.issue_type)}</span>` : ''}
+        ${i.severity ? `<span class="badge ${this.badgeClass(i.severity)}">${this.esc(tr(i.severity))}</span>` : ''}
+        ${i.status ? `<span class="badge ${this.badgeClass(i.status)}">${this.esc(tr(i.status))}</span>` : ''}
+        ${i.issue_type ? `<span class="badge badge-cyan">${this.esc(tr(i.issue_type))}</span>` : ''}
         ${i.assigned_to ? `<span>👤 ${this.esc(i.assigned_to)}</span>` : ''}
       </div></div>`).join('');
   };
@@ -318,13 +318,13 @@ export function setupPages(App) {
   /* ─── DOA / RMA Tab ─── */
   App.loadInspection = function() {
     const projects = (this.cache.projects || []);
-    const opts = '<option value="">（未选）</option>' + projects.map(p => `<option value="${this.esc(p.name)}">${this.esc(p.name)}</option>`).join('');
+    const opts = `<option value="">${tr('（未选）')}</option>` + projects.map(p => `<option value="${this.esc(p.name)}">${this.esc(p.name)}</option>`).join('');
     const dp = document.getElementById('doa-project'); if (dp) dp.innerHTML = opts;
     const rp = document.getElementById('rma-project'); if (rp) rp.innerHTML = opts;
 
     const doa = (this.cache.doa || []).slice().sort((a, b) => (b.date || '').localeCompare(a.date || ''));
     const de = document.getElementById('doa-list');
-    if (doa.length === 0) { de.innerHTML = `<div class="empty"><div class="empty-icon">⚠️</div>暂无 DOA 记录</div>`; }
+    if (doa.length === 0) { de.innerHTML = `<div class="empty"><div class="empty-icon">⚠️</div>${tr('暂无 DOA 记录')}</div>`; }
     else {
       de.innerHTML = doa.map(r => {
         const rate = (r.received_qty > 0) ? (r.defect_qty / r.received_qty * 100) : 0;
@@ -333,24 +333,24 @@ export function setupPages(App) {
           <div class="card-meta">
             ${r.date ? `<span>📅 ${this.esc(r.date)}</span>` : ''}
             ${r.factory ? `<span>🏭 ${this.esc(r.factory)}</span>` : ''}
-            ${r.received_qty ? `<span>来料 ${this.esc(r.received_qty)}</span>` : ''}
-            ${r.defect_qty ? `<span>不良 ${this.esc(r.defect_qty)}</span>` : ''}
-            ${rate ? `<span class="badge badge-red">不良率 ${rate.toFixed(1)}%</span>` : ''}
+            ${r.received_qty ? `<span>${tr('来料')} ${this.esc(r.received_qty)}</span>` : ''}
+            ${r.defect_qty ? `<span>${tr('不良')} ${this.esc(r.defect_qty)}</span>` : ''}
+            ${rate ? `<span class="badge badge-red">${tr('不良率')} ${rate.toFixed(1)}%</span>` : ''}
           </div></div>`;
       }).join('');
     }
 
     const rma = (this.cache.rma || []).slice().sort((a, b) => (b.date || '').localeCompare(a.date || ''));
     const re = document.getElementById('rma-list');
-    if (rma.length === 0) { re.innerHTML = `<div class="empty"><div class="empty-icon">↩️</div>暂无 RMA 记录</div>`; }
+    if (rma.length === 0) { re.innerHTML = `<div class="empty"><div class="empty-icon">↩️</div>${tr('暂无 RMA 记录')}</div>`; }
     else {
       re.innerHTML = rma.map(r => `<div class="card" onclick="App.openDetail('rma', ${r.id})">
         <div class="card-title">↩️ ${this.esc(r.project || r.customer || 'RMA')}</div>
         <div class="card-meta">
           ${r.date ? `<span>📅 ${this.esc(r.date)}</span>` : ''}
           ${r.customer ? `<span>👤 ${this.esc(r.customer)}</span>` : ''}
-          ${r.return_qty ? `<span>退 ${this.esc(r.return_qty)}</span>` : ''}
-          ${r.status ? `<span class="badge badge-${r.status === '已关闭' ? 'gray' : 'orange'}">${this.esc(r.status)}</span>` : ''}
+          ${r.return_qty ? `<span>${tr('退')} ${this.esc(r.return_qty)}</span>` : ''}
+          ${r.status ? `<span class="badge badge-${r.status === '已关闭' ? 'gray' : 'orange'}">${this.esc(tr(r.status))}</span>` : ''}
         </div></div>`).join('');
     }
 
@@ -388,28 +388,28 @@ export function setupPages(App) {
 
   App._doaTrend = function() {
     const list = (this.cache.doa || []).filter(r => r.date && r.received_qty > 0).slice().sort((a, b) => a.date.localeCompare(b.date));
-    if (list.length === 0) return '<div class="empty" style="padding:12px">暂无数据</div>';
+    if (list.length === 0) return `<div class="empty" style="padding:12px">${tr('暂无数据')}</div>`;
     const map = {};
     list.forEach(r => { const m = r.date.slice(0, 7); if (!map[m]) map[m] = { rec: 0, def: 0 }; map[m].rec += (+r.received_qty); map[m].def += (+r.defect_qty); });
     const months = Object.keys(map).sort();
     const values = months.map(m => +(map[m].def / map[m].rec * 100).toFixed(2));
-    return this._trendChart(months, [{ name: '不良率 %', color: '#e94560', values }]);
+    return this._trendChart(months, [{ name: tr('不良率') + ' %', color: '#e94560', values }]);
   };
 
   App._rmaTrend = function() {
     const list = (this.cache.rma || []).filter(r => r.date && r.return_qty > 0).slice().sort((a, b) => a.date.localeCompare(b.date));
-    if (list.length === 0) return '<div class="empty" style="padding:12px">暂无数据</div>';
+    if (list.length === 0) return `<div class="empty" style="padding:12px">${tr('暂无数据')}</div>`;
     const map = {};
     list.forEach(r => { const m = r.date.slice(0, 7); map[m] = (map[m] || 0) + (+r.return_qty); });
     const months = Object.keys(map).sort();
     const values = months.map(m => map[m]);
-    return this._trendChart(months, [{ name: '退货数量', color: '#3b82f6', values }]);
+    return this._trendChart(months, [{ name: tr('退货数量'), color: '#3b82f6', values }]);
   };
 
   App.saveDoa = async function() {
     const get = id => { const e = document.getElementById(id); return e ? (e.value || '').trim() : ''; };
     const material_name = get('doa-material_name');
-    if (!material_name) { this.toast('物料名不能为空'); return; }
+    if (!material_name) { this.toast(tr('物料名不能为空')); return; }
     const now = new Date().toISOString();
     const id = Math.floor(Date.now() / 1000);
     const received = parseFloat(get('doa-received_qty')) || 0;
@@ -426,17 +426,17 @@ export function setupPages(App) {
       await this.sbPost('sync_data', { table_name: 'doa', local_id: id, payload: JSON.stringify(payload), supabase_id: this.uuid(), is_deleted: false, updated_at: now, device_id: this.deviceId });
       this.cache.doa = this.cache.doa || [];
       this.cache.doa.unshift(payload);
-      this.toast('已保存 DOA');
+      this.toast(tr('已保存 DOA'));
       this.loadInspection();
       ['doa-date', 'doa-project', 'doa-factory', 'doa-material_name', 'doa-material_batch', 'doa-received_qty', 'doa-defect_qty', 'doa-description', 'doa-internal_confirm'].forEach(id2 => { const e = document.getElementById(id2); if (e) e.value = ''; });
-    } catch (e) { this.toast('保存失败: ' + e.message); }
+    } catch (e) { this.toast(tr('保存失败: ') + e.message); }
   };
 
   App.saveRma = async function() {
     const get = id => { const e = document.getElementById(id); return e ? (e.value || '').trim() : ''; };
     const project = get('rma-project');
     const customer = get('rma-customer');
-    if (!project && !customer) { this.toast('项目或客户至少填一项'); return; }
+    if (!project && !customer) { this.toast(tr('项目或客户至少填一项')); return; }
     const now = new Date().toISOString();
     const id = Math.floor(Date.now() / 1000);
     const payload = {
@@ -450,10 +450,10 @@ export function setupPages(App) {
       await this.sbPost('sync_data', { table_name: 'rma', local_id: id, payload: JSON.stringify(payload), supabase_id: this.uuid(), is_deleted: false, updated_at: now, device_id: this.deviceId });
       this.cache.rma = this.cache.rma || [];
       this.cache.rma.unshift(payload);
-      this.toast('已保存 RMA');
+      this.toast(tr('已保存 RMA'));
       this.loadInspection();
       ['rma-date', 'rma-project', 'rma-customer', 'rma-return_qty', 'rma-reason', 'rma-status', 'rma-description'].forEach(id2 => { const e = document.getElementById(id2); if (e) e.value = ''; });
-    } catch (e) { this.toast('保存失败: ' + e.message); }
+    } catch (e) { this.toast(tr('保存失败: ') + e.message); }
   };
 
   /* ─── Settings ─── */
@@ -537,11 +537,11 @@ export function setupPages(App) {
     const keys = Object.keys(MODULES).filter(k =>
       !q || (MODULES[k].title || k).toLowerCase().includes(q) || k.toLowerCase().includes(q)
     );
-    if (!keys.length) { el.innerHTML = '<div class="empty">未找到匹配模块</div>'; return; }
+    if (!keys.length) { el.innerHTML = `<div class="empty">${tr('未找到匹配模块')}</div>`; return; }
     el.innerHTML = keys.map(k =>
       '<div class="ml-item" onclick="App.openModuleFromSearch(\'' + k + '\')">' +
-        '<div class="ml-item-title">' + this.esc(MODULES[k].title || k) + '</div>' +
-        '<div class="ml-item-sub">' + this.esc((this.cache[k] || []).length + ' 条') + '</div>' +
+        '<div class="ml-item-title">' + this.esc(tr(MODULES[k].title || k)) + '</div>' +
+        '<div class="ml-item-sub">' + this.esc((this.cache[k] || []).length + ' ' + tr('条')) + '</div>' +
       '</div>'
     ).join('');
   };
@@ -554,7 +554,7 @@ export function setupPages(App) {
       this.currentModule = k;
       this.renderDetail(k, first.id);
     } else {
-      this.toast('该模块暂无可查看数据');
+      this.toast(tr('该模块暂无可查看数据'));
     }
   };
 

@@ -4,6 +4,7 @@
  * 让首页更简洁，模块入口留给快捷宫格。
  * 数据源：App.cache（projects/issues/shipping_plans/doa）。
  */
+import { tr } from './i18n.js';
 export function setupCockpit(App) {
   App.renderCockpit = function () {
     const el = document.getElementById('cockpit');
@@ -43,10 +44,10 @@ export function setupCockpit(App) {
     // v3.16.2 桌面版与手机版统一：标题区上移至 home-header，驾驶舱只保留 KPI 卡片
     el.innerHTML = `
       <div class="kpi-grid kpi-grid-4">${[
-        kpi(active,            '进行中项目', 'var(--accent)',       'production'),
-        kpi(openIssues,        '待处理问题', 'var(--accent)',       'quality'),
-        kpi(thisWeek,          '本周出货',   'var(--accent-green)', 'production'),
-        kpi(defectRate.toFixed(1) + '%', '缺陷率', 'var(--accent-orange)', 'inspection'),
+        kpi(active,            tr('进行中项目'), 'var(--accent)',       'production'),
+        kpi(openIssues,        tr('待处理问题'), 'var(--accent)',       'quality'),
+        kpi(thisWeek,          tr('本周出货'),   'var(--accent-green)', 'production'),
+        kpi(defectRate.toFixed(1) + '%', tr('缺陷率'), 'var(--accent-orange)', 'inspection'),
       ].join('')}</div>
     `;
   };

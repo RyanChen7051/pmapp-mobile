@@ -1,6 +1,6 @@
 /* ═══ Authentication ═══ */
 import { SUPABASE_KEY, APP_VERSION, USER_MAP, MODULE_PERMISSIONS, REPORTS_ALL_USERS } from './config.js';
-import { t } from './i18n.js';
+import { t, tr } from './i18n.js';
 
 export function setupAuth(App) {
   const ADMIN_USERS = ['admin', 'admin2', 'admin3', 'admin4'];
@@ -40,7 +40,7 @@ export function setupAuth(App) {
     const btn = document.getElementById('login-btn');
     if (!email || !password) { errEl.textContent = t('err_empty'); return false; }
     if (!proxyUrl && (!SUPABASE_KEY || SUPABASE_KEY.startsWith('sb_secret_') || SUPABASE_KEY.startsWith('__'))) {
-      errEl.innerHTML = 'PWA 未配置有效的 Publishable key。<br>请从 Supabase Dashboard 复制 Publishable key (sb_publishable_...)，然后运行仓库根目录的 <b>update_pwa_key.py</b> 脚本更新。<br><br>临时方案：可在下方「代理 URL」填入本地代理地址。';
+      errEl.innerHTML = tr('PWA 未配置有效的 Publishable key。<br>请从 Supabase Dashboard 复制 Publishable key (sb_publishable_...)，然后运行仓库根目录的 <b>update_pwa_key.py</b> 脚本更新。<br><br>临时方案：可在下方「代理 URL」填入本地代理地址。');
       console.error('[LOGIN] Invalid SUPABASE_KEY:', SUPABASE_KEY.startsWith('__') ? 'placeholder' : (SUPABASE_KEY.startsWith('sb_secret_') ? 'secret key (not allowed in browser)' : 'empty'));
       return false;
     }
@@ -195,7 +195,7 @@ export function setupAuth(App) {
       console.log('[LOGIN] Login activity recorded for:', username);
     } catch (e) {
       console.error('[LOGIN] Failed to record login activity:', e.message);
-      this.toast('登录记录写入失败: ' + e.message, 4000);
+      this.toast(tr('登录记录写入失败: ') + e.message, 4000);
     }
   };
 
@@ -262,22 +262,22 @@ export function setupAuth(App) {
 
         const nameColor = !isActive ? 'var(--text-muted)' : hasLoggedIn ? 'var(--accent-green)' : 'var(--accent)';
         const statusBadge = !isActive
-          ? '<span class="badge badge-red">已停用</span>'
+          ? `<span class="badge badge-red">${tr('已停用')}</span>`
           : isOnlineNow
-            ? '<span class="badge badge-green">在线</span>'
+            ? `<span class="badge badge-green">${tr('在线')}</span>`
             : hasLoggedIn
-              ? '<span class="badge badge-gray">已上线</span>'
-              : '<span class="badge badge-red">未上线</span>';
+              ? `<span class="badge badge-gray">${tr('已上线')}</span>`
+              : `<span class="badge badge-red">${tr('未上线')}</span>`;
 
         const timeStr = loginTime
           ? loginTime.toLocaleString('zh-CN', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })
           : '—';
-        const deptBadge = info.dept ? `<span class="badge badge-gray">${this.esc(info.dept)}</span>` : '';
+        const deptBadge = info.dept ? `<span class="badge badge-gray">${this.esc(tr(info.dept))}</span>` : '';
 
         // Toggle button: admin can enable/disable any user
         const toggleBtn = isActive
-          ? `<button onclick="App.toggleUserStatus('${key}')" style="margin-top:4px;font-size:10px;padding:3px 10px;border-radius:6px;border:1px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;font-weight:600">停用</button>`
-          : `<button onclick="App.toggleUserStatus('${key}')" style="margin-top:4px;font-size:10px;padding:3px 10px;border-radius:6px;border:1px solid var(--accent-green);background:var(--accent-green);color:#fff;cursor:pointer;font-weight:600">启用</button>`;
+          ? `<button onclick="App.toggleUserStatus('${key}')" style="margin-top:4px;font-size:10px;padding:3px 10px;border-radius:6px;border:1px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;font-weight:600">${tr('停用')}</button>`
+          : `<button onclick="App.toggleUserStatus('${key}')" style="margin-top:4px;font-size:10px;padding:3px 10px;border-radius:6px;border:1px solid var(--accent-green);background:var(--accent-green);color:#fff;cursor:pointer;font-weight:600">${tr('启用')}</button>`;
 
         return `<div class="card" style="padding:8px 12px;display:flex;align-items:center;justify-content:space-between;${!isActive ? 'opacity:0.6' : ''}">
           <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0">
@@ -292,7 +292,7 @@ export function setupAuth(App) {
           </div>
           <div style="text-align:right;flex-shrink:0">
             ${statusBadge}
-            <div style="font-size:11px;color:var(--text-secondary);margin-top:2px">登录 ${count} 次</div>
+            <div style="font-size:11px;color:var(--text-secondary);margin-top:2px">${tr('登录')} ${count} ${tr('次')}</div>
             <div style="font-size:10px;color:var(--text-muted);margin-top:1px">${timeStr}</div>
             ${toggleBtn}
           </div>
@@ -300,12 +300,12 @@ export function setupAuth(App) {
       }).join('');
 
       const summary = `<div style="text-align:center;font-size:12px;color:var(--text-secondary);margin-bottom:8px">
-        共 ${userKeys.length} 人 · <span style="color:var(--accent-green)">启用 ${activeCount}</span> · <span style="color:var(--accent)">停用 ${userKeys.length - activeCount}</span> · 🟢当前在线 ${onlineCount}
+        ${tr('共')} ${userKeys.length} ${tr('人')} · <span style="color:var(--accent-green)">${tr('启用')} ${activeCount}</span> · <span style="color:var(--accent)">${tr('停用')} ${userKeys.length - activeCount}</span> · 🟢${tr('当前在线')} ${onlineCount}
       </div>`;
 
       el.innerHTML = summary + rows;
     } catch (e) {
-      el.innerHTML = `<div class="empty">加载失败: ${this.esc(e.message)}</div>`;
+      el.innerHTML = `<div class="empty">${tr('加载失败: ')}${this.esc(e.message)}</div>`;
     }
   };
 
@@ -328,15 +328,15 @@ export function setupAuth(App) {
       const user = userMap[username];
 
       if (!user) {
-        this.toast('找不到用户记录，无法操作');
+        this.toast(tr('找不到用户记录，无法操作'));
         return;
       }
 
       const currentStatus = user.status || 'active';
       const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
-      const action = newStatus === 'active' ? '启用' : '停用';
+      const action = newStatus === 'active' ? tr('启用') : tr('停用');
 
-      if (!confirm(`确认${action}用户 ${user.display_name || username}？`)) return;
+      if (!confirm(`${tr('确认')}${action}${tr('用户')} ${user.display_name || username}？`)) return;
 
       user.status = newStatus;
       user.updated_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
@@ -347,23 +347,23 @@ export function setupAuth(App) {
         payload, updated_at: nowISO, device_id: this.deviceId
       });
 
-      this.toast(`已${action} ${user.display_name || username}`);
+      this.toast(`${action} ${user.display_name || username}`);
       this.loadLoginActivity();
     } catch (e) {
-      this.toast('操作失败: ' + e.message);
+      this.toast(tr('操作失败: ') + e.message);
     }
   };
 
   /* ─── Change Password (all users) ─── */
   App.showChangePassword = function() {
-    const html = `<div class="modal-handle"></div><div class="modal-title">修改密码</div>
-      <div style="font-size:12px;color:var(--text-secondary);margin-bottom:10px">账号 ${this.esc(this.session.user.username)} 的密码将被变更</div>
-      <div class="input-group"><label>原密码</label><input type="password" id="cp-old" placeholder="********" autocomplete="current-password"></div>
-      <div class="input-group"><label>新密码</label><input type="password" id="cp-new" placeholder="至少 6 位" autocomplete="new-password"></div>
-      <div class="input-group"><label>确认新密码</label><input type="password" id="cp-confirm" placeholder="再次输入新密码" autocomplete="new-password"></div>
-      <button class="btn btn-primary" onclick="App.changePassword()">确认变更</button>
+    const html = `<div class="modal-handle"></div><div class="modal-title">${tr('修改密码')}</div>
+      <div style="font-size:12px;color:var(--text-secondary);margin-bottom:10px">${tr('账号')} ${this.esc(this.session.user.username)} ${tr('的密码将被变更')}</div>
+      <div class="input-group"><label>${tr('原密码')}</label><input type="password" id="cp-old" placeholder="********" autocomplete="current-password"></div>
+      <div class="input-group"><label>${tr('新密码')}</label><input type="password" id="cp-new" placeholder="${tr('至少 6 位')}" autocomplete="new-password"></div>
+      <div class="input-group"><label>${tr('确认新密码')}</label><input type="password" id="cp-confirm" placeholder="${tr('再次输入新密码')}" autocomplete="new-password"></div>
+      <button class="btn btn-primary" onclick="App.changePassword()">${tr('确认变更')}</button>
       <div style="height:10px"></div>
-      <button class="btn btn-secondary" onclick="App.closeModal()">取消</button>`;
+      <button class="btn btn-secondary" onclick="App.closeModal()">${tr('取消')}</button>`;
     document.getElementById('modal-content').innerHTML = html;
     document.getElementById('modal-overlay').classList.add('show');
   };
@@ -373,10 +373,10 @@ export function setupAuth(App) {
     const newPwd = document.getElementById('cp-new').value;
     const confirmPwd = document.getElementById('cp-confirm').value;
 
-    if (!oldPwd || !newPwd || !confirmPwd) { this.toast('请填写所有字段'); return; }
-    if (newPwd !== confirmPwd) { this.toast('两次输入的新密码不一致'); return; }
-    if (newPwd.length < 6) { this.toast('新密码至少 6 位'); return; }
-    if (newPwd === oldPwd) { this.toast('新密码不能与原密码相同'); return; }
+    if (!oldPwd || !newPwd || !confirmPwd) { this.toast(tr('请填写所有字段')); return; }
+    if (newPwd !== confirmPwd) { this.toast(tr('两次输入的新密码不一致')); return; }
+    if (newPwd.length < 6) { this.toast(tr('新密码至少 6 位')); return; }
+    if (newPwd === oldPwd) { this.toast(tr('新密码不能与原密码相同')); return; }
 
     try {
       const records = await this.sbGet('sync_data', 'table_name=eq.users&is_deleted=eq.false&limit=200&select=payload,supabase_id,updated_at');
@@ -394,11 +394,11 @@ export function setupAuth(App) {
       });
       const user = userMap[this.session.user.username];
 
-      if (!user) { this.toast('找不到用户记录'); return; }
+      if (!user) { this.toast(tr('找不到用户记录')); return; }
 
       // Verify old password
       const ok = await this.verifyPassword(oldPwd, user.password_hash, user.salt, user.password);
-      if (!ok) { this.toast('原密码不正确'); return; }
+      if (!ok) { this.toast(tr('原密码不正确')); return; }
 
       // Hash new password with PBKDF2 + random salt
       const salt = this.uuid().substring(0, 16);
@@ -420,9 +420,9 @@ export function setupAuth(App) {
       });
 
       this.closeModal();
-      this.toast('密码已变更，下次登入请使用新密码');
+      this.toast(tr('密码已变更，下次登入请使用新密码'));
     } catch (e) {
-      this.toast('变更失败: ' + e.message);
+      this.toast(tr('变更失败: ') + e.message);
     }
   };
 }

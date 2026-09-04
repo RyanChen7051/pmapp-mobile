@@ -3,7 +3,7 @@
    Assembles all modules into the global App object
    ═══════════════════════════════════════════════════ */
 import { APP_VERSION } from './config.js';
-import { t, getLang, setLang, initLang, applyTranslations, LANGUAGES } from './i18n.js';
+import { t, tr, getLang, setLang, initLang, applyTranslations, LANGUAGES } from './i18n.js';
 import { setupSupabaseClient } from './supabase-client.js';
 import { setupAuth } from './auth.js';
 import { setupData } from './data.js';
@@ -119,8 +119,8 @@ const App = {
     bar.id = 'sw-update-bar';
     bar.className = 'sw-update-bar';
     bar.innerHTML =
-      '<span class="sw-update-text">🔄 发现新版本 (New version)</span>' +
-      '<button id="sw-update-btn" class="sw-update-btn">更新</button>';
+      `<span class="sw-update-text">${tr('🔄 发现新版本')}</span>` +
+      `<button id="sw-update-btn" class="sw-update-btn">${tr('更新')}</button>`;
     document.body.appendChild(bar);
     const btn = document.getElementById('sw-update-btn');
     if (btn) {
@@ -136,7 +136,7 @@ const App = {
   doScheduledUpdate() {
     const self = this;
     const finish = () => { window.location.reload(true); };
-    self.toast('🔄 正在更新到最新版本…');
+    self.toast(tr('🔄 正在更新到最新版本…'));
     const sw = navigator.serviceWorker;
     if (sw && sw.controller) {
       try {
@@ -227,7 +227,7 @@ const App = {
     document.body.classList.toggle('desktop', isDesktop);
     // 首页导航标签：宽屏称「驾驶舱」
     const homeLabel = document.querySelector('.tab[data-page="home"] span:last-child');
-    if (homeLabel) homeLabel.textContent = isDesktop ? '驾驶舱' : '首页';
+    if (homeLabel) homeLabel.textContent = tr(isDesktop ? '驾驶舱' : '首页');
     // 若在首页，按布局重渲染
     if (this.currentPage === 'home') {
       if (isDesktop) this.renderCockpit();
