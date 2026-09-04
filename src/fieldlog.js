@@ -249,6 +249,8 @@ export function setupFieldLog(App) {
         <option value="处理中" ${newRec.status === '处理中' ? 'selected' : ''}>处理中</option>
         <option value="已处理" ${newRec.status === '已处理' ? 'selected' : ''}>已处理</option>
       </select></div>
+      <div class="input-group"><label>报告人邮箱（选填，便于抄送你自己）</label><input type="email" id="fl-reporter-email" inputmode="email" autocomplete="email" placeholder="你的邮箱，如 name@gunbase.com" value="${this.esc(newRec.reporter_email || '')}"></div>
+      <div class="input-group"><label>负责处理人邮箱（选填，自动发邮件通知）</label><input type="email" id="fl-responsible-email" inputmode="email" autocomplete="email" placeholder="国内负责同事的邮箱" value="${this.esc(newRec.responsible_email || '')}"></div>
       <div class="input-group"><label>现场照片（自动压缩，不占空间）</label>
         <input type="file" id="fl-photos-input" accept="image/*" capture="environment" multiple onchange="App.flAddPhotos(this)">
         <div class="fl-photos" id="fl-photos"></div>
@@ -275,27 +277,44 @@ export function setupFieldLog(App) {
     const problemCategory = document.getElementById('fl-problem-category')?.value || '';
     const description = (document.getElementById('fl-description')?.value || '').trim();
     const status = document.getElementById('fl-status')?.value || '待处理';
+    const reporterEmail = (document.getElementById('fl-reporter-email')?.value || '').trim();
+    const responsibleEmail = (document.getElementById('fl-responsible-email')?.value || '').trim();
     if (!description && !project) { this.toast('请至少填写项目或问题叙述'); return; }
     const now = new Date().toISOString();
     const rec = {
       id, project, problem_factory: problemFactory, problem_category: problemCategory, description, status,
+      reporter_email: reporterEmail, responsible_email: responsibleEmail,
       photos: this._flPhotos.slice(),
-      gps: this._flGps || (rec ? rec.gps : '') || '',
+      gps: this._flGps || (newRec && newRec.gps) || '',
       reporter: this.session?.user?.display_name || this.session?.user?.username || '',
       created_at: now.slice(0, 19).replace('T', ' '),
       updated_at: now.slice(0, 19).replace('T', ' '),
     };
     try {
+      const sbId = this.uuid();
       await this.sbPost('sync_data', {
         table_name: 'field_log', local_id: id,
-        payload: JSON.stringify(rec), supabase_id: this.uuid(),
+        payload: JSON.stringify(rec), supabase_id: sbId,
         is_deleted: false, updated_at: now, device_id: this.deviceId,
       });
       this.cache.field_log = this.cache.field_log || [];
       this.cache.field_log.unshift(rec);
       this.closeModal();
       this.loadFieldLog();
-      this.toast('已保存现场记录，桌面端将自动同步');
+      this.toast('已保存现场记录' + (responsibleEmail ? '，已邮件通知负责处理人' : '，桌面端将自动同步'));
+      // 触发邮件通知（fire-and-forget，失败不影响保存）
+      if (responsibleEmail) this._notifyFieldLogEmail(sbId).catch(() => {});
     } catch (e) { this.toast('保存失败: ' + e.message); }
+  };
+
+  // 现场记录保存后，调用 Edge Function 发邮件（服务端用企业邮箱 SMTP 发送）
+  App._notifyFieldLogEmail = async function (sbId) {
+    try {
+      await fetch(`${this.apiBaseUrl()}/functions/v1/fieldlog-notify`, {
+        method: 'POST',
+        headers: this.sbHeaders(),
+        body: JSON.stringify({ supabase_id: sbId }),
+      });
+    } catch (e) { /* 静默：邮件失败不阻塞保存 */ }
   };
 }

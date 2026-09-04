@@ -1,0 +1,9 @@
+project_id = "nsnmtkukxquhinlmbejg"
+
+[functions.fieldlog-notify]
+enabled = true
+verify_jwt = true
+
+[functions.push-notify]
+enabled = true
+verify_jwt = true
