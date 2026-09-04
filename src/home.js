@@ -2,6 +2,23 @@
 import { STAGE_PROGRESS, MODULES, APP_VERSION } from './config.js';
 import { t, tr } from './i18n.js';
 
+/* ── 产业动态五大板块（顺序即展示顺序）──
+   新数据带 sector 字段；旧数据无 sector 时按 category 映射，保证历史条目也能归类。 */
+const NEWS_SECTORS = [
+  { key: 'tws_earbuds',    icon: '🎧', name: '全球消费蓝牙耳机' },
+  { key: 'hearing_aid',    icon: '🦻', name: '全球助听器/助听耳机' },
+  { key: 'wireless_mic',   icon: '🎙️', name: '无线麦克风' },
+  { key: 'audio_industry', icon: '🔊', name: '全球音频产业' },
+  { key: 'smart_glasses',  icon: '👓', name: '全球智能眼镜' },
+];
+const NEWS_PER_SECTOR = 2;
+const SECTOR_BY_CATEGORY = {
+  headphones: 'tws_earbuds', speakers: 'audio_industry', chips: 'audio_industry',
+  microphone: 'wireless_mic', market: 'audio_industry', concept: 'audio_industry',
+  big_brand: 'audio_industry', small_brand: 'audio_industry', hearing_aid: 'hearing_aid',
+};
+const sectorOf = n => (n && (n.sector || SECTOR_BY_CATEGORY[n.category])) || 'audio_industry';
+
 /* ── World Clock ── */
 const WC_CLOCKS = [
   { city: '中国', flag: '🇨🇳', tz: 'Asia/Shanghai',    accent: '#e94560' },
@@ -80,11 +97,12 @@ export function setupHome(App) {
     }
 
     const newsEl = document.getElementById('home-news');
-    const news = (this.cache.ai_industry_news || []).slice(0, 5);
-    if (news.length === 0) {
+    const allNews = this.cache.ai_industry_news || [];
+    if (allNews.length === 0) {
       newsEl.innerHTML = `<div class="empty"><div class="empty-icon">📰</div>${t('empty_news')}</div>`;
     } else {
-      newsEl.innerHTML = news.map(n => `<div class="card" onclick="App.openDetail('ai_industry_news', ${n.id})">
+      // 按五大板块均衡展示（每板块取最新 2 条），避免某一品类一次性霸屏
+      const card = n => `<div class="card" onclick="App.openDetail('ai_industry_news', ${n.id})">
         <div class="card-title">📰 ${this.esc(n.title)}</div>
         ${n.summary ? `<div style="font-size:12px;color:var(--text-secondary);margin:4px 0;line-height:1.5">${this.esc(n.summary.substring(0,80))}${n.summary.length>80?'...':''}</div>` : ''}
         <div class="card-meta">
@@ -92,7 +110,15 @@ export function setupHome(App) {
           ${n.importance ? `<span class="badge ${this.badgeClass(n.importance)}">${this.esc(n.importance)}</span>` : ''}
           ${n.source ? `<span>📌 ${this.esc(n.source)}</span>` : ''}
           ${n.url ? `<a href="${this.esc(n.url)}" target="_blank" onclick="event.stopPropagation()" style="color:var(--accent-blue);font-size:12px;text-decoration:none">${t('view_original')} ↗</a>` : ''}
-        </div></div>`).join('');
+        </div></div>`;
+      let html = '';
+      NEWS_SECTORS.forEach(sec => {
+        const list = allNews.filter(n => sectorOf(n) === sec.key).slice(0, NEWS_PER_SECTOR);
+        if (!list.length) return;
+        html += `<div style="font-size:13px;font-weight:700;color:var(--text-primary);margin:12px 0 6px;display:flex;align-items:center;gap:6px">${sec.icon} ${tr(sec.name)}</div>`;
+        html += list.map(card).join('');
+      });
+      newsEl.innerHTML = html || `<div class="empty"><div class="empty-icon">📰</div>${t('empty_news')}</div>`;
     }
 
     if (this.isLoggedIn()) {
