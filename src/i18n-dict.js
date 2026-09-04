@@ -6,13 +6,13 @@
  */
 export const DICT = {
   /* ── 通用按钮/操作 ── */
-  '新建': { en: 'New', es: 'Nuevo', ja: '新規', fr: 'Nouveau', de: 'Neu', ar: 'جديد', vi: 'Thêm mới', hi: 'नया' },
-  '编辑': { en: 'Edit', es: 'Editar', ja: '編集', fr: 'Modifier', de: 'Bearbeiten', ar: 'تحرير', vi: 'Sửa', hi: 'संपादित करें' },
+  '新建': { en: 'New ', es: 'Nuevo ', ja: '新規', fr: 'Nouveau ', de: 'Neu ', ar: 'جديد ', vi: 'Thêm mới ', hi: 'नया ' },
+  '编辑': { en: 'Edit ', es: 'Editar ', ja: '編集', fr: 'Modifier ', de: 'Bearbeiten ', ar: 'تحرير ', vi: 'Sửa ', hi: 'संपादित करें ' },
   '保存': { en: 'Save', es: 'Guardar', ja: '保存', fr: 'Enregistrer', de: 'Speichern', ar: 'حفظ', vi: 'Lưu', hi: 'सहेजें' },
   '取消': { en: 'Cancel', es: 'Cancelar', ja: 'キャンセル', fr: 'Annuler', de: 'Abbrechen', ar: 'إلغاء', vi: 'Hủy', hi: 'रद्द करें' },
   '删除': { en: 'Delete', es: 'Eliminar', ja: '削除', fr: 'Supprimer', de: 'Löschen', ar: 'حذف', vi: 'Xóa', hi: 'हटाएँ' },
   '更新': { en: 'Update', es: 'Actualizar', ja: '更新', fr: 'Mettre à jour', de: 'Aktualisieren', ar: 'تحديث', vi: 'Cập nhật', hi: 'अपडेट' },
-  '上传': { en: 'Upload', es: 'Subir', ja: 'アップロード', fr: 'Téléverser', de: 'Hochladen', ar: 'رفع', vi: 'Tải lên', hi: 'अपलोड करें' },
+  '上传': { en: 'Upload ', es: 'Subir ', ja: 'アップロード', fr: 'Téléverser ', de: 'Hochladen ', ar: 'رفع ', vi: 'Tải lên ', hi: 'अपलोड करें ' },
   '启用': { en: 'Enable', es: 'Habilitar', ja: '有効化', fr: 'Activer', de: 'Aktivieren', ar: 'تمكين', vi: 'Kích hoạt', hi: 'सक्षम करें' },
   '停用': { en: 'Disable', es: 'Deshabilitar', ja: '無効化', fr: 'Désactiver', de: 'Deaktivieren', ar: 'تعطيل', vi: 'Vô hiệu hóa', hi: 'अक्षम करें' },
   '完成': { en: 'Done', es: 'Completado', ja: '完了', fr: 'Terminé', de: 'Erledigt', ar: 'مكتمل', vi: 'Hoàn thành', hi: 'पूर्ण' },

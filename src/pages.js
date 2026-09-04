@@ -292,7 +292,7 @@ export function setupPages(App) {
     if (q) issues = issues.filter(i => i.title?.toLowerCase().includes(q) || i.description?.toLowerCase().includes(q) || i.assigned_to?.toLowerCase().includes(q));
     const el = document.getElementById(containerId);
     if (!el) return;
-    if (issues.length === 0) { el.innerHTML = `<div class="empty"><div class="empty-icon">⚠️</div>${tr(moduleKey === 'engineering' ? '工程' : '制程')}${tr('问题')}</div>`; return; }
+    if (issues.length === 0) { el.innerHTML = `<div class="empty"><div class="empty-icon">⚠️</div>${tr(moduleKey === 'engineering' ? '工程问题' : '制程问题')}</div>`; return; }
     el.innerHTML = issues.slice().sort((a, b) => (b.created_at || '').localeCompare(a.created_at || '')).map(i => `<div class="card" onclick="App.openDetail('${moduleKey}', ${i.id})">
       <div class="card-title">⚠️ ${this.esc(i.title)}</div>
       <div class="card-meta">
