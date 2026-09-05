@@ -568,4 +568,5 @@ export const DICT = {
   '发货中': { en: 'In transit', es: 'En transito', ja: '輸送中', fr: 'En transit', de: 'Unterwegs', ar: 'في الطريق', vi: 'Dang gui', hi: 'पारगमन में' },
 
   '齐套缺口': { en: 'Kitting shortage', es: 'Faltante de kitting', ja: 'キッティング不足', fr: 'Manque kitting', de: 'Kitting-Fehlmenge', ar: 'نقص التجهيز', vi: 'Thieu kitting', hi: 'किटिंग कमी' },
+  '现场问题': { en: 'Field issues', es: 'Problemas de campo', ja: '現場問題', fr: 'Problemes terrain', de: 'Vor-Ort-Probleme', ar: 'مشاكل الموقع', vi: 'Van de hien truong', hi: 'फ़ील्ड समस्याएँ' },
 };
