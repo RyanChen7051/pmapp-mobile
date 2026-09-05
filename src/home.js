@@ -150,19 +150,20 @@ export function setupHome(App) {
   };
 
   /* ── 首页模块快捷宫格 ── */
+  /* 首页模块快捷宫格：上排5个 设定·计划·物料·生产问题·工程问题；
+   * 下排5个 工厂·现场·DOA·制程问题·品质问题。
+   * 报告（会议记录/周报/月报）不占宫格，单列大按钮（见 #home-reports-block）。 */
   const QUICK_ENTRIES = [
+    { page: 'settings',        icon: '⚙️', i18n: 'tab_settings',        label: '设定' },
     { page: 'planning',        icon: '📅',  i18n: 'tab_planning',        label: '计划' },
     { page: 'materials',       icon: '📦',  i18n: 'tab_materials',       label: '物料' },
     { page: 'production',      icon: '⚙️', i18n: 'tab_production',      label: '生产' },
     { page: 'engineering',     icon: '🛠️', i18n: 'tab_engineering',     label: '工程' },
+    { page: 'factory',         icon: '🏭',  i18n: 'tab_factory',         label: '工厂' },
+    { page: 'fieldlog',        icon: '📍',  i18n: null,                  label: '现场' },
+    { page: 'inspection',      icon: '🔁',  i18n: null,                  label: 'DOA' },
     { page: 'factory_process', icon: '🔧',  i18n: 'tab_factory_process', label: '制程' },
     { page: 'quality',         icon: '✅',  i18n: 'tab_quality',         label: '品质' },
-    // v3.16.0 第 7 项用 label 直出 "DOA"，避免被 tab_inspection='DOA/RMA' 词条覆盖
-    { page: 'inspection',      icon: '🔁',  i18n: null,                  label: 'DOA' },
-    { page: 'fieldlog',        icon: '📍',  i18n: null,                  label: '现场' },
-    // label 均可经 DICT 反查翻译（i18n key 优先）
-    { page: 'reports',         icon: '📊',  i18n: 'tab_reports',         label: '报告' },
-    { page: 'settings',        icon: '⚙️', i18n: 'tab_settings',        label: '设定' },
   ];
 
   App.renderQuickEntries = function() {
