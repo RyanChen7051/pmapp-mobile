@@ -50,7 +50,7 @@ const I18N = {
     stat_pending: '待处理',
     active_projects: '进行中项目',
     view_all: '全部',
-    industry_news: '行业动态',
+    industry_news: '产业动态',
     message_board: '留言板',
     login_activity: '登录活动',
     admin_only: '仅管理员可见',
