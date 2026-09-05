@@ -310,7 +310,7 @@ export function setupFieldLog(App) {
       <div id="fl-voice-bar" style="border:1px solid var(--border,#333);border-radius:12px;padding:10px;margin-bottom:10px;background:var(--bg-elev,#1c1c28)">
         <div style="display:flex;align-items:center;gap:8px">
           <button class="btn btn-primary" id="fl-voice-btn" onclick="App.flToggleVoice()" style="flex:0 0 auto">🎤 ${tr('语音录入')}</button>
-          <div style="font-size:11px;color:var(--text-muted);line-height:1.3">${tr('voice_wait_field')}</div>
+          <div style="font-size:11px;color:var(--text-muted);line-height:1.3">${t('voice_wait_field')}</div>
         </div>
         <div id="fl-voice-status" style="display:none;margin-top:8px">
           <div style="display:flex;align-items:center;gap:6px"><span class="fl-vs-dot" style="width:8px;height:8px;border-radius:50%;background:#5fe39b;display:inline-block"></span><span id="fl-vs-state" style="font-size:13px;font-weight:600;color:#5fe39b"></span></div>
@@ -318,11 +318,13 @@ export function setupFieldLog(App) {
           <div id="fl-vs-live" style="font-size:12px;color:var(--text-muted);margin-top:4px;min-height:16px;word-break:break-word"></div>
         </div>
         <div style="margin-top:8px;padding:8px 10px;border:1px dashed var(--border,#333);border-radius:8px;background:rgba(79,157,255,0.06)">
-          <div style="font-size:12px;font-weight:600;color:#4f9dff;margin-bottom:4px">🎙 ${tr('voice_flow_title')}</div>
+          <div style="font-size:12px;font-weight:600;color:#4f9dff;margin-bottom:4px">🎙 ${t('voice_flow_title')}</div>
           <div style="font-size:11px;color:var(--text-muted);line-height:1.7">
-            1. ${tr('voice_step1')}<br>
-            2. ${tr('voice_step2')}<br>
-            3. ${tr('voice_step3')}
+            ${t('voice_flow_intro')}<br>
+            1. ${t('voice_step1')}<br>
+            2. ${t('voice_step2')}<br>
+            3. ${t('voice_step3')}<br>
+            ${t('voice_flow_end')}
           </div>
         </div>
       </div>
@@ -572,10 +574,10 @@ export function setupFieldLog(App) {
     const tgt = document.getElementById('fl-vs-target');
     if (state === 'content' && this._flActiveField) {
       if (s) { s.textContent = tr('聆听中…'); s.style.color = '#5fe39b'; }
-      if (tgt) tgt.textContent = tr('正在录入') + '：' + tr(this._flFieldById(this._flActiveField).labelKey) + '（' + tr('voice_complete_field') + '）';
+      if (tgt) tgt.textContent = tr('正在录入') + '：' + tr(this._flFieldById(this._flActiveField).labelKey) + '（' + t('voice_complete_field') + '）';
     } else {
       if (s) { s.textContent = tr('待命'); s.style.color = '#5fe39b'; }
-      if (tgt) tgt.textContent = tr('voice_wait_field');
+      if (tgt) tgt.textContent = t('voice_wait_field');
     }
   };
 
