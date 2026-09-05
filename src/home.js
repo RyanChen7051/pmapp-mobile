@@ -155,13 +155,13 @@ export function setupHome(App) {
    * 报告（会议记录/周报/月报）不占宫格，单列大按钮（见 #home-reports-block）。 */
   const QUICK_ENTRIES = [
     { page: 'settings',        icon: '⚙️', i18n: 'tab_settings',        label: '设定' },
-    { page: 'planning',        icon: '📅',  i18n: 'tab_planning',        label: '计划' },
-    { page: 'materials',       icon: '📦',  i18n: 'tab_materials',       label: '物料' },
+    { page: 'planning',        icon: '📅',  i18n: 'tab_planning',        label: '项目计划' },
+    { page: 'materials',       icon: '📦',  i18n: 'tab_materials',       label: '物料治具' },
     { page: 'production',      icon: '⚙️', i18n: 'tab_production',      label: '生产' },
     { page: 'engineering',     icon: '🛠️', i18n: 'tab_engineering',     label: '工程' },
-    { page: 'factory',         icon: '🏭',  i18n: 'tab_factory',         label: '工厂' },
-    { page: 'fieldlog',        icon: '📍',  i18n: null,                  label: '现场' },
-    { page: 'inspection',      icon: '🔁',  i18n: null,                  label: 'DOA' },
+    { page: 'factory',         icon: '🏭',  i18n: 'tab_factory',         label: '国际工厂' },
+    { page: 'fieldlog',        icon: '📍',  i18n: null,                  label: '现场记录' },
+    { page: 'inspection',      icon: '🔁',  i18n: null,                  label: 'DOA',  sub: '/RMA' },
     { page: 'factory_process', icon: '🔧',  i18n: 'tab_factory_process', label: '制程' },
     { page: 'quality',         icon: '✅',  i18n: 'tab_quality',         label: '品质' },
   ];
@@ -173,7 +173,7 @@ export function setupHome(App) {
       let name = tr(q.label);
       if (q.i18n) { try { const v = t(q.i18n); if (v && v !== q.i18n) name = v; } catch {} }
       return `<div class="quick-item" onclick="App.navigate('${q.page}')">
-        <span class="ic">${q.icon}</span><span>${name}</span>
+        <span class="ic">${q.icon}</span><span>${name}${q.sub ? `<i class="q-sub">${q.sub}</i>` : ''}</span>
       </div>`;
     }).join('') + `</div>`;
   };
