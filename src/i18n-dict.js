@@ -464,4 +464,13 @@ export const DICT = {
   '已删除项目讯息': { en: 'Project info deleted', es: 'Info del proyecto eliminada', ja: 'プロジェクト情報を削除しました', fr: 'Info projet supprimee', de: 'Projektinfo geloescht', ar: 'تم حذف معلومات المشروع', vi: 'Da xoa thong tin du an', hi: 'परियोजना जानकारी हटाई गई' },
   '未选择项目': { en: 'No project selected', es: 'Ningun proyecto seleccionado', ja: 'プロジェクト未選択', fr: 'Aucun projet selectionne', de: 'Kein Projekt ausgewaehlt', ar: 'لم يتم اختيار مشروع', vi: 'Chua chon du an', hi: 'कोई परियोजना नहीं चुनी' },
   '清除项目': { en: 'Clear project', es: 'Quitar proyecto', ja: 'プロジェクトを解除', fr: 'Effacer le projet', de: 'Projekt entfernen', ar: 'إزالة المشروع', vi: 'Bo du an', hi: 'परियोजना हटाएँ' },
+
+  /* ── 生产计划（主计划 / 子计划）联动（2026-09-05）── */
+  '项目计划编号': { en: 'Project plan no.', es: 'Num. de plan de proyecto', ja: 'プロジェクト計画番号', fr: 'Numero de plan projet', de: 'Projektplannummer', ar: 'رقم خطة المشروع', vi: 'So ke hoach du an', hi: 'परियोजना योजना संख्या' },
+  '项目计划编号（可选）': { en: 'Project plan no. (optional)', es: 'Num. de plan de proyecto (opcional)', ja: 'プロジェクト計画番号（任意）', fr: 'Numero de plan projet (optionnel)', de: 'Projektplannummer (optional)', ar: 'رقم خطة المشروع (اختياري)', vi: 'So ke hoach du an (tuy chon)', hi: 'परियोजना योजना संख्या (वैकल्पिक)' },
+  '选择项目计划编号': { en: 'Select a project plan no.', es: 'Seleccione un num. de plan de proyecto', ja: 'プロジェクト計画番号を選択', fr: 'Selectionner un numero de plan projet', de: 'Projektplannummer auswaehlen', ar: 'اختر رقم خطة المشروع', vi: 'Chon so ke hoach du an', hi: 'परियोजना योजना संख्या चुनें' },
+  '暂无项目计划': { en: 'No production plan yet', es: 'Aun sin plan de produccion', ja: '生産計画はありません', fr: 'Aucun plan de production', de: 'Noch kein Produktionsplan', ar: 'لا توجد خطة إنتاج', vi: 'Chua co ke hoach san xuat', hi: 'अभी कोई उत्पादन योजना नहीं' },
+  '请先建立项目讯息': { en: 'Please create project info first', es: 'Cree primero la info del proyecto', ja: '先にプロジェクト情報を作成してください', fr: 'Creez d abord une info projet', de: 'Bitte zuerst Projektinfo erstellen', ar: 'يرجى إنشاء معلومات المشروع اولا', vi: 'Vui long tao thong tin du an truoc', hi: 'पहले परियोजना जानकारी बनाएँ' },
+  '请选择': { en: 'Select', es: 'Seleccione', ja: '選択', fr: 'Selectionner', de: 'Auswaehlen', ar: 'اختر', vi: 'Chon', hi: 'चुनें' },
+  '清除选择': { en: 'Clear selection', es: 'Quitar seleccion', ja: '選択を解除', fr: 'Effacer la selection', de: 'Auswahl aufheben', ar: 'إزالة الاختيار', vi: 'Bo chon', hi: 'चयन हटाएँ' },
 };
