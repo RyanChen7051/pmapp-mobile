@@ -13,8 +13,8 @@ const NEWS_SECTORS = [
   { key: 'ai_industry',    icon: '🤖', name: '全球AI产业' },
   { key: 'iot',            icon: '🌐', name: '全球物联网IoT' },
 ];
-// 每个板块每日 5 条（邦杰要求：所有类别的新闻每日都需要 5 条）
-const NEWS_PER_SECTOR = 5;
+// 每个板块每日 6 条（2026-09-06 由 5 改为 6）
+const NEWS_PER_SECTOR = 6;
 const SECTOR_BY_CATEGORY = {
   headphones: 'tws_earbuds', speakers: 'audio_industry', chips: 'audio_industry',
   microphone: 'wireless_mic', market: 'audio_industry', concept: 'audio_industry',
