@@ -163,6 +163,15 @@ export function setupDetail(App) {
         html += photos.map(p => `<a href="${this.esc(p.data)}" target="_blank"><img src="${this.esc(p.data)}" class="photo-thumb" alt="${this.esc(p.name || '')}"></a>`).join('');
         html += '</div>';
       }
+      const rec = record;
+      html += `<div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">`;
+      if (rec.responsible_email || rec.reporter_email) {
+        html += `<button class="btn btn-secondary" style="flex:1;min-width:140px" onclick="App._flMailto(${id})">📧 ${tr('发送邮件通知')}</button>`;
+      }
+      if (canEdit) {
+        html += `<button class="btn btn-danger" style="flex:1;min-width:140px" onclick="App.deleteFieldLog(${id})">🗑 ${tr('删除')}</button>`;
+      }
+      html += `</div>`;
     }
     el.innerHTML = html;
   };
