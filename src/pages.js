@@ -176,7 +176,7 @@ export function setupPages(App) {
     if (saveBtn) saveBtn.textContent = tr('保存');
     const fno = document.getElementById('pi-factory-no'); if (fno) fno.placeholder = tr('工厂项目编号');
     const cno = document.getElementById('pi-customer-no'); if (cno) cno.placeholder = tr('客户项目编号');
-    const fac = document.getElementById('pi-factory'); if (fac) fac.placeholder = tr('生产工厂');
+    this.updateProjectFactoryButton();
     const stage = document.getElementById('pi-stage');
     if (stage) {
       const cur = stage.value;
@@ -198,6 +198,48 @@ export function setupPages(App) {
       </div></div>`).join('');
   };
 
+  /* ─── 项目讯息的「生产工厂」：点选，来源＝工厂模块（factory_info）───
+   * 用 #picker-overlay（edit.js 的 _openPicker/closePicker），不占用主 modal。 */
+  App.updateProjectFactoryButton = function() {
+    const btn = document.getElementById('pi-factory-btn');
+    if (!btn) return;
+    const label = this._piFactory ? this._piFactory.name : tr('生产工厂');
+    btn.innerHTML = `🏭 ${this.esc(label)}`;
+  };
+
+  App.pickProjectFactory = function() {
+    const list = this.cache.factory_info || [];
+    if (list.length === 0) { this.toast(tr('暂无工厂讯息')); return; }
+    const html = `<div class="modal-handle"></div><div class="modal-title">${tr('生产工厂')}</div>` +
+      list.map(f => `<div class="card" onclick="App.selectProjectFactory(${f.id})">
+        <div class="card-title">🏭 ${this.esc(f.factory_name || '')}</div>
+        <div class="card-meta">
+          ${f.address ? `<span>🏠 ${this.esc(f.address)}</span>` : ''}
+          ${f.region ? `<span>📍 ${this.esc(f.region)}</span>` : ''}
+          ${f.country ? `<span>🏳️ ${this.esc(f.country)}</span>` : ''}
+          ${f.pm ? `<span>👤 ${this.esc(f.pm)}</span>` : ''}
+        </div></div>`).join('') +
+      `<div style="height:10px"></div>
+       <button class="btn btn-secondary" onclick="App.clearProjectFactory()">${tr('清除选择')}</button>
+       <div style="height:10px"></div>
+       <button class="btn btn-secondary" onclick="App.closePicker()">${tr('取消')}</button>`;
+    this._openPicker(html);
+  };
+
+  App.selectProjectFactory = function(id) {
+    const f = (this.cache.factory_info || []).find(r => String(r.id) === String(id));
+    if (!f) return;
+    this._piFactory = { id: f.id, name: f.factory_name || '' };
+    this.updateProjectFactoryButton();
+    this.closePicker();
+  };
+
+  App.clearProjectFactory = function() {
+    this._piFactory = null;
+    this.updateProjectFactoryButton();
+    this.closePicker();
+  };
+
   App.toggleProjectInfoForm = function() {
     const box = document.getElementById('proj-info-form');
     if (!box) return;
@@ -210,7 +252,6 @@ export function setupPages(App) {
     const fno = document.getElementById('pi-factory-no');
     if (!fno) return;
     const cno = document.getElementById('pi-customer-no');
-    const fac = document.getElementById('pi-factory');
     const stg = document.getElementById('pi-stage');
     const factory_project_no = fno.value.trim();
     if (!factory_project_no) { this.toast(tr('请输入工厂项目编号')); fno.focus(); return; }
@@ -219,12 +260,15 @@ export function setupPages(App) {
     const rec = {
       id, factory_project_no,
       customer_project_no: cno ? cno.value.trim() : '',
-      production_factory: fac ? fac.value.trim() : '',
+      // 生产工厂来自「工厂」模块点选，不再手输
+      production_factory: this._piFactory ? this._piFactory.name : '',
+      factory_id: this._piFactory ? this._piFactory.id : '',
       project_stage: stg ? stg.value : 'NPI',
       created_at: now, updated_at: now,
     };
     (this.cache.project_info = this.cache.project_info || []).unshift(rec);
-    fno.value = ''; if (cno) cno.value = ''; if (fac) fac.value = '';
+    fno.value = ''; if (cno) cno.value = '';
+    this._piFactory = null;
     const box = document.getElementById('proj-info-form'); if (box) box.style.display = 'none';
     this.renderProjectInfo();
     try {
