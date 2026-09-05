@@ -630,7 +630,8 @@ body.rtl .card-meta { flex-direction: row-reverse; }
   <div id="proj-info-form" class="plan-add" style="display:none">
     <input type="text" id="pi-factory-no" class="plan-add-input" onkeydown="if(event.key==='Enter')App.saveProjectInfo()" />
     <input type="text" id="pi-customer-no" class="plan-add-input" />
-    <input type="text" id="pi-factory" class="plan-add-input" />
+    <!-- 生产工厂：点选，来源＝工厂模块的 factory_info -->
+    <button type="button" class="btn btn-secondary" id="pi-factory-btn" style="width:100%;font-size:14px" onclick="App.pickProjectFactory()"></button>
     <select id="pi-stage" class="plan-add-sel"></select>
     <button class="btn btn-primary plan-add-btn" onclick="App.saveProjectInfo()"></button>
   </div>
@@ -957,6 +958,6 @@ body.rtl .card-meta { flex-direction: row-reverse; }
 
 </div>
 
-<script type="module" src="bundle.js?v=112"></script>
+<script type="module" src="bundle.js?v=113"></script>
 </body>
 </html>
