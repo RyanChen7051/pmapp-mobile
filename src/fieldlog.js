@@ -7,13 +7,13 @@ import { t, tr, getLang } from './i18n.js';
 
 /* ═══ 语音录入指令映射（SpeechRecognition lang / 命令词 / 结束词）═══
  * 识别语言跟随 PWA 界面语言；命令词支持「本地化 + 中文通用」双匹配，
- * 即使工程师用中文指令（栏目xxx / 栏目完毕）也能在任意语言界面下命中。 */
+ * 即使工程师用中文指令（栏目xxx / 输入结束）也能在任意语言界面下命中。 */
 const VOICE_LANG = { zh: 'zh-CN', en: 'en-US', es: 'es-ES', ja: 'ja-JP', fr: 'fr-FR', de: 'de-DE', ar: 'ar-SA', vi: 'vi-VN', hi: 'hi-IN' };
 const VOICE_CMD_KW = { zh: '栏目', en: 'column', es: 'campo', ja: '項目', fr: 'champ', de: 'feld', ar: 'حقل', vi: 'trường', hi: 'फ़ील्ड' };
 const VOICE_END = {
-  zh: ['栏目完毕', '栏目结束'], en: ['column done', 'column finish'], es: ['campo fin', 'fin de campo'],
-  ja: ['項目終了', '終了'], fr: ['fin de champ', 'champ fin'], de: ['feld fertig', 'ende feld'],
-  ar: ['انتهى الحقل', 'حقل انتهى'], vi: ['trường xong', 'kết thúc trường'], hi: ['फ़ील्ड समाप्त', 'खत्म'],
+  zh: ['输入结束', '录入结束'], en: ['input end', 'input finished'], es: ['entrada terminada', 'fin de entrada'],
+  ja: ['入力終了', '入力終わり'], fr: ['saisie terminée', 'fin de saisie'], de: ['eingabe beendet', 'ende eingabe'],
+  ar: ['انتهاء الإدخال', 'إنهاء الإدخال'], vi: ['nhập xong', 'kết thúc nhập'], hi: ['इनपुट समाप्त', 'इनपुट खत्म'],
 };
 // 文本归一化：去空格、转小写、去常用标点，便于命令/选项模糊匹配
 function flNorm(s) {
@@ -319,12 +319,10 @@ export function setupFieldLog(App) {
         </div>
         <div style="margin-top:8px;padding:8px 10px;border:1px dashed var(--border,#333);border-radius:8px;background:rgba(79,157,255,0.06)">
           <div style="font-size:12px;font-weight:600;color:#4f9dff;margin-bottom:4px">🎙 ${tr('voice_flow_title')}</div>
-          <div style="font-size:11px;color:var(--text-muted);line-height:1.6">
+          <div style="font-size:11px;color:var(--text-muted);line-height:1.7">
             1. ${tr('voice_step1')}<br>
             2. ${tr('voice_step2')}<br>
-            3. ${tr('voice_step3')}<br>
-            4. ${tr('voice_step4')}<br>
-            5. ${tr('voice_step5')}
+            3. ${tr('voice_step3')}
           </div>
         </div>
       </div>
@@ -473,7 +471,7 @@ export function setupFieldLog(App) {
   };
 
   // ═══ 语音录入引擎（Field Voice Capture · 逐条栏目状态机）═══
-  // 流程：点麦克风 → 等待栏目指令(栏目xxx) → 切入该字段聆听内容 → 念结束词(栏目结束/栏目完毕)提交该字段 → 回到等待下一条。
+  // 流程：点麦克风 → 等待栏目指令(栏目xxx) → 切入该字段聆听内容 → 念结束词(输入结束)提交该字段 → 回到等待下一条。
   // 识别语言跟随 PWA 界面；支持本地化关键词(栏目/column/trường…) + 中文通用指令；引擎为 Web Speech API（Android Chrome 最适合印度/越南产线）。
 
   // 构建 7 字段的语音元数据：命令词 = 本地化关键词 + 短标签；select 含候选项用于模糊匹配
@@ -588,7 +586,7 @@ export function setupFieldLog(App) {
     if (!unparsed.trim()) return;
     const cmdPhrases = [];
     for (const f of (this._flVoiceFields || [])) { cmdPhrases.push(f.cmdLocal, f.cmdZh); }
-    const endPhrases = (VOICE_END[getLang()] || []).map(flNorm).concat(['栏目完毕', '栏目结束'].map(flNorm));
+    const endPhrases = (VOICE_END[getLang()] || []).map(flNorm).concat(['输入结束', '录入结束', '栏目完毕', '栏目结束'].map(flNorm));
     const cmdHit = this._flFindFirstNorm(unparsed, cmdPhrases);
     const endHit = this._flFindFirstNorm(unparsed, endPhrases);
     if (this._flState === 'cmd') {
