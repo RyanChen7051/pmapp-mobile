@@ -569,4 +569,16 @@ export const DICT = {
 
   '齐套缺口': { en: 'Kitting shortage', es: 'Faltante de kitting', ja: 'キッティング不足', fr: 'Manque kitting', de: 'Kitting-Fehlmenge', ar: 'نقص التجهيز', vi: 'Thieu kitting', hi: 'किटिंग कमी' },
   '现场问题': { en: 'Field issues', es: 'Problemas de campo', ja: '現場問題', fr: 'Problemes terrain', de: 'Vor-Ort-Probleme', ar: 'مشاكل الموقع', vi: 'Van de hien truong', hi: 'फ़ील्ड समस्याएँ' },
+  /* ── 现场问题的处理记录（2026-09-05）── */
+  'NG数量': { en: 'NG qty', es: 'Cantidad NG', ja: 'NG数', fr: 'Qté NG', de: 'NG-Menge', ar: 'كمية NG', vi: 'SL NG', hi: 'NG मात्रा' },
+  '生产总数': { en: 'Total produced', es: 'Total producido', ja: '生産総数', fr: 'Total produit', de: 'Gesamtmenge', ar: 'إجمالي الإنتاج', vi: 'Tong SL', hi: 'कुल उत्पादन' },
+  '处理人员': { en: 'Handled by', es: 'Tratado por', ja: '処理担当', fr: 'Traite par', de: 'Bearbeitet von', ar: 'عالجه', vi: 'Nguoi xu ly', hi: 'संभालने वाला' },
+  '临时处理方式': { en: 'Temporary action', es: 'Accion temporal', ja: '暫定対処', fr: 'Action temporaire', de: 'Sofortmassnahme', ar: 'إجراء مؤقت', vi: 'Xu ly tam thoi', hi: 'अस्थायी कार्रवाई' },
+  '永久处理方式': { en: 'Permanent action', es: 'Accion permanente', ja: '恒久対処', fr: 'Action permanente', de: 'Dauerhafte Massnahme', ar: 'إجراء دائم', vi: 'Xu ly vinh vien', hi: 'स्थायी कार्रवाई' },
+  '问题级别': { en: 'Problem level', es: 'Nivel de problema', ja: '問題レベル', fr: 'Niveau probleme', de: 'Problemstufe', ar: 'مستوى المشكلة', vi: 'Muc do', hi: 'समस्या स्तर' },
+  'S特急': { en: 'S - Urgent', es: 'S - Urgente', ja: 'S・特急', fr: 'S - Urgent', de: 'S - Dringend', ar: 'S - عاجل', vi: 'S - Khẩn cấp', hi: 'S - अत्यावश्यक' },
+  'A常规': { en: 'A - Normal', es: 'A - Normal', ja: 'A・通常', fr: 'A - Normal', de: 'A - Normal', ar: 'A - عادي', vi: 'A - Binh thuong', hi: 'A - सामान्य' },
+  'B计划': { en: 'B - Planned', es: 'B - Planificado', ja: 'B・計画', fr: 'B - Planifie', de: 'B - Geplant', ar: 'B - مخطط', vi: 'B - Ke hoach', hi: 'B - योजनाबद्ध' },
+  '已保存': { en: 'Saved', es: 'Guardado', ja: '保存しました', fr: 'Enregistre', de: 'Gespeichert', ar: 'تم الحفظ', vi: 'Da luu', hi: 'सहेजा गया' },
+
 };
