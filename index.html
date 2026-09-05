@@ -76,6 +76,14 @@ body {
 .card-meta { display: flex; flex-wrap: wrap; gap: 6px; font-size: 12px; color: var(--text-secondary); }
 .card-desc { font-size: 13px; color: var(--text-secondary); margin-top: 4px; line-height: 1.4; }
 
+/* 现场列表 - 左滑删除（按住向左滑动显示删除） */
+.fl-swipe { position: relative; overflow: hidden; border-radius: var(--radius); margin-bottom: 10px; }
+.fl-swipe-del { position: absolute; top: 0; right: 0; bottom: 0; width: 84px; border: none; background: #e5484d; color: #fff; font-size: 22px; display: flex; align-items: center; justify-content: center; }
+.fl-swipe-card { position: relative; z-index: 1; touch-action: pan-y; }
+.fl-swipe-card .card { margin-bottom: 0; }
+.fl-swipe.revealed .fl-swipe-card { transform: translateX(-84px); }
+.fl-swipe-hint { font-size: 11px; color: var(--text-muted); text-align: center; margin: -4px 0 10px; }
+
 /* Badges */
 .badge { display: inline-block; padding: 2px 7px; border-radius: 6px; font-size: 11px; font-weight: 600; }
 .badge-red { background: rgba(233,69,96,0.2); color: var(--accent-light); }
@@ -931,6 +939,6 @@ body.rtl .card-meta { flex-direction: row-reverse; }
 
 </div>
 
-<script type="module" src="bundle.js?v=103"></script>
+<script type="module" src="bundle.js?v=104"></script>
 </body>
 </html>
