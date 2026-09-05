@@ -593,6 +593,13 @@ body.rtl .card-meta { flex-direction: row-reverse; }
   </div>
   <div id="cockpit"></div>
   <div id="home-quick" class="mobile-only"></div>
+  <!-- 报告大按钮：下排按钮正下方、智能海外助理正上方；尺寸与智能海外助理一致 -->
+  <div class="home-block mobile-only" id="home-reports-block" onclick="App.navigate('reports')" style="cursor:pointer">
+    <div class="home-block-head">
+      <span>📊 <span data-i18n="home_reports_btn">会议记录/周报/月报</span></span>
+      <span class="ai-head-right"><span class="ai-chev" style="transform:rotate(-90deg)">❯</span></span>
+    </div>
+  </div>
   <div class="home-block">
     <div class="home-block-head" id="ai-head">
       <span>🤖 <span data-i18n="ai_title">智能海外助理</span></span>
@@ -985,6 +992,6 @@ body.rtl .card-meta { flex-direction: row-reverse; }
 
 </div>
 
-<script type="module" src="bundle.js?v=118"></script>
+<script type="module" src="bundle.js?v=119"></script>
 </body>
 </html>
