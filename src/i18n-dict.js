@@ -581,4 +581,24 @@ export const DICT = {
   'B计划': { en: 'B - Planned', es: 'B - Planificado', ja: 'B・計画', fr: 'B - Planifie', de: 'B - Geplant', ar: 'B - مخطط', vi: 'B - Ke hoach', hi: 'B - योजनाबद्ध' },
   '已保存': { en: 'Saved', es: 'Guardado', ja: '保存しました', fr: 'Enregistre', de: 'Gespeichert', ar: 'تم الحفظ', vi: 'Da luu', hi: 'सहेजा गया' },
 
+  /* ── 供应治具（2026-09-06）── */
+  '治具': { en: 'Jig', es: 'Jig', ja: '治具', fr: 'Gabarit', de: 'Vorrichtung', ar: 'تركيبة', vi: 'Do ga', hi: 'जिग' },
+  '治具编号': { en: 'Jig No.', es: 'Num. de jig', ja: '治具番号', fr: 'N° de gabarit', de: 'Vorrichtungs-Nr.', ar: 'رقم التركيبة', vi: 'Ma do ga', hi: 'जिग सं.' },
+  '治具名称': { en: 'Jig name', es: 'Nombre del jig', ja: '治具名', fr: 'Nom du gabarit', de: 'Vorrichtungsname', ar: 'اسم التركيبة', vi: 'Ten do ga', hi: 'जिग नाम' },
+  '治具清单': { en: 'Jig list', es: 'Lista de jigs', ja: '治具リスト', fr: 'Liste gabarits', de: 'Vorrichtungsliste', ar: 'قائمة التركيبات', vi: 'Danh sach do ga', hi: 'जिग सूची' },
+  '治具供应': { en: 'Jig supply', es: 'Suministro de jigs', ja: '治具供給', fr: 'Fourniture gabarits', de: 'Vorrichtungsversorgung', ar: 'توريد التركيبات', vi: 'Cung cap do ga', hi: 'जिग आपूर्ति' },
+  '供应治具': { en: 'Supply jigs', es: 'Suministrar jigs', ja: '治具を供給', fr: 'Fournir gabarits', de: 'Vorrichtungen liefern', ar: 'توفير تركيبات', vi: 'Cung cap do ga', hi: 'जिग आपूर्ति' },
+  '上传治具清单': { en: 'Upload jig list', es: 'Subir lista de jigs', ja: '治具リストを取込', fr: 'Importer liste gabarits', de: 'Jig-Liste hochladen', ar: 'رفع قائمة التركيبات', vi: 'Tai len danh sach do ga', hi: 'जिग सूची अपलोड' },
+  '上传文件': { en: 'Upload file', es: 'Subir archivo', ja: 'ファイル取込', fr: 'Importer fichier', de: 'Datei hochladen', ar: 'رفع ملف', vi: 'Tai len tep', hi: 'फ़ाइल अपलोड' },
+  '文件': { en: 'File', es: 'Archivo', ja: 'ファイル', fr: 'Fichier', de: 'Datei', ar: 'ملف', vi: 'Tep', hi: 'फ़ाइल' },
+  '说明': { en: 'Instructions', es: 'Instrucciones', ja: '説明', fr: 'Instructions', de: 'Anleitung', ar: 'تعليمات', vi: 'Huong dan', hi: 'निर्देश' },
+  '请先选择项目': { en: 'Please select a project first', es: 'Seleccione primero un proyecto', ja: '先にプロジェクトを選択', fr: 'Selectionnez d abord un projet', de: 'Bitte zuerst Projekt waehlen', ar: 'يرجى اختيار مشروع أولا', vi: 'Vui long chon du an truoc', hi: 'कृपया पहले परियोजना चुनें' },
+  '已导入': { en: 'Imported', es: 'Importado', ja: '取込済み', fr: 'Importe', de: 'Importiert', ar: 'تم الاستيراد', vi: 'Da tai', hi: 'आयातित' },
+  '项': { en: 'items', es: 'articulos', ja: '件', fr: 'articles', de: 'Posten', ar: 'عناصر', vi: 'muc', hi: 'आइटम' },
+  '暂无记录': { en: 'No records', es: 'Sin registros', ja: '記録なし', fr: 'Aucun enregistrement', de: 'Keine Eintraege', ar: 'لا سجلات', vi: 'Khong co ban ghi', hi: 'कोई रिकॉर्ड नहीं' },
+  '治具清单未上传过': { en: 'No jig list uploaded yet', es: 'Aun no se subio lista', ja: '治具リスト未取込', fr: 'Aucune liste importee', de: 'Noch keine Liste', ar: 'لم يتم رفع قائمة بعد', vi: 'Chua tai danh sach', hi: 'अभी तक कोई सूची नहीं' },
+  '上传了文件': { en: 'Uploaded file', es: 'Archivo subido', ja: '取込ファイル', fr: 'Fichier importe', de: 'Hochgeladene Datei', ar: 'ملف مرفوع', vi: 'Tep da tai', hi: 'अपलोड फ़ाइल' },
+
+  '关闭': { en: 'Close', es: 'Cerrar', ja: '閉じる', fr: 'Fermer', de: 'Schliessen', ar: 'إغلاق', vi: 'Dong', hi: 'बंद करें' },
+  '解析失败': { en: 'Parse failed', es: 'Error al analizar', ja: '解析失敗', fr: 'Echec analyse', de: 'Analyse fehlgeschlagen', ar: 'فشل التحليل', vi: 'Loi phan tich', hi: 'पार्स विफल' },
 };
