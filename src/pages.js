@@ -689,7 +689,10 @@ export function setupPages(App) {
   };
 
   /* ─── Production Tab ─── */
-  App.loadProduction = function() { this.renderProduction(); };
+  App.loadProduction = function() {
+    this.renderProduction();
+    this.renderFieldLogByCategory('prod-fieldlog', '生产');
+  };
 
   App.setProdFilter = function(stage, el) {
     this.prodFilter = stage;
@@ -1034,9 +1037,6 @@ export function setupPages(App) {
       'mat-alert-add': this.isAdmin(),            // 物料栏目
       'mat-factory-add': this.isAdmin(),          // 冗余占位（物料页无此钮）
       'factory-add': this.isAdmin(),              // 工厂讯息
-      'qual-insp-add': this.isAdmin(),            // 品质(客验)
-      'eng-add': this.isAdmin(),                  // 工程
-      'fp-add': this.isAdmin(),                   // 制程
       'fieldlog-add': this.isAdmin(),             // 现场记录
       'kb-rebuild-btn': this.isSuperAdmin(),      // 重建知识库 → 仅超级管理员
     };
