@@ -393,6 +393,16 @@ body.rtl .card-meta { flex-direction: row-reverse; }
 
 /* ─── 首页重排：分组卡 / 快捷宫格 / AI 折叠 ─── */
 .home-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 13px; margin: 14px 0; }
+/* 产业动态：按 sector 分组，每板块一个外框 */
+.sector-group { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 13px 14px; margin: 0 0 12px; }
+.sector-head { display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 700; color: var(--text-primary); padding-bottom: 8px; margin-bottom: 10px; border-bottom: 1px solid var(--border); }
+.sector-icon { font-size: 18px; line-height: 1; }
+.sector-name { flex: 1; }
+.sector-grid { display: grid; grid-template-columns: 1fr; gap: 8px; }
+@media (min-width: 768px) {
+  .sector-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .sector-group { padding: 14px 16px; }
+}
 .home-block-head { display: flex; align-items: center; justify-content: space-between; font-size: 14px; font-weight: 600; color: var(--text-primary); cursor: pointer; user-select: none; }
 .ai-head-right { display: flex; align-items: center; gap: 10px; }
 .ai-chev { color: var(--text-secondary); font-size: 12px; transition: transform .25s; display: inline-block; }
@@ -507,7 +517,7 @@ body.rtl .card-meta { flex-direction: row-reverse; }
 
   /* 列表多列 */
   #mat-alerts, #factory-list, #plan-tasks, #plan-todos, #plan-overdue,
-  #doa-list, #rma-list, #fieldlog-list, #home-news, .module-list-content, #msg-list {
+  #doa-list, #rma-list, #fieldlog-list, .module-list-content, #msg-list {
     display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px;
   }
   .empty { grid-column: 1 / -1; }
@@ -982,6 +992,6 @@ body.rtl .card-meta { flex-direction: row-reverse; }
 
 </div>
 
-<script type="module" src="bundle.js?v=125"></script>
+<script type="module" src="bundle.js?v=126"></script>
 </body>
 </html>
