@@ -182,6 +182,7 @@ body {
 /* Modal */
 .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 200; display: none; align-items: flex-end; justify-content: center; }
 .modal-overlay.show { display: flex; animation: fadeIn 0.2s; }
+.modal-overlay.picker-layer { z-index: 210; }
 .modal { background: var(--bg-secondary); border-radius: 20px 20px 0 0; width: 100%; max-width: 430px; padding: 20px 16px calc(var(--safe-bottom) + 20px); max-height: 85vh; overflow-y: auto; animation: slideUp 0.3s ease; }
 @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 .modal-handle { width: 36px; height: 4px; background: var(--text-muted); border-radius: 2px; margin: 0 auto 16px; }
@@ -624,9 +625,7 @@ body.rtl .card-meta { flex-direction: row-reverse; }
 <!-- ═══ 计划 ═══ -->
 <div id="page-planning" class="page">
   <div class="ptr-indicator" id="ptr-planning" data-i18n="ptr_pull">↓ 下拉刷新</div>
-  <div class="plan-sec"><span>📋 <span data-i18n="plan_tasks">计划任务</span></span><span class="plan-sec-action" id="plan-task-add" style="display:none" onclick="App.showCreateFor('tasks')" data-i18n="btn_new">+ 新建</span></div>
-  <div id="plan-tasks"><div class="loading"><div class="spinner"></div><span data-i18n="loading">加载中...</span></div></div>
-  <!-- 项目讯息：作为「生产计划（子计划）」可选的项目来源 -->
+  <!-- ① 项目讯息：必须先建立，生产计划（主计划）才能点选项目并自动产生项目计划编号 -->
   <div class="plan-sec"><span>🗂 <span id="proj-info-title">项目讯息</span></span><span class="plan-sec-action" id="proj-info-add" onclick="App.toggleProjectInfoForm()" data-i18n="btn_new">+ 新建</span></div>
   <div id="proj-info-form" class="plan-add" style="display:none">
     <input type="text" id="pi-factory-no" class="plan-add-input" onkeydown="if(event.key==='Enter')App.saveProjectInfo()" />
@@ -636,14 +635,17 @@ body.rtl .card-meta { flex-direction: row-reverse; }
     <button class="btn btn-primary plan-add-btn" onclick="App.saveProjectInfo()"></button>
   </div>
   <div id="proj-info-list"></div>
-  <div class="plan-sec"><span>✅ <span data-i18n="todo_title">待执行子计划</span></span></div>
+  <!-- ② 生产计划（主计划）：点选项目 → 自动生成项目计划编号（如 A1667-CFX-01） -->
+  <div class="plan-sec"><span>📋 <span data-i18n="plan_tasks">生产计划（主计划）</span></span><span class="plan-sec-action" id="plan-task-add" style="display:none" onclick="App.showCreateFor('tasks')" data-i18n="btn_new">+ 新建</span></div>
+  <div id="plan-tasks"><div class="loading"><div class="spinner"></div><span data-i18n="loading">加载中...</span></div></div>
+  <!-- ③ 生产计划（子计划）：点选项目计划编号 → 与项目讯息产生关联 -->
+  <div class="plan-sec"><span>✅ <span data-i18n="todo_title">生产计划（子计划）</span></span></div>
   <div class="plan-add">
     <input type="text" id="todo-content" class="plan-add-input" data-i18n-ph="todo_ph_content" placeholder="输入子计划内容..." onkeydown="if(event.key==='Enter')App.addTodo()" />
     <div class="plan-add-row">
-      <select id="todo-parent" class="plan-add-sel" data-i18n-ph="todo_parent_label" data-tr-title="所属主计划" title="所属主计划"></select>
       <input type="date" id="todo-due" class="plan-add-date" />
     </div>
-    <button type="button" class="btn btn-secondary" id="todo-proj-btn" style="width:100%;font-size:13px" onclick="App.pickTodoProject()"></button>
+    <button type="button" class="btn btn-secondary" id="todo-plan-btn" style="width:100%;font-size:13px" onclick="App.pickTodoPlan()"></button>
     <button class="btn btn-primary plan-add-btn" onclick="App.addTodo()">+ <span data-i18n="todo_add">添加</span></button>
   </div>
   <div id="plan-todos"><div class="loading"><div class="spinner"></div><span data-i18n="loading">加载中...</span></div></div>
@@ -945,11 +947,16 @@ body.rtl .card-meta { flex-direction: row-reverse; }
   <div class="modal" id="modal-content"></div>
 </div>
 
+<!-- Picker overlay：表单内「点选项目 / 项目计划编号」专用，叠在主 modal 之上，不覆盖已填内容 -->
+<div class="modal-overlay picker-layer" id="picker-overlay" onclick="App.closePicker(event)">
+  <div class="modal" id="picker-content"></div>
+</div>
+
 <!-- Toast -->
 <div class="toast" id="toast"></div>
 
 </div>
 
-<script type="module" src="bundle.js?v=110"></script>
+<script type="module" src="bundle.js?v=111"></script>
 </body>
 </html>
