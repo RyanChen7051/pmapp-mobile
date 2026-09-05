@@ -121,8 +121,7 @@ export function setupHome(App) {
       NEWS_SECTORS.forEach(sec => {
         const list = allNews.filter(n => sectorOf(n) === sec.key).slice(0, NEWS_PER_SECTOR);
         if (!list.length) return;
-        html += `<div style="font-size:13px;font-weight:700;color:var(--text-primary);margin:12px 0 6px;display:flex;align-items:center;gap:6px">${sec.icon} ${tr(sec.name)}</div>`;
-        html += list.map(card).join('');
+        html += `<div class="sector-group"><div class="sector-head"><span class="sector-icon">${sec.icon}</span><span class="sector-name">${tr(sec.name)}</span></div><div class="sector-grid">${list.map(card).join('')}</div></div>`;
       });
       newsEl.innerHTML = html || `<div class="empty"><div class="empty-icon">📰</div>${t('empty_news')}</div>`;
     }
