@@ -10,8 +10,11 @@ const NEWS_SECTORS = [
   { key: 'wireless_mic',   icon: '🎙️', name: '无线麦克风' },
   { key: 'audio_industry', icon: '🔊', name: '全球音频产业' },
   { key: 'smart_glasses',  icon: '👓', name: '全球智能眼镜' },
+  { key: 'ai_industry',    icon: '🤖', name: '全球AI产业' },
+  { key: 'iot',            icon: '🌐', name: '全球物联网IoT' },
 ];
-const NEWS_PER_SECTOR = 2;
+// 每个板块每日 5 条（邦杰要求：所有类别的新闻每日都需要 5 条）
+const NEWS_PER_SECTOR = 5;
 const SECTOR_BY_CATEGORY = {
   headphones: 'tws_earbuds', speakers: 'audio_industry', chips: 'audio_industry',
   microphone: 'wireless_mic', market: 'audio_industry', concept: 'audio_industry',
