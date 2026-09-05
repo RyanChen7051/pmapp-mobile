@@ -341,19 +341,248 @@ export function setupPages(App) {
     btn.innerHTML = `🔢 ${this.esc(label)}`;
   };
 
-  /* ─── Materials Tab ─── */
+  /* ─── Materials Tab（物料：预警 / 物料主档 / 齐套 / 工厂库存 / 在途发货）─── */
+  const MAT_TABS = [
+    { key:'alerts',  icon:'🔔', label:'预警',     emptyKey:'暂无预警' },
+    { key:'master',  icon:'🧾', label:'物料主档', module:'material_master',        emptyKey:'暂无物料主档' },
+    { key:'kitting', icon:'🧩', label:'齐套',     module:'plan_material',          emptyKey:'暂无物料需求' },
+    { key:'stock',   icon:'📦', label:'工厂库存', module:'factory_material_stock', emptyKey:'暂无库存' },
+    { key:'transit', icon:'🚢', label:'在途发货', module:'material_shipment',      emptyKey:'暂无在途' },
+  ];
+
+  /* 海运时效基线（2026 行情）：印度门到门 18–45 天；越南北部陆运 4–6 天 / 海运 7–11 天。
+   * 提前期与安全库存按工厂所在国分别配置 —— 越南厂备满一个月是超额压资金（在途只要 10 天）。 */
+  App._matParams = function(factoryId, factoryName) {
+    const f = (this.cache.factory_info || []).find(x => String(x.id) === String(factoryId));
+    const txt = String((f && (f.country || f.region || f.factory_name)) || factoryName || '');
+    return /印度|india/i.test(txt) ? { lead: 30, safety: 42 } : { lead: 10, safety: 21 };
+  };
+
+  App._matDaysTo = function(d) {
+    if (!d) return null;
+    const t = new Date(String(d).slice(0, 10) + 'T00:00:00');
+    if (isNaN(t.getTime())) return null;
+    const now = new Date(); now.setHours(0, 0, 0, 0);
+    return Math.round((t - now) / 86400000);
+  };
+
+  // 齐套核心计算：可用量(现有-锁定) + 在途 vs 需求量
+  App.computeMatKitting = function() {
+    const stockBy = {}, transitBy = {};
+    (this.cache.factory_material_stock || []).forEach(s => {
+      const k = String(s.production_factory || s.factory_id || '') + '|' + String(s.material_code || '');
+      if (!stockBy[k]) stockBy[k] = { onHand: 0, locked: 0, expiry: '', last: '' };
+      stockBy[k].onHand += Number(s.qty_on_hand || 0);
+      stockBy[k].locked += Number(s.qty_locked || 0);
+      if (s.expiry_date && (!stockBy[k].expiry || s.expiry_date < stockBy[k].expiry)) stockBy[k].expiry = s.expiry_date;
+      if (s.last_move_date && (!stockBy[k].last || s.last_move_date > stockBy[k].last)) stockBy[k].last = s.last_move_date;
+    });
+    (this.cache.material_shipment || []).forEach(sh => {
+      if (sh.actual_arrival_date) return;
+      const k = String(sh.production_factory || sh.factory_id || '') + '|' + String(sh.material_code || '');
+      transitBy[k] = (transitBy[k] || 0) + Math.max(0, Number(sh.qty_shipped || 0) - Number(sh.qty_received || 0));
+    });
+    const items = (this.cache.plan_material || []).map(pm => {
+      const k = String(pm.production_factory || pm.factory_id || '') + '|' + String(pm.material_code || '');
+      const st = stockBy[k] || { onHand: 0, locked: 0 };
+      const avail = Math.max(0, (st.onHand || 0) - (st.locked || 0));
+      const transit = transitBy[k] || 0;
+      const req = Number(pm.required_qty || 0);
+      const gap = Math.max(0, req - avail - transit);
+      const param = this._matParams(pm.factory_id, pm.production_factory);
+      const safetyQty = req * (param.safety / 30);
+      const days = this._matDaysTo(pm.required_date);
+      let state = 'ok';
+      if (gap > 0) state = 'gap';
+      else if (avail + transit < safetyQty) state = 'low';
+      return { pm, avail, transit, req, gap, state, days, safetyQty, param };
+    });
+    return { items, stockBy, transitBy };
+  };
+
+  // 预警：齐套缺口（要停线）/ 低库存（缓冲不足）/ 在途延迟 / 清关异常 / 呆滞料 / 保质期临期
+  App.computeMaterialAlerts = function() {
+    const out = [];
+    const { items, stockBy } = this.computeMatKitting();
+    items.forEach(it => {
+      const pm = it.pm;
+      if (it.state === 'gap' && it.days !== null && it.days <= it.param.lead) {
+        out.push({ level:'critical', kind:tr('齐套缺口'),
+          title:`${tr('料号')} ${this.esc(pm.material_code || '')} · ${tr('缺口')} ${it.gap}`,
+          meta:`${tr('需求量')} ${it.req} / ${tr('可用量')} ${it.avail} / ${tr('在途')} ${it.transit}`,
+          sub:`${this.esc(pm.plan_code || '')} ${pm.process_stage ? '· ' + this.esc(tr(pm.process_stage)) : ''} · ${tr('需求日')} ${this.esc(pm.required_date || '-')}` });
+      } else if (it.state === 'low') {
+        out.push({ level:'high', kind:tr('低库存'),
+          title:`${tr('料号')} ${this.esc(pm.material_code || '')}`,
+          meta:`${tr('可用量')} + ${tr('在途')} = ${it.avail + it.transit} < ${Math.round(it.safetyQty)}`,
+          sub:`${this.esc(pm.plan_code || '')} · ${this.esc(pm.production_factory || '')}` });
+      }
+    });
+    (this.cache.material_shipment || []).forEach(sh => {
+      if (sh.actual_arrival_date) return;
+      const d = this._matDaysTo(sh.eta_date);
+      if (d !== null && d < 0) {
+        out.push({ level:'critical', kind:tr('在途延迟'), title:`${this.esc(sh.lot_no || '')} ${this.esc(sh.material_code || '')}`,
+          meta:`${tr('预计到厂日')} ${this.esc(sh.eta_date)}（${Math.abs(d)} 天）`, sub:this.esc(sh.production_factory || '') });
+      }
+      if (String(sh.customs_status) === '异常') {
+        out.push({ level:'high', kind:tr('清关异常'), title:`${this.esc(sh.lot_no || '')}`,
+          meta:`${tr('清关状态')} ${tr('异常')}`, sub:this.esc(sh.production_factory || '') });
+      }
+    });
+    Object.keys(stockBy).forEach(k => {
+      const st = stockBy[k];
+      if (st.onHand <= 0) return;
+      const parts = k.split('|');
+      const code = parts.slice(1).join('|') || '';
+      if (st.last) {
+        const d = this._matDaysTo(st.last);
+        if (d !== null && d <= -60) out.push({ level:'low', kind:tr('呆滞料'), title:`${this.esc(code)}`,
+          meta:`${tr('最后异动日')} ${this.esc(st.last)}（${Math.abs(d)} 天）`, sub:this.esc(parts[0] || '') });
+      }
+      if (st.expiry) {
+        const d = this._matDaysTo(st.expiry);
+        if (d !== null && d <= 14) out.push({ level:'high', kind:tr('保质期临期'), title:`${this.esc(code)}`,
+          meta:`${tr('到期日')} ${this.esc(st.expiry)}`, sub:this.esc(parts[0] || '') });
+      }
+    });
+    return out;
+  };
+
+  App.setMatTab = function(key) { this._matTab = key; this.loadMaterials(); };
+
   App.loadMaterials = function() {
     this.updateAdminButtons();
-    const alerts = this.cache.overseas_material_alerts || [];
-    const aEl = document.getElementById('mat-alerts');
-    if (alerts.length === 0) { aEl.innerHTML = `<div class="empty"><div class="empty-icon">🔔</div>${t('empty_alerts')}</div>`; }
-    else { aEl.innerHTML = alerts.map(a => `<div class="card" onclick="App.openDetail('overseas_material_alerts', ${a.id})">
-      <div class="card-title">🔔 ${this.esc(a.rule_name)}</div>
-      <div class="card-meta">
-        ${a.threshold_value ? `<span>${this.esc(a.threshold_value)}</span>` : ''}
-        <span class="badge ${a.is_enabled ? 'badge-green' : 'badge-gray'}">${a.is_enabled ? t('lbl_enabled') : t('lbl_disabled')}</span>
-      </div></div>`).join('');
+    const tabKey = this._matTab || 'alerts';
+    const tab = MAT_TABS.find(x => x.key === tabKey) || MAT_TABS[0];
+    const tabsEl = document.getElementById('mat-tabs');
+    if (tabsEl) {
+      tabsEl.innerHTML = MAT_TABS.map(x => `<div class="mat-tab ${x.key === tab.key ? 'active' : ''}" onclick="App.setMatTab('${x.key}')">${x.icon} ${tr(x.label)}</div>`).join('');
     }
+    const titleEl = document.getElementById('mat-sec-title');
+    if (titleEl) titleEl.textContent = `${tab.icon} ${tr(tab.label)}`;
+    const addEl = document.getElementById('mat-add');
+    if (addEl) addEl.style.display = tab.module ? '' : 'none';
+    const impEl = document.getElementById('mat-import');
+    if (impEl) impEl.style.display = tab.key === 'master' ? '' : 'none';
+    if (impEl) impEl.textContent = tr('导入');
+    if (tab.key === 'alerts') this.renderMatAlerts();
+    else if (tab.key === 'kitting') this.renderMatKitting();
+    else this.renderMatList(tab.module, tab.emptyKey);
+    this.updateMatBadge();
+  };
+
+  App.renderMatAlerts = function() {
+    const el = document.getElementById('mat-list');
+    if (!el) return;
+    const list = this.computeMaterialAlerts();
+    if (!list.length) { el.innerHTML = `<div class="empty"><div class="empty-icon">✅</div>${tr('暂无预警')}</div>`; return; }
+    el.innerHTML = list.map(a => `<div class="card mat-alert-card ${a.level}">
+      <div class="card-title">${a.kind} · ${a.title}</div>
+      ${a.meta ? `<div class="card-meta"><span>${a.meta}</span></div>` : ''}
+      ${a.sub ? `<div style="font-size:12px;color:var(--text-muted);margin-top:4px">${a.sub}</div>` : ''}
+    </div>`).join('');
+  };
+
+  App.renderMatList = function(moduleKey, emptyKey) {
+    const el = document.getElementById('mat-list');
+    if (!el) return;
+    const mod = MODULES[moduleKey];
+    const list = this.cache[moduleKey] || [];
+    if (!list.length) { el.innerHTML = `<div class="empty"><div class="empty-icon">${mod.icon || '📦'}</div>${tr(emptyKey || '暂无库存')}</div>`; return; }
+    el.innerHTML = list.map(r => `<div class="card" onclick="App.openDetail('${moduleKey}', ${r.id})">
+      <div class="card-title">${mod.icon || ''} ${this.esc(mod.listFields.slice(0, 2).map(f => r[f.key] == null ? '' : r[f.key]).filter(v => v !== '').join(' · '))}</div>
+      <div class="card-meta">${mod.listFields.slice(2).map(f => {
+        const v = r[f.key];
+        if (v === null || v === undefined || v === '') return '';
+        return f.badge ? `<span class="badge ${this.badgeClass(v)}">${this.esc(tr(v))}</span>` : `<span>${this.esc(v)}</span>`;
+      }).join('')}</div>
+    </div>`).join('');
+  };
+
+  App.renderMatKitting = function() {
+    const el = document.getElementById('mat-list');
+    if (!el) return;
+    const { items } = this.computeMatKitting();
+    if (!items.length) { el.innerHTML = `<div class="empty"><div class="empty-icon">🧩</div>${tr('暂无物料需求')}</div>`; return; }
+    const byPlan = {};
+    items.forEach(it => { const k = it.pm.plan_code || '-'; (byPlan[k] = byPlan[k] || []).push(it); });
+    el.innerHTML = Object.keys(byPlan).map(plan => {
+      const rows = byPlan[plan];
+      const ok = rows.filter(r => r.state === 'ok').length;
+      const rate = rows.length ? Math.round(ok / rows.length * 100) : 0;
+      const color = rate >= 100 ? 'var(--accent-green)' : rate >= 70 ? 'var(--accent-orange)' : '#ff3b30';
+      return `<div class="card">
+        <div class="card-title">🧩 ${this.esc(plan)} · ${tr('齐套率')} ${rate}%</div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${rate}%;background:${color}"></div></div>
+        ${rows.map(r => `<div onclick="App.openDetail('plan_material', ${r.pm.id})" style="display:flex;justify-content:space-between;gap:8px;font-size:12px;margin-top:6px;color:${r.state === 'ok' ? 'var(--text-secondary)' : r.state === 'gap' ? '#ff3b30' : '#ff9500'}">
+          <span>${this.esc(r.pm.material_code || '')} ${r.pm.process_stage ? '· ' + this.esc(tr(r.pm.process_stage)) : ''}</span>
+          <span>${r.state === 'ok' ? 'OK' : tr('缺口') + ' ' + r.gap}</span>
+        </div>`).join('')}
+      </div>`;
+    }).join('');
+  };
+
+  App.matAdd = function() {
+    const tab = MAT_TABS.find(x => x.key === (this._matTab || 'alerts')) || {};
+    if (!tab.module) return;
+    this.showCreateFor(tab.module);
+  };
+
+  // BOM 批量导入：把 BOM 工程师导出的清单整段贴进来（料号,品名,规格,类别,单位,供应商）
+  App.showMatImport = function() {
+    const mc = document.getElementById('modal-content');
+    if (!mc) return;
+    mc.innerHTML = `<div class="modal-handle"></div>
+      <div class="modal-title">${tr('批量导入')}</div>
+      <div style="font-size:12px;color:var(--text-muted);margin-bottom:8px">${tr('料号')},${tr('品名')},${tr('规格')},${tr('类别')},${tr('单位')},${tr('供应商')}</div>
+      <textarea id="mat-import-text" style="width:100%;min-height:170px;background:var(--bg-input);color:var(--text-primary);border:1px solid var(--border);border-radius:8px;padding:10px;font-size:13px"></textarea>
+      <div style="height:10px"></div>
+      <button class="btn btn-primary" onclick="App.doMatImport()">${tr('导入')}</button>
+      <div style="height:10px"></div>
+      <button class="btn btn-secondary" onclick="App.closeModal()">${tr('取消')}</button>`;
+    document.getElementById('modal-overlay').classList.add('show');
+  };
+
+  App.doMatImport = async function() {
+    const txt = (document.getElementById('mat-import-text') || {}).value || '';
+    const lines = txt.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+    if (!lines.length) { this.toast(tr('料号') + ' ' + tr('不能为空')); return; }
+    const now = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    let n = 0;
+    for (const line of lines) {
+      const c = line.split(/[,\t]/).map(x => x.trim());
+      if (!c[0]) continue;
+      const id = this._newLocalId('material_master');
+      const rec = { id, material_code: c[0], material_name: c[1] || '', spec: c[2] || '', category: c[3] || '', unit: c[4] || '', supplier: c[5] || '', origin: '中国发运', created_at: now, updated_at: now };
+      (this.cache.material_master = this.cache.material_master || []).unshift(rec);
+      try {
+        await this.sbPost('sync_data', { table_name: 'material_master', local_id: id, payload: JSON.stringify(rec), supabase_id: this.uuid(), is_deleted: false, updated_at: new Date().toISOString(), device_id: this.deviceId });
+      } catch (e) {}
+      n++;
+    }
+    this.closeModal();
+    this.toast(tr('导入') + ' ' + n);
+    this.loadMaterials();
+  };
+
+  // 物料按钮角标（闪烁 ❗️）＋ 首页看板预警卡片
+  App.updateMatBadge = function() {
+    const n = (this.computeMaterialAlerts() || []).length;
+    const badge = document.getElementById('mat-badge');
+    if (badge) {
+      if (n > 0) badge.classList.add('show'); else badge.classList.remove('show');
+      badge.title = `${tr('物料预警')} ${n}`;
+    }
+    const home = document.getElementById('home-mat-alert');
+    if (home) {
+      home.innerHTML = n > 0
+        ? `<div class="card" onclick="App.navigate('materials')" style="border-left:3px solid #ff3b30">
+             <div class="card-title">❗️ ${tr('物料预警')} ${n}</div>
+           </div>`
+        : '';
+    }
+    return n;
   };
 
   /* ─── Factory Tab (独立工厂讯息页) ─── */
