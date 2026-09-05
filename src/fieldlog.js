@@ -97,12 +97,67 @@ export function setupFieldLog(App) {
       el.innerHTML = `<div class="empty"><div class="empty-icon">📸</div>${tr('暂无现场记录')}${this.isAdmin() ? ' · ' + tr('点右下角 + 新增') : ''}</div>`;
       return;
     }
-    el.innerHTML = list.map(r => `<div class="card" onclick="App.openDetail('field_log', ${r.id})">
-      <div class="card-head"><div class="card-title">📸 ${this.esc(r.project ? tr(r.project) : tr('未指定项目'))}</div>
-      ${r.status ? `<span class="badge ${r.status === '已处理' ? 'badge-green' : r.status === '处理中' ? 'badge-orange' : 'badge-red'}">${this.esc(tr(r.status))}</span>` : ''}</div>
-      <div class="card-meta"><span>🏭 ${this.esc(r.problem_factory || r.factory || '—')}</span>${r.photos ? `<span>📷 ${r.photos.length}</span>` : ''}<span>🕒 ${this.esc((r.created_at || '').slice(0, 16))}</span></div>
-      ${r.description ? `<div class="card-desc">${this.esc((r.description || '').slice(0, 80))}</div>` : ''}
-    </div>`).join('');
+    const hint = this.isAdmin() ? `<div class="fl-swipe-hint">← ${tr('向左滑动记录可删除')}</div>` : '';
+    el.innerHTML = hint + list.map(r => this._flSwipeItem(r)).join('');
+    this._flBindSwipe(el);
+  };
+
+  // 生成一条「可左滑删除」的列表项
+  App._flSwipeItem = function (r) {
+    return `<div class="fl-swipe" data-id="${r.id}">
+      <button class="fl-swipe-del" onclick="App.deleteFieldLog(${r.id})" aria-label="${this.esc(tr('删除'))}">🗑</button>
+      <div class="fl-swipe-card" onclick="App._flCardTap(${r.id}, this)">
+        <div class="card">
+          <div class="card-head"><div class="card-title">📸 ${this.esc(r.project ? tr(r.project) : tr('未指定项目'))}</div>
+          ${r.status ? `<span class="badge ${r.status === '已处理' ? 'badge-green' : r.status === '处理中' ? 'badge-orange' : 'badge-red'}">${this.esc(tr(r.status))}</span>` : ''}</div>
+          <div class="card-meta"><span>🏭 ${this.esc(r.problem_factory || r.factory || '—')}</span>${r.photos ? `<span>📷 ${r.photos.length}</span>` : ''}<span>🕒 ${this.esc((r.created_at || '').slice(0, 16))}</span></div>
+          ${r.description ? `<div class="card-desc">${this.esc((r.description || '').slice(0, 80))}</div>` : ''}
+        </div>
+      </div>
+    </div>`;
+  };
+
+  // 列表项点击：滑动露出删除态 / 刚滑动过 → 不打开详情
+  App._flCardTap = function (id, el) {
+    const w = el.closest('.fl-swipe');
+    if (w && (w.classList.contains('revealed') || w._suppress)) return;
+    this.openDetail('field_log', id);
+  };
+
+  // 绑定左滑删除手势（Pointer Events，触摸 / 鼠标通用）
+  App._flBindSwipe = function (root) {
+    const DEL_W = 84;
+    root.querySelectorAll('.fl-swipe').forEach(w => {
+      const card = w.querySelector('.fl-swipe-card');
+      const delBtn = w.querySelector('.fl-swipe-del');
+      let sx = 0, sy = 0, dx = 0, horiz = false, dragging = false, moved = false;
+      const close = () => { card.style.transition = 'transform .2s'; card.style.transform = 'translateX(0)'; w.classList.remove('revealed'); };
+      w.addEventListener('pointerdown', e => {
+        if (e.target === delBtn) return;
+        if (w.classList.contains('revealed')) { close(); return; } // 已露出时，点空白即收起
+        sx = e.clientX; sy = e.clientY; dragging = true; horiz = false; moved = false;
+        card.style.transition = 'none';
+      });
+      w.addEventListener('pointermove', e => {
+        if (!dragging) return;
+        const mx = e.clientX - sx, my = e.clientY - sy;
+        if (!horiz && (Math.abs(mx) > 6 || Math.abs(my) > 6)) horiz = Math.abs(mx) > Math.abs(my);
+        if (horiz) { moved = true; dx = Math.max(-DEL_W, Math.min(0, mx)); card.style.transform = `translateX(${dx}px)`; }
+      });
+      w.addEventListener('pointerup', () => {
+        if (!dragging) return; dragging = false;
+        if (horiz) {
+          card.style.transition = 'transform .2s';
+          if (dx < -DEL_W * 0.4) {
+            // 关闭其它已露出的项，再露出当前项
+            root.querySelectorAll('.fl-swipe.revealed').forEach(o => { if (o !== w) { o.querySelector('.fl-swipe-card').style.transform = 'translateX(0)'; o.classList.remove('revealed'); } });
+            card.style.transform = `translateX(-${DEL_W}px)`; w.classList.add('revealed');
+          } else { close(); }
+          if (moved) { w._suppress = true; setTimeout(() => { w._suppress = false; }, 350); }
+        }
+        dx = 0;
+      });
+    });
   };
 
   // ─── 按类别渲染现场问题到对应栏目区块 ───
@@ -113,12 +168,8 @@ export function setupFieldLog(App) {
       .filter(r => r.problem_category === category)
       .slice().sort((a, b) => (b.created_at || '').localeCompare(a.created_at || ''));
     if (list.length === 0) { el.innerHTML = `<div class="empty"><div class="empty-icon">📸</div>${tr('相关现场问题暂无')} · ${tr(category)}</div>`; return; }
-    el.innerHTML = list.map(r => `<div class="card" onclick="App.openDetail('field_log', ${r.id})">
-      <div class="card-head"><div class="card-title">📸 ${this.esc(r.project ? tr(r.project) : tr('未指定项目'))}</div>
-      ${r.status ? `<span class="badge ${r.status === '已处理' ? 'badge-green' : r.status === '处理中' ? 'badge-orange' : 'badge-red'}">${this.esc(tr(r.status))}</span>` : ''}</div>
-      <div class="card-meta"><span>🏭 ${this.esc(r.problem_factory || r.factory || '—')}</span>${r.problem_factory ? `<span>📍 ${this.esc(r.problem_factory)}</span>` : ''}<span>🕒 ${this.esc((r.created_at || '').slice(0, 16))}</span></div>
-      ${r.description ? `<div class="card-desc">${this.esc((r.description || '').slice(0, 80))}</div>` : ''}
-    </div>`).join('');
+    el.innerHTML = list.map(r => this._flSwipeItem(r)).join('');
+    this._flBindSwipe(el);
   };
 
   // ═══ 现场智能参谋 Field Copilot ═══
@@ -295,9 +346,10 @@ export function setupFieldLog(App) {
       <div class="input-group" id="fl-g-fl-reporter-email"><label>${tr('报告人邮箱（选填，便于抄送你自己）')}${cmdChip('报告人邮箱')}</label><input type="email" id="fl-reporter-email" inputmode="email" autocomplete="email" placeholder="${tr('你的邮箱，如 name@gunbase.com')}" value="${this.esc(newRec.reporter_email || '')}"></div>
       <div class="input-group" id="fl-g-fl-responsible-email"><label>${tr('负责处理人邮箱（选填，自动发邮件通知）')}${cmdChip('负责处理人邮箱')}</label><input type="email" id="fl-responsible-email" inputmode="email" autocomplete="email" placeholder="${tr('国内负责同事的邮箱')}" value="${this.esc(newRec.responsible_email || '')}"></div>
       <div class="input-group" id="fl-g-fl-photos"><label>${tr('现场照片（自动压缩，不占空间）')}</label>
-        <input type="file" id="fl-photos-input" accept="image/*" capture="environment" multiple onchange="App.flAddPhotos(this)">
+        <input type="file" id="fl-photos-input" accept="image/*" multiple style="display:none" onchange="App.flAddPhotos(this)">
+        <button type="button" class="btn btn-secondary" style="width:100%;margin-bottom:8px" onclick="document.getElementById('fl-photos-input').click()">📷 ${tr('photo_pick_btn')}</button>
         <div class="fl-photos" id="fl-photos"></div>
-        <div style="font-size:11px;color:var(--text-muted);margin-top:4px">${tr('最多 3 张照片，点此拍摄/选择')}</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:4px">${tr('photo_pick_hint')}</div>
       </div>
       <button class="btn btn-secondary" id="fl-gps-btn" onclick="App.flCaptureGPS()" style="margin-bottom:8px">${tr('📍 记录现场定位')}</button>
       <button class="btn btn-primary" onclick="App.saveFieldLog(${newRec.id})">${tr('保存')}</button>
