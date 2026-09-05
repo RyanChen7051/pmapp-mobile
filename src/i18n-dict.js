@@ -160,6 +160,7 @@ export const DICT = {
   '主计划': { en: 'Parent plan', es: 'Plan principal', ja: '主計画', fr: 'Plan parent', de: 'Hauptplan', ar: 'الخطة الرئيسية', vi: 'Kế hoạch chính', hi: 'मुख्य योजना' },
   '完成时间': { en: 'Due time', es: 'Hora límite', ja: '期限時刻', fr: 'Échéance', de: 'Fälligkeitszeit', ar: 'وقت الاستحقاق', vi: 'Thời hạn', hi: 'पूर्ण समय' },
   '工厂名称': { en: 'Factory name', es: 'Nombre de fábrica', ja: '工場名', fr: "Nom d'usine", de: 'Werksname', ar: 'اسم المصنع', vi: 'Tên nhà máy', hi: 'फ़ैक्टरी नाम' },
+  '工厂地址': { en: 'Factory address', es: 'Direccion de la fabrica', ja: '工場住所', fr: 'Adresse de l usine', de: 'Werksadresse', ar: 'عنوان المصنع', vi: 'Dia chi nha may', hi: 'फ़ैक्टरी पता' },
   '区域': { en: 'Region', es: 'Región', ja: '地域', fr: 'Région', de: 'Region', ar: 'المنطقة', vi: 'Khu vực', hi: 'क्षेत्र' },
   '国家': { en: 'Country', es: 'País', ja: '国', fr: 'Pays', de: 'Land', ar: 'البلد', vi: 'Quốc gia', hi: 'देश' },
   '项目经理': { en: 'Project manager', es: 'Gerente de proyecto', ja: 'プロジェクトマネージャー', fr: 'Chef de projet', de: 'Projektleiter', ar: 'مدير المشروع', vi: 'Quản lý dự án', hi: 'परियोजना प्रबंधक' },
