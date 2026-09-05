@@ -731,16 +731,6 @@ body.rtl .card-meta { flex-direction: row-reverse; }
 <!-- ═══ 生产 ═══ -->
 <div id="page-production" class="page">
   <div class="ptr-indicator" id="ptr-production" data-i18n="ptr_pull">↓ 下拉刷新</div>
-  <div class="search-bar"><input type="text" id="prod-search" data-i18n-ph="search_projects" placeholder="搜索项目..." oninput="App.renderProduction()"></div>
-  <div class="filter-row" id="prod-filter">
-    <div class="filter-chip active" onclick="App.setProdFilter('all', this)" data-i18n="filter_all">全部</div>
-    <div class="filter-chip" onclick="App.setProdFilter('NPI', this)">NPI</div>
-    <div class="filter-chip" onclick="App.setProdFilter('EVT', this)">EVT</div>
-    <div class="filter-chip" onclick="App.setProdFilter('DVT', this)">DVT</div>
-    <div class="filter-chip" onclick="App.setProdFilter('PVT', this)">PVT</div>
-    <div class="filter-chip" onclick="App.setProdFilter('MP', this)">MP</div>
-  </div>
-  <div id="prod-list"><div class="loading"><div class="spinner"></div><span data-i18n="loading">加载中...</span></div></div>
   <div class="sec-header"><span data-i18n="field_issues">现场问题</span></div>
   <div id="prod-fieldlog"><div class="loading"><div class="spinner"></div><span data-i18n="loading">加载中...</span></div></div>
 </div>
@@ -748,30 +738,6 @@ body.rtl .card-meta { flex-direction: row-reverse; }
 <!-- ═══ 品质 ═══ -->
 <div id="page-quality" class="page">
   <div class="ptr-indicator" id="ptr-quality" data-i18n="ptr_pull">↓ 下拉刷新</div>
-  <div class="filter-row" id="qual-mod-switch">
-    <div class="filter-chip active" onclick="App.setQualModule('issues', this)" data-i18n="qual_mod_issues">问题</div>
-    <div class="filter-chip" onclick="App.setQualModule('inspection', this)" data-i18n="qual_mod_inspection">客验</div>
-  </div>
-  <div id="qual-issues-block">
-    <div class="dash-stats" id="quality-stats">
-      <div class="dash-stat"><div class="dash-stat-num" id="qs-total" style="color:var(--accent-blue)">-</div><div class="dash-stat-label" data-i18n="stat_total_issues">总问题</div></div>
-      <div class="dash-stat"><div class="dash-stat-num" id="qs-open" style="color:var(--accent)">-</div><div class="dash-stat-label" data-i18n="stat_open">待处理</div></div>
-      <div class="dash-stat"><div class="dash-stat-num" id="qs-progress" style="color:var(--accent-orange)">-</div><div class="dash-stat-label" data-i18n="stat_progress">处理中</div></div>
-      <div class="dash-stat"><div class="dash-stat-num" id="qs-closed" style="color:var(--accent-green)">-</div><div class="dash-stat-label" data-i18n="stat_closed">已关闭</div></div>
-    </div>
-    <div class="search-bar"><input type="text" id="qual-search" data-i18n-ph="search_issues" placeholder="搜索问题..." oninput="App.renderQuality()"></div>
-    <div class="filter-row" id="qual-filter">
-      <div class="filter-chip active" onclick="App.setQualFilter('all', this)" data-i18n="filter_all">全部</div>
-      <div class="filter-chip" onclick="App.setQualFilter('open', this)" data-i18n="filter_open">待处理</div>
-      <div class="filter-chip" onclick="App.setQualFilter('progress', this)" data-i18n="filter_progress">处理中</div>
-      <div class="filter-chip" onclick="App.setQualFilter('closed', this)" data-i18n="filter_closed">已关闭</div>
-    </div>
-    <div id="qual-list"><div class="loading"><div class="spinner"></div><span data-i18n="loading">加载中...</span></div></div>
-  </div>
-  <div id="qual-insp-block" style="display:none">
-    <div class="sec-header"><span data-i18n="qual_mod_inspection">客验</span></div>
-    <div id="qual-insp-list"><div class="loading"><div class="spinner"></div><span data-i18n="loading">加载中...</span></div></div>
-  </div>
   <div class="sec-header"><span data-i18n="field_issues">现场问题</span></div>
   <div id="qual-fieldlog"><div class="loading"><div class="spinner"></div><span data-i18n="loading">加载中...</span></div></div>
 </div>
@@ -779,8 +745,6 @@ body.rtl .card-meta { flex-direction: row-reverse; }
 <!-- ═══ 工程 ═══ -->
 <div id="page-engineering" class="page">
   <div class="ptr-indicator" id="ptr-engineering" data-i18n="ptr_pull">↓ 下拉刷新</div>
-  <div class="sec-header"><span data-i18n="tab_engineering">工程</span></div>
-  <div id="eng-list"><div class="loading"><div class="spinner"></div><span data-i18n="loading">加载中...</span></div></div>
   <div class="sec-header"><span data-i18n="field_issues">现场问题</span></div>
   <div id="eng-fieldlog"><div class="loading"><div class="spinner"></div><span data-i18n="loading">加载中...</span></div></div>
 </div>
@@ -788,8 +752,6 @@ body.rtl .card-meta { flex-direction: row-reverse; }
 <!-- ═══ 制程 ═══ -->
 <div id="page-factory_process" class="page">
   <div class="ptr-indicator" id="ptr-factory_process" data-i18n="ptr_pull">↓ 下拉刷新</div>
-  <div class="sec-header"><span data-i18n="tab_factory_process">制程</span></div>
-  <div id="fp-list"><div class="loading"><div class="spinner"></div><span data-i18n="loading">加载中...</span></div></div>
   <div class="sec-header"><span data-i18n="field_issues">现场问题</span></div>
   <div id="fp-fieldlog"><div class="loading"><div class="spinner"></div><span data-i18n="loading">加载中...</span></div></div>
 </div>
@@ -1020,6 +982,6 @@ body.rtl .card-meta { flex-direction: row-reverse; }
 
 </div>
 
-<script type="module" src="bundle.js?v=121"></script>
+<script type="module" src="bundle.js?v=122"></script>
 </body>
 </html>
