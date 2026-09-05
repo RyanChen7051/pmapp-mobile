@@ -156,7 +156,7 @@ export function setupUtils(App) {
 
   App.setupPTR = function() {
     let startY = 0, pulling = false;
-    const pages = ['home', 'factory', 'planning', 'materials', 'production', 'quality', 'engineering', 'factory_process', 'inspection', 'settings'];
+    const pages = ['home', 'factory', 'planning', 'materials', 'production', 'quality', 'engineering', 'factory_process', 'inspection', 'fieldlog', 'settings'];
     document.addEventListener('touchstart', (e) => {
       if (window.scrollY === 0) { startY = e.touches[0].clientY; pulling = true; }
     });
