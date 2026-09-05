@@ -74,6 +74,9 @@ export function setupHome(App) {
       banner.innerHTML = `<div class="banner banner-ok">${t('admin_banner')}</div>`;
     }
 
+    // 物料预警：首页看板卡片 + 物料按钮角标（进首页就刷新，不用等进物料页）
+    if (this.updateMatBadge) this.updateMatBadge();
+
     const projects = this.cache.projects || [];
     const today = new Date().toISOString().slice(0, 10);
 
