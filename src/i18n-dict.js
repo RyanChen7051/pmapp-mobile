@@ -442,4 +442,8 @@ export const DICT = {
   '无线麦克风': { en: 'Wireless Microphones', es: 'Micrófonos inalámbricos', ja: 'ワイヤレスマイク', fr: 'Micros sans fil', de: 'Drahtlose Mikrofone', ar: 'ميكروفونات لاسلكية', vi: 'Micro không dây', hi: 'वायरलेस माइक्रोफ़ोन' },
   '全球音频产业': { en: 'Global Audio Industry', es: 'Industria global del audio', ja: '世界のオーディオ産業', fr: "Industrie mondiale de l'audio", de: 'Globale Audioindustrie', ar: 'صناعة الصوت العالمية', vi: 'Ngành âm thanh toàn cầu', hi: 'वैश्विक ऑडियो उद्योग' },
   '全球智能眼镜': { en: 'Smart Glasses', es: 'Gafas inteligentes', ja: 'スマートグラス', fr: 'Lunettes intelligentes', de: 'Smart Glasses', ar: 'النظارات الذكية', vi: 'Kính thông minh', hi: 'स्मार्ट चश्मे' },
+
+  /* ── 新增板块（2026-09-05）── */
+  '全球AI产业': { en: 'Global AI Industry', es: 'Industria global de IA', ja: '世界のAI産業', fr: "Industrie mondiale de l'IA", de: 'Globale KI-Industrie', ar: 'صناعة الذكاء الاصطناعي العالمية', vi: 'Ngành AI toàn cầu', hi: 'वैश्विक एआई उद्योग' },
+  '全球物联网IoT': { en: 'Global IoT', es: 'IoT global', ja: '世界のIoT', fr: 'IoT mondial', de: 'Globales IoT', ar: 'إنترنت الأشياء العالمي', vi: 'IoT toàn cầu', hi: 'वैश्विक IoT' },
 };
