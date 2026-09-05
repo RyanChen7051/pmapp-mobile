@@ -253,18 +253,28 @@ export function setupFieldLog(App) {
 
     if (this._flVoiceActive) this.flStopVoice();
     const kw = VOICE_CMD_KW[getLang()] || '栏目';
-    const cmdChip = (shortKey) => `<span style="font-size:10px;color:#4f9dff;border:1px solid #4f9dff;border-radius:6px;padding:1px 6px;margin-left:6px;white-space:nowrap">${this.esc(kw + ' ' + tr(shortKey))}</span>`;
+    const cmdChip = (shortKey) => `<span style="font-size:10px;color:#4f9dff;border:1px solid #4f9dff;border-radius:6px;padding:1px 6px;margin-left:6px;white-space:nowrap">${this.esc(kw + tr(shortKey))}</span>`;
     const html = `<div class="modal-handle"></div>
       <div class="modal-title">${rec ? tr('编辑') : tr('新建')}${tr('现场记录')}</div>
       <div id="fl-voice-bar" style="border:1px solid var(--border,#333);border-radius:12px;padding:10px;margin-bottom:10px;background:var(--bg-elev,#1c1c28)">
         <div style="display:flex;align-items:center;gap:8px">
           <button class="btn btn-primary" id="fl-voice-btn" onclick="App.flToggleVoice()" style="flex:0 0 auto">🎤 ${tr('语音录入')}</button>
-          <div style="font-size:11px;color:var(--text-muted);line-height:1.3">${tr('念「栏目+栏目名」开始，念「栏目完毕」结束')}</div>
+          <div style="font-size:11px;color:var(--text-muted);line-height:1.3">${tr('voice_wait_field')}</div>
         </div>
         <div id="fl-voice-status" style="display:none;margin-top:8px">
           <div style="display:flex;align-items:center;gap:6px"><span class="fl-vs-dot" style="width:8px;height:8px;border-radius:50%;background:#5fe39b;display:inline-block"></span><span id="fl-vs-state" style="font-size:13px;font-weight:600;color:#5fe39b"></span></div>
           <div id="fl-vs-target" style="font-size:12px;color:#4f9dff;margin-top:2px"></div>
           <div id="fl-vs-live" style="font-size:12px;color:var(--text-muted);margin-top:4px;min-height:16px;word-break:break-word"></div>
+        </div>
+        <div style="margin-top:8px;padding:8px 10px;border:1px dashed var(--border,#333);border-radius:8px;background:rgba(79,157,255,0.06)">
+          <div style="font-size:12px;font-weight:600;color:#4f9dff;margin-bottom:4px">🎙 ${tr('voice_flow_title')}</div>
+          <div style="font-size:11px;color:var(--text-muted);line-height:1.6">
+            1. ${tr('voice_step1')}<br>
+            2. ${tr('voice_step2')}<br>
+            3. ${tr('voice_step3')}<br>
+            4. ${tr('voice_step4')}<br>
+            5. ${tr('voice_step5')}
+          </div>
         </div>
       </div>
       <div class="input-group" id="fl-g-fl-project"><label>${tr('生产项目')}${cmdChip('生产项目')}</label><select id="fl-project" onchange="App._fieldCopilotRefresh()">${projOpts}</select></div>
@@ -318,42 +328,101 @@ export function setupFieldLog(App) {
       id, project, problem_factory: problemFactory, problem_category: problemCategory, description, status,
       reporter_email: reporterEmail, responsible_email: responsibleEmail,
       photos: this._flPhotos.slice(),
-      gps: this._flGps || (newRec && newRec.gps) || '',
+      gps: this._flGps || '',
       reporter: this.session?.user?.display_name || this.session?.user?.username || '',
       created_at: now.slice(0, 19).replace('T', ' '),
       updated_at: now.slice(0, 19).replace('T', ' '),
     };
     try {
-      const sbId = this.uuid();
-      await this.sbPost('sync_data', {
-        table_name: 'field_log', local_id: id,
-        payload: JSON.stringify(rec), supabase_id: sbId,
-        is_deleted: false, updated_at: now, device_id: this.deviceId,
-      });
-      this.cache.field_log = this.cache.field_log || [];
-      this.cache.field_log.unshift(rec);
+      // 规范保存：编辑时按已有 supabase_id PATCH（避免产生重复行），新建则 POST 新行
+      const existing = (this.cache.field_log || []).find(r => r.id === id);
+      let sbId = existing && existing._sb_id;
+      const payload = JSON.stringify(rec);
+      if (sbId) {
+        await this.sbPatch('sync_data', `supabase_id=eq.${sbId}`, { payload, updated_at: now, device_id: this.deviceId });
+      } else {
+        sbId = this.uuid();
+        await this.sbPost('sync_data', { table_name: 'field_log', local_id: id, payload, supabase_id: sbId, is_deleted: false, updated_at: now, device_id: this.deviceId });
+      }
+      const idx = (this.cache.field_log || []).findIndex(r => r.id === id);
+      const stored = { ...rec, _sb_id: sbId, _updated: now };
+      if (idx >= 0) this.cache.field_log[idx] = stored;
+      else { this.cache.field_log = this.cache.field_log || []; this.cache.field_log.unshift(stored); }
       this.closeModal();
       this.loadFieldLog();
-      this.toast(tr('已保存现场记录') + (responsibleEmail ? tr('，已邮件通知负责处理人') : ' — ' + tr('已同步')));
-      // 触发邮件通知（fire-and-forget，失败不影响保存）
-      if (responsibleEmail) this._notifyFieldLogEmail(sbId).catch(() => {});
+      // 邮件通知：填了负责处理人邮箱则尝试发送（部署 Edge Function + 配置 SMTP 后自动发送；否则详情页可用 📧 按钮发送）
+      let emailNote = ' — ' + tr('已同步');
+      if (responsibleEmail) {
+        const ok = await this._notifyFieldLogEmail(sbId);
+        emailNote = ok ? tr('，已邮件通知负责处理人') : tr('，可在记录内点 📧 发送邮件');
+      }
+      this.toast(tr('已保存现场记录') + emailNote);
     } catch (e) { this.toast(tr('保存失败: ') + e.message); }
   };
 
   // 现场记录保存后，调用 Edge Function 发邮件（服务端用企业邮箱 SMTP 发送）
+  // 返回 true=已成功触发发送；false=未部署/未配置/网络失败（此时可改用详情页 📧 按钮 mailto 发送）
   App._notifyFieldLogEmail = async function (sbId) {
     try {
-      await fetch(`${this.apiBaseUrl()}/functions/v1/fieldlog-notify`, {
+      const resp = await fetch(`${this.apiBaseUrl()}/functions/v1/fieldlog-notify`, {
         method: 'POST',
         headers: this.sbHeaders(),
         body: JSON.stringify({ supabase_id: sbId }),
       });
-    } catch (e) { /* 静默：邮件失败不阻塞保存 */ }
+      return resp.ok;
+    } catch (e) { return false; }
   };
 
-  // ═══ 语音录入引擎（Field Voice Capture）═══
-  // 流程：点麦克风 → 持续聆听 → 念「栏目<栏目名>」切换目标字段 → 念内容 → 念「栏目完毕」结束该字段。
-  // 识别语言跟随 PWA 界面；引擎为 Web Speech API（Android Chrome 等移动端原生支持，最适合印度/越南产线）。
+  // 立即可用的邮件发送：用 mailto 调起本机/手机邮件 App，预填收件人/抄送/主题/正文
+  App._flMailto = function (id) {
+    const rec = (this.cache.field_log || []).find(r => r.id === id);
+    if (!rec) return;
+    const to = (rec.responsible_email || '').trim();
+    const cc = (rec.reporter_email || '').trim();
+    if (!to && !cc) { this.toast(tr('请先填写负责处理人或报告人邮箱')); return; }
+    const subject = `【现场记录待处理】${rec.project || '未指定项目'} · ${rec.problem_factory || '—'} (${rec.problem_category || '未分类'})`;
+    const lines = [
+      `生产项目: ${rec.project || ''}`,
+      `问题发生工厂: ${rec.problem_factory || ''}`,
+      `问题类别: ${rec.problem_category || ''}`,
+      `处理状态: ${rec.status || ''}`,
+      `报告人: ${rec.reporter || ''}`,
+      `报告人邮箱: ${rec.reporter_email || ''}`,
+      `负责处理人邮箱: ${rec.responsible_email || ''}`,
+      `现场定位: ${rec.gps || ''}`,
+      `记录时间: ${rec.created_at || ''}`,
+      '',
+      `问题叙述:`,
+      rec.description || '',
+      '',
+      `打开 PMApp PWA 查看: https://ryanchen7051.github.io/pmapp-mobile/`,
+    ];
+    const body = lines.join('\n');
+    const href = `mailto:${encodeURIComponent(to)}?cc=${encodeURIComponent(cc)}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.location.href = href;
+  };
+
+  // 删除现场记录（软删：置 is_deleted=true；无 _sb_id 则仅删本地缓存）
+  App.deleteFieldLog = async function (id) {
+    if (!this.canEdit('field_log')) { this.toast(tr('只读模式，无法删除')); return; }
+    if (!confirm(tr('确定删除这条现场记录？此操作不可撤销。'))) return;
+    const rec = (this.cache.field_log || []).find(r => r.id === id);
+    const sbId = rec && rec._sb_id;
+    try {
+      if (sbId) {
+        const now = new Date().toISOString();
+        await this.sbPatch('sync_data', `supabase_id=eq.${sbId}`, { is_deleted: true, updated_at: now });
+      }
+      this.cache.field_log = (this.cache.field_log || []).filter(r => r.id !== id);
+      this.toast(tr('已删除该现场记录'));
+      this.goBack();
+      this.loadFieldLog();
+    } catch (e) { this.toast(tr('删除失败: ') + e.message); }
+  };
+
+  // ═══ 语音录入引擎（Field Voice Capture · 逐条栏目状态机）═══
+  // 流程：点麦克风 → 等待栏目指令(栏目xxx) → 切入该字段聆听内容 → 念结束词(栏目结束/栏目完毕)提交该字段 → 回到等待下一条。
+  // 识别语言跟随 PWA 界面；支持本地化关键词(栏目/column/trường…) + 中文通用指令；引擎为 Web Speech API（Android Chrome 最适合印度/越南产线）。
 
   // 构建 7 字段的语音元数据：命令词 = 本地化关键词 + 短标签；select 含候选项用于模糊匹配
   App._flBuildVoiceFields = function () {
@@ -375,59 +444,45 @@ export function setupFieldLog(App) {
 
   App._flFieldById = function (id) { return (this._flVoiceFields || []).find(x => x.id === id); };
 
-  // 解析整段识别文本 → 按命令词切分，返回 {segs:{fieldId:text}, active:最后活动字段|null}
-  // 关键：命令词在「归一化空间」(去空格/标点/小写) 定位，再映射回原文本截取字段内容，
-  // 从而兼容英文/越南语多词标签（原文本带空格，归一化后无空格，直接 indexOf 会失败）。
-  App._flParseVoice = function (T) {
-    const fields = this._flVoiceFields || [];
-    // 构建 归一化串 TN 与原串 T 的字符映射（TN 仅含保留字符）
+  // 在原始串 T 中定位首个命中的归一化短语，返回原始串 [start,end)
+  // （归一化空间去空格/标点/小写；映射回原文本以保留英文多词标签的大小写与空格）
+  App._flFindFirstNorm = function (T, phrasesNorm) {
     const kept = []; let tnIdx = 0; const tnChars = [];
     for (let i = 0; i < T.length; i++) {
       const n = flNorm(T[i]);
-      // 推入归一化(小写)字符用于匹配；提取时再经 origRange 映射回原文本保留大小写与空格
       if (n.length) { tnChars.push(n); kept.push(tnIdx); tnIdx++; } else kept.push(-1);
     }
     const TN = tnChars.join('');
-    // 将归一化区间 [a,b) 还原为原文本子串（保留空格/大小写，提升英文等多词语言可读性）
-    const origRange = (a, b) => {
-      let s = -1, e = -1;
-      for (let i = 0; i < T.length; i++) {
-        if (kept[i] >= 0) { if (kept[i] >= a && s === -1) s = i; if (kept[i] < b) e = i; }
-      }
-      return (s === -1 || e === -1) ? '' : T.slice(s, e + 1);
-    };
-
-    const markers = [];
-    for (const fld of fields) {
-      for (const phrase of [fld.cmdLocal, fld.cmdZh]) {
-        if (!phrase) continue;
-        let idx = TN.indexOf(phrase);
-        while (idx !== -1) { markers.push({ pos: idx, end: idx + phrase.length, field: fld.id }); idx = TN.indexOf(phrase, idx + 1); }
-      }
-    }
-    const ends = (VOICE_END[getLang()] || []).concat(['栏目完毕', '栏目结束']); // 中文通用结束词
-    for (const e of ends) {
-      const ph = flNorm(e);
+    for (const ph of phrasesNorm) {
       if (!ph) continue;
-      let idx = TN.indexOf(ph);
-      while (idx !== -1) { markers.push({ pos: idx, end: idx + ph.length, isEnd: true }); idx = TN.indexOf(ph, idx + 1); }
-    }
-    markers.sort((a, b) => a.pos - b.pos);
-    const segs = {};
-    let active = null, cursor = 0;
-    for (const m of markers) {
-      if (m.pos > cursor) {
-        const chunk = origRange(cursor, m.pos).trim();
-        if (chunk && active) segs[active] = (segs[active] ? segs[active] + ' ' : '') + chunk;
+      const idx = TN.indexOf(ph);
+      if (idx !== -1) {
+        let s = -1, e = -1;
+        for (let i = 0; i < T.length; i++) {
+          if (kept[i] >= 0) { const k = kept[i]; if (k >= idx && s === -1) s = i; if (k < idx + ph.length) e = i; }
+        }
+        if (s !== -1 && e !== -1) return { phrase: ph, start: s, end: e + 1 };
       }
-      cursor = m.end;
-      active = m.isEnd ? null : m.field;
     }
-    const tail = origRange(cursor, TN.length).trim();
-    if (tail && active) segs[active] = (segs[active] ? segs[active] + ' ' : '') + tail;
-    // 全程无任何命令词（纯自由说话）→ 默认填入「生产问题叙述」
-    if (!markers.length && T.trim()) { segs['fl-description'] = T.trim(); active = 'fl-description'; }
-    return { segs, active };
+    return null;
+  };
+
+  // 提交某字段内容（select 模糊匹配；textarea/email 直填）
+  App._flCommit = function (fieldId, text) {
+    if (!fieldId || !text || !text.trim()) return;
+    const fld = this._flFieldById(fieldId);
+    if (!fld) return;
+    const el = document.getElementById(fld.id);
+    if (!el) return;
+    const val = text.trim();
+    if (fld.type === 'select') {
+      const hit = this._flMatchOption(fld, val);
+      if (hit) { el.value = hit; el.dispatchEvent(new Event('change')); }
+      else { this.toast(tr('未匹配到选项，请手动选择') + '：' + tr(fld.labelKey)); }
+    } else {
+      el.value = val;
+      el.dispatchEvent(new Event('input'));
+    }
   };
 
   // select 候选项模糊匹配：raw 值或翻译标签任一包含/被包含即命中
@@ -442,30 +497,15 @@ export function setupFieldLog(App) {
     return null;
   };
 
-  // 将解析结果写入对应字段 + 高亮当前字段
-  App._flVoiceApply = function (T) {
-    const { segs, active } = this._flParseVoice(T);
-    for (const fld of (this._flVoiceFields || [])) {
-      const seg = segs[fld.id];
-      if (!seg) continue;
-      const el = document.getElementById(fld.id);
-      if (!el) continue;
-      if (fld.type === 'select') {
-        const hit = this._flMatchOption(fld, seg);
-        if (hit) { el.value = hit; el.dispatchEvent(new Event('change')); }
-        else { this.toast(tr('未匹配到选项，请手动选择') + '：' + tr(fld.labelKey)); }
-      } else {
-        el.value = seg;
-        el.dispatchEvent(new Event('input'));
-      }
+  // 字段命令词 → 字段对象
+  App._flFieldByCmd = function (phrase) {
+    for (const f of (this._flVoiceFields || [])) {
+      if (f.cmdLocal === phrase || f.cmdZh === phrase) return f;
     }
-    this._flVoiceHighlight(active);
-    if (typeof this._fieldCopilotRefresh === 'function') this._fieldCopilotRefresh();
-    const st = document.getElementById('fl-vs-state');
-    if (st) st.textContent = tr('识别到') + ' ✓';
+    return null;
   };
 
-  // 高亮当前目标字段 + 更新状态面板目标提示
+  // 高亮当前目标字段
   App._flVoiceHighlight = function (activeId) {
     const fields = this._flVoiceFields || [];
     for (const fld of fields) {
@@ -474,10 +514,60 @@ export function setupFieldLog(App) {
       if (fld.id === activeId) { g.style.borderLeft = '4px solid #4f9dff'; g.style.background = 'rgba(79,157,255,0.10)'; }
       else { g.style.borderLeft = ''; g.style.background = ''; }
     }
+  };
+
+  // 更新状态面板文案（待命 / 正在录入某栏位）
+  App._flVoiceSetState = function (state) {
+    const s = document.getElementById('fl-vs-state');
     const tgt = document.getElementById('fl-vs-target');
-    if (tgt) {
-      if (activeId) tgt.textContent = tr('正在录入') + '：' + tr(this._flFieldById(activeId).labelKey);
-      else tgt.textContent = tr('待命') + ' — ' + tr('念「栏目+栏目名」开始');
+    if (state === 'content' && this._flActiveField) {
+      if (s) { s.textContent = tr('聆听中…'); s.style.color = '#5fe39b'; }
+      if (tgt) tgt.textContent = tr('正在录入') + '：' + tr(this._flFieldById(this._flActiveField).labelKey) + '（' + tr('voice_complete_field') + '）';
+    } else {
+      if (s) { s.textContent = tr('待命'); s.style.color = '#5fe39b'; }
+      if (tgt) tgt.textContent = tr('voice_wait_field');
+    }
+  };
+
+  // 状态机：解析未处理文本，处理栏目指令 / 结束词
+  // 'cmd' 状态等待栏目指令；'content' 状态聆听该栏位内容，遇结束词提交或遇新栏目指令则切换。
+  App._flVoiceStep = function () {
+    const unparsed = this._flFull.slice(this._flConsumed);
+    if (!unparsed.trim()) return;
+    const cmdPhrases = [];
+    for (const f of (this._flVoiceFields || [])) { cmdPhrases.push(f.cmdLocal, f.cmdZh); }
+    const endPhrases = (VOICE_END[getLang()] || []).map(flNorm).concat(['栏目完毕', '栏目结束'].map(flNorm));
+    const cmdHit = this._flFindFirstNorm(unparsed, cmdPhrases);
+    const endHit = this._flFindFirstNorm(unparsed, endPhrases);
+    if (this._flState === 'cmd') {
+      if (cmdHit) {
+        const fld = this._flFieldByCmd(cmdHit.phrase);
+        this._flActiveField = fld ? fld.id : null;
+        this._flState = 'content';
+        this._flConsumed = cmdHit.end;
+        this._flVoiceHighlight(this._flActiveField);
+        this._flVoiceSetState('content');
+      }
+      // cmd 状态下出现结束词（无活动字段）→ 视为噪声，忽略
+    } else if (this._flState === 'content') {
+      if (cmdHit && (!endHit || cmdHit.start < endHit.start)) {
+        // 新栏目指令出现在结束词之前 → 先提交当前字段，再切入新字段
+        const content = unparsed.slice(0, cmdHit.start).trim();
+        this._flCommit(this._flActiveField, content);
+        const fld = this._flFieldByCmd(cmdHit.phrase);
+        this._flActiveField = fld ? fld.id : null;
+        this._flConsumed = cmdHit.end;
+        this._flVoiceHighlight(this._flActiveField);
+        this._flVoiceSetState('content');
+      } else if (endHit) {
+        const content = unparsed.slice(0, endHit.start).trim();
+        this._flCommit(this._flActiveField, content);
+        this._flActiveField = null;
+        this._flState = 'cmd';
+        this._flConsumed = endHit.end;
+        this._flVoiceHighlight(null);
+        this._flVoiceSetState('cmd');
+      }
     }
   };
 
@@ -487,21 +577,25 @@ export function setupFieldLog(App) {
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SR) { this.toast(tr('本设备不支持语音识别，请用键盘输入')); return; }
     if (!this._flVoiceFields) this._flBuildVoiceFields();
+    this._flFull = '';
+    this._flConsumed = 0;
+    this._flActiveField = null;
+    this._flState = 'cmd';
     const rec = new SR();
     rec.lang = VOICE_LANG[getLang()] || 'zh-CN';
     rec.continuous = true;
     rec.interimResults = true;
     rec.maxAlternatives = 1;
     rec.onresult = (e) => {
+      let interim = '';
       for (let i = e.resultIndex; i < e.results.length; i++) {
         const r = e.results[i];
-        if (r.isFinal) this._flFinalText += r[0].transcript;
-        else this._flInterim = (this._flInterim || '') + r[0].transcript;
+        if (r.isFinal) this._flFull += r[0].transcript;
+        else interim += r[0].transcript;
       }
-      if (this._flFinalText) this._flVoiceApply(this._flFinalText);
       const live = document.getElementById('fl-vs-live');
-      if (live) live.textContent = (this._flFinalText + (this._flInterim || '')).slice(-220);
-      this._flInterim = '';
+      if (live) live.textContent = (this._flFull.slice(this._flConsumed) + interim).slice(-240);
+      this._flVoiceStep();
     };
     rec.onerror = (e) => {
       if (e.error === 'no-speech') { const s = document.getElementById('fl-vs-state'); if (s) s.textContent = tr('未听到语音，请重试'); return; }
@@ -511,22 +605,26 @@ export function setupFieldLog(App) {
     rec.onend = () => { if (this._flVoiceActive) { try { rec.start(); } catch (_) {} } }; // 弱网/静音自动续听
     this._flRec = rec;
     this._flVoiceActive = true;
-    this._flFinalText = '';
     try { rec.start(); } catch (err) { this.toast(tr('无法启动语音') + '：' + err.message); this._flVoiceActive = false; return; }
     const btn = document.getElementById('fl-voice-btn');
-    if (btn) { btn.textContent = '⏹ ' + tr('停止'); btn.classList.add('fl-voice-on'); }
+    if (btn) { btn.innerHTML = '⏹ ' + tr('停止'); btn.classList.add('fl-voice-on'); }
     const bar = document.getElementById('fl-voice-status'); if (bar) bar.style.display = '';
-    const s = document.getElementById('fl-vs-state'); if (s) s.textContent = tr('聆听中…');
-    this._flVoiceHighlight(null);
+    this._flVoiceSetState('cmd');
   };
 
-  // 停止语音录入
+  // 停止语音录入（提交未结内容后复位）
   App.flStopVoice = function () {
+    if (this._flVoiceActive && this._flState === 'content' && this._flActiveField) {
+      const unparsed = this._flFull.slice(this._flConsumed);
+      if (unparsed.trim()) this._flCommit(this._flActiveField, unparsed.trim());
+    }
     this._flVoiceActive = false;
     try { this._flRec && this._flRec.stop(); } catch (_) {}
     this._flRec = null;
+    this._flActiveField = null;
+    this._flState = 'cmd';
     const btn = document.getElementById('fl-voice-btn');
-    if (btn) { btn.textContent = '🎤 ' + tr('语音录入'); btn.classList.remove('fl-voice-on'); }
+    if (btn) { btn.innerHTML = '🎤 ' + tr('语音录入'); btn.classList.remove('fl-voice-on'); }
     const s = document.getElementById('fl-vs-state'); if (s) s.textContent = tr('语音录入已停止');
     const tgt = document.getElementById('fl-vs-target'); if (tgt) tgt.textContent = '';
     for (const fld of (this._flVoiceFields || [])) {
