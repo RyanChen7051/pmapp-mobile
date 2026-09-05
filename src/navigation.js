@@ -45,9 +45,10 @@ export function setupNavigation(App) {
     // Re-apply translations for the active page's static elements
     applyTranslations();
     // 页面切换引导：首页与设定页不引导；同一页重复进入（如刷新/切语言）不重复触发
+    // 又：每个栏目（按钮）的引导「本次登录内只显示一次」——登出或下次重新登录后才再显示一次。
     // 注意：引导优先于页面加载——若某页 loader 异常（如 reports 的 populateReportProjects 访问未就绪的 cache），
     // 也不能连引导一起吞掉。故先弹引导，再 try 包裹加载。
-    if (GUIDE_TEXTS[page] && page !== this._lastGuidePage) this.showGuide(page);
+    if (GUIDE_TEXTS[page] && !this._hasShownGuide(page)) this.showGuide(page);
     this._lastGuidePage = page;
     // 加载页面内容（try 包裹，避免单页异常阻断整段导航逻辑）
     try {
@@ -69,10 +70,41 @@ export function setupNavigation(App) {
     window.scrollTo(0, 0);
   };
 
+  /* ═══ AI 引导「本次登录内每个栏目只显示一次」═══
+   * 已展示过的栏目记在 localStorage（pmapp_guides_shown），刷新页面不重复弹；
+   * 登出 / 自动登出 / 下一次登录时调用 resetGuides() 清空 → 下次登录每个栏目再各弹一次。 */
+  App._guideShownKey = 'pmapp_guides_shown';
+
+  App._loadShownGuides = function() {
+    try {
+      const raw = localStorage.getItem(this._guideShownKey);
+      this._shownGuides = new Set(raw ? JSON.parse(raw) : []);
+    } catch (e) { this._shownGuides = new Set(); }
+  };
+
+  App._hasShownGuide = function(page) {
+    if (!this._shownGuides) this._loadShownGuides();
+    return this._shownGuides.has(page);
+  };
+
+  App._markGuideShown = function(page) {
+    if (!this._shownGuides) this._loadShownGuides();
+    this._shownGuides.add(page);
+    try { localStorage.setItem(this._guideShownKey, JSON.stringify([...this._shownGuides])); } catch (e) {}
+  };
+
+  // 重新登录 / 登出时重置：下次进入各栏目会再各显示一次引导
+  App.resetGuides = function() {
+    this._shownGuides = new Set();
+    try { localStorage.removeItem(this._guideShownKey); } catch (e) {}
+    this._lastGuidePage = null;
+  };
+
   // 悬浮 AI 引导员：顶部出现几秒后自动消失
   App.showGuide = function(page) {
     const text = GUIDE_TEXTS[page];
     if (!text) return;
+    this._markGuideShown(page);
     document.getElementById('ai-guide')?.remove();
     const el = document.createElement('div');
     el.id = 'ai-guide';
