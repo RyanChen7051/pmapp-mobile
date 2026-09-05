@@ -337,6 +337,7 @@ export function setupFieldLog(App) {
         <option value="工程">${tr('工程')}</option>
         <option value="品质">${tr('品质')}</option>
         <option value="制程">${tr('制程')}</option>
+        <option value="生产">${tr('生产')}</option>
       </select></div>
       <div class="input-group" id="fl-g-fl-description"><label>${tr('生产问题叙述')}${cmdChip('生产问题叙述')}</label><textarea id="fl-description" placeholder="${tr('描述产线遇到的状况、异常、数量等…')}" oninput="App._fieldCopilotRefresh()">${this.esc(newRec.description || '')}</textarea></div>
       <div id="fl-copilot" class="fl-copilot"></div>
@@ -488,7 +489,7 @@ export function setupFieldLog(App) {
     this._flVoiceFields = [
       f('fl-project', '生产项目', '生产项目', 'select', () => (this.cache.projects || []).map(p => p.name)),
       f('fl-problem-factory', '问题发生工厂', '问题发生工厂', 'select', () => (this.cache.factory_info || []).map(x => x.factory_name)),
-      f('fl-problem-category', '问题类别', '问题类别', 'select', () => ['工程', '品质', '制程']),
+      f('fl-problem-category', '问题类别', '问题类别', 'select', () => ['工程', '品质', '制程', '生产']),
       f('fl-description', '生产问题叙述', '生产问题叙述', 'textarea'),
       f('fl-status', '处理状态', '处理状态', 'select', () => ['待处理', '处理中', '已处理']),
       f('fl-reporter-email', '报告人邮箱', '报告人邮箱', 'email'),
