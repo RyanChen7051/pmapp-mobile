@@ -52,6 +52,8 @@ const App = {
         if (!this.isSessionValidToday()) {
           localStorage.removeItem('pmapp_session');
           this.session = null;
+          // 跨天会话失效（等于已登出）：清空 AI 引导记录，下次登录各栏目会再显示一次
+          if (this.resetGuides) this.resetGuides();
         }
       } catch (e) { localStorage.removeItem('pmapp_session'); }
     }
