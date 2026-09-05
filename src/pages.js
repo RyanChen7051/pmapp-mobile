@@ -354,8 +354,24 @@ export function setupPages(App) {
    * 提前期与安全库存按工厂所在国分别配置 —— 越南厂备满一个月是超额压资金（在途只要 10 天）。 */
   App._matParams = function(factoryId, factoryName) {
     const f = (this.cache.factory_info || []).find(x => String(x.id) === String(factoryId));
-    const txt = String((f && (f.country || f.region || f.factory_name)) || factoryName || '');
-    return /印度|india/i.test(txt) ? { lead: 30, safety: 42 } : { lead: 10, safety: 21 };
+    const txt = String((f && [f.country, f.region, f.factory_name, f.address].filter(Boolean).join(' ')) || factoryName || '');
+    if (/印度|india/i.test(txt)) return { lead: 30, safety: 42 };
+    // 越南北部（北宁/河内/海防…）走中越陆运只要 4–6 天，安全库存压到 2 周
+    if (/北宁|河内|海防|北江|太原|永福|bac ?ninh|hanoi|hai ?phong/i.test(txt)) return { lead: 10, safety: 14 };
+    return { lead: 14, safety: 21 };
+  };
+
+  // 到厂倒计时
+  App._matCountdown = function(sh) {
+    if (sh.actual_arrival_date) return { text: tr('已到厂'), color: 'var(--accent-green)' };
+    const d = this._matDaysTo(sh.eta_date);
+    if (d === null) return { text: '-', color: 'var(--text-muted)' };
+    if (d < 0) return { text: `${tr('已逾期')} ${Math.abs(d)} ${tr('天')}`, color: '#ff3b30' };
+    return { text: `${tr('还有')} ${d} ${tr('天')}`, color: d <= 3 ? '#ff9500' : 'var(--text-secondary)' };
+  };
+
+  App._matCustomsBadge = function(v) {
+    return { '待报关': 'badge-gray', '清关中': 'badge-orange', '已放行': 'badge-green', '异常': 'badge-red' }[v] || 'badge-blue';
   };
 
   App._matDaysTo = function(d) {
@@ -468,6 +484,7 @@ export function setupPages(App) {
     if (impEl) impEl.textContent = tr('导入');
     if (tab.key === 'alerts') this.renderMatAlerts();
     else if (tab.key === 'kitting') this.renderMatKitting();
+    else if (tab.key === 'transit') this.renderMatTransit();
     else this.renderMatList(tab.module, tab.emptyKey);
     this.updateMatBadge();
   };
@@ -477,7 +494,32 @@ export function setupPages(App) {
     if (!el) return;
     const list = this.computeMaterialAlerts();
     if (!list.length) { el.innerHTML = `<div class="empty"><div class="empty-icon">✅</div>${tr('暂无预警')}</div>`; return; }
-    el.innerHTML = list.map(a => `<div class="card mat-alert-card ${a.level}">
+    // 顶部：按订单聚合缺料（先看哪个订单要断料，再看明细）
+    const byOrder = {};
+    this.computeMatKitting().items.filter(it => it.state === 'gap').forEach(it => {
+      const k = it.pm.order_no || it.pm.plan_code || '-';
+      if (!byOrder[k]) byOrder[k] = { count: 0, urgent: null, factory: it.pm.production_factory || '' };
+      byOrder[k].count++;
+      if (it.days !== null && (byOrder[k].urgent === null || it.days < byOrder[k].urgent)) byOrder[k].urgent = it.days;
+    });
+    const summary = Object.keys(byOrder).map(k => {
+      const o = byOrder[k];
+      const urgentTxt = o.urgent === null ? '-'
+        : (o.urgent < 0 ? `${tr('已逾期')} ${Math.abs(o.urgent)} ${tr('天')}` : `${tr('还有')} ${o.urgent} ${tr('天')}`);
+      const color = (o.urgent !== null && o.urgent <= 3) ? '#ff3b30' : '#ff9500';
+      return `<div class="card" style="border-left:3px solid ${color}">
+        <div class="card-title">📦 ${this.esc(k)} · ${tr('缺料项')} ${o.count}</div>
+        <div class="card-meta">
+          <span style="color:${color};font-weight:600">${tr('最紧急')} ${urgentTxt}</span>
+          ${o.factory ? `<span>🏭 ${this.esc(o.factory)}</span>` : ''}
+        </div>
+      </div>`;
+    }).join('');
+    const head = summary
+      ? `<div style="font-size:12px;color:var(--text-muted);margin-bottom:6px">${tr('按订单汇总')}</div>` + summary +
+        `<div style="height:12px"></div><div style="font-size:12px;color:var(--text-muted);margin-bottom:6px">${tr('预警')} (${list.length})</div>`
+      : '';
+    el.innerHTML = head + list.map(a => `<div class="card mat-alert-card ${a.level}">
       <div class="card-title">${a.kind} · ${a.title}</div>
       ${a.meta ? `<div class="card-meta"><span>${a.meta}</span></div>` : ''}
       ${a.sub ? `<div style="font-size:12px;color:var(--text-muted);margin-top:4px">${a.sub}</div>` : ''}
@@ -498,6 +540,51 @@ export function setupPages(App) {
         return f.badge ? `<span class="badge ${this.badgeClass(v)}">${this.esc(tr(v))}</span>` : `<span>${this.esc(v)}</span>`;
       }).join('')}</div>
     </div>`).join('');
+  };
+
+  App.renderMatTransit = function() {
+    const el = document.getElementById('mat-list');
+    if (!el) return;
+    const list = this.cache.material_shipment || [];
+    if (!list.length) { el.innerHTML = `<div class="empty"><div class="empty-icon">🚢</div>${tr('暂无在途')}</div>`; return; }
+    const byOrder = {};
+    list.forEach(sh => {
+      const k = sh.order_no || sh.plan_code || '-';
+      (byOrder[k] = byOrder[k] || []).push(sh);
+    });
+    const summary = Object.keys(byOrder).map(k => {
+      const rows = byOrder[k];
+      const open = rows.filter(r => !r.actual_arrival_date);
+      const etas = open.map(r => r.eta_date).filter(Boolean).sort();
+      const earliest = etas[0] || '';
+      const d = earliest ? this._matDaysTo(earliest) : null;
+      const overdue = open.some(r => { const dd = this._matDaysTo(r.eta_date); return dd !== null && dd < 0; });
+      const cd = !open.length ? tr('已到厂')
+        : (d === null ? '-' : (d < 0 ? `${tr('已逾期')} ${Math.abs(d)} ${tr('天')}` : `${tr('还有')} ${d} ${tr('天')}`));
+      const color = overdue ? '#ff3b30' : ((d !== null && d <= 3) ? '#ff9500' : 'var(--accent-green)');
+      return `<div class="card">
+        <div class="card-title">📦 ${this.esc(k)} · ${tr('最早到厂')} ${this.esc(earliest || '-')}</div>
+        <div class="card-meta">
+          <span style="color:${color};font-weight:600">${tr('到厂倒计时')} ${cd}</span>
+          <span>${tr('批次')} ${rows.length} · ${tr('发货中')} ${open.length}</span>
+        </div>
+      </div>`;
+    }).join('');
+    const cards = list.map(sh => {
+      const cd = this._matCountdown(sh);
+      return `<div class="card" onclick="App.openDetail('material_shipment', ${sh.id})">
+        <div class="card-title">🚢 ${this.esc(sh.lot_no || '')} ${this.esc(sh.material_code || '')}</div>
+        <div class="card-meta">
+          <span style="color:${cd.color};font-weight:600">${cd.text}</span>
+          ${sh.production_factory ? `<span>🏭 ${this.esc(sh.production_factory)}</span>` : ''}
+          ${sh.customs_status ? `<span class="badge ${this._matCustomsBadge(sh.customs_status)}">${this.esc(tr(sh.customs_status))}</span>` : ''}
+          ${sh.eta_date ? `<span>📅 ${this.esc(sh.eta_date)}</span>` : ''}
+        </div>
+      </div>`;
+    }).join('');
+    el.innerHTML = `<div style="font-size:12px;color:var(--text-muted);margin-bottom:6px">${tr('按订单汇总')}</div>` +
+      summary + `<div style="height:12px"></div>` +
+      `<div style="font-size:12px;color:var(--text-muted);margin-bottom:6px">${tr('在途发货')} (${list.length})</div>` + cards;
   };
 
   App.renderMatKitting = function() {
