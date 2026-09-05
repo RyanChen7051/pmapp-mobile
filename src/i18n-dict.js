@@ -601,4 +601,5 @@ export const DICT = {
 
   '关闭': { en: 'Close', es: 'Cerrar', ja: '閉じる', fr: 'Fermer', de: 'Schliessen', ar: 'إغلاق', vi: 'Dong', hi: 'बंद करें' },
   '解析失败': { en: 'Parse failed', es: 'Error al analizar', ja: '解析失敗', fr: 'Echec analyse', de: 'Analyse fehlgeschlagen', ar: 'فشل التحليل', vi: 'Loi phan tich', hi: 'पार्स विफल' },
+  '生产计划完成': { en: 'Production plans done', es: 'Planes de produccion completados', ja: '生産計画完了', fr: 'Plans de production termines', de: 'Abgeschlossene Produktionsplaene', ar: 'خطط الإنتاج المنجزة', vi: 'Ke hoach san xuat hoan thanh', hi: 'पूर्ण उत्पादन योजनाएँ' },
 };
