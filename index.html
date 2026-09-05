@@ -72,6 +72,14 @@ body {
 .mat-alert-card.critical { border-left-color: #ff3b30; }
 .mat-alert-card.high { border-left-color: #ff9500; }
 .mat-alert-card.low { border-left-color: #8e8e93; }
+.fl-issue-form { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 12px; margin: -4px 0 14px; }
+.fl-if-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-bottom: 10px; }
+.fl-if-field { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.fl-if-field label, .fl-if-row label { font-size: 11px; color: var(--text-muted); }
+.fl-if-field input, .fl-if-field select, .fl-if-row textarea { padding: 8px 9px; background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary); font-size: 13px; outline: none; width: 100%; box-sizing: border-box; }
+.fl-if-field .btn { padding: 8px 6px; font-size: 13px; }
+.fl-if-row { margin-bottom: 10px; }
+.fl-if-row textarea { min-height: 62px; resize: vertical; }
 .tab.active { color: var(--accent); }
 
 /* Cards */
@@ -977,6 +985,6 @@ body.rtl .card-meta { flex-direction: row-reverse; }
 
 </div>
 
-<script type="module" src="bundle.js?v=117"></script>
+<script type="module" src="bundle.js?v=118"></script>
 </body>
 </html>
