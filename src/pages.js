@@ -321,6 +321,7 @@ export function setupPages(App) {
     el.innerHTML = factories.map(f => `<div class="card" onclick="App.openDetail('factory_info', ${f.id})">
       <div class="card-title">🏭 ${this.esc(f.factory_name)}</div>
       <div class="card-meta">
+        ${f.address ? `<span>🏠 ${this.esc(f.address)}</span>` : ''}
         ${f.region ? `<span>📍 ${this.esc(f.region)}</span>` : ''}
         ${f.country ? `<span>🏳️ ${this.esc(f.country)}</span>` : ''}
         ${f.pm ? `<span>👤 ${this.esc(f.pm)}</span>` : ''}
