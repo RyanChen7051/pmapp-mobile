@@ -19,6 +19,7 @@ export function setupPages(App) {
       </div></div>`).join('');
     }
     this.populateTodoParents();
+    this.renderProjectInfo();
     this.renderTodos();
     this.renderOverdue();
   };
@@ -47,6 +48,7 @@ export function setupPages(App) {
             ${overdue ? `<span class="todo-overdue" title="${t('todo_overdue')}">⚠️</span>` : ''}
           </div>
           ${r.parent_plan ? `<div class="todo-parent">🔗 ${this.esc(r.parent_plan)}</div>` : ''}
+          ${r.project_ref ? `<div class="todo-parent">🗂 ${this.esc(r.project_ref)}</div>` : ''}
         </div>
         <span class="todo-del" onclick="App.deleteTodo(${r.id})">✕</span>
       </div>`;
@@ -72,9 +74,15 @@ export function setupPages(App) {
     const now = new Date().toISOString().slice(0, 19).replace('T', ' ');
     const id = Math.floor(Date.now() / 1000);
     const parent = pEl ? pEl.value : '';
-    const rec = { id, content, parent_plan: parent, due_date: due, done: false, created_at: now };
+    const rec = {
+      id, content, parent_plan: parent, due_date: due, done: false, created_at: now,
+      project_id: this._todoProject ? this._todoProject.id : '',
+      project_ref: this._todoProject ? this._todoProject.label : '',
+    };
     (this.cache.todos = this.cache.todos || []).unshift(rec);
     cEl.value = ''; if (dEl) dEl.value = ''; if (pEl) pEl.value = '';
+    this._todoProject = null;
+    this.updateTodoProjectButton();
     this.renderTodos();
     try {
       await this.sbPost('sync_data', {
@@ -136,8 +144,151 @@ export function setupPages(App) {
           <span class="todo-overdue" title="${t('todo_overdue')}">⚠️ ${t('todo_overdue')}</span>
         </div>
         ${r.parent_plan ? `<div class="todo-parent">🔗 ${this.esc(r.parent_plan)}</div>` : ''}
+        ${r.project_ref ? `<div class="todo-parent">🗂 ${this.esc(r.project_ref)}</div>` : ''}
       </div>
     </div>`).join('');
+  };
+
+  /* ─── 项目讯息（生产计划「项目（可选）」的数据来源）───
+   * 4 个字段：工厂项目编号 / 客户项目编号 / 生产工厂 / 项目阶段。
+   * 存到 sync_data(table_name=project_info)，与 todos 同款轻量写法（离线由同步队列兜底）。 */
+  const PROJECT_STAGES = [{ v: 'NPI', t: 'NPI' }, { v: 'EVT', t: 'EVT' }, { v: 'DVT', t: 'DVT' }, { v: 'PVT', t: 'PVT' }, { v: 'MP', t: '量产' }];
+
+  App._piLabel = function(p) {
+    if (!p) return '';
+    return [p.factory_project_no, p.customer_project_no].filter(Boolean).join(' / ');
+  };
+
+  App._piStageText = function(v) {
+    return v === 'MP' ? tr('量产') : (v || '');
+  };
+
+  App.renderProjectInfo = function() {
+    const titleEl = document.getElementById('proj-info-title');
+    if (titleEl) titleEl.textContent = tr('项目讯息');
+    const addEl = document.getElementById('proj-info-add');
+    if (addEl) addEl.textContent = '+ ' + tr('新建');
+    const saveBtn = document.querySelector('#proj-info-form button');
+    if (saveBtn) saveBtn.textContent = tr('保存');
+    const fno = document.getElementById('pi-factory-no'); if (fno) fno.placeholder = tr('工厂项目编号');
+    const cno = document.getElementById('pi-customer-no'); if (cno) cno.placeholder = tr('客户项目编号');
+    const fac = document.getElementById('pi-factory'); if (fac) fac.placeholder = tr('生产工厂');
+    const stage = document.getElementById('pi-stage');
+    if (stage) {
+      const cur = stage.value;
+      stage.innerHTML = PROJECT_STAGES.map(o => `<option value="${o.v}">${this.esc(tr(o.t))}</option>`).join('');
+      if (cur) stage.value = cur;
+    }
+    this.updateTodoProjectButton();
+
+    const el = document.getElementById('proj-info-list');
+    if (!el) return;
+    const list = this.cache.project_info || [];
+    if (list.length === 0) { el.innerHTML = `<div class="empty"><div class="empty-icon">🗂</div>${tr('暂无项目讯息')}</div>`; return; }
+    el.innerHTML = list.map(p => `<div class="card">
+      <div class="card-title">🗂 ${this.esc(this._piLabel(p))}</div>
+      <div class="card-meta">
+        ${p.production_factory ? `<span>🏭 ${this.esc(p.production_factory)}</span>` : ''}
+        ${p.project_stage ? `<span class="badge ${this.badgeClass(p.project_stage)}">${this.esc(this._piStageText(p.project_stage))}</span>` : ''}
+        <span class="todo-del" onclick="App.deleteProjectInfo(${p.id})">✕</span>
+      </div></div>`).join('');
+  };
+
+  App.toggleProjectInfoForm = function() {
+    const box = document.getElementById('proj-info-form');
+    if (!box) return;
+    const open = box.style.display === 'none' || box.style.display === '';
+    box.style.display = open ? 'flex' : 'none';
+    if (open) setTimeout(() => document.getElementById('pi-factory-no')?.focus(), 60);
+  };
+
+  App.saveProjectInfo = async function() {
+    const fno = document.getElementById('pi-factory-no');
+    if (!fno) return;
+    const cno = document.getElementById('pi-customer-no');
+    const fac = document.getElementById('pi-factory');
+    const stg = document.getElementById('pi-stage');
+    const factory_project_no = fno.value.trim();
+    if (!factory_project_no) { this.toast(tr('请输入工厂项目编号')); fno.focus(); return; }
+    const now = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    const id = Math.floor(Date.now() / 1000);
+    const rec = {
+      id, factory_project_no,
+      customer_project_no: cno ? cno.value.trim() : '',
+      production_factory: fac ? fac.value.trim() : '',
+      project_stage: stg ? stg.value : 'NPI',
+      created_at: now, updated_at: now,
+    };
+    (this.cache.project_info = this.cache.project_info || []).unshift(rec);
+    fno.value = ''; if (cno) cno.value = ''; if (fac) fac.value = '';
+    const box = document.getElementById('proj-info-form'); if (box) box.style.display = 'none';
+    this.renderProjectInfo();
+    try {
+      await this.sbPost('sync_data', {
+        table_name: 'project_info', local_id: id,
+        payload: JSON.stringify(rec), supabase_id: this.uuid(),
+        is_deleted: false, updated_at: new Date().toISOString(), device_id: this.deviceId,
+      });
+      this.toast(tr('已保存项目讯息'));
+    } catch (e) { /* 离线时由同步队列兜底 */ }
+  };
+
+  App.deleteProjectInfo = async function(id) {
+    const list = this.cache.project_info || [];
+    const idx = list.findIndex(r => String(r.id) === String(id));
+    if (idx < 0) return;
+    const rec = list[idx];
+    list.splice(idx, 1);
+    if (this._todoProject && String(this._todoProject.id) === String(id)) this._todoProject = null;
+    this.renderProjectInfo();
+    try {
+      const q = rec._sb_id ? `supabase_id=eq.${rec._sb_id}` : `local_id=eq.${id}`;
+      await this.sbPatch('sync_data', q, { is_deleted: true, updated_at: new Date().toISOString() });
+    } catch (e) {}
+    this.toast(tr('已删除项目讯息'));
+  };
+
+  // 生产计划表单里的「项目（可选）」：点开从项目讯息里挑一条
+  App.pickTodoProject = function() {
+    const list = this.cache.project_info || [];
+    const mc = document.getElementById('modal-content');
+    if (!mc) return;
+    if (list.length === 0) { this.toast(tr('暂无项目讯息')); return; }
+    mc.innerHTML = `<div class="modal-handle"></div>
+      <div class="modal-title">${tr('请选择项目')}</div>
+      <div style="font-size:12px;color:var(--text-muted);margin-bottom:10px">${tr('项目（可选）')}</div>` +
+      list.map(p => `<div class="card" onclick="App.selectTodoProject(${p.id})">
+        <div class="card-title">🗂 ${this.esc(this._piLabel(p))}</div>
+        <div class="card-meta">
+          ${p.production_factory ? `<span>🏭 ${this.esc(p.production_factory)}</span>` : ''}
+          ${p.project_stage ? `<span class="badge ${this.badgeClass(p.project_stage)}">${this.esc(this._piStageText(p.project_stage))}</span>` : ''}
+        </div></div>`).join('') +
+      `<div style="height:10px"></div>
+      <button class="btn btn-secondary" onclick="App.clearTodoProject()">${tr('清除项目')}</button>
+      <div style="height:10px"></div>
+      <button class="btn btn-secondary" onclick="App.closeModal()">${tr('取消')}</button>`;
+    document.getElementById('modal-overlay').classList.add('show');
+  };
+
+  App.selectTodoProject = function(id) {
+    const p = (this.cache.project_info || []).find(r => String(r.id) === String(id));
+    if (!p) return;
+    this._todoProject = { id: p.id, label: this._piLabel(p) };
+    this.closeModal();
+    this.updateTodoProjectButton();
+  };
+
+  App.clearTodoProject = function() {
+    this._todoProject = null;
+    this.closeModal();
+    this.updateTodoProjectButton();
+  };
+
+  App.updateTodoProjectButton = function() {
+    const btn = document.getElementById('todo-proj-btn');
+    if (!btn) return;
+    const label = this._todoProject ? this._todoProject.label : tr('项目（可选）');
+    btn.innerHTML = `📁 ${this.esc(label)}`;
   };
 
   /* ─── Materials Tab ─── */
