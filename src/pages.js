@@ -828,7 +828,6 @@ export function setupPages(App) {
 
   /* ─── Production Tab ─── */
   App.loadProduction = function() {
-    this.renderProduction();
     this.renderFieldLogByCategory('prod-fieldlog', '生产');
   };
 
@@ -871,27 +870,7 @@ export function setupPages(App) {
 
   /* ─── Quality Tab ─── */
   App.loadQuality = function() {
-    const mod = this.qualModule || 'issues';
-    const issuesBlock = document.getElementById('qual-issues-block');
-    const inspBlock = document.getElementById('qual-insp-block');
-    if (mod === 'inspection') {
-      if (issuesBlock) issuesBlock.style.display = 'none';
-      if (inspBlock) inspBlock.style.display = '';
-      this.renderInspectionList();
-      this.renderFieldLogByCategory('qual-fieldlog', '品质');
-      this.updateAdminButtons();
-      return;
-    }
-    if (issuesBlock) issuesBlock.style.display = '';
-    if (inspBlock) inspBlock.style.display = 'none';
-    const issues = this.cache.issues || [];
-    document.getElementById('qs-total').textContent = issues.length;
-    document.getElementById('qs-open').textContent = issues.filter(i => i.status === 'open').length;
-    document.getElementById('qs-progress').textContent = issues.filter(i => ['assigned', 'analyzing', 'fixing', 'verifying'].includes(i.status)).length;
-    document.getElementById('qs-closed').textContent = issues.filter(i => i.status === 'closed').length;
-    this.renderQuality();
     this.renderFieldLogByCategory('qual-fieldlog', '品质');
-    this.updateAdminButtons();
   };
 
   App.setQualModule = function(mod, el) {
@@ -963,14 +942,10 @@ export function setupPages(App) {
   };
 
   App.loadEngineering = function() {
-    this.updateAdminButtons();
-    this.renderIssueModule('engineering', 'eng-list');
     this.renderFieldLogByCategory('eng-fieldlog', '工程');
   };
 
   App.loadFactoryProcess = function() {
-    this.updateAdminButtons();
-    this.renderIssueModule('factory_process', 'fp-list');
     this.renderFieldLogByCategory('fp-fieldlog', '制程');
   };
 
