@@ -215,6 +215,16 @@ body {
 .rpt-field input, .rpt-field select { width: 100%; background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; padding: 10px; color: var(--text-primary); font-size: 14px; box-sizing: border-box; }
 .rpt-field input:disabled, .rpt-field input[readonly] { opacity: 0.6; color: var(--text-muted); cursor: not-allowed; }
 .rpt-gen-btn { width: 100%; margin-top: 4px; }
+/* 报告三类区块分色：周报=蓝 / 月报=紫 / 会议记录=橙（2026-09-06） */
+.rpt-weekly { border-left: 4px solid #4f9dff; }
+.rpt-weekly .rpt-block-title { color: #4f9dff; }
+.rpt-weekly .rpt-gen-btn { background: #4f9dff; border-color: #4f9dff; }
+.rpt-monthly { border-left: 4px solid #a06bff; }
+.rpt-monthly .rpt-block-title { color: #a06bff; }
+.rpt-monthly .rpt-gen-btn { background: #a06bff; border-color: #a06bff; }
+.rpt-mt { border-left: 4px solid #ff9500; }
+.rpt-mt .rpt-block-title { color: #ff9500; }
+.rpt-mt .rpt-gen-btn { background: #ff9500; border-color: #ff9500; }
 
 /* Meeting minutes (会议记录) */
 .mt-block { background: var(--bg-secondary); }
@@ -822,7 +832,7 @@ body.rtl .card-meta { flex-direction: row-reverse; }
   <div class="ptr-indicator" id="ptr-reports" data-i18n="ptr_pull">↓ 下拉刷新</div>
 
   <!-- 周报 -->
-  <div class="rpt-block">
+  <div class="rpt-block rpt-weekly">
     <div class="rpt-block-title">📊 海外生产周报</div>
     <div class="rpt-field">
       <label data-i18n="rpt_start_date">开始日期（自动计算 7 天）</label>
@@ -840,7 +850,7 @@ body.rtl .card-meta { flex-direction: row-reverse; }
   </div>
 
   <!-- 月报 -->
-  <div class="rpt-block">
+  <div class="rpt-block rpt-monthly">
     <div class="rpt-block-title">📈 海外生产月报</div>
     <div class="rpt-field">
       <label data-i18n="rpt_start_date_m">开始日期（自动计算 30 天）</label>
@@ -858,7 +868,7 @@ body.rtl .card-meta { flex-direction: row-reverse; }
   </div>
 
   <!-- 会议记录 -->
-  <div class="rpt-block mt-block">
+  <div class="rpt-block rpt-mt mt-block">
     <div class="rpt-block-title">📝 <span data-i18n="mt_title">会议记录</span>
       <button class="btn btn-primary rpt-gen-btn" style="float:right;margin:0" onclick="App.openMeetingEditor(null)" data-i18n="mt_upload">上传会议记录</button>
     </div>
@@ -992,6 +1002,6 @@ body.rtl .card-meta { flex-direction: row-reverse; }
 
 </div>
 
-<script type="module" src="bundle.js?v=119"></script>
+<script type="module" src="bundle.js?v=120"></script>
 </body>
 </html>
