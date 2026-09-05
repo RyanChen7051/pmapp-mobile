@@ -1,7 +1,7 @@
 /* ═══ Configuration & Constants ═══ */
 export const SUPABASE_URL = 'https://nsnmtkukxquhinlmbejg.supabase.co';
 export const SUPABASE_KEY = 'sb_publishable_YB5z3cQK-vCg67--oKpSrg_63STgMJW';
-export const APP_VERSION = 'v3.16.36';
+export const APP_VERSION = 'v3.16.37';
 
 // Web Push VAPID 公钥（客户端订阅用；私钥仅服务端发送端持有，绝不提交前端）
 export const VAPID_PUBLIC = 'BBEsbi_NqN1vqWfwbYx3XV-qUVTqgJNbaNg71TR2tx0k8158CViUZnLfdiLosv6n_sycP2S3yexNFYFzKHChL_c';
@@ -205,6 +205,20 @@ export const MODULES = {
       {key:'expiry_date',label:'到期日',type:'date'},
       {key:'location',label:'库位',type:'text'},
       {key:'last_move_date',label:'最后异动日',type:'date'},
+    ],
+  },
+  jig_supply: {
+    title: '治具供应', icon: '🔧', table: 'jig_supply',
+    listFields: [{key:'project_ref',label:'项目'},{key:'jig_code',label:'治具编号'},{key:'jig_name',label:'治具名称'},{key:'process_stage',label:'工序'},{key:'qty',label:'数量'}],
+    detailFields: [{key:'project_ref',label:'项目'},{key:'jig_code',label:'治具编号'},{key:'jig_name',label:'治具名称'},{key:'process_stage',label:'工序'},{key:'qty',label:'数量'},{key:'remarks',label:'备注'},{key:'file_name',label:'上传文件'},{key:'created_at',label:'记录时间'}],
+    editFields: [
+      {key:'project_id',label:'项目',type:'picker',source:'project_info',textKeys:['factory_project_no','customer_project_no'],textSep:' / ',labelKey:'project_ref',required:true},
+      {key:'jig_code',label:'治具编号',type:'text',required:true},
+      {key:'jig_name',label:'治具名称',type:'text'},
+      {key:'process_stage',label:'工序',type:'select',options:[{v:'SMT',t:'SMT'},{v:'PCBA分板',t:'PCBA分板'},{v:'芯片烧录',t:'芯片烧录'},{v:'PCBA功能测试',t:'PCBA功能测试'},{v:'防水喷涂',t:'防水喷涂'},{v:'FATP组装',t:'FATP组装'},{v:'包装出货',t:'包装出货'}]},
+      {key:'qty',label:'数量',type:'number'},
+      {key:'remarks',label:'备注',type:'textarea'},
+      {key:'file_name',label:'上传文件',type:'text'},
     ],
   },
   shipping_plans: {
