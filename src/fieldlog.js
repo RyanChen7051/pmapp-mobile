@@ -300,7 +300,7 @@ export function setupFieldLog(App) {
       if (!rec) return;
     }
     const nowISO = new Date().toISOString();
-    const newRec = rec || { id: Math.floor(Date.now() / 1000), created_at: nowISO.slice(0, 19).replace('T', ' '), status: '待处理', reporter: this.session?.user?.display_name || this.session?.user?.username || '' };
+    const newRec = rec || { id: this._newLocalId('field_log'), created_at: nowISO.slice(0, 19).replace('T', ' '), status: '待处理', reporter: this.session?.user?.display_name || this.session?.user?.username || '' };
     this._flPhotos = rec && rec.photos ? rec.photos.slice() : [];
     this._flEditingId = newRec.id; this._flGps = '';
 
