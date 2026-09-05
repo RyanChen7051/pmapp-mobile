@@ -1,6 +1,7 @@
 /* ═══ Tab Pages: Planning, Materials, Production, Quality, Inspection, Settings ═══ */
 import { MODULES, STAGE_PROGRESS, APP_VERSION } from './config.js';
 import { t, tr } from './i18n.js';
+import * as XLSX from 'xlsx';
 
 export function setupPages(App) {
   /* ─── Planning Tab ─── */
@@ -670,6 +671,143 @@ export function setupPages(App) {
         : '';
     }
     return n;
+  };
+
+
+  /* ─── 供应治具：选项目（关联计划页项目讯息）→ 上传 Excel 治具清单 ─── */
+  // Excel 列：治具编号, 治具名称, 工序, 数量, 备注（首行表头可自定义，自动按词匹配；无表头则按列位 1..5）
+
+  App.openJigSupply = function() {
+    const mc = document.getElementById('modal-content');
+    if (!mc) return;
+    this._renderJigSupply();
+    document.getElementById('modal-overlay').classList.add('show');
+  };
+
+  App._jigList = function() {
+    const sel = this._jigSel;
+    return (this.cache.jig_supply || [])
+      .filter(r => !sel || String(r.project_id) === String(sel.id))
+      .slice().sort((a, b) => (b.created_at || '').localeCompare(a.created_at || ''));
+  };
+
+  App._renderJigSupply = function() {
+    const mc = document.getElementById('modal-content');
+    if (!mc) return;
+    const sel = this._jigSel;
+    const jigs = this._jigList();
+    const listHtml = jigs.length ? jigs.map(j => `
+      <div class="card" onclick="App.openDetail('jig_supply', ${j.id})">
+        <div class="card-title">🔧 ${this.esc(j.jig_code || '')}${j.jig_name ? ' · ' + this.esc(j.jig_name) : ''}</div>
+        <div class="card-meta">
+          ${j.project_ref ? `<span>🗂 ${this.esc(j.project_ref)}</span>` : ''}
+          ${j.process_stage ? `<span class="badge badge-blue">${this.esc(tr(j.process_stage))}</span>` : ''}
+          ${j.qty ? `<span>× ${this.esc(j.qty)}</span>` : ''}
+          ${j.file_name ? `<span>📎 ${this.esc(j.file_name)}</span>` : ''}
+          <span>🕒 ${this.esc((j.created_at || '').slice(0, 16))}</span>
+        </div>
+      </div>`).join('')
+      : `<div class="empty"><div class="empty-icon">🔧</div>${tr('治具清单未上传过')}</div>`;
+    mc.innerHTML = `<div class="modal-handle"></div>
+      <div class="modal-title">🔧 ${tr('供应治具')}</div>
+      <div style="font-size:11px;color:var(--text-muted);margin-bottom:10px;line-height:1.5">${tr('说明')}: ${tr('治具编号')}, ${tr('治具名称')}, ${tr('工序')}, ${tr('数量')}, ${tr('备注')}</div>
+      <button type="button" class="btn btn-secondary" style="width:100%;margin-bottom:8px" id="jig-proj-btn" onclick="App.jigPickProject()">📁 ${sel ? this.esc(sel.label) : tr('请选择项目')}</button>
+      <button type="button" class="btn btn-primary" style="width:100%;margin-bottom:8px" onclick="App.jigChooseFile()">📤 ${tr('上传治具清单')} (Excel)</button>
+      <input type="file" id="jig-excel" accept=".xlsx,.xls" style="display:none" onchange="App.jigHandleFile(this)">
+      <div style="font-size:12px;color:var(--text-muted);margin:2px 0 6px">${tr('治具清单')} (${jigs.length})</div>
+      ${listHtml}
+      <div style="height:10px"></div>
+      <button class="btn btn-secondary" onclick="App.closeModal()">${tr('关闭')}</button>`;
+  };
+
+  App.jigPickProject = function() {
+    const list = this.cache.project_info || [];
+    if (!list.length) { this.toast(tr('暂无项目讯息')); return; }
+    const html = `<div class="modal-handle"></div><div class="modal-title">${tr('请选择项目')}</div>` +
+      list.map(p => `<div class="card" onclick="App.jigSelectProject(${p.id})">
+        <div class="card-title">🗂 ${this.esc(this._piLabel(p))}</div>
+        <div class="card-meta">
+          ${p.production_factory ? `<span>🏭 ${this.esc(p.production_factory)}</span>` : ''}
+          ${p.project_stage ? `<span class="badge ${this.badgeClass(p.project_stage)}">${this.esc(tr(p.project_stage))}</span>` : ''}
+        </div></div>`).join('') +
+      `<div style="height:10px"></div>
+       <button class="btn btn-secondary" onclick="App.closePicker()">${tr('取消')}</button>`;
+    this._openPicker(html);
+  };
+
+  App.jigSelectProject = function(id) {
+    const p = (this.cache.project_info || []).find(r => String(r.id) === String(id));
+    if (!p) return;
+    this._jigSel = { id: p.id, label: this._piLabel(p) };
+    this.closePicker();
+    this._renderJigSupply();
+  };
+
+  App.jigChooseFile = function() {
+    if (!this._jigSel) { this.toast(tr('请先选择项目')); return; }
+    if (!this.canEdit('jig_supply')) { this.toast(tr('只读模式，无法新建')); return; }
+    const inp = document.getElementById('jig-excel');
+    if (inp) inp.click();
+  };
+
+  // 表头自动映射：按列名（中/英）找列
+  App._jigColMap = function(head) {
+    const syn = [
+      { key: 'code',    re: /治具编号|治具代码|編號|编号|jig\s*no|jig\s*code|part\s*no|^no\.?$|^code$/i },
+      { key: 'name',    re: /治具名称|治具名稱|名称|名稱|jig\s*name|^name$/i },
+      { key: 'process', re: /工序|工程|process|工位/i },
+      { key: 'qty',     re: /数量|數量|qty|quantity/i },
+      { key: 'remark',  re: /备注|備註|remark|note|说明|說明|comment/i },
+    ];
+    const map = {}; let matched = 0;
+    (head || []).forEach((h, ci) => {
+      const txt = String(h || '').trim(); if (!txt) return;
+      for (const s of syn) { if (!(s.key in map) && s.re.test(txt)) { map[s.key] = ci; matched++; break; } }
+    });
+    return matched ? Object.assign(map, { matched }) : null;
+  };
+
+  App.jigHandleFile = async function(inp) {
+    const f = inp.files && inp.files[0];
+    if (!f) return;
+    const sel = this._jigSel;
+    if (!sel) { this.toast(tr('请先选择项目')); inp.value = ''; return; }
+    if (f.size > 4 * 1024 * 1024) { this.toast(tr('上传文件') + ' > 4MB'); inp.value = ''; return; }
+    try {
+      const buf = await f.arrayBuffer();
+      const wb = XLSX.read(buf, { type: 'array' });
+      const ws = wb.Sheets[wb.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
+      if (!rows || !rows.length) { this.toast(tr('暂无记录')); inp.value = ''; return; }
+      let idx = this._jigColMap(rows[0]); let start = 0;
+      if (idx && idx.matched >= 2) start = 1;
+      else idx = { code: 0, name: 1, process: 2, qty: 3, remark: 4 };
+      const out = [];
+      for (let i = start; i < rows.length; i++) {
+        const c = rows[i] || []; if (!c.length) continue;
+        const at = k => (idx[k] == null ? '' : String(c[idx[k]] || '').trim());
+        const code = at('code'); if (!code) continue;
+        const qtyRaw = parseInt(at('qty'), 10);
+        out.push({ code, name: at('name'), process: at('process'), qty: isNaN(qtyRaw) ? 1 : qtyRaw, remark: at('remark') });
+      }
+      if (!out.length) { this.toast(tr('暂无记录')); inp.value = ''; return; }
+      await this._jigSave(out, f.name, sel);
+    } catch (e) { console.error('jig parse err', e); this.toast(tr('解析失败')); }
+    inp.value = '';
+  };
+
+  App._jigSave = async function(rows, fileName, sel) {
+    const nowS = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    for (const r of rows) {
+      const id = this._newLocalId('jig_supply');
+      const rec = { id, project_id: sel.id, project_ref: sel.label, jig_code: r.code, jig_name: r.name, process_stage: r.process, qty: r.qty, remarks: r.remark, file_name: fileName, created_at: nowS, updated_at: nowS };
+      (this.cache.jig_supply = this.cache.jig_supply || []).unshift(rec);
+      try {
+        await this.sbPost('sync_data', { table_name: 'jig_supply', local_id: id, payload: JSON.stringify(rec), supabase_id: this.uuid(), is_deleted: false, updated_at: new Date().toISOString(), device_id: this.deviceId });
+      } catch (e) { /* 离线由同步队列兜底 */ }
+    }
+    this.toast(`${tr('已导入')} ${rows.length} ${tr('项')}`);
+    this._renderJigSupply();
   };
 
   /* ─── Factory Tab (独立工厂讯息页) ─── */
