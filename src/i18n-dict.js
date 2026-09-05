@@ -448,4 +448,20 @@ export const DICT = {
   /* ── 新增板块（2026-09-05）── */
   '全球AI产业': { en: 'Global AI Industry', es: 'Industria global de IA', ja: '世界のAI産業', fr: "Industrie mondiale de l'IA", de: 'Globale KI-Industrie', ar: 'صناعة الذكاء الاصطناعي العالمية', vi: 'Ngành AI toàn cầu', hi: 'वैश्विक एआई उद्योग' },
   '全球物联网IoT': { en: 'Global IoT', es: 'IoT global', ja: '世界のIoT', fr: 'IoT mondial', de: 'Globales IoT', ar: 'إنترنت الأشياء العالمي', vi: 'IoT toàn cầu', hi: 'वैश्विक IoT' },
+
+  /* ── 计划页「项目讯息」（2026-09-05）── */
+  '项目讯息': { en: 'Project info', es: 'Info del proyecto', ja: 'プロジェクト情報', fr: 'Info projet', de: 'Projektinfo', ar: 'معلومات المشروع', vi: 'Thông tin dự án', hi: 'परियोजना जानकारी' },
+  '建立项目讯息': { en: 'Create project info', es: 'Crear info del proyecto', ja: 'プロジェクト情報を作成', fr: 'Créer une info projet', de: 'Projektinfo erstellen', ar: 'إنشاء معلومات المشروع', vi: 'Tạo thông tin dự án', hi: 'परियोजना जानकारी बनाएँ' },
+  '工厂项目编号': { en: 'Factory project no.', es: 'Num. de proyecto de fabrica', ja: '工場プロジェクト番号', fr: 'Numero projet usine', de: 'Werksprojektnummer', ar: 'رقم مشروع المصنع', vi: 'So du an nha may', hi: 'फ़ैक्टरी परियोजना संख्या' },
+  '客户项目编号': { en: 'Customer project no.', es: 'Num. de proyecto del cliente', ja: '顧客プロジェクト番号', fr: 'Numero projet client', de: 'Kundenprojektnummer', ar: 'رقم مشروع العميل', vi: 'So du an khach hang', hi: 'ग्राहक परियोजना संख्या' },
+  '生产工厂': { en: 'Production factory', es: 'Fabrica de produccion', ja: '生産工場', fr: 'Usine de production', de: 'Produktionswerk', ar: 'مصنع الإنتاج', vi: 'Nha may san xuat', hi: 'उत्पादन फ़ैक्टरी' },
+  '项目阶段': { en: 'Project stage', es: 'Etapa del proyecto', ja: 'プロジェクト段階', fr: 'Phase du projet', de: 'Projektphase', ar: 'مرحلة المشروع', vi: 'Giai doan du an', hi: 'परियोजना चरण' },
+  '项目（可选）': { en: 'Project (optional)', es: 'Proyecto (opcional)', ja: 'プロジェクト（任意）', fr: 'Projet (optionnel)', de: 'Projekt (optional)', ar: 'المشروع (اختياري)', vi: 'Du an (tuy chon)', hi: 'परियोजना (वैकल्पिक)' },
+  '请选择项目': { en: 'Select a project', es: 'Seleccione un proyecto', ja: 'プロジェクトを選択', fr: 'Selectionner un projet', de: 'Projekt auswaehlen', ar: 'اختر مشروعا', vi: 'Chon du an', hi: 'परियोजना चुनें' },
+  '暂无项目讯息': { en: 'No project info yet', es: 'Aun sin info de proyecto', ja: 'プロジェクト情報はありません', fr: 'Aucune info projet', de: 'Noch keine Projektinfo', ar: 'لا توجد معلومات مشروع', vi: 'Chua co thong tin du an', hi: 'अभी कोई परियोजना जानकारी नहीं' },
+  '请输入工厂项目编号': { en: 'Please enter the factory project no.', es: 'Introduzca el num. de proyecto de fabrica', ja: '工場プロジェクト番号を入力してください', fr: 'Veuillez saisir le numero projet usine', de: 'Bitte Werksprojektnummer eingeben', ar: 'يرجى إدخال رقم مشروع المصنع', vi: 'Vui long nhap so du an nha may', hi: 'कृपया फ़ैक्टरी परियोजना संख्या दर्ज करें' },
+  '已保存项目讯息': { en: 'Project info saved', es: 'Info del proyecto guardada', ja: 'プロジェクト情報を保存しました', fr: 'Info projet enregistree', de: 'Projektinfo gespeichert', ar: 'تم حفظ معلومات المشروع', vi: 'Da luu thong tin du an', hi: 'परियोजना जानकारी सहेजी गई' },
+  '已删除项目讯息': { en: 'Project info deleted', es: 'Info del proyecto eliminada', ja: 'プロジェクト情報を削除しました', fr: 'Info projet supprimee', de: 'Projektinfo geloescht', ar: 'تم حذف معلومات المشروع', vi: 'Da xoa thong tin du an', hi: 'परियोजना जानकारी हटाई गई' },
+  '未选择项目': { en: 'No project selected', es: 'Ningun proyecto seleccionado', ja: 'プロジェクト未選択', fr: 'Aucun projet selectionne', de: 'Kein Projekt ausgewaehlt', ar: 'لم يتم اختيار مشروع', vi: 'Chua chon du an', hi: 'कोई परियोजना नहीं चुनी' },
+  '清除项目': { en: 'Clear project', es: 'Quitar proyecto', ja: 'プロジェクトを解除', fr: 'Effacer le projet', de: 'Projekt entfernen', ar: 'إزالة المشروع', vi: 'Bo du an', hi: 'परियोजना हटाएँ' },
 };
