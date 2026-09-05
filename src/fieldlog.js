@@ -97,15 +97,17 @@ export function setupFieldLog(App) {
       el.innerHTML = `<div class="empty"><div class="empty-icon">📸</div>${tr('暂无现场记录')}${this.isAdmin() ? ' · ' + tr('点右下角 + 新增') : ''}</div>`;
       return;
     }
-    const hint = this.isAdmin() ? `<div class="fl-swipe-hint">← ${tr('向左滑动记录可删除')}</div>` : '';
+    const hint = this.canEdit('field_log') ? `<div class="fl-swipe-hint">← ${tr('向左滑动记录可删除')}</div>` : '';
     el.innerHTML = hint + list.map(r => this._flSwipeItem(r)).join('');
     this._flBindSwipe(el);
   };
 
   // 生成一条「可左滑删除」的列表项
   App._flSwipeItem = function (r) {
+    const canDel = this.canEdit('field_log');
+    const delBtn = canDel ? `<button class="fl-swipe-del" onclick="App.deleteFieldLog(${r.id})" aria-label="${this.esc(tr('删除'))}">🗑</button>` : '';
     return `<div class="fl-swipe" data-id="${r.id}">
-      <button class="fl-swipe-del" onclick="App.deleteFieldLog(${r.id})" aria-label="${this.esc(tr('删除'))}">🗑</button>
+      ${delBtn}
       <div class="fl-swipe-card" onclick="App._flCardTap(${r.id}, this)">
         <div class="card">
           <div class="card-head"><div class="card-title">📸 ${this.esc(r.project ? tr(r.project) : tr('未指定项目'))}</div>
@@ -148,7 +150,7 @@ export function setupFieldLog(App) {
         if (!dragging) return; dragging = false;
         if (horiz) {
           card.style.transition = 'transform .2s';
-          if (dx < -DEL_W * 0.4) {
+          if (dx < -DEL_W * 0.4 && delBtn) {
             // 关闭其它已露出的项，再露出当前项
             root.querySelectorAll('.fl-swipe.revealed').forEach(o => { if (o !== w) { o.querySelector('.fl-swipe-card').style.transform = 'translateX(0)'; o.classList.remove('revealed'); } });
             card.style.transform = `translateX(-${DEL_W}px)`; w.classList.add('revealed');
@@ -458,14 +460,14 @@ export function setupFieldLog(App) {
   App.deleteFieldLog = async function (id) {
     if (!this.canEdit('field_log')) { this.toast(tr('只读模式，无法删除')); return; }
     if (!confirm(tr('确定删除这条现场记录？此操作不可撤销。'))) return;
-    const rec = (this.cache.field_log || []).find(r => r.id === id);
+    const rec = (this.cache.field_log || []).find(r => String(r.id) === String(id));
     const sbId = rec && rec._sb_id;
     try {
       if (sbId) {
         const now = new Date().toISOString();
         await this.sbPatch('sync_data', `supabase_id=eq.${sbId}`, { is_deleted: true, updated_at: now });
       }
-      this.cache.field_log = (this.cache.field_log || []).filter(r => r.id !== id);
+      this.cache.field_log = (this.cache.field_log || []).filter(r => String(r.id) !== String(id));
       this.toast(tr('已删除该现场记录'));
       this.goBack();
       this.loadFieldLog();
