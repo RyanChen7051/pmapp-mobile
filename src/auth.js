@@ -67,6 +67,8 @@ export function setupAuth(App) {
       // 记录登录当天的中国日期，用于「当日有效、次日需重新登录」判定
       this.session.loginDate = this.chinaDate();
       localStorage.setItem('pmapp_session', JSON.stringify(this.session));
+      // 每次重新登录：清空「AI 引导已展示」记录 → 本次登录每个栏目各显示一次
+      if (this.resetGuides) this.resetGuides();
       this.scheduleChinaLogout();
       await this.recordLogin(acc.username, acc.display_name || acc.username, acc.role || (ADMIN_USERS.includes(acc.username) ? 'admin' : 'viewer'));
       this.loadSettings();
@@ -137,6 +139,7 @@ export function setupAuth(App) {
     if (!this.isLoggedIn()) { this.scheduleChinaLogout(); return; }
     localStorage.removeItem('pmapp_session');
     this.session = null;
+    if (this.resetGuides) this.resetGuides();
     this.toast(reason || t('auto_logout_night'), 3500);
     this.navigate('settings'); // 重新渲染登录表单（loadSettings 依赖 isLoggedIn）
     this.scheduleChinaLogout(); // 重新安排下一次（在登录前为 no-op）
@@ -166,6 +169,7 @@ export function setupAuth(App) {
     if (!confirm(t('confirm_logout'))) return;
     localStorage.removeItem('pmapp_session');
     this.session = null;
+    if (this.resetGuides) this.resetGuides();
     this.loadSettings();
     this.loadHome();
     this.toast(t('t_logout'));
