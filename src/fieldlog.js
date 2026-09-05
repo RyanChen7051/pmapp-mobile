@@ -306,7 +306,7 @@ export function setupFieldLog(App) {
 
     if (this._flVoiceActive) this.flStopVoice();
     const kw = VOICE_CMD_KW[getLang()] || '栏目';
-    const cmdChip = (shortKey) => `<span style="font-size:10px;color:#4f9dff;border:1px solid #4f9dff;border-radius:6px;padding:1px 6px;margin-left:6px;white-space:nowrap">${this.esc(kw + tr(shortKey))}</span>`;
+    const cmdChip = (shortKey) => `<span style="font-size:10px;color:#4f9dff;border:1px solid #4f9dff;border-radius:6px;padding:1px 6px;margin-left:6px;white-space:nowrap">${this.esc(kw + ' ' + tr(shortKey))}</span>`;
     const html = `<div class="modal-handle"></div>
       <div class="modal-title">${rec ? tr('编辑') : tr('新建')}${tr('现场记录')}</div>
       <div id="fl-voice-bar" style="border:1px solid var(--border,#333);border-radius:12px;padding:10px;margin-bottom:10px;background:var(--bg-elev,#1c1c28)">
@@ -349,9 +349,9 @@ export function setupFieldLog(App) {
       <div class="input-group" id="fl-g-fl-responsible-email"><label>${tr('负责处理人邮箱（选填，自动发邮件通知）')}${cmdChip('负责处理人邮箱')}</label><input type="email" id="fl-responsible-email" inputmode="email" autocomplete="email" placeholder="${tr('国内负责同事的邮箱')}" value="${this.esc(newRec.responsible_email || '')}"></div>
       <div class="input-group" id="fl-g-fl-photos"><label>${tr('现场照片（自动压缩，不占空间）')}</label>
         <input type="file" id="fl-photos-input" accept="image/*" multiple style="display:none" onchange="App.flAddPhotos(this)">
-        <button type="button" class="btn btn-secondary" style="width:100%;margin-bottom:8px" onclick="document.getElementById('fl-photos-input').click()">📷 ${tr('photo_pick_btn')}</button>
+        <button type="button" class="btn btn-secondary" style="width:100%;margin-bottom:8px" onclick="document.getElementById('fl-photos-input').click()">📷 ${t('photo_pick_btn')}</button>
         <div class="fl-photos" id="fl-photos"></div>
-        <div style="font-size:11px;color:var(--text-muted);margin-top:4px">${tr('photo_pick_hint')}</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:4px">${t('photo_pick_hint')}</div>
       </div>
       <button class="btn btn-secondary" id="fl-gps-btn" onclick="App.flCaptureGPS()" style="margin-bottom:8px">${tr('📍 记录现场定位')}</button>
       <button class="btn btn-primary" onclick="App.saveFieldLog(${newRec.id})">${tr('保存')}</button>
