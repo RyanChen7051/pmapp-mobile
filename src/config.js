@@ -1,7 +1,7 @@
 /* ═══ Configuration & Constants ═══ */
 export const SUPABASE_URL = 'https://nsnmtkukxquhinlmbejg.supabase.co';
 export const SUPABASE_KEY = 'sb_publishable_YB5z3cQK-vCg67--oKpSrg_63STgMJW';
-export const APP_VERSION = 'v3.16.29';
+export const APP_VERSION = 'v3.16.30';
 
 // Web Push VAPID 公钥（客户端订阅用；私钥仅服务端发送端持有，绝不提交前端）
 export const VAPID_PUBLIC = 'BBEsbi_NqN1vqWfwbYx3XV-qUVTqgJNbaNg71TR2tx0k8158CViUZnLfdiLosv6n_sycP2S3yexNFYFzKHChL_c';
@@ -85,10 +85,11 @@ export const MODULES = {
   tasks: {
     // 计划页区块「生产计划（主计划）」：先建项目讯息 → 主计划点选项目 → 自动生成项目计划编号
     title: '任务', icon: '📋', table: 'tasks', requires: 'project_info',
-    listFields: [{key:'plan_code',label:'项目计划编号'},{key:'title',label:'标题'},{key:'project_ref',label:'项目'},{key:'status',label:'状态',badge:true},{key:'priority',label:'优先级',badge:true},{key:'assignee',label:'负责人'},{key:'due_date',label:'截止日期'}],
-    detailFields: [{key:'plan_code',label:'项目计划编号'},{key:'title',label:'标题'},{key:'project_ref',label:'项目'},{key:'description',label:'描述'},{key:'status',label:'状态'},{key:'priority',label:'优先级'},{key:'assignee',label:'负责人'},{key:'start_date',label:'开始日期'},{key:'due_date',label:'截止日期'},{key:'estimated_hours',label:'预估工时'},{key:'actual_hours',label:'实际工时'}],
+    listFields: [{key:'plan_code',label:'项目计划编号'},{key:'order_no',label:'订单号'},{key:'title',label:'标题'},{key:'project_ref',label:'项目'},{key:'status',label:'状态',badge:true},{key:'priority',label:'优先级',badge:true},{key:'assignee',label:'负责人'},{key:'due_date',label:'截止日期'}],
+    detailFields: [{key:'plan_code',label:'项目计划编号'},{key:'order_no',label:'订单号'},{key:'title',label:'标题'},{key:'project_ref',label:'项目'},{key:'description',label:'描述'},{key:'status',label:'状态'},{key:'priority',label:'优先级'},{key:'assignee',label:'负责人'},{key:'start_date',label:'开始日期'},{key:'due_date',label:'截止日期'},{key:'estimated_hours',label:'预估工时'},{key:'actual_hours',label:'实际工时'}],
     editFields: [
       {key:'title',label:'标题',type:'text',required:true},
+      {key:'order_no',label:'订单号',type:'text'},
       {key:'project_id',label:'项目',type:'picker',source:'project_info',textKeys:['factory_project_no','customer_project_no'],textSep:' / ',labelKey:'project_ref',required:true},
       {key:'plan_code',label:'项目计划编号',type:'autocode',from:'project_id',codeKeys:['factory_project_no','customer_project_no'],countModule:'tasks',countBy:'project_id'},
       {key:'description',label:'描述',type:'textarea'},
@@ -134,6 +135,76 @@ export const MODULES = {
       {key:'customer_project_no',label:'客户项目编号',type:'text'},
       {key:'production_factory',label:'生产工厂',type:'text'},
       {key:'project_stage',label:'项目阶段',type:'select',options:[{v:'NPI',t:'NPI'},{v:'EVT',t:'EVT'},{v:'DVT',t:'DVT'},{v:'PVT',t:'PVT'},{v:'MP',t:'量产'}]},
+    ],
+  },
+  material_master: {
+    title: '物料主档', icon: '🧾', table: 'material_master',
+    listFields: [{key:'material_code',label:'料号'},{key:'material_name',label:'品名'},{key:'category',label:'类别'},{key:'origin',label:'来源地'},{key:'supplier',label:'供应商'},{key:'lead_time_days',label:'采购提前期'}],
+    detailFields: [{key:'material_code',label:'料号'},{key:'material_name',label:'品名'},{key:'spec',label:'规格'},{key:'category',label:'类别'},{key:'unit',label:'单位'},{key:'supplier',label:'供应商'},{key:'origin',label:'来源地'},{key:'lead_time_days',label:'采购提前期'},{key:'safety_stock_days',label:'安全库存天数'},{key:'shelf_life_days',label:'保质期'},{key:'is_key',label:'关键料'},{key:'remarks',label:'备注'}],
+    editFields: [
+      {key:'material_code',label:'料号',type:'text',required:true},
+      {key:'material_name',label:'品名',type:'text',required:true},
+      {key:'spec',label:'规格',type:'text'},
+      {key:'category',label:'类别',type:'select',options:[{v:'PCB',t:'PCB'},{v:'电子料',t:'电子料'},{v:'结构件',t:'结构件'},{v:'电池',t:'电池'},{v:'喇叭',t:'喇叭'},{v:'包材',t:'包材'},{v:'化学品',t:'化学品'},{v:'辅料',t:'辅料'},{v:'其他',t:'其他'}]},
+      {key:'unit',label:'单位',type:'text'},
+      {key:'supplier',label:'供应商',type:'text'},
+      {key:'origin',label:'来源地',type:'select',options:[{v:'中国发运',t:'中国发运'},{v:'本地采购',t:'本地采购'}]},
+      {key:'lead_time_days',label:'采购提前期',type:'number'},
+      {key:'safety_stock_days',label:'安全库存天数',type:'number'},
+      {key:'shelf_life_days',label:'保质期',type:'number'},
+      {key:'is_key',label:'关键料',type:'select',options:[{v:'是',t:'是'},{v:'否',t:'否'}]},
+      {key:'remarks',label:'备注',type:'textarea'},
+    ],
+  },
+  plan_material: {
+    title: '订单物料需求', icon: '📋', table: 'plan_material',
+    listFields: [{key:'plan_code',label:'关联生产计划'},{key:'order_no',label:'订单号'},{key:'process_stage',label:'工序'},{key:'material_code',label:'料号'},{key:'required_qty',label:'需求量'},{key:'required_date',label:'需求日'}],
+    detailFields: [{key:'plan_code',label:'关联生产计划'},{key:'order_no',label:'订单号'},{key:'production_factory',label:'生产工厂'},{key:'process_stage',label:'工序'},{key:'material_code',label:'料号'},{key:'material_name',label:'品名'},{key:'required_qty',label:'需求量'},{key:'required_date',label:'需求日'},{key:'received_qty',label:'已收货'},{key:'consumed_qty',label:'已耗用'}],
+    editFields: [
+      {key:'plan_id',label:'关联生产计划',type:'picker',source:'tasks',textKeys:['plan_code'],textSep:' · ',labelKey:'plan_code',required:true},
+      {key:'order_no',label:'订单号',type:'text'},
+      {key:'factory_id',label:'生产工厂',type:'picker',source:'factory_info',textKeys:['factory_name'],textSep:' / ',labelKey:'production_factory'},
+      {key:'process_stage',label:'工序',type:'select',options:[{v:'SMT',t:'SMT'},{v:'PCBA分板',t:'PCBA分板'},{v:'芯片烧录',t:'芯片烧录'},{v:'PCBA功能测试',t:'PCBA功能测试'},{v:'防水喷涂',t:'防水喷涂'},{v:'FATP组装',t:'FATP组装'},{v:'包装出货',t:'包装出货'}]},
+      {key:'material_code',label:'料号',type:'text',required:true},
+      {key:'material_name',label:'品名',type:'text'},
+      {key:'required_qty',label:'需求量',type:'number'},
+      {key:'required_date',label:'需求日',type:'date'},
+      {key:'received_qty',label:'已收货',type:'number'},
+      {key:'consumed_qty',label:'已耗用',type:'number'},
+    ],
+  },
+  material_shipment: {
+    title: '在途发货', icon: '🚢', table: 'material_shipment',
+    listFields: [{key:'lot_no',label:'发货批号'},{key:'order_no',label:'订单号'},{key:'production_factory',label:'生产工厂'},{key:'ship_date',label:'发货日'},{key:'eta_date',label:'预计到厂日'},{key:'customs_status',label:'清关状态',badge:true}],
+    detailFields: [{key:'lot_no',label:'发货批号'},{key:'order_no',label:'订单号'},{key:'production_factory',label:'生产工厂'},{key:'material_code',label:'料号'},{key:'qty_shipped',label:'发货数'},{key:'qty_received',label:'收货数'},{key:'transport_mode',label:'运输方式'},{key:'ship_date',label:'发货日'},{key:'eta_date',label:'预计到厂日'},{key:'actual_arrival_date',label:'实际到厂日'},{key:'customs_status',label:'清关状态'}],
+    editFields: [
+      {key:'lot_no',label:'发货批号',type:'text',required:true},
+      {key:'order_no',label:'订单号',type:'text'},
+      {key:'factory_id',label:'生产工厂',type:'picker',source:'factory_info',textKeys:['factory_name'],textSep:' / ',labelKey:'production_factory'},
+      {key:'transport_mode',label:'运输方式',type:'select',options:[{v:'海运',t:'海运'},{v:'陆运',t:'陆运'},{v:'空运',t:'空运'}]},
+      {key:'ship_date',label:'发货日',type:'date'},
+      {key:'eta_date',label:'预计到厂日',type:'date'},
+      {key:'actual_arrival_date',label:'实际到厂日',type:'date'},
+      {key:'customs_status',label:'清关状态',type:'select',options:[{v:'待报关',t:'待报关'},{v:'清关中',t:'清关中'},{v:'已放行',t:'已放行'},{v:'异常',t:'异常'}]},
+      {key:'material_code',label:'料号',type:'text'},
+      {key:'qty_shipped',label:'发货数',type:'number'},
+      {key:'qty_received',label:'收货数',type:'number'},
+    ],
+  },
+  factory_material_stock: {
+    title: '工厂库存', icon: '📦', table: 'factory_material_stock',
+    listFields: [{key:'production_factory',label:'生产工厂'},{key:'material_code',label:'料号'},{key:'material_name',label:'品名'},{key:'qty_on_hand',label:'现有量'},{key:'qty_locked',label:'已锁定'},{key:'expiry_date',label:'到期日'}],
+    detailFields: [{key:'production_factory',label:'生产工厂'},{key:'material_code',label:'料号'},{key:'material_name',label:'品名'},{key:'batch_no',label:'批次'},{key:'qty_on_hand',label:'现有量'},{key:'qty_locked',label:'已锁定'},{key:'expiry_date',label:'到期日'},{key:'location',label:'库位'},{key:'last_move_date',label:'最后异动日'}],
+    editFields: [
+      {key:'factory_id',label:'生产工厂',type:'picker',source:'factory_info',textKeys:['factory_name'],textSep:' / ',labelKey:'production_factory',required:true},
+      {key:'material_code',label:'料号',type:'text',required:true},
+      {key:'material_name',label:'品名',type:'text'},
+      {key:'batch_no',label:'批次',type:'text'},
+      {key:'qty_on_hand',label:'现有量',type:'number'},
+      {key:'qty_locked',label:'已锁定',type:'number'},
+      {key:'expiry_date',label:'到期日',type:'date'},
+      {key:'location',label:'库位',type:'text'},
+      {key:'last_move_date',label:'最后异动日',type:'date'},
     ],
   },
   shipping_plans: {
