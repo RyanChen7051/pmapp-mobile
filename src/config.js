@@ -1,7 +1,7 @@
 /* ═══ Configuration & Constants ═══ */
 export const SUPABASE_URL = 'https://nsnmtkukxquhinlmbejg.supabase.co';
 export const SUPABASE_KEY = 'sb_publishable_YB5z3cQK-vCg67--oKpSrg_63STgMJW';
-export const APP_VERSION = 'v3.16.26';
+export const APP_VERSION = 'v3.16.27';
 
 // Web Push VAPID 公钥（客户端订阅用；私钥仅服务端发送端持有，绝不提交前端）
 export const VAPID_PUBLIC = 'BBEsbi_NqN1vqWfwbYx3XV-qUVTqgJNbaNg71TR2tx0k8158CViUZnLfdiLosv6n_sycP2S3yexNFYFzKHChL_c';
@@ -83,10 +83,22 @@ export const MODULES = {
     editFields: [{key:'title',label:'标题',type:'text',required:true},{key:'description',label:'描述',type:'textarea'},{key:'severity',label:'严重度',type:'select',options:[{v:'low',t:'低'},{v:'medium',t:'中'},{v:'high',t:'高'},{v:'critical',t:'严重'}]},{key:'status',label:'状态',type:'select',options:[{v:'open',t:'待处理'},{v:'assigned',t:'已指派'},{v:'analyzing',t:'分析中'},{v:'fixing',t:'修复中'},{v:'verifying',t:'验证中'},{v:'closed',t:'已关闭'}]},{key:'issue_type',label:'类型',type:'select',options:[{v:'quality',t:'质量'},{v:'production',t:'生产'},{v:'supply',t:'供应链'},{v:'design',t:'设计'},{v:'inspection',t:'检验'},{v:'other',t:'其他'}]},{key:'assigned_to',label:'负责人',type:'text'},{key:'solution_short',label:'短期对策',type:'textarea'},{key:'solution_long',label:'长期对策',type:'textarea'},{key:'plan_date',label:'计划解决日期',type:'date'},{key:'due_date',label:'截止日期'},{key:'priority_score',label:'优先级(1-10)',type:'number'}],
   },
   tasks: {
-    title: '任务', icon: '📋', table: 'tasks',
-    listFields: [{key:'title',label:'标题'},{key:'status',label:'状态',badge:true},{key:'priority',label:'优先级',badge:true},{key:'assignee',label:'负责人'},{key:'due_date',label:'截止日期'}],
-    detailFields: [{key:'title',label:'标题'},{key:'description',label:'描述'},{key:'status',label:'状态'},{key:'priority',label:'优先级'},{key:'assignee',label:'负责人'},{key:'start_date',label:'开始日期'},{key:'due_date',label:'截止日期'},{key:'estimated_hours',label:'预估工时'},{key:'actual_hours',label:'实际工时'}],
-    editFields: [{key:'title',label:'标题',type:'text',required:true},{key:'description',label:'描述',type:'textarea'},{key:'status',label:'状态',type:'select',options:[{v:'todo',t:'待办'},{v:'in_progress',t:'进行中'},{v:'review',t:'审核中'},{v:'done',t:'已完成'}]},{key:'priority',label:'优先级',type:'select',options:[{v:'low',t:'低'},{v:'medium',t:'中'},{v:'high',t:'高'},{v:'urgent',t:'紧急'}]},{key:'assignee',label:'负责人',type:'text'},{key:'start_date',label:'开始日期',type:'date'},{key:'due_date',label:'截止日期',type:'date'},{key:'estimated_hours',label:'预估工时',type:'number'}],
+    // 计划页区块「生产计划（主计划）」：先建项目讯息 → 主计划点选项目 → 自动生成项目计划编号
+    title: '任务', icon: '📋', table: 'tasks', requires: 'project_info',
+    listFields: [{key:'plan_code',label:'项目计划编号'},{key:'title',label:'标题'},{key:'project_ref',label:'项目'},{key:'status',label:'状态',badge:true},{key:'priority',label:'优先级',badge:true},{key:'assignee',label:'负责人'},{key:'due_date',label:'截止日期'}],
+    detailFields: [{key:'plan_code',label:'项目计划编号'},{key:'title',label:'标题'},{key:'project_ref',label:'项目'},{key:'description',label:'描述'},{key:'status',label:'状态'},{key:'priority',label:'优先级'},{key:'assignee',label:'负责人'},{key:'start_date',label:'开始日期'},{key:'due_date',label:'截止日期'},{key:'estimated_hours',label:'预估工时'},{key:'actual_hours',label:'实际工时'}],
+    editFields: [
+      {key:'title',label:'标题',type:'text',required:true},
+      {key:'project_id',label:'项目',type:'picker',source:'project_info',textKeys:['factory_project_no','customer_project_no'],textSep:' / ',labelKey:'project_ref',required:true},
+      {key:'plan_code',label:'项目计划编号',type:'autocode',from:'project_id',codeKeys:['factory_project_no','customer_project_no'],countModule:'tasks',countBy:'project_id'},
+      {key:'description',label:'描述',type:'textarea'},
+      {key:'status',label:'状态',type:'select',options:[{v:'todo',t:'待办'},{v:'in_progress',t:'进行中'},{v:'review',t:'审核中'},{v:'done',t:'已完成'}]},
+      {key:'priority',label:'优先级',type:'select',options:[{v:'low',t:'低'},{v:'medium',t:'中'},{v:'high',t:'高'},{v:'urgent',t:'紧急'}]},
+      {key:'assignee',label:'负责人',type:'text'},
+      {key:'start_date',label:'开始日期',type:'date'},
+      {key:'due_date',label:'截止日期',type:'date'},
+      {key:'estimated_hours',label:'预估工时',type:'number'},
+    ],
   },
   factory_info: {
     title: '工厂信息', icon: '🏭', table: 'factory_info',
@@ -96,8 +108,8 @@ export const MODULES = {
   },
   todos: {
     title: '生产计划（子计划）', icon: '✅', table: 'todos',
-    listFields: [{key:'content',label:'任务'},{key:'parent_plan',label:'主计划'},{key:'project_ref',label:'项目'},{key:'due_date',label:'完成时间'},{key:'done',label:'完成',toggle:true}],
-    detailFields: [{key:'content',label:'任务'},{key:'parent_plan',label:'主计划'},{key:'project_ref',label:'项目'},{key:'due_date',label:'完成时间'},{key:'done',label:'完成'}],
+    listFields: [{key:'content',label:'任务'},{key:'plan_code',label:'项目计划编号'},{key:'project_ref',label:'项目'},{key:'due_date',label:'完成时间'},{key:'done',label:'完成',toggle:true}],
+    detailFields: [{key:'content',label:'任务'},{key:'plan_code',label:'项目计划编号'},{key:'project_ref',label:'项目'},{key:'parent_plan',label:'主计划'},{key:'due_date',label:'完成时间'},{key:'done',label:'完成'}],
     editFields: [{key:'content',label:'任务',type:'text',required:true},{key:'parent_plan',label:'主计划',type:'text'},{key:'due_date',label:'完成时间',type:'date'},{key:'done',label:'完成',type:'text'}],
   },
   project_info: {
