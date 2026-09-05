@@ -553,4 +553,19 @@ export const DICT = {
   '呆滞料': { en: 'Dead stock', es: 'Stock muerto', ja: '滞留品', fr: 'Stock mort', de: 'Ladenhueter', ar: 'مخزون ميت', vi: 'Hang ton dong', hi: 'डेड स्टॉक' },
   '保质期临期': { en: 'Expiring soon', es: 'Por caducar', ja: '期限間近', fr: 'Peremption proche', de: 'Bald ablaufend', ar: 'قارب الانتهاء', vi: 'Sap het han', hi: 'समाप्ति निकट' },
 
+  /* ── 物料到厂倒计时 / 订单汇总（2026-09-05）── */
+  '天': { en: 'days', es: 'dias', ja: '日', fr: 'jours', de: 'Tage', ar: 'يوم', vi: 'ngay', hi: 'दिन' },
+  '还有': { en: 'in', es: 'en', ja: 'あと', fr: 'dans', de: 'in', ar: 'خلال', vi: 'con', hi: 'में' },
+  '已逾期': { en: 'overdue', es: 'vencido', ja: '逾期済み', fr: 'en retard', de: 'ueberfaellig', ar: 'متاخر', vi: 'qua han', hi: 'विलंबित' },
+  '倒计时': { en: 'countdown', es: 'cuenta atras', ja: 'カウントダウン', fr: 'compte a rebours', de: 'Countdown', ar: 'عد تنازلي', vi: 'dem nguoc', hi: 'उलटी गिनती' },
+  '到厂倒计时': { en: 'Days to arrival', es: 'Dias hasta llegada', ja: '到着カウントダウン', fr: 'Jours avant arrivee', de: 'Tage bis Ankunft', ar: 'ايام حتى الوصول', vi: 'Dem nguoc den NM', hi: 'आगमन शेष दिन' },
+  '按订单汇总': { en: 'By order', es: 'Por pedido', ja: '注文別', fr: 'Par commande', de: 'Nach Auftrag', ar: 'حسب الطلب', vi: 'Theo don hang', hi: 'ऑर्डर अनुसार' },
+  '最早到厂': { en: 'Earliest arrival', es: 'Llegada mas pronto', ja: '最短到着', fr: 'Arrivee la plus tot', de: 'Frueheste Ankunft', ar: 'اقرب وصول', vi: 'Den som nhat', hi: 'सबसे जल्दी आगमन' },
+  '缺料项': { en: 'Short items', es: 'Articulos faltantes', ja: '不足品目', fr: 'Articles manquants', de: 'Fehlpositionen', ar: 'اصناف ناقصة', vi: 'Hang thieu', hi: 'कम आइटम' },
+  '最紧急': { en: 'Most urgent', es: 'Mas urgente', ja: '最優先', fr: 'Le plus urgent', de: 'Dringendsten', ar: 'الاكثر الحاحا', vi: 'Khan cap nhat', hi: 'सबसे तत्काल' },
+  '预计': { en: 'Est.', es: 'Est.', ja: '予定', fr: 'Prev.', de: 'Vorauss.', ar: 'متوقع', vi: 'Du kien', hi: 'अनुमानित' },
+  '已到厂': { en: 'Arrived', es: 'Llegado', ja: '到着済み', fr: 'Arrive', de: 'Angekommen', ar: 'وصل', vi: 'Da den', hi: 'आगमन' },
+  '发货中': { en: 'In transit', es: 'En transito', ja: '輸送中', fr: 'En transit', de: 'Unterwegs', ar: 'في الطريق', vi: 'Dang gui', hi: 'पारगमन में' },
+
+  '齐套缺口': { en: 'Kitting shortage', es: 'Faltante de kitting', ja: 'キッティング不足', fr: 'Manque kitting', de: 'Kitting-Fehlmenge', ar: 'نقص التجهيز', vi: 'Thieu kitting', hi: 'किटिंग कमी' },
 };
