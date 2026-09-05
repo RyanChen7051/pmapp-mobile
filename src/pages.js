@@ -12,6 +12,8 @@ export function setupPages(App) {
     else { tEl.innerHTML = tasks.map(t => `<div class="card" onclick="App.openDetail('tasks', ${t.id})">
       <div class="card-title">📋 ${this.esc(t.title)}</div>
       <div class="card-meta">
+        ${t.plan_code ? `<span>🔢 ${this.esc(t.plan_code)}</span>` : ''}
+        ${t.project_ref ? `<span>🗂 ${this.esc(t.project_ref)}</span>` : ''}
         ${t.status ? `<span class="badge ${this.badgeClass(t.status)}">${this.esc(tr(t.status))}</span>` : ''}
         ${t.priority ? `<span class="badge ${this.badgeClass(t.priority)}">${this.esc(tr(t.priority))}</span>` : ''}
         ${t.assignee ? `<span>👤 ${this.esc(t.assignee)}</span>` : ''}
@@ -47,7 +49,7 @@ export function setupPages(App) {
             <span>📅 ${due ? this.esc(due) : t('todo_no_due')}</span>
             ${overdue ? `<span class="todo-overdue" title="${t('todo_overdue')}">⚠️</span>` : ''}
           </div>
-          ${r.parent_plan ? `<div class="todo-parent">🔗 ${this.esc(r.parent_plan)}</div>` : ''}
+          ${r.plan_code ? `<div class="todo-parent">🔢 ${this.esc(r.plan_code)}</div>` : (r.parent_plan ? `<div class="todo-parent">🔗 ${this.esc(r.parent_plan)}</div>` : '')}
           ${r.project_ref ? `<div class="todo-parent">🗂 ${this.esc(r.project_ref)}</div>` : ''}
         </div>
         <span class="todo-del" onclick="App.deleteTodo(${r.id})">✕</span>
@@ -72,17 +74,19 @@ export function setupPages(App) {
     const due = dEl ? dEl.value : '';
     if (!content) { this.toast(t('todo_ph_content')); return; }
     const now = new Date().toISOString().slice(0, 19).replace('T', ' ');
-    const id = Math.floor(Date.now() / 1000);
-    const parent = pEl ? pEl.value : '';
+    const id = this._newLocalId('todos');
+    const plan = this._todoPlan || null;
     const rec = {
-      id, content, parent_plan: parent, due_date: due, done: false, created_at: now,
-      project_id: this._todoProject ? this._todoProject.id : '',
-      project_ref: this._todoProject ? this._todoProject.label : '',
+      id, content, due_date: due, done: false, created_at: now,
+      parent_plan: plan ? (plan.title || '') : '',
+      plan_code: plan ? (plan.code || '') : '',
+      project_id: plan ? (plan.project_id || '') : '',
+      project_ref: plan ? (plan.project_ref || '') : '',
     };
     (this.cache.todos = this.cache.todos || []).unshift(rec);
-    cEl.value = ''; if (dEl) dEl.value = ''; if (pEl) pEl.value = '';
-    this._todoProject = null;
-    this.updateTodoProjectButton();
+    cEl.value = ''; if (dEl) dEl.value = '';
+    this._todoPlan = null;
+    this.updateTodoPlanButton();
     this.renderTodos();
     try {
       await this.sbPost('sync_data', {
@@ -143,7 +147,7 @@ export function setupPages(App) {
           <span>📅 ${this.esc(r.due_date || '')}</span>
           <span class="todo-overdue" title="${t('todo_overdue')}">⚠️ ${t('todo_overdue')}</span>
         </div>
-        ${r.parent_plan ? `<div class="todo-parent">🔗 ${this.esc(r.parent_plan)}</div>` : ''}
+        ${r.plan_code ? `<div class="todo-parent">🔢 ${this.esc(r.plan_code)}</div>` : (r.parent_plan ? `<div class="todo-parent">🔗 ${this.esc(r.parent_plan)}</div>` : '')}
         ${r.project_ref ? `<div class="todo-parent">🗂 ${this.esc(r.project_ref)}</div>` : ''}
       </div>
     </div>`).join('');
@@ -179,7 +183,7 @@ export function setupPages(App) {
       stage.innerHTML = PROJECT_STAGES.map(o => `<option value="${o.v}">${this.esc(tr(o.t))}</option>`).join('');
       if (cur) stage.value = cur;
     }
-    this.updateTodoProjectButton();
+    this.updateTodoPlanButton();
 
     const el = document.getElementById('proj-info-list');
     if (!el) return;
@@ -211,7 +215,7 @@ export function setupPages(App) {
     const factory_project_no = fno.value.trim();
     if (!factory_project_no) { this.toast(tr('请输入工厂项目编号')); fno.focus(); return; }
     const now = new Date().toISOString().slice(0, 19).replace('T', ' ');
-    const id = Math.floor(Date.now() / 1000);
+    const id = this._newLocalId('project_info');
     const rec = {
       id, factory_project_no,
       customer_project_no: cno ? cno.value.trim() : '',
@@ -239,7 +243,7 @@ export function setupPages(App) {
     if (idx < 0) return;
     const rec = list[idx];
     list.splice(idx, 1);
-    if (this._todoProject && String(this._todoProject.id) === String(id)) this._todoProject = null;
+    if (this._todoPlan && String(this._todoPlan.project_id) === String(id)) this._todoPlan = null;
     this.renderProjectInfo();
     try {
       const q = rec._sb_id ? `supabase_id=eq.${rec._sb_id}` : `local_id=eq.${id}`;
@@ -248,47 +252,49 @@ export function setupPages(App) {
     this.toast(tr('已删除项目讯息'));
   };
 
-  // 生产计划表单里的「项目（可选）」：点开从项目讯息里挑一条
-  App.pickTodoProject = function() {
-    const list = this.cache.project_info || [];
+  // 生产计划（子计划）表单里的「项目计划编号（可选）」：点开从生产计划（主计划）里挑一条编号
+  // 选中后子计划即继承主计划的项目关联（project_id / project_ref），与项目讯息串起来。
+  App.pickTodoPlan = function() {
+    const list = (this.cache.tasks || []).filter(x => x.plan_code);
+    if (list.length === 0) { this.toast(tr('暂无项目计划')); return; }
     const mc = document.getElementById('modal-content');
     if (!mc) return;
-    if (list.length === 0) { this.toast(tr('暂无项目讯息')); return; }
     mc.innerHTML = `<div class="modal-handle"></div>
-      <div class="modal-title">${tr('请选择项目')}</div>
-      <div style="font-size:12px;color:var(--text-muted);margin-bottom:10px">${tr('项目（可选）')}</div>` +
-      list.map(p => `<div class="card" onclick="App.selectTodoProject(${p.id})">
-        <div class="card-title">🗂 ${this.esc(this._piLabel(p))}</div>
+      <div class="modal-title">${tr('选择项目计划编号')}</div>
+      <div style="font-size:12px;color:var(--text-muted);margin-bottom:10px">${tr('项目计划编号（可选）')}</div>` +
+      list.map(x => `<div class="card" onclick="App.selectTodoPlan(${x.id})">
+        <div class="card-title">🔢 ${this.esc(x.plan_code)}</div>
         <div class="card-meta">
-          ${p.production_factory ? `<span>🏭 ${this.esc(p.production_factory)}</span>` : ''}
-          ${p.project_stage ? `<span class="badge ${this.badgeClass(p.project_stage)}">${this.esc(this._piStageText(p.project_stage))}</span>` : ''}
+          ${x.title ? `<span>📋 ${this.esc(x.title)}</span>` : ''}
+          ${x.project_ref ? `<span>🗂 ${this.esc(x.project_ref)}</span>` : ''}
+          ${x.status ? `<span class="badge ${this.badgeClass(x.status)}">${this.esc(tr(x.status))}</span>` : ''}
         </div></div>`).join('') +
       `<div style="height:10px"></div>
-      <button class="btn btn-secondary" onclick="App.clearTodoProject()">${tr('清除项目')}</button>
+      <button class="btn btn-secondary" onclick="App.clearTodoPlan()">${tr('清除选择')}</button>
       <div style="height:10px"></div>
       <button class="btn btn-secondary" onclick="App.closeModal()">${tr('取消')}</button>`;
     document.getElementById('modal-overlay').classList.add('show');
   };
 
-  App.selectTodoProject = function(id) {
-    const p = (this.cache.project_info || []).find(r => String(r.id) === String(id));
-    if (!p) return;
-    this._todoProject = { id: p.id, label: this._piLabel(p) };
+  App.selectTodoPlan = function(id) {
+    const x = (this.cache.tasks || []).find(r => String(r.id) === String(id));
+    if (!x) return;
+    this._todoPlan = { id: x.id, code: x.plan_code || '', title: x.title || '', project_id: x.project_id || '', project_ref: x.project_ref || '' };
     this.closeModal();
-    this.updateTodoProjectButton();
+    this.updateTodoPlanButton();
   };
 
-  App.clearTodoProject = function() {
-    this._todoProject = null;
+  App.clearTodoPlan = function() {
+    this._todoPlan = null;
     this.closeModal();
-    this.updateTodoProjectButton();
+    this.updateTodoPlanButton();
   };
 
-  App.updateTodoProjectButton = function() {
-    const btn = document.getElementById('todo-proj-btn');
+  App.updateTodoPlanButton = function() {
+    const btn = document.getElementById('todo-plan-btn');
     if (!btn) return;
-    const label = this._todoProject ? this._todoProject.label : tr('项目（可选）');
-    btn.innerHTML = `📁 ${this.esc(label)}`;
+    const label = this._todoPlan ? this._todoPlan.code : tr('项目计划编号（可选）');
+    btn.innerHTML = `🔢 ${this.esc(label)}`;
   };
 
   /* ─── Materials Tab ─── */
@@ -562,7 +568,7 @@ export function setupPages(App) {
     const material_name = get('doa-material_name');
     if (!material_name) { this.toast(tr('物料名不能为空')); return; }
     const now = new Date().toISOString();
-    const id = Math.floor(Date.now() / 1000);
+    const id = this._newLocalId('doa');
     const received = parseFloat(get('doa-received_qty')) || 0;
     const defect = parseFloat(get('doa-defect_qty')) || 0;
     const payload = {
@@ -589,7 +595,7 @@ export function setupPages(App) {
     const customer = get('rma-customer');
     if (!project && !customer) { this.toast(tr('项目或客户至少填一项')); return; }
     const now = new Date().toISOString();
-    const id = Math.floor(Date.now() / 1000);
+    const id = this._newLocalId('rma');
     const payload = {
       id, date: get('rma-date'), project, customer,
       return_qty: parseFloat(get('rma-return_qty')) || 0,
