@@ -1,7 +1,7 @@
 /* ═══ Configuration & Constants ═══ */
 export const SUPABASE_URL = 'https://nsnmtkukxquhinlmbejg.supabase.co';
 export const SUPABASE_KEY = 'sb_publishable_YB5z3cQK-vCg67--oKpSrg_63STgMJW';
-export const APP_VERSION = 'v3.16.27';
+export const APP_VERSION = 'v3.16.28';
 
 // Web Push VAPID 公钥（客户端订阅用；私钥仅服务端发送端持有，绝不提交前端）
 export const VAPID_PUBLIC = 'BBEsbi_NqN1vqWfwbYx3XV-qUVTqgJNbaNg71TR2tx0k8158CViUZnLfdiLosv6n_sycP2S3yexNFYFzKHChL_c';
@@ -102,9 +102,22 @@ export const MODULES = {
   },
   factory_info: {
     title: '工厂信息', icon: '🏭', table: 'factory_info',
-    listFields: [{key:'factory_name',label:'工厂名称'},{key:'region',label:'区域'},{key:'country',label:'国家'},{key:'pm',label:'项目经理'}],
-    detailFields: [{key:'factory_name',label:'工厂名称'},{key:'region',label:'区域'},{key:'country',label:'国家'},{key:'client_project_code',label:'客户项目代码'},{key:'factory_project_code',label:'工厂项目代码'},{key:'pm',label:'项目经理'},{key:'pe',label:'产品工程师'},{key:'te',label:'测试工程师'},{key:'me',label:'制造工程师'},{key:'ee',label:'电气工程师'},{key:'quality',label:'质量工程师'},{key:'daily_production_report',label:'日报链接'},{key:'daily_problem_management',label:'问题管理链接'}],
-    editFields: [{key:'factory_name',label:'工厂名称',type:'text',required:true},{key:'region',label:'区域',type:'text'},{key:'country',label:'国家',type:'text'},{key:'client_project_code',label:'客户项目代码',type:'text'},{key:'factory_project_code',label:'工厂项目代码',type:'text'},{key:'pm',label:'项目经理',type:'text'},{key:'pe',label:'产品工程师',type:'text'},{key:'te',label:'测试工程师',type:'text'},{key:'me',label:'制造工程师',type:'text'},{key:'ee',label:'电气工程师',type:'text'},{key:'quality',label:'质量工程师',type:'text'},{key:'daily_production_report',label:'日报链接',type:'text'},{key:'daily_problem_management',label:'问题管理链接',type:'text'}],
+    listFields: [{key:'factory_name',label:'工厂名称'},{key:'address',label:'工厂地址'},{key:'region',label:'区域'},{key:'country',label:'国家'},{key:'pm',label:'项目经理'}],
+    // 详情页保留历史字段（工厂/客户项目编号、日报、问题管理链接），仅新建/编辑表单不再出现
+    detailFields: [{key:'factory_name',label:'工厂名称'},{key:'address',label:'工厂地址'},{key:'region',label:'区域'},{key:'country',label:'国家'},{key:'client_project_code',label:'客户项目代码'},{key:'factory_project_code',label:'工厂项目代码'},{key:'pm',label:'项目经理'},{key:'pe',label:'产品工程师'},{key:'te',label:'测试工程师'},{key:'me',label:'制造工程师'},{key:'ee',label:'电气工程师'},{key:'quality',label:'质量工程师'},{key:'daily_production_report',label:'日报链接'},{key:'daily_problem_management',label:'问题管理链接'}],
+    // 新建/编辑：只保留工厂基本讯息（编号类已归到「项目讯息」，两个链接移出）
+    editFields: [
+      {key:'factory_name',label:'工厂名称',type:'text',required:true},
+      {key:'address',label:'工厂地址',type:'text'},
+      {key:'region',label:'区域',type:'text'},
+      {key:'country',label:'国家',type:'text'},
+      {key:'pm',label:'项目经理',type:'text'},
+      {key:'pe',label:'产品工程师',type:'text'},
+      {key:'te',label:'测试工程师',type:'text'},
+      {key:'me',label:'制造工程师',type:'text'},
+      {key:'ee',label:'电气工程师',type:'text'},
+      {key:'quality',label:'质量工程师',type:'text'},
+    ],
   },
   todos: {
     title: '生产计划（子计划）', icon: '✅', table: 'todos',
