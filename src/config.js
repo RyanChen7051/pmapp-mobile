@@ -1,7 +1,7 @@
 /* ═══ Configuration & Constants ═══ */
 export const SUPABASE_URL = 'https://nsnmtkukxquhinlmbejg.supabase.co';
 export const SUPABASE_KEY = 'sb_publishable_YB5z3cQK-vCg67--oKpSrg_63STgMJW';
-export const APP_VERSION = 'v3.16.33';
+export const APP_VERSION = 'v3.16.34';
 
 // Web Push VAPID 公钥（客户端订阅用；私钥仅服务端发送端持有，绝不提交前端）
 export const VAPID_PUBLIC = 'BBEsbi_NqN1vqWfwbYx3XV-qUVTqgJNbaNg71TR2tx0k8158CViUZnLfdiLosv6n_sycP2S3yexNFYFzKHChL_c';
@@ -306,8 +306,8 @@ export const MODULES = {
   },
   field_log: {
     title: '现场记录', icon: '📸', table: 'field_log',
-    listFields: [{key:'project',label:'生产项目'},{key:'problem_factory',label:'问题发生工厂'},{key:'description',label:'问题叙述',truncate:40},{key:'created_at',label:'记录时间'},{key:'status',label:'状态',badge:true}],
-    detailFields: [{key:'project',label:'生产项目'},{key:'problem_factory',label:'问题发生工厂'},{key:'description',label:'生产问题叙述'},{key:'status',label:'状态'},{key:'reporter',label:'记录人'},{key:'created_at',label:'记录时间'}],
+    listFields: [{key:'project',label:'生产项目'},{key:'problem_factory',label:'问题发生工厂'},{key:'description',label:'问题叙述',truncate:40},{key:'problem_level',label:'问题级别',badge:true},{key:'created_at',label:'记录时间'},{key:'status',label:'状态',badge:true}],
+    detailFields: [{key:'project',label:'生产项目'},{key:'problem_factory',label:'问题发生工厂'},{key:'description',label:'生产问题叙述'},{key:'ng_qty',label:'NG数量'},{key:'total_qty',label:'生产总数'},{key:'defect_rate',label:'不良率'},{key:'handler',label:'处理人员'},{key:'problem_level',label:'问题级别'},{key:'temp_action',label:'临时处理方式'},{key:'perm_action',label:'永久处理方式'},{key:'status',label:'状态'},{key:'reporter',label:'记录人'},{key:'created_at',label:'记录时间'}],
   },
 };
 
