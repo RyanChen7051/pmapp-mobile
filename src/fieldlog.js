@@ -163,6 +163,105 @@ export function setupFieldLog(App) {
   };
 
   // ─── 按类别渲染现场问题到对应栏目区块 ───
+  // 这四页（生产/工程/制程/品质问题）是**历史归档视图**：
+  // ①不提供删除入口 —— 问题记录永久保留，作为未来珍贵的历史资料
+  // ②每条问题下方带处理表单：NG数量 / 生产总数 / 不良率(自动算) / 处理人员 / 临时处理方式 / 永久处理方式 / 问题级别
+  const PROBLEM_LEVELS = ['S特急', 'A常规', 'B计划'];
+
+  App._flLevelBadge = function(v) {
+    return v === 'S特急' ? 'badge-red' : v === 'A常规' ? 'badge-orange' : 'badge-blue';
+  };
+
+  // 历史卡片：不可删除，点开看详情
+  App._flHistoryCard = function(r) {
+    const rate = (r.defect_rate === 0 || r.defect_rate) ? `${r.defect_rate}%` : '';
+    return `<div class="card" onclick="App.openDetail('field_log', ${r.id})">
+      <div class="card-head">
+        <div class="card-title">📸 ${this.esc(r.project ? tr(r.project) : tr('未指定项目'))}</div>
+        ${r.problem_level ? `<span class="badge ${this._flLevelBadge(r.problem_level)}">${this.esc(tr(r.problem_level))}</span>` : ''}
+        ${r.status ? `<span class="badge ${r.status === '已处理' ? 'badge-green' : r.status === '处理中' ? 'badge-orange' : 'badge-red'}">${this.esc(tr(r.status))}</span>` : ''}
+      </div>
+      <div class="card-meta">
+        ${r.problem_factory ? `<span>🏭 ${this.esc(r.problem_factory)}</span>` : ''}
+        ${rate ? `<span>📉 ${this.esc(rate)}</span>` : ''}
+        ${r.handler ? `<span>👤 ${this.esc(r.handler)}</span>` : ''}
+        <span>🕒 ${this.esc((r.created_at || '').slice(0, 16))}</span>
+      </div>
+      ${r.description ? `<div class="card-desc">${this.esc((r.description || '').slice(0, 80))}</div>` : ''}
+    </div>`;
+  };
+
+  // 问题下方的处理填写区
+  App._flIssueForm = function(r, containerId) {
+    const lv = r.problem_level || '';
+    const rate = (r.defect_rate === 0 || r.defect_rate) ? r.defect_rate : '';
+    const ngVal = (r.ng_qty === 0 || r.ng_qty) ? this.esc(r.ng_qty) : '';
+    const ttVal = (r.total_qty === 0 || r.total_qty) ? this.esc(r.total_qty) : '';
+    return `<div class="fl-issue-form">
+      <div class="fl-if-grid">
+        <div class="fl-if-field"><label>${tr('NG数量')}</label>
+          <input type="number" min="0" id="fl-ng-${r.id}" value="${ngVal}" oninput="App._flCalcRate(${r.id})"></div>
+        <div class="fl-if-field"><label>${tr('生产总数')}</label>
+          <input type="number" min="0" id="fl-total-${r.id}" value="${ttVal}" oninput="App._flCalcRate(${r.id})"></div>
+        <div class="fl-if-field"><label>${tr('不良率')}</label>
+          <input type="text" id="fl-rate-${r.id}" value="${this.esc(rate)}" readonly placeholder="%"></div>
+      </div>
+      <div class="fl-if-grid">
+        <div class="fl-if-field"><label>${tr('处理人员')}</label>
+          <input type="text" id="fl-handler-${r.id}" value="${this.esc(r.handler || '')}"></div>
+        <div class="fl-if-field"><label>${tr('问题级别')}</label>
+          <select id="fl-level-${r.id}">${PROBLEM_LEVELS.map(v => `<option value="${v}" ${lv === v ? 'selected' : ''}>${tr(v)}</option>`).join('')}</select></div>
+        <div class="fl-if-field"><label>&nbsp;</label>
+          <button class="btn btn-primary" onclick="App.saveFieldIssue(${r.id}, '${containerId}')">${tr('保存')}</button></div>
+      </div>
+      <div class="fl-if-row"><label>${tr('临时处理方式')}</label>
+        <textarea id="fl-temp-${r.id}">${this.esc(r.temp_action || '')}</textarea></div>
+      <div class="fl-if-row"><label>${tr('永久处理方式')}</label>
+        <textarea id="fl-perm-${r.id}">${this.esc(r.perm_action || '')}</textarea></div>
+    </div>`;
+  };
+
+  App._flCalcRate = function(id) {
+    const ng = parseFloat(document.getElementById('fl-ng-' + id)?.value || '');
+    const total = parseFloat(document.getElementById('fl-total-' + id)?.value || '');
+    const box = document.getElementById('fl-rate-' + id);
+    if (!box) return;
+    box.value = (!isNaN(ng) && !isNaN(total) && total > 0) ? (ng / total * 100).toFixed(2) : '';
+  };
+
+  App.saveFieldIssue = async function(id, containerId) {
+    const rec = (this.cache.field_log || []).find(r => String(r.id) === String(id));
+    if (!rec) return;
+    const ng = parseFloat(document.getElementById('fl-ng-' + id)?.value || '');
+    const total = parseFloat(document.getElementById('fl-total-' + id)?.value || '');
+    rec.ng_qty = isNaN(ng) ? '' : ng;
+    rec.total_qty = isNaN(total) ? '' : total;
+    rec.defect_rate = (!isNaN(ng) && !isNaN(total) && total > 0) ? +(ng / total * 100).toFixed(2) : '';
+    rec.handler = (document.getElementById('fl-handler-' + id)?.value || '').trim();
+    rec.problem_level = document.getElementById('fl-level-' + id)?.value || '';
+    rec.temp_action = (document.getElementById('fl-temp-' + id)?.value || '').trim();
+    rec.perm_action = (document.getElementById('fl-perm-' + id)?.value || '').trim();
+    rec.updated_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    try {
+      const now = new Date().toISOString();
+      let sbId = rec._sb_id;
+      if (!sbId) {
+        const rows = await this.sbGet('sync_data', `table_name=eq.field_log&local_id=eq.${id}&is_deleted=eq.false&select=supabase_id&order=updated_at.desc&limit=1`);
+        if (rows.length > 0) sbId = rows[0].supabase_id;
+      }
+      const payload = JSON.stringify(rec);
+      if (sbId) {
+        await this.sbPatch('sync_data', `supabase_id=eq.${sbId}`, { payload, updated_at: now, device_id: this.deviceId });
+      } else {
+        sbId = this.uuid();
+        await this.sbPost('sync_data', { table_name: 'field_log', local_id: id, payload, supabase_id: sbId, is_deleted: false, updated_at: now, device_id: this.deviceId });
+      }
+      rec._sb_id = sbId;
+    } catch (e) { /* 离线由同步队列兜底 */ }
+    this.toast(tr('已保存'));
+    if (containerId) this.renderFieldLogByCategory(containerId, rec.problem_category);
+  };
+
   App.renderFieldLogByCategory = function (containerId, category) {
     const el = document.getElementById(containerId);
     if (!el) return;
@@ -170,8 +269,7 @@ export function setupFieldLog(App) {
       .filter(r => r.problem_category === category)
       .slice().sort((a, b) => (b.created_at || '').localeCompare(a.created_at || ''));
     if (list.length === 0) { el.innerHTML = `<div class="empty"><div class="empty-icon">📸</div>${tr('相关现场问题暂无')} · ${tr(category)}</div>`; return; }
-    el.innerHTML = list.map(r => this._flSwipeItem(r)).join('');
-    this._flBindSwipe(el);
+    el.innerHTML = list.map(r => this._flHistoryCard(r) + this._flIssueForm(r, containerId)).join('');
   };
 
   // ═══ 现场智能参谋 Field Copilot ═══
