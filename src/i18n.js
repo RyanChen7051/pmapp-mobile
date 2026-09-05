@@ -22,6 +22,7 @@ const STORAGE_KEY = 'pmapp_lang';
 // ── Translation table ──
 const I18N = {
   zh: {
+    photo_pick_btn: '拍照 / 从相册选择', photo_pick_hint: '可拍照或从手机相册选择，最多 3 张',
     // Tabs
     tab_home: '首页', tab_planning: '计划', tab_factory: '工厂', tab_engineering: '工程', tab_factory_process: '制程', tab_materials: '物料', tab_production: '生产',
     tab_quality: '品质', tab_inspection: 'DOA/RMA', tab_reports: '报告', tab_settings: '设定', qual_mod_issues: '问题', qual_mod_inspection: '客验',
@@ -152,6 +153,7 @@ const I18N = {
   },
 
   en: {
+    photo_pick_btn: 'Take Photo / Choose from Album', photo_pick_hint: 'Take a photo or pick from your phone album, up to 3 photos',
     tab_home: 'Home', tab_planning: 'Planning', tab_factory: 'Factory', tab_engineering: 'Engineering', tab_factory_process: 'Process', tab_materials: 'Materials', tab_production: 'Production',
     tab_quality: 'Quality', tab_inspection: 'DOA/RMA', tab_reports: 'Reports', tab_settings: 'Settings', qual_mod_issues: 'Issues', qual_mod_inspection: 'Inspection',
     app_slogan: 'Overseas Production Management System', dashboard: 'Dashboard',
@@ -263,6 +265,7 @@ const I18N = {
   },
 
   es: {
+    photo_pick_btn: 'Tomar foto / Elegir del album', photo_pick_hint: 'Toma una foto o elige del album del telefono, maximo 3 fotos',
     tab_home: 'Inicio', tab_planning: 'Planificacion', tab_factory: 'Fabrica', tab_engineering: 'Ingeniería', tab_factory_process: 'Proceso', tab_materials: 'Materiales', tab_production: 'Produccion',
     tab_quality: 'Calidad', tab_inspection: 'DOA/RMA', tab_reports: 'Informes', tab_settings: 'Ajustes',
     app_slogan: 'Sistema de Gestion de Produccion Exterior', dashboard: 'Panel',
@@ -438,6 +441,7 @@ const I18N = {
   },
 
   ja: {
+    photo_pick_btn: '写真を撮る / アルバムから選ぶ', photo_pick_hint: '写真を撮るか電話のアルバムから選択、最大3枚',
     tab_home: 'ホーム', tab_planning: '計画', tab_factory: '工場', tab_engineering: 'エンジニアリング', tab_factory_process: 'プロセス', tab_materials: '資材', tab_production: '生産',
     tab_quality: '品質', tab_inspection: 'DOA/RMA', tab_reports: 'レポート', tab_settings: '設定',
     app_slogan: '海外生産管理システム', dashboard: 'ダッシュボード',
@@ -613,6 +617,7 @@ const I18N = {
   },
 
   fr: {
+    photo_pick_btn: 'Prendre photo / Choisir dans l’album', photo_pick_hint: 'Prenez une photo ou choisissez dans l’album du telephone, max 3 photos',
     tab_home: 'Accueil', tab_planning: 'Planification', tab_factory: 'Usine', tab_engineering: 'Ingénierie', tab_factory_process: 'Procédé', tab_materials: 'Materiaux', tab_production: 'Production',
     tab_quality: 'Qualite', tab_inspection: 'DOA/RMA', tab_reports: 'Rapports', tab_settings: 'Parametres',
     app_slogan: 'Systeme de Gestion de Production Etranger', dashboard: 'Tableau de bord',
@@ -788,6 +793,7 @@ const I18N = {
   },
 
   de: {
+    photo_pick_btn: 'Foto machen / Aus Album wahlen', photo_pick_hint: 'Foto aufnehmen oder aus dem Telefonalbum wahlen, max. 3 Fotos',
     tab_home: 'Start', tab_planning: 'Planung', tab_factory: 'Fabrik', tab_engineering: 'Engineering', tab_factory_process: 'Prozess', tab_materials: 'Material', tab_production: 'Produktion',
     tab_quality: 'Qualitaet', tab_inspection: 'DOA/RMA', tab_reports: 'Berichte', tab_settings: 'Einstellungen',
     app_slogan: 'Auslandsproduktions-Verwaltungssystem', dashboard: 'Uebersicht',
@@ -963,6 +969,7 @@ const I18N = {
   },
 
   ar: {
+    photo_pick_btn: 'التقاط صورة / اختيار من الألبوم', photo_pick_hint: 'التقط صورة أو اختر من ألبوم الهاتف، بحد أقصى 3 صور',
     tab_home: 'الرئيسية', tab_planning: 'التخطيط', tab_factory: 'مصنع', tab_engineering: 'هندسة', tab_factory_process: 'عملية', tab_materials: 'المواد', tab_production: 'الإنتاج',
     tab_quality: 'الجودة', tab_inspection: 'DOA/RMA', tab_reports: 'التقارير', tab_settings: 'الإعدادات',
     app_slogan: 'نظام إدارة الإنتاج الخارجي', dashboard: 'لوحة التحكم',
@@ -1142,6 +1149,7 @@ const I18N = {
   },
 
   vi: {
+    photo_pick_btn: 'Chup anh / Chon tu album', photo_pick_hint: 'Chup anh hoac chon tu album dien thoai, toi da 3 anh',
     tab_home: 'Trang chủ', tab_planning: 'Kế hoạch', tab_factory: 'Thông tin nhà máy', tab_engineering: 'Kỹ thuật', tab_factory_process: 'Quy trình', tab_materials: 'Vật liệu', tab_production: 'Sản xuất',
     tab_quality: 'Chất lượng', tab_inspection: 'DOA/RMA', tab_reports: 'Báo cáo', tab_settings: 'Cài đặt', qual_mod_issues: 'Vấn đề', qual_mod_inspection: 'Kiểm khách',
     app_slogan: 'Hệ thống Quản lý Sản xuất Ngoại quốc', dashboard: 'Tổng quan',
@@ -1273,6 +1281,7 @@ const I18N = {
   },
 
   hi: {
+    photo_pick_btn: 'फोटो लें / एल्बम से चुनें', photo_pick_hint: 'फोटो लें या फोन के एल्बम से चुनें, अधिकतम 3 फोटो',
     tab_home: 'होम', tab_planning: 'योजना', tab_factory: 'फ़ैक्टरी जानकारी', tab_engineering: 'इंजीनियरिंग', tab_factory_process: 'प्रक्रिया', tab_materials: 'सामग्री', tab_production: 'उत्पादन',
     tab_quality: 'गुणवत्ता', tab_inspection: 'DOA/RMA', tab_reports: 'रिपोर्ट', tab_settings: 'सेटिंग्स', qual_mod_issues: 'मुद्दे', qual_mod_inspection: 'निरीक्षण',
     app_slogan: 'विदेशी उत्पादन प्रबंधन प्रणाली', dashboard: 'डैशबोर्ड',
