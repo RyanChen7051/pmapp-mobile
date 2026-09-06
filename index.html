@@ -80,6 +80,13 @@ body {
 .fl-if-field .btn { padding: 8px 6px; font-size: 13px; }
 .fl-if-row { margin-bottom: 10px; }
 .fl-if-row textarea { min-height: 62px; resize: vertical; }
+.fl-comments { border-top: 1px dashed var(--border); margin: 2px 12px 12px; padding: 10px 2px 0; }
+.fl-cmt { margin-bottom: 8px; font-size: 12px; }
+.fl-cmt .fl-cmt-u { font-weight: 600; color: var(--text-primary); }
+.fl-cmt .fl-cmt-t { font-size: 10px; color: var(--text-muted); margin-left: 6px; }
+.fl-cmt .fl-cmt-m { color: var(--text-secondary); margin-top: 2px; line-height: 1.5; white-space: pre-wrap; word-break: break-word; }
+.fl-cmt-row { display: flex; gap: 8px; margin-top: 8px; }
+.fl-cmt-row input { flex: 1; min-width: 0; background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; color: var(--text-primary); font-size: 13px; outline: none; }
 .tab.active { color: var(--accent); }
 
 /* Cards */
@@ -753,6 +760,8 @@ body.rtl .card-meta { flex-direction: row-reverse; }
   <div class="ptr-indicator" id="ptr-quality" data-i18n="ptr_pull">↓ 下拉刷新</div>
   <div class="sec-header"><span data-i18n="field_issues">现场问题</span></div>
   <div id="qual-fieldlog"><div class="loading"><div class="spinner"></div><span data-i18n="loading">加载中...</span></div></div>
+  <div class="sec-header"><span data-i18n="comp_issues">客诉问题</span></div>
+  <div id="qual-comp-fieldlog"><div class="loading"><div class="spinner"></div><span data-i18n="loading">加载中...</span></div></div>
 </div>
 
 <!-- ═══ 工程 ═══ -->
@@ -995,6 +1004,6 @@ body.rtl .card-meta { flex-direction: row-reverse; }
 
 </div>
 
-<script type="module" src="bundle.js?v=128"></script>
+<script type="module" src="bundle.js?v=129"></script>
 </body>
 </html>
