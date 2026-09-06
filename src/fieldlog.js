@@ -279,7 +279,7 @@ export function setupFieldLog(App) {
     return `<div class="fl-comments">
       <div class="fl-cmt-title">💬 ${tr('留言板')}</div>
       ${cmts.length ? cmts.map((c, ci) => `<div class="fl-cmt">
-        <div class="fl-cmt-top"><span class="fl-cmt-u">${this.esc(c.u || '?')}</span><span class="fl-cmt-t">${this.esc(this._cmtFmt(c.t))}</span><span class="fl-cmt-trans" onclick="App.toggleCommentTranslate(this,${r.id},${ci})">${t('btn_translate')}</span></div>
+        <div class="fl-cmt-top"><span class="fl-cmt-u">${this.esc(c.u || '?')}</span>${c.country ? `<span class="fl-cmt-c">🏳️ ${this.esc(c.country)}</span>` : ''}<span class="fl-cmt-t">${this.esc(this._cmtFmt(c.t))}</span><span class="fl-cmt-ops"><span class="fl-cmt-trans" onclick="App.toggleCommentTranslate(this,${r.id},${ci})">${t('btn_translate')}</span>${this.isAdmin() ? `<span class="fl-cmt-del" title="${t('btn_delete')}" onclick="App.delFieldComment(${r.id},${ci},'${containerId}')">✕</span>` : ''}</span></div>
         <div class="fl-cmt-m">${this.esc(c.m || '')}</div>
         <div class="fl-cmt-translation" id="flcmt-${r.id}-${ci}" style="display:none"></div>
       </div>`).join('') : ''}
@@ -321,7 +321,9 @@ export function setupFieldLog(App) {
     const m = inp.value.trim();
     if (!m) { this.toast(tr('写留言')); return; }
     const u = (this.session && (this.session.user.display_name || this.session.user.username)) || '?';
-    (rec.comments = rec.comments || []).push({ u, m, t: new Date().toISOString() });
+    const item = { u, m, t: new Date().toISOString() };
+    if (this.getClientCountry) { try { const cc = await this.getClientCountry(); if (cc) item.country = cc; } catch (e) {} }
+    (rec.comments = rec.comments || []).push(item);
     rec.updated_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
     try {
       const now = new Date().toISOString();
@@ -340,6 +342,35 @@ export function setupFieldLog(App) {
       rec._sb_id = sbId;
     } catch (e) { /* 离线由同步队列兜底 */ }
     this.toast(tr('已发送'));
+    if (containerId === 'qual-comp-fieldlog') this.renderComplaintsBlock(containerId);
+    else if (_FL_CAT_CONTAINERS[containerId]) this.renderFieldLogByCategory(containerId, _FL_CAT_CONTAINERS[containerId]);
+    else this.renderFieldLogByCategory(containerId, rec.problem_category);
+  };
+
+  // 删除单条留言（admin，与首页留言板一致）
+  App.delFieldComment = async function(id, idx, containerId) {
+    if (!confirm(t('confirm_del_msg'))) return;
+    const rec = (this.cache.field_log || []).find(r => String(r.id) === String(id));
+    if (!rec || !(rec.comments || [])[idx]) return;
+    (rec.comments || []).splice(idx, 1);
+    rec.updated_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    try {
+      const now = new Date().toISOString();
+      let sbId = rec._sb_id;
+      if (!sbId) {
+        const rows = await this.sbGet('sync_data', `table_name=eq.field_log&local_id=eq.${id}&is_deleted=eq.false&select=supabase_id&order=updated_at.desc&limit=1`);
+        if (rows.length > 0) sbId = rows[0].supabase_id;
+      }
+      const payload = JSON.stringify(rec);
+      if (sbId) {
+        await this.sbPatch('sync_data', `supabase_id=eq.${sbId}`, { payload, updated_at: now, device_id: this.deviceId });
+      } else {
+        sbId = this.uuid();
+        await this.sbPost('sync_data', { table_name: 'field_log', local_id: id, payload, supabase_id: sbId, is_deleted: false, updated_at: now, device_id: this.deviceId });
+      }
+      rec._sb_id = sbId;
+    } catch (e) { /* 离线由同步队列兜底 */ }
+    this.toast(t('t_del_ok'));
     if (containerId === 'qual-comp-fieldlog') this.renderComplaintsBlock(containerId);
     else if (_FL_CAT_CONTAINERS[containerId]) this.renderFieldLogByCategory(containerId, _FL_CAT_CONTAINERS[containerId]);
     else this.renderFieldLogByCategory(containerId, rec.problem_category);
