@@ -15,6 +15,8 @@ const NEWS_SECTORS = [
 ];
 // 每个板块每日 6 条（2026-09-06 由 5 改为 6）
 const NEWS_PER_SECTOR = 6;
+// 每个板块默认预览条数，其余折叠（点「更多新闻」展开）
+const NEWS_PREVIEW = 2;
 const SECTOR_BY_CATEGORY = {
   headphones: 'tws_earbuds', speakers: 'audio_industry', chips: 'audio_industry',
   microphone: 'wireless_mic', market: 'audio_industry', concept: 'audio_industry',
@@ -63,6 +65,16 @@ function _startWorldClock() {
 }
 
 export function setupHome(App) {
+  App.toggleSector = function(key) {
+    const box = document.getElementById('sectormore-' + key);
+    if (!box) return;
+    const opened = !box.classList.toggle('collapsed');
+    const txt = document.getElementById('sectortxt-' + key);
+    const chev = document.getElementById('sectorchev-' + key);
+    if (txt) txt.textContent = tr(opened ? '收起' : '更多新闻');
+    if (chev) chev.style.transform = opened ? 'rotate(-90deg)' : 'rotate(90deg)';
+  };
+
   App.loadHome = function() {
     _startWorldClock();
     const banner = document.getElementById('home-banner');
@@ -121,7 +133,11 @@ export function setupHome(App) {
       NEWS_SECTORS.forEach(sec => {
         const list = allNews.filter(n => sectorOf(n) === sec.key).slice(0, NEWS_PER_SECTOR);
         if (!list.length) return;
-        html += `<div class="sector-group"><div class="sector-head"><span class="sector-icon">${sec.icon}</span><span class="sector-name">${tr(sec.name)}</span></div><div class="sector-grid">${list.map(card).join('')}</div></div>`;
+        const head2 = list.slice(0, NEWS_PREVIEW);
+        const rest = list.slice(NEWS_PREVIEW);
+        const moreHtml = rest.length ? `<div class="sector-more collapsed" id="sectormore-${sec.key}">${rest.map(card).join('')}</div>
+          <div class="sector-toggle" onclick="App.toggleSector('${sec.key}')"><span id="sectortxt-${sec.key}">${tr('更多新闻')}</span><span class="ai-chev" id="sectorchev-${sec.key}" style="transform:rotate(90deg)">❯</span></div>` : '';
+        html += `<div class="sector-group"><div class="sector-head"><span class="sector-icon">${sec.icon}</span><span class="sector-name">${tr(sec.name)}</span></div><div class="sector-grid">${head2.map(card).join('')}</div>${moreHtml}</div>`;
       });
       newsEl.innerHTML = html || `<div class="empty"><div class="empty-icon">📰</div>${t('empty_news')}</div>`;
     }
