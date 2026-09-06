@@ -617,4 +617,8 @@ export const DICT = {
 
   '留言板': { en: 'Comments', es: 'Comentarios', ja: 'コメント', fr: 'Commentaires', de: 'Kommentare', ar: 'تعليقات', vi: 'Binh luan', hi: 'टिप्पणियाँ' },
   '条新留言': { en: 'new messages', es: 'mensajes nuevos', ja: '新着メッセージ', fr: 'nouveaux messages', de: 'neue Nachrichten', ar: 'رسائل جديدة', vi: 'tin nhan moi', hi: 'नए संदेश' },
+  /* ── 留言板展开/收起（2026-09-07）── */
+  '展开': { en: 'Expand', es: 'Expandir', ja: '展開', fr: 'Developper', de: 'Ausklappen', ar: 'توسيع', vi: 'Mo rong', hi: 'विस्तार करें' },
+  '收起': { en: 'Collapse', es: 'Plegar', ja: '折りたたむ', fr: 'Replier', de: 'Einklappen', ar: 'طي', vi: 'Thu gon', hi: 'संक्षिप्त करें' },
+
 };
