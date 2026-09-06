@@ -680,10 +680,8 @@ body.rtl .card-meta { flex-direction: row-reverse; }
   </div>
   <div id="home-banner" class="mobile-only"></div>
   <div id="home-mat-alert" class="mobile-only"></div>
-  <div class="sec-header"><span data-i18n="industry_news">产业动态</span></div>
-  <div id="home-news"></div>
-  <div class="sec-header mobile-only"><span data-i18n="message_board">留言板</span></div>
-  <div id="home-messages" class="mobile-only">
+  <div class="sec-header"><span data-i18n="message_board">综合留言板</span></div>
+  <div id="home-messages">
     <div class="login-box">
       <div class="input-group"><label data-i18n="lbl_name">姓名</label><input type="text" id="msg-name" data-i18n-ph="ph_name" placeholder="输入您的姓名" maxlength="30"></div>
       <div class="input-group"><label data-i18n="lbl_msg">留言内容</label><textarea id="msg-content" data-i18n-ph="ph_msg" placeholder="输入留言..." maxlength="500"></textarea></div>
@@ -691,6 +689,8 @@ body.rtl .card-meta { flex-direction: row-reverse; }
     </div>
     <div id="msg-list"><div class="loading"><div class="spinner"></div><span data-i18n="loading">加载中...</span></div></div>
   </div>
+  <div class="sec-header"><span data-i18n="industry_news">产业动态</span></div>
+  <div id="home-news"></div>
   <!-- Admin-only: Login Activity -->
   <div id="admin-login-section" class="mobile-only" style="display:none">
     <div class="sec-header"><span>🔐 <span data-i18n="login_activity">登录活动</span></span><span style="font-size:11px;color:var(--text-secondary);font-weight:normal" data-i18n="admin_only">仅管理员可见</span></div>
@@ -1014,6 +1014,6 @@ body.rtl .card-meta { flex-direction: row-reverse; }
 
 </div>
 
-<script type="module" src="bundle.js?v=132"></script>
+<script type="module" src="bundle.js?v=133"></script>
 </body>
 </html>
