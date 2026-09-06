@@ -272,6 +272,66 @@ export function setupFieldLog(App) {
     el.innerHTML = list.map(r => this._flHistoryCard(r) + this._flIssueForm(r, containerId)).join('');
   };
 
+  /* ─── 客诉问题区块（品质页）：每条客诉卡片下方是对话式留言板 ─── */
+  App._cmtFmt = function(iso) {
+    if (!iso) return '';
+    try {
+      const d = new Date(iso);
+      if (isNaN(d.getTime())) return String(iso).slice(5, 16);
+      const p = n => String(n).padStart(2, '0');
+      return p(d.getMonth() + 1) + '-' + p(d.getDate()) + ' ' + p(d.getHours()) + ':' + p(d.getMinutes());
+    } catch (e) { return String(iso).slice(5, 16); }
+  };
+
+  App.renderComplaintsBlock = function(containerId) {
+    const el = document.getElementById(containerId);
+    if (!el) return;
+    const list = (this.cache.field_log || [])
+      .filter(r => r.problem_category === '客诉')
+      .slice().sort((a, b) => (b.created_at || '').localeCompare(a.created_at || ''));
+    if (!list.length) { el.innerHTML = `<div class="empty"><div class="empty-icon">🗣️</div>${tr('暂无客诉')}</div>`; return; }
+    el.innerHTML = list.map(r => {
+      const cmts = r.comments || [];
+      return this._flHistoryCard(r) +
+        `<div class="fl-comments">
+          ${cmts.length ? cmts.map(c => `<div class="fl-cmt"><span class="fl-cmt-u">${this.esc(c.u || '?')}</span><span class="fl-cmt-t">${this.esc(this._cmtFmt(c.t))}</span><div class="fl-cmt-m">${this.esc(c.m || '')}</div></div>`).join('') : ''}
+          <div class="fl-cmt-row">
+            <input type="text" id="fl-cmt-${r.id}" maxlength="500" placeholder="${tr('写留言')}…" onkeydown="if(event.key==='Enter')App.addFieldComment(${r.id},'${containerId}')">
+            <button type="button" class="btn btn-primary" style="width:auto;padding:8px 14px;font-size:13px;flex:none" onclick="App.addFieldComment(${r.id},'${containerId}')">${tr('发送')}</button>
+          </div>
+        </div>`;
+    }).join('');
+  };
+
+  App.addFieldComment = async function(id, containerId) {
+    const rec = (this.cache.field_log || []).find(r => String(r.id) === String(id));
+    const inp = document.getElementById('fl-cmt-' + id);
+    if (!rec || !inp) return;
+    const m = inp.value.trim();
+    if (!m) { this.toast(tr('写留言')); return; }
+    const u = (this.session && (this.session.user.display_name || this.session.user.username)) || '?';
+    (rec.comments = rec.comments || []).push({ u, m, t: new Date().toISOString() });
+    rec.updated_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    try {
+      const now = new Date().toISOString();
+      let sbId = rec._sb_id;
+      if (!sbId) {
+        const rows = await this.sbGet('sync_data', `table_name=eq.field_log&local_id=eq.${id}&is_deleted=eq.false&select=supabase_id&order=updated_at.desc&limit=1`);
+        if (rows.length > 0) sbId = rows[0].supabase_id;
+      }
+      const payload = JSON.stringify(rec);
+      if (sbId) {
+        await this.sbPatch('sync_data', `supabase_id=eq.${sbId}`, { payload, updated_at: now, device_id: this.deviceId });
+      } else {
+        sbId = this.uuid();
+        await this.sbPost('sync_data', { table_name: 'field_log', local_id: id, payload, supabase_id: sbId, is_deleted: false, updated_at: now, device_id: this.deviceId });
+      }
+      rec._sb_id = sbId;
+    } catch (e) { /* 离线由同步队列兜底 */ }
+    this.toast(tr('已发送'));
+    this.renderComplaintsBlock(containerId);
+  };
+
   // ═══ 现场智能参谋 Field Copilot ═══
   // 离线语义相似度检索：复用自有 field_log / doa / rma 历史，给出 TOP3 相似案例。
   // 不依赖网络、不依赖云端模型——这是通用平台做不到的（它们没有你们的历史数据）。
