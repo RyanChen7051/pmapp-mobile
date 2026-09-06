@@ -86,6 +86,12 @@ body {
 .fl-cmt .fl-cmt-u { font-weight: 600; color: var(--text-primary); }
 .fl-cmt .fl-cmt-t { font-size: 10px; color: var(--text-muted); margin-left: 6px; }
 .fl-cmt .fl-cmt-m { color: var(--text-secondary); margin-top: 2px; line-height: 1.5; white-space: pre-wrap; word-break: break-word; }
+.fl-cmt-top { display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; }
+.fl-cmt-trans { margin-left: auto; font-size: 11px; color: var(--accent-blue); cursor: pointer; white-space: nowrap; }
+.fl-cmt-trans:active { opacity: .6; }
+.fl-cmt-trans.trans-active { color: var(--accent-orange); }
+.fl-cmt-translation { font-size: 12px; color: var(--accent-blue); margin: 2px 0 8px; line-height: 1.5; word-break: break-word; }
+.fl-cmt-translation .trans-label { color: var(--text-muted); font-size: 10px; margin-right: 6px; }
 .fl-cmt-row { display: flex; gap: 8px; margin-top: 8px; }
 .fl-cmt-row input { flex: 1; min-width: 0; background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; color: var(--text-primary); font-size: 13px; outline: none; }
 .tab.active { color: var(--accent); }
@@ -1005,6 +1011,6 @@ body.rtl .card-meta { flex-direction: row-reverse; }
 
 </div>
 
-<script type="module" src="bundle.js?v=130"></script>
+<script type="module" src="bundle.js?v=131"></script>
 </body>
 </html>
