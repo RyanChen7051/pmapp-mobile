@@ -219,6 +219,13 @@ export function setupHome(App) {
   };
 
   // 未读提示：与「已读时间戳」比对，有更新的留言就亮红点
+  App._updateMsgToggle = function() {
+    const box = document.getElementById('msg-history');
+    const tg = document.getElementById('msg-toggle-txt');
+    if (!tg) return;
+    tg.textContent = tr(box && box.classList.contains('collapsed') ? '展开' : '收起');
+  };
+
   App._refreshMsgIndicator = function() {
     const msgs = (this.cache.message_board || []).slice().sort((a, b) => (b.created_at || '').localeCompare(a.created_at || ''));
     let seen = localStorage.getItem('pmapp_msg_seen') || '';
@@ -228,6 +235,7 @@ export function setupHome(App) {
     const txt = document.getElementById('msg-new-txt');
     if (dot) dot.style.display = unread > 0 ? 'inline-block' : 'none';
     if (txt) txt.textContent = unread > 0 ? (unread + ' ' + tr('条新留言')) : '';
+    this._updateMsgToggle();
   };
 
   App._markMsgSeen = function() {
@@ -244,6 +252,7 @@ export function setupHome(App) {
     const opened = !box.classList.toggle('collapsed');
     const chev = document.getElementById('msg-chev');
     if (chev) chev.style.transform = opened ? 'rotate(90deg)' : 'rotate(-90deg)';
+    this._updateMsgToggle();
     if (opened) this._markMsgSeen();
   };
 
@@ -285,6 +294,7 @@ export function setupHome(App) {
       if (box) { box.classList.remove('collapsed'); }
       const chev = document.getElementById('msg-chev');
       if (chev) chev.style.transform = 'rotate(90deg)';
+      this._updateMsgToggle();
       this._markMsgSeen();
       this.toast(t('t_msg_posted'));
     } catch (e) { this.toast(t('t_post_fail') + ' ' + e.message); }
