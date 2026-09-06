@@ -608,4 +608,11 @@ export const DICT = {
   '每周DOA增加数': { en: 'Weekly DOA added', es: 'DOA nuevos semanales', ja: '週間DOA増加数', fr: 'DOA hebdo ajoutes', de: 'Wochen-DOA-Zuwachs', ar: 'زيادة DOA الاسبوعية', vi: 'DOA them tuan', hi: 'साप्ताहिक DOA वृद्धि' },
   '每周新增客户投诉': { en: 'Weekly new complaints', es: 'Quejas nuevas semanales', ja: '週間新規クレーム数', fr: 'Nouvelles reclamations hebdo', de: 'Neue Wochenbeschwerden', ar: 'شكاوى جديدة اسبوعيا', vi: 'Khieu nai moi tuan', hi: 'साप्ताहिक नई शिकायतें' },
 
+  /* ── 品质页客诉问题区块（2026-09-06）── */
+  '客诉问题': { en: 'Customer Complaints', es: 'Quejas de clientes', ja: '顧客クレーム', fr: 'Reclamations clients', de: 'Kundenreklamationen', ar: 'شكاوى العملاء', vi: 'Khieu nai khach hang', hi: 'ग्राहक शिकायतें' },
+  '暂无客诉': { en: 'No complaints yet', es: 'Sin quejas aun', ja: 'クレームはまだありません', fr: 'Aucune reclamation', de: 'Noch keine Beschwerden', ar: 'لا شكاوى بعد', vi: 'Chua co khieu nai', hi: 'अभी कोई शिकायत नहीं' },
+  '写留言': { en: 'Write a comment', es: 'Escribe un comentario', ja: 'コメントを書く', fr: 'Ecrire un commentaire', de: 'Kommentar schreiben', ar: 'اكتب تعليقا', vi: 'Viet binh luan', hi: 'टिप्पणी लिखें' },
+  '已发送': { en: 'Sent', es: 'Enviado', ja: '送信済み', fr: 'Envoye', de: 'Gesendet', ar: 'تم الإرسال', vi: 'Da gui', hi: 'भेजा गया' },
+  '发送': { en: 'Send', es: 'Enviar', ja: '送信', fr: 'Envoyer', de: 'Senden', ar: 'إرسال', vi: 'Gui', hi: 'भेजें' },
+
 };
