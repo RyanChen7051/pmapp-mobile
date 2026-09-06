@@ -82,6 +82,7 @@ body {
 .fl-if-row textarea { min-height: 62px; resize: vertical; }
 .msg-indicator { display: inline-flex; align-items: center; gap: 8px; }
 .msg-new { font-size: 11px; color: #ff3b30; }
+.msg-toggle { font-size: 11px; color: var(--text-muted); }
 .msg-dot { width: 8px; height: 8px; border-radius: 50%; background: #ff3b30; display: none; animation: msgPulse 1.6s ease-in-out infinite; }
 @keyframes msgPulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: .3; transform: scale(.75); } }
 #msg-history.collapsed { display: none; }
@@ -698,6 +699,7 @@ body.rtl .card-meta { flex-direction: row-reverse; }
     <span class="msg-indicator">
       <span class="msg-new" id="msg-new-txt"></span>
       <span class="msg-dot" id="msg-dot"></span>
+      <span class="msg-toggle" id="msg-toggle-txt">展开</span>
       <span class="ai-chev" id="msg-chev" style="transform:rotate(-90deg)">❯</span>
     </span>
   </div>
@@ -1036,6 +1038,6 @@ body.rtl .card-meta { flex-direction: row-reverse; }
 
 </div>
 
-<script type="module" src="bundle.js?v=135"></script>
+<script type="module" src="bundle.js?v=136"></script>
 </body>
 </html>
