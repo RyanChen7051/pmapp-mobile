@@ -616,4 +616,5 @@ export const DICT = {
   '发送': { en: 'Send', es: 'Enviar', ja: '送信', fr: 'Envoyer', de: 'Senden', ar: 'إرسال', vi: 'Gui', hi: 'भेजें' },
 
   '留言板': { en: 'Comments', es: 'Comentarios', ja: 'コメント', fr: 'Commentaires', de: 'Kommentare', ar: 'تعليقات', vi: 'Binh luan', hi: 'टिप्पणियाँ' },
+  '条新留言': { en: 'new messages', es: 'mensajes nuevos', ja: '新着メッセージ', fr: 'nouveaux messages', de: 'neue Nachrichten', ar: 'رسائل جديدة', vi: 'tin nhan moi', hi: 'नए संदेश' },
 };
