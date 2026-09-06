@@ -215,6 +215,36 @@ export function setupHome(App) {
       </div>
       <div class="msg-translation" id="trans-${m.id}" style="display:none"></div>
     </div>`).join('');
+    this._refreshMsgIndicator();
+  };
+
+  // 未读提示：与「已读时间戳」比对，有更新的留言就亮红点
+  App._refreshMsgIndicator = function() {
+    const msgs = (this.cache.message_board || []).slice().sort((a, b) => (b.created_at || '').localeCompare(a.created_at || ''));
+    let seen = localStorage.getItem('pmapp_msg_seen') || '';
+    if (!seen && msgs.length) { seen = msgs[0].created_at || ''; localStorage.setItem('pmapp_msg_seen', seen); }
+    const unread = msgs.filter(m => (m.created_at || '') > seen).length;
+    const dot = document.getElementById('msg-dot');
+    const txt = document.getElementById('msg-new-txt');
+    if (dot) dot.style.display = unread > 0 ? 'inline-block' : 'none';
+    if (txt) txt.textContent = unread > 0 ? (unread + ' ' + tr('条新留言')) : '';
+  };
+
+  App._markMsgSeen = function() {
+    const msgs = (this.cache.message_board || []).slice().sort((a, b) => (b.created_at || '').localeCompare(a.created_at || ''));
+    if (msgs.length) localStorage.setItem('pmapp_msg_seen', msgs[0].created_at || '');
+    const dot = document.getElementById('msg-dot'); if (dot) dot.style.display = 'none';
+    const txt = document.getElementById('msg-new-txt'); if (txt) txt.textContent = '';
+  };
+
+  // 留言历史默认收起，点标题行展开/收起
+  App.toggleMsgHistory = function() {
+    const box = document.getElementById('msg-history');
+    if (!box) return;
+    const opened = !box.classList.toggle('collapsed');
+    const chev = document.getElementById('msg-chev');
+    if (chev) chev.style.transform = opened ? 'rotate(90deg)' : 'rotate(-90deg)';
+    if (opened) this._markMsgSeen();
   };
 
   App.getClientCountry = async function() {
@@ -251,6 +281,11 @@ export function setupHome(App) {
       contentEl.value = '';
       this.cache.message_board = await this.fetchSyncData('message_board');
       this.renderMessages();
+      const box = document.getElementById('msg-history');
+      if (box) { box.classList.remove('collapsed'); }
+      const chev = document.getElementById('msg-chev');
+      if (chev) chev.style.transform = 'rotate(90deg)';
+      this._markMsgSeen();
       this.toast(t('t_msg_posted'));
     } catch (e) { this.toast(t('t_post_fail') + ' ' + e.message); }
   };
