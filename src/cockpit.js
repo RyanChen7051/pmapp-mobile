@@ -37,6 +37,14 @@ export function setupCockpit(App) {
     const totalRec = doa.reduce((a, r) => a + (+r.received_qty || 0), 0);
     const totalDef = doa.reduce((a, r) => a + (+r.defect_qty || 0), 0);
     const defectRate = totalRec > 0 ? (totalDef / totalRec * 100) : 0;
+    // KPI 5: 每周 DOA 增加数（doa.date 落在本周）
+    const doaWeek = doa.filter(r => { const d = (r.date || '').slice(0, 10); return d && d >= md && d < nd; }).length;
+    // KPI 6: 每周新增客户投诉（现场记录 类别=客诉，created_at 落在本周）
+    const compWeek = (C.field_log || []).filter(r => {
+      if (r.problem_category !== '客诉') return false;
+      const d = (r.created_at || '').slice(0, 10);
+      return d && d >= md && d < nd;
+    }).length;
 
     const kpi = (num, label, color, page) => `<div class="kpi-card" onclick="App.navigate('${page}')">
       <div class="kpi-num" style="color:${color}">${num}</div>
@@ -45,12 +53,17 @@ export function setupCockpit(App) {
 
     // v3.16.2 桌面版与手机版统一：标题区上移至 home-header，驾驶舱只保留 KPI 卡片
     // v3.16.40 数字配色：进行中=紫 / 待处理问题=橘 / 生产计划完成=绿 / 缺陷率=红
+    // v3.16.44 下方新增 每周DOA增加数(红) / 每周新增客户投诉(靛)
     el.innerHTML = `
       <div class="kpi-grid kpi-grid-4">${[
-        kpi(active,            tr('进行中项目'), '#a06bff', 'production'),
-        kpi(openIssues,        tr('待处理问题'), '#ff9500', 'quality'),
+        kpi(active,            tr('进行中项目'),   '#a06bff', 'production'),
+        kpi(openIssues,        tr('待处理问题'),   '#ff9500', 'quality'),
         kpi(plansDone,         tr('生产计划完成'), '#34c759', 'production'),
         kpi(defectRate.toFixed(1) + '%', tr('缺陷率'), '#ff3b30', 'inspection'),
+      ].join('')}</div>
+      <div class="kpi-grid kpi-grid-2">${[
+        kpi(doaWeek,           tr('每周DOA增加数'),   '#ff453a', 'inspection'),
+        kpi(compWeek,          tr('每周新增客户投诉'), '#5e5ce6', 'fieldlog'),
       ].join('')}</div>
     `;
   };
