@@ -602,4 +602,10 @@ export const DICT = {
   '关闭': { en: 'Close', es: 'Cerrar', ja: '閉じる', fr: 'Fermer', de: 'Schliessen', ar: 'إغلاق', vi: 'Dong', hi: 'बंद करें' },
   '解析失败': { en: 'Parse failed', es: 'Error al analizar', ja: '解析失敗', fr: 'Echec analyse', de: 'Analyse fehlgeschlagen', ar: 'فشل التحليل', vi: 'Loi phan tich', hi: 'पार्स विफल' },
   '生产计划完成': { en: 'Production plans done', es: 'Planes de produccion completados', ja: '生産計画完了', fr: 'Plans de production termines', de: 'Abgeschlossene Produktionsplaene', ar: 'خطط الإنتاج المنجزة', vi: 'Ke hoach san xuat hoan thanh', hi: 'पूर्ण उत्पादन योजनाएँ' },
+  /* ── 现场/客诉 + 看板新 KPI（2026-09-06）── */
+  '客诉': { en: 'Customer complaint', es: 'Queja de cliente', ja: '顧客クレーム', fr: 'Reclamation client', de: 'Kundenbeschwerde', ar: 'شكوى عميل', vi: 'Khieu nai khach hang', hi: 'ग्राहक शिकायत' },
+  '现场/客诉': { en: 'Field / Complaints', es: 'Campo / Quejas', ja: '現場・クレーム', fr: 'Terrain / Reclamations', de: 'Vor-Ort-Beschwerden', ar: 'الميدان / الشكاوى', vi: 'Hien truong / Khieu nai', hi: 'फ़ील्ड / शिकायतें' },
+  '每周DOA增加数': { en: 'Weekly DOA added', es: 'DOA nuevos semanales', ja: '週間DOA増加数', fr: 'DOA hebdo ajoutes', de: 'Wochen-DOA-Zuwachs', ar: 'زيادة DOA الاسبوعية', vi: 'DOA them tuan', hi: 'साप्ताहिक DOA वृद्धि' },
+  '每周新增客户投诉': { en: 'Weekly new complaints', es: 'Quejas nuevas semanales', ja: '週間新規クレーム数', fr: 'Nouvelles reclamations hebdo', de: 'Neue Wochenbeschwerden', ar: 'شكاوى جديدة اسبوعيا', vi: 'Khieu nai moi tuan', hi: 'साप्ताहिक नई शिकायतें' },
+
 };
