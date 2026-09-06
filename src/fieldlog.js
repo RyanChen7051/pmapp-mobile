@@ -4,6 +4,7 @@
  * 权限：admin(admin/admin2) 可新建/编辑；leader 为 viewer（只读）。
  */
 import { t, tr, getLang } from './i18n.js';
+import { translateText } from './translate.js';
 
 /* ═══ 语音录入指令映射（SpeechRecognition lang / 命令词 / 结束词）═══
  * 识别语言跟随 PWA 界面语言；命令词支持「本地化 + 中文通用」双匹配，
@@ -277,7 +278,11 @@ export function setupFieldLog(App) {
     const cmts = r.comments || [];
     return `<div class="fl-comments">
       <div class="fl-cmt-title">💬 ${tr('留言板')}</div>
-      ${cmts.length ? cmts.map(c => `<div class="fl-cmt"><span class="fl-cmt-u">${this.esc(c.u || '?')}</span><span class="fl-cmt-t">${this.esc(this._cmtFmt(c.t))}</span><div class="fl-cmt-m">${this.esc(c.m || '')}</div></div>`).join('') : ''}
+      ${cmts.length ? cmts.map((c, ci) => `<div class="fl-cmt">
+        <div class="fl-cmt-top"><span class="fl-cmt-u">${this.esc(c.u || '?')}</span><span class="fl-cmt-t">${this.esc(this._cmtFmt(c.t))}</span><span class="fl-cmt-trans" onclick="App.toggleCommentTranslate(this,${r.id},${ci})">${t('btn_translate')}</span></div>
+        <div class="fl-cmt-m">${this.esc(c.m || '')}</div>
+        <div class="fl-cmt-translation" id="flcmt-${r.id}-${ci}" style="display:none"></div>
+      </div>`).join('') : ''}
       <div class="fl-cmt-row">
         <input type="text" id="fl-cmt-${r.id}" maxlength="500" placeholder="${tr('写留言')}…" onkeydown="if(event.key==='Enter')App.addFieldComment(${r.id},'${containerId}')">
         <button type="button" class="btn btn-primary" style="width:auto;padding:8px 14px;font-size:13px;flex:none" onclick="App.addFieldComment(${r.id},'${containerId}')">${tr('发送')}</button>
@@ -338,6 +343,32 @@ export function setupFieldLog(App) {
     if (containerId === 'qual-comp-fieldlog') this.renderComplaintsBlock(containerId);
     else if (_FL_CAT_CONTAINERS[containerId]) this.renderFieldLogByCategory(containerId, _FL_CAT_CONTAINERS[containerId]);
     else this.renderFieldLogByCategory(containerId, rec.problem_category);
+  };
+
+  // 留言翻译：点 🌐 把该条留言翻成当前界面语言（复用 translateText，localStorage 缓存）
+  App.toggleCommentTranslate = async function(btn, recId, idx) {
+    const rec = (this.cache.field_log || []).find(r => String(r.id) === String(recId));
+    const c = rec && (rec.comments || [])[idx];
+    const box = document.getElementById('flcmt-' + recId + '-' + idx);
+    if (!c || !box) return;
+    if (box.style.display !== 'none' && box.innerHTML) {
+      box.style.display = 'none';
+      btn.textContent = t('btn_translate');
+      btn.classList.remove('trans-active');
+      return;
+    }
+    const orig = btn.textContent;
+    btn.textContent = t('translating');
+    try {
+      const translated = await (this.translateText || translateText)(c.m, getLang());
+      box.innerHTML = `<span class="trans-label">${t('translation_label')}</span> ${this.esc(translated)}`;
+      box.style.display = 'block';
+      btn.textContent = t('btn_hide_trans');
+      btn.classList.add('trans-active');
+    } catch (e) {
+      btn.textContent = t('trans_fail');
+      setTimeout(() => { btn.textContent = orig; }, 2000);
+    }
   };
 
   // ═══ 现场智能参谋 Field Copilot ═══
