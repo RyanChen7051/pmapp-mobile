@@ -871,6 +871,7 @@ export function setupPages(App) {
   /* ─── Quality Tab ─── */
   App.loadQuality = function() {
     this.renderFieldLogByCategory('qual-fieldlog', '品质');
+    this.renderComplaintsBlock('qual-comp-fieldlog');
   };
 
   App.setQualModule = function(mod, el) {
