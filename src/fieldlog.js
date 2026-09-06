@@ -262,17 +262,6 @@ export function setupFieldLog(App) {
     if (containerId) this.renderFieldLogByCategory(containerId, rec.problem_category);
   };
 
-  App.renderFieldLogByCategory = function (containerId, category) {
-    const el = document.getElementById(containerId);
-    if (!el) return;
-    const list = (this.cache.field_log || [])
-      .filter(r => r.problem_category === category)
-      .slice().sort((a, b) => (b.created_at || '').localeCompare(a.created_at || ''));
-    if (list.length === 0) { el.innerHTML = `<div class="empty"><div class="empty-icon">📸</div>${tr('相关现场问题暂无')} · ${tr(category)}</div>`; return; }
-    el.innerHTML = list.map(r => this._flHistoryCard(r) + this._flIssueForm(r, containerId)).join('');
-  };
-
-  /* ─── 客诉问题区块（品质页）：每条客诉卡片下方是对话式留言板 ─── */
   App._cmtFmt = function(iso) {
     if (!iso) return '';
     try {
@@ -283,6 +272,31 @@ export function setupFieldLog(App) {
     } catch (e) { return String(iso).slice(5, 16); }
   };
 
+  // 通用留言板：每条问题卡片下方一条对话式留言板（评论存 rec.comments）
+  App._flCommentsHtml = function(r, containerId) {
+    const cmts = r.comments || [];
+    return `<div class="fl-comments">
+      <div class="fl-cmt-title">💬 ${tr('留言板')}</div>
+      ${cmts.length ? cmts.map(c => `<div class="fl-cmt"><span class="fl-cmt-u">${this.esc(c.u || '?')}</span><span class="fl-cmt-t">${this.esc(this._cmtFmt(c.t))}</span><div class="fl-cmt-m">${this.esc(c.m || '')}</div></div>`).join('') : ''}
+      <div class="fl-cmt-row">
+        <input type="text" id="fl-cmt-${r.id}" maxlength="500" placeholder="${tr('写留言')}…" onkeydown="if(event.key==='Enter')App.addFieldComment(${r.id},'${containerId}')">
+        <button type="button" class="btn btn-primary" style="width:auto;padding:8px 14px;font-size:13px;flex:none" onclick="App.addFieldComment(${r.id},'${containerId}')">${tr('发送')}</button>
+      </div>
+    </div>`;
+  };
+
+  // 现场问题栏区块：每类别的每条问题 = 历史卡 + 处理表单 + 留言板
+  App.renderFieldLogByCategory = function (containerId, category) {
+    const el = document.getElementById(containerId);
+    if (!el) return;
+    const list = (this.cache.field_log || [])
+      .filter(r => r.problem_category === category)
+      .slice().sort((a, b) => (b.created_at || '').localeCompare(a.created_at || ''));
+    if (list.length === 0) { el.innerHTML = `<div class="empty"><div class="empty-icon">📸</div>${tr('相关现场问题暂无')} · ${tr(category)}</div>`; return; }
+    el.innerHTML = list.map(r => this._flHistoryCard(r) + this._flIssueForm(r, containerId) + this._flCommentsHtml(r, containerId)).join('');
+  };
+
+  // 客诉问题区块（品质页）：每条客诉 = 历史卡 + 留言板
   App.renderComplaintsBlock = function(containerId) {
     const el = document.getElementById(containerId);
     if (!el) return;
@@ -290,19 +304,11 @@ export function setupFieldLog(App) {
       .filter(r => r.problem_category === '客诉')
       .slice().sort((a, b) => (b.created_at || '').localeCompare(a.created_at || ''));
     if (!list.length) { el.innerHTML = `<div class="empty"><div class="empty-icon">🗣️</div>${tr('暂无客诉')}</div>`; return; }
-    el.innerHTML = list.map(r => {
-      const cmts = r.comments || [];
-      return this._flHistoryCard(r) +
-        `<div class="fl-comments">
-          ${cmts.length ? cmts.map(c => `<div class="fl-cmt"><span class="fl-cmt-u">${this.esc(c.u || '?')}</span><span class="fl-cmt-t">${this.esc(this._cmtFmt(c.t))}</span><div class="fl-cmt-m">${this.esc(c.m || '')}</div></div>`).join('') : ''}
-          <div class="fl-cmt-row">
-            <input type="text" id="fl-cmt-${r.id}" maxlength="500" placeholder="${tr('写留言')}…" onkeydown="if(event.key==='Enter')App.addFieldComment(${r.id},'${containerId}')">
-            <button type="button" class="btn btn-primary" style="width:auto;padding:8px 14px;font-size:13px;flex:none" onclick="App.addFieldComment(${r.id},'${containerId}')">${tr('发送')}</button>
-          </div>
-        </div>`;
-    }).join('');
+    el.innerHTML = list.map(r => this._flHistoryCard(r) + this._flCommentsHtml(r, containerId)).join('');
   };
 
+  // 追加留言：生产/工程/品质/制程区块用 renderFieldLogByCategory；客诉区块用 renderComplaintsBlock
+  const _FL_CAT_CONTAINERS = { 'prod-fieldlog': '生产', 'qual-fieldlog': '品质', 'eng-fieldlog': '工程', 'fp-fieldlog': '制程' };
   App.addFieldComment = async function(id, containerId) {
     const rec = (this.cache.field_log || []).find(r => String(r.id) === String(id));
     const inp = document.getElementById('fl-cmt-' + id);
@@ -329,7 +335,9 @@ export function setupFieldLog(App) {
       rec._sb_id = sbId;
     } catch (e) { /* 离线由同步队列兜底 */ }
     this.toast(tr('已发送'));
-    this.renderComplaintsBlock(containerId);
+    if (containerId === 'qual-comp-fieldlog') this.renderComplaintsBlock(containerId);
+    else if (_FL_CAT_CONTAINERS[containerId]) this.renderFieldLogByCategory(containerId, _FL_CAT_CONTAINERS[containerId]);
+    else this.renderFieldLogByCategory(containerId, rec.problem_category);
   };
 
   // ═══ 现场智能参谋 Field Copilot ═══
