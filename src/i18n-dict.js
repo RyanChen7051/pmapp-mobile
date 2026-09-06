@@ -621,4 +621,5 @@ export const DICT = {
   '展开': { en: 'Expand', es: 'Expandir', ja: '展開', fr: 'Developper', de: 'Ausklappen', ar: 'توسيع', vi: 'Mo rong', hi: 'विस्तार करें' },
   '收起': { en: 'Collapse', es: 'Plegar', ja: '折りたたむ', fr: 'Replier', de: 'Einklappen', ar: 'طي', vi: 'Thu gon', hi: 'संक्षिप्त करें' },
 
+  '更多新闻': { en: 'More news', es: 'Mas noticias', ja: 'もっと見る', fr: 'Plus d actualites', de: 'Mehr News', ar: 'المزيد من الأخبار', vi: 'Tin khac', hi: 'और समाचार' },
 };
