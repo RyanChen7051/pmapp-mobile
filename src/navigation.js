@@ -51,7 +51,7 @@ export function setupNavigation(App) {
     // 又：每个栏目（按钮）的引导「本次登录内只显示一次」——登出或下次重新登录后才再显示一次。
     // 注意：引导优先于页面加载——若某页 loader 异常（如 reports 的 populateReportProjects 访问未就绪的 cache），
     // 也不能连引导一起吞掉。故先弹引导，再 try 包裹加载。
-    if (GUIDE_TEXTS[page] && !this._hasShownGuide(page)) this.showGuide(page);
+    if (GUIDE_TEXTS[page] && !this._hasShownGuide(page) && this._guideAllowed(page)) this.showGuide(page);
     this._lastGuidePage = page;
     // 加载页面内容（try 包裹，避免单页异常阻断整段导航逻辑）
     try {
@@ -103,11 +103,76 @@ export function setupNavigation(App) {
     this._lastGuidePage = null;
   };
 
+  /* ── 引导偏好（2026-09-07）：熟练用户不必每次都看 ──
+   * pmapp_guide_prefs = { all: false=全部关闭, off: {page:1}=单栏关闭, counts: {page:n}=累计看过几次 }
+   * 同一栏目累计显示 GUIDE_MAX_VIEWS(3) 次后自动停止；也可在引导条上点「不再显示」提前关闭某一栏。 */
+  App._guidePrefsKey = 'pmapp_guide_prefs';
+  const GUIDE_MAX_VIEWS = 3;
+
+  App._loadGuidePrefs = function() {
+    try { this._guidePrefs = JSON.parse(localStorage.getItem(this._guidePrefsKey) || '{}'); } catch (e) { this._guidePrefs = {}; }
+    if (!this._guidePrefs.off) this._guidePrefs.off = {};
+    if (!this._guidePrefs.counts) this._guidePrefs.counts = {};
+    return this._guidePrefs;
+  };
+
+  App._saveGuidePrefs = function() {
+    try { localStorage.setItem(this._guidePrefsKey, JSON.stringify(this._guidePrefs || {})); } catch (e) {}
+  };
+
+  App._guideAllowed = function(page) {
+    const p = this._guidePrefs || this._loadGuidePrefs();
+    if (p.all === false) return false;
+    if (p.off && p.off[page]) return false;
+    if (p.counts && (p.counts[page] || 0) >= GUIDE_MAX_VIEWS) return false;
+    return true;
+  };
+
+  // 引导条上「不再显示」：只关这一栏
+  App.disableGuide = function(page) {
+    const p = this._guidePrefs || this._loadGuidePrefs();
+    p.off[page] = true;
+    this._saveGuidePrefs();
+    this.hideGuide();
+    this.toast(tr('本栏引导已关闭'));
+  };
+
+  // 设定页总开关
+  App.toggleAllGuides = function() {
+    const p = this._guidePrefs || this._loadGuidePrefs();
+    p.all = (p.all === false);
+    this._saveGuidePrefs();
+    this.renderGuideSettings();
+    this.toast(tr(p.all ? '已开启' : '已关闭'));
+  };
+
+  // 一键恢复：清掉"全部关闭"与所有单栏关闭/计数
+  App.restoreAllGuides = function() {
+    this._guidePrefs = { all: true, off: {}, counts: {} };
+    this._saveGuidePrefs();
+    this.renderGuideSettings();
+    this.toast(tr('引导已恢复'));
+  };
+
+  App.renderGuideSettings = function() {
+    const p = this._guidePrefs || this._loadGuidePrefs();
+    const el = document.getElementById('set-guide-all');
+    if (!el) return;
+    const on = p.all !== false;
+    el.textContent = tr(on ? '已开启' : '已关闭');
+    el.style.color = on ? 'var(--accent-green)' : 'var(--text-muted)';
+  };
+
   // 悬浮 AI 引导员：顶部出现几秒后自动消失
   App.showGuide = function(page) {
     const g = GUIDE_TEXTS[page];
     if (!g) return;
     this._markGuideShown(page);
+    // 累计看过几次，达到上限后本栏自动不再引导
+    const prefs = this._guidePrefs || this._loadGuidePrefs();
+    prefs.counts[page] = (prefs.counts[page] || 0) + 1;
+    if (prefs.counts[page] >= GUIDE_MAX_VIEWS) prefs.off[page] = true;
+    this._saveGuidePrefs();
     document.getElementById('ai-guide')?.remove();
     const el = document.createElement('div');
     el.id = 'ai-guide';
@@ -122,6 +187,7 @@ export function setupNavigation(App) {
         '</div>' +
         '<div class="guide-title">' + tr(g.t) + '</div>' +
         '<div class="guide-text">' + tr(g.s) + '</div>' +
+        '<div class="guide-foot"><span class="guide-never" onclick="App.disableGuide(\'' + page + '\')">' + tr('不再显示') + '</span></div>' +
       '</div>' +
       '<span class="guide-progress"></span>';
     document.body.appendChild(el);
@@ -131,7 +197,13 @@ export function setupNavigation(App) {
     // 8 秒只是兜底上限，不用干等。
     clearTimeout(this._guideTimer);
     this._guideTimer = setTimeout(() => this.hideGuide(), 8000);
-    this._guideDismiss = () => this.hideGuide();
+    // 点在引导条内部（✕ / 不再显示）时不关闭，交给按钮自己处理；
+    // 否则先关闭会让卡片 pointer-events:none，按钮的 click 再也收不到（手机上尤其明显）
+    this._guideDismiss = (e) => {
+      const box = document.getElementById('ai-guide');
+      if (box && e && e.target && box.contains(e.target)) return;
+      this.hideGuide();
+    };
     document.addEventListener('touchstart', this._guideDismiss, { passive: true });
     document.addEventListener('mousedown', this._guideDismiss);
   };
