@@ -1125,6 +1125,7 @@ export function setupPages(App) {
       Object.keys(MODULES).forEach(k => total += (this.cache[k] || []).length);
       total += (this.cache.message_board || []).length;
       document.getElementById('set-count').textContent = total + ' ' + t('records');
+      if (this.renderGuideSettings) this.renderGuideSettings();
 
     }
     // Render language selector (always visible)
