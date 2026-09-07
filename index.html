@@ -625,23 +625,56 @@ body.rtl .card-meta { flex-direction: row-reverse; }
   }
   .detail-toolbar .edit-link:active{background:rgba(78,138,245,.22);}
 
-  /* ── AI 页面引导浮层 ── */
+  /* ── AI 页面引导浮层 v2（2026-09-07）：轻卡片 + 彩底图标 + 主副句 + 倒计时进度条 ── */
   .ai-guide{
-    position:fixed; top:64px; left:12px; right:12px; z-index:1500;
-    display:flex; align-items:flex-start; gap:10px;
-    background:linear-gradient(135deg,#1e2a4a 0%,#16213e 100%);
-    border:1px solid var(--accent); border-radius:16px; padding:16px 18px;
-    box-shadow:0 8px 28px rgba(0,0,0,.45);
-    transform:translateY(-18px); opacity:0;
-    transition:transform .35s ease, opacity .35s ease;
+    --g-color:#4E8AF5;
+    position:fixed; top:60px; left:12px; right:12px; z-index:1500;
+    display:flex; align-items:flex-start; gap:11px; overflow:hidden;
+    padding:12px 13px 14px; border-radius:16px;
+    background:linear-gradient(135deg, color-mix(in srgb, var(--g-color) 20%, var(--bg-card)) 0%, var(--bg-card) 62%);
+    border:1px solid color-mix(in srgb, var(--g-color) 42%, var(--border));
+    box-shadow:0 10px 30px rgba(0,0,0,.34), 0 0 0 4px color-mix(in srgb, var(--g-color) 8%, transparent);
+    -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px);
+    opacity:0; transform:translateY(-14px) scale(.97);
+    transition:opacity .3s ease, transform .34s cubic-bezier(.2,.9,.3,1.2);
     pointer-events:none;
   }
-  .ai-guide.show{ transform:translateY(0); opacity:1; pointer-events:auto; }
-  .ai-guide .guide-avatar{ width:52px; height:52px; border-radius:50%; object-fit:cover; flex:0 0 auto; border:2px solid var(--accent); box-shadow:0 0 8px rgba(233,69,96,.5); }
+  .ai-guide.show{ opacity:1; transform:translateY(0) scale(1); pointer-events:auto; }
+  /* 左侧彩底图标：给每栏一个专属色，避免十条引导长得一模一样 */
+  .ai-guide .guide-badge{
+    flex:0 0 auto; width:38px; height:38px; border-radius:12px; font-size:19px; line-height:38px; text-align:center;
+    background:linear-gradient(140deg, var(--g-color), color-mix(in srgb, var(--g-color) 55%, #000));
+    box-shadow:0 4px 12px color-mix(in srgb, var(--g-color) 38%, transparent);
+  }
   .ai-guide .guide-body{ flex:1 1 auto; min-width:0; }
-  .ai-guide .guide-title{ font-size:22px; font-weight:700; color:var(--accent-light); letter-spacing:.5px; margin-bottom:6px; }
-  .ai-guide .guide-text{ font-size:26px; line-height:1.6; color:var(--text-primary); }
-  .ai-guide .guide-close{ flex:0 0 auto; color:var(--text-muted); font-size:26px; cursor:pointer; padding:0 2px; line-height:1.4; }
+  .ai-guide .guide-top{ display:flex; align-items:center; justify-content:space-between; margin-bottom:3px; }
+  .ai-guide .guide-kicker{
+    font-size:10px; font-weight:700; letter-spacing:.6px; padding:2px 7px; border-radius:20px;
+    color:var(--g-color); background:color-mix(in srgb, var(--g-color) 15%, transparent);
+    border:1px solid color-mix(in srgb, var(--g-color) 32%, transparent);
+  }
+  .ai-guide .guide-close{
+    flex:0 0 auto; width:24px; height:24px; line-height:24px; text-align:center; border-radius:50%;
+    font-size:12px; color:var(--text-muted); cursor:pointer;
+  }
+  .ai-guide .guide-close:active{ background:rgba(255,255,255,.12); color:var(--text-primary); }
+  /* 主句：这栏是什么（加粗，一眼扫到） */
+  .ai-guide .guide-title{ font-size:15px; font-weight:700; line-height:1.35; color:var(--text-primary); }
+  /* 副句：能干啥 / 为啥要在乎（小字，不抢戏） */
+  .ai-guide .guide-text{ font-size:12.5px; line-height:1.55; color:var(--text-secondary); margin-top:3px; }
+  /* 底部倒计时条：让"会自动消失"可见，减少被当成障碍物的突兀感 */
+  .ai-guide .guide-progress{
+    position:absolute; left:0; bottom:0; height:3px; width:100%; transform-origin:left center;
+    background:linear-gradient(90deg, var(--g-color), color-mix(in srgb, var(--g-color) 45%, transparent));
+    animation:guideCountdown 8s linear forwards;
+  }
+  @keyframes guideCountdown{ from{ transform:scaleX(1);} to{ transform:scaleX(0);} }
+  @media (max-width:768px){
+    .ai-guide{ top:56px; padding:11px 12px 13px; border-radius:15px; }
+    .ai-guide .guide-badge{ width:34px; height:34px; line-height:34px; font-size:17px; }
+    .ai-guide .guide-title{ font-size:14.5px; }
+    .ai-guide .guide-text{ font-size:12px; }
+  }
 </style>
 </head>
 <body>
@@ -1041,6 +1074,6 @@ body.rtl .card-meta { flex-direction: row-reverse; }
 
 </div>
 
-<script type="module" src="bundle.js?v=137"></script>
+<script type="module" src="bundle.js?v=138"></script>
 </body>
 </html>
