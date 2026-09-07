@@ -2,17 +2,20 @@
 import { t, tr, applyTranslations } from './i18n.js';
 
 // ── 页面切换引导语（首页/设定页不引导；其余 8 页各对应一条）──
+/* 智能引导语 v2（2026-09-07）
+ * 结构：icon（图标）/ color（主题色，卡片与图标底同色）/ t（主句：这栏是什么）/ s（副句：能干啥、为啥要在乎）
+ * 主句副句均为中文源，经 DICT 反查输出 9 种语言。 */
 const GUIDE_TEXTS = {
-  factory:   '在这里你可以快速检视到工厂的直接讯息，包含工厂名称、地址、功能、直接应对人员等。',
-  planning:  '在这里可以知道各项理论计划，包含订单讯息、交付计划、及生产计划等，同时也可以了解延误状态。',
-  materials: '在这里你可以看到物料的各种状态，包含物料运输状态、协力厂物料库存及风险预警。',
-  production:'在这里你可以看到每个计划的实际执行状态，与计划功能有所区别。',
-  quality:   '在这里你可以看到各项品质问题，包含各种来料的名称、问题点、问题点类别、问题对应负责人、解决状态等讯息。',
-  engineering:'在这里你可以看到各项工程问题，以及现场提报并归类为「工程」的现场问题。',
-  factory_process:'在这里你可以看到各项 制程问题，以及现场提报并归类为「制程」的现场问题。',
-  inspection:'在这里你可以看到包含物料来料问题的资料及各类详细讯息统计、产品使用后问题反馈等各类资料。',
-  fieldlog:  '这边是给直接人员做问题记录的界面，可直接做问题名称、叙述及问题拍照等等快速功能界面。',
-  reports:   '在这里可以快速了解区段时间内的各项海外协力厂生产及交付状态，其中周报的时间区段为7天，月报为30天，可直接点选需求范围的起始时间后生成报告。',
+  factory:          { icon:'🏭', color:'#4E8AF5', t:'海外工厂档案',               s:'查地址、产线与对口人，要找哪个厂、找谁先看这里' },
+  planning:         { icon:'📅', color:'#A06BFF', t:'项目与生产计划',             s:'建项目讯息，再排主计划与子计划，交期延误这里最先看到' },
+  materials:        { icon:'📦', color:'#FF9F0A', t:'物料、治具与缺料预警',       s:'看齐套率、在途与库存，缺料会提前亮红灯，别等停线' },
+  production:       { icon:'⚙️', color:'#FF6B6B', t:'现场提报的生产问题',         s:'每条可补 NG 数、不良率与处理方式，没补等于没记录' },
+  engineering:      { icon:'🛠️', color:'#2DD4BF', t:'现场提报的工程问题',         s:'补上处理人与临时、永久对策，工程改了什么这里留痕' },
+  factory_process:  { icon:'🔧', color:'#5E5CE6', t:'现场提报的制程问题',         s:'记录处理与永久对策，同一问题反复发生这里看得出来' },
+  quality:          { icon:'✅', color:'#34C759', t:'品质问题与客户客诉',         s:'现场问题与客诉都能留言追踪，客诉没回红点会一直提醒' },
+  inspection:       { icon:'🔁', color:'#FF4D8D', t:'来料不良 DOA 与客户退换 RMA', s:'登记、统计与跟进，不良率越高这里越要盯' },
+  fieldlog:         { icon:'📍', color:'#FFC53D', t:'现场问题的唯一入口',         s:'选类别、拍照就能交，10 秒记录，自动分发到对应栏目' },
+  reports:          { icon:'📊', color:'#3B82F6', t:'会议记录、周报、月报',       s:'选时间区段一键生成，要给领导看的东西从这里出' },
 };
 
 export function setupNavigation(App) {
@@ -102,29 +105,39 @@ export function setupNavigation(App) {
 
   // 悬浮 AI 引导员：顶部出现几秒后自动消失
   App.showGuide = function(page) {
-    const text = GUIDE_TEXTS[page];
-    if (!text) return;
+    const g = GUIDE_TEXTS[page];
+    if (!g) return;
     this._markGuideShown(page);
     document.getElementById('ai-guide')?.remove();
     const el = document.createElement('div');
     el.id = 'ai-guide';
     el.className = 'ai-guide';
+    el.style.setProperty('--g-color', g.color);
     el.innerHTML =
-      '<img class="guide-avatar" src="ai-avatar.jpg" alt="' + tr('智能海外助理') + '" />' +
+      '<span class="guide-badge">' + g.icon + '</span>' +
       '<div class="guide-body">' +
-        '<div class="guide-title">' + tr('智能引导 · AI Guide') + '</div>' +
-        '<div class="guide-text">' + tr(text) + '</div>' +
+        '<div class="guide-top">' +
+          '<span class="guide-kicker">AI ' + tr('智能引导') + '</span>' +
+          '<span class="guide-close" onclick="App.hideGuide()">✕</span>' +
+        '</div>' +
+        '<div class="guide-title">' + tr(g.t) + '</div>' +
+        '<div class="guide-text">' + tr(g.s) + '</div>' +
       '</div>' +
-      '<div class="guide-close" onclick="document.getElementById(\'ai-guide\')?.remove()">✕</div>';
+      '<span class="guide-progress"></span>';
     document.body.appendChild(el);
-    // 触发进入动画
+    // 进入动画
     requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('show')));
-    // 停留 1.5 秒后自动消失（仅显示当前页这一条引导语，不会多页同屏）
+    // 停留 8 秒（旧版 1.5 秒根本读不完），带底部进度条提示会自动收起，也可手动 ✕ 关闭
     clearTimeout(this._guideTimer);
-    this._guideTimer = setTimeout(() => {
-      el.classList.remove('show');
-      setTimeout(() => el.remove(), 400);
-    }, 1500);
+    this._guideTimer = setTimeout(() => this.hideGuide(), 8000);
+  };
+
+  App.hideGuide = function() {
+    const el = document.getElementById('ai-guide');
+    if (!el) return;
+    clearTimeout(this._guideTimer);
+    el.classList.remove('show');
+    setTimeout(() => el.remove(), 320);
   };
 
   App.goBack = function() {
