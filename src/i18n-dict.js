@@ -645,4 +645,13 @@ export const DICT = {
 
   '智能引导': { en: 'Guide', es: 'Guia', ja: 'ガイド', fr: 'Guide', de: 'Hinweis', ar: 'دليل', vi: 'Huong dan', hi: 'गाइड' },
 
+  /* ── 智能引导开关（2026-09-07）── */
+  '显示智能引导': { en: 'Show AI guide', es: 'Mostrar guia IA', ja: 'AIガイドを表示', fr: 'Afficher le guide IA', de: 'AI-Hinweis anzeigen', ar: 'إظهار دليل الذكاء', vi: 'Hien huong dan AI', hi: 'AI गाइड दिखाएँ' },
+  '不再显示': { en: 'Do not show again', es: 'No mostrar mas', ja: '今後表示しない', fr: 'Ne plus afficher', de: 'Nicht mehr anzeigen', ar: 'عدم العرض مرة اخرى', vi: 'Khong hien lai', hi: 'फिर न दिखाएँ' },
+  '恢复全部引导': { en: 'Restore all guides', es: 'Restaurar todas las guias', ja: 'すべてのガイドを復元', fr: 'Restaurer tous les guides', de: 'Alle Hinweise zuruecksetzen', ar: 'استعادة كل الأدلة', vi: 'Khoi phuc tat ca huong dan', hi: 'सभी गाइड बहाल करें' },
+  '已开启': { en: 'On', es: 'Activado', ja: 'ON', fr: 'Active', de: 'Ein', ar: 'مفعل', vi: 'Bat', hi: 'चालू' },
+  '引导已恢复': { en: 'Guides restored', es: 'Guias restauradas', ja: 'ガイドを復元しました', fr: 'Guides restaures', de: 'Hinweise zurueckgesetzt', ar: 'تمت استعادة الأدلة', vi: 'Da khoi phuc huong dan', hi: 'गाइड बहाल हो गए' },
+  '本栏引导已关闭': { en: 'Guide off for this section', es: 'Guia desactivada aqui', ja: 'この欄のガイドを停止', fr: 'Guide desactive ici', de: 'Hinweis hier aus', ar: 'تم إيقاف الدليل لهذا القسم', vi: 'Da tat huong dan muc nay', hi: 'इस सेक्शन की गाइड बंद' },
+  '同一栏目引导累计显示 3 次后会自动停止，也可在引导条上点「不再显示」': { en: 'A section guide stops after 3 views. Tap "Do not show again" to close one earlier', es: 'La guia de una seccion se detiene tras 3 vistas. Toque "No mostrar mas" para cerrarla antes', ja: '同じ欄のガイドは3回表示後に停止します。「今後表示しない」で早めに閉じられます', fr: 'Le guide d une section s arrete apres 3 affichages. Touchez "Ne plus afficher" pour le fermer plus tot', de: 'Ein Hinweis stoppt nach 3 Anzeigen. Tippen Sie auf "Nicht mehr anzeigen" zum frueheren Schliessen', ar: 'يتوقف دليل القسم بعد 3 مرات. اضغط "عدم العرض مرة اخرى" لإغلاقه مبكرا', vi: 'Huong dan cua muc se dung sau 3 lan. Cham "Khong hien lai" de dong som', hi: 'सेक्शन गाइड 3 बार दिखने के बाद बंद हो जाता है। "फिर न दिखाएँ" से पहले भी बंद करें' },
+
 };
