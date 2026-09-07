@@ -665,6 +665,13 @@ body.rtl .card-meta { flex-direction: row-reverse; }
   .ai-guide .guide-title{ font-size:15px; font-weight:700; line-height:1.35; color:var(--text-primary); }
   /* 副句：能干啥 / 为啥要在乎（小字，不抢戏） */
   .ai-guide .guide-text{ font-size:12.5px; line-height:1.55; color:var(--text-secondary); margin-top:3px; }
+  .ai-guide .guide-foot{ display:flex; justify-content:flex-end; margin-top:6px; }
+  .ai-guide .guide-never{
+    font-size:11px; color:var(--text-muted); cursor:pointer; padding:3px 7px; border-radius:20px;
+    border:1px solid var(--border); background:color-mix(in srgb, var(--bg-card) 60%, transparent);
+    text-decoration:underline; text-underline-offset:2px;
+  }
+  .ai-guide .guide-never:active{ color:var(--text-primary); border-color:var(--g-color); }
   /* 底部倒计时条：让"会自动消失"可见，减少被当成障碍物的突兀感 */
   .ai-guide .guide-progress{
     position:absolute; left:0; bottom:0; height:3px; width:100%; transform-origin:left center;
@@ -983,6 +990,16 @@ body.rtl .card-meta { flex-direction: row-reverse; }
     <div style="padding:12px 0">
       <button class="btn btn-secondary" onclick="App.syncNow()" data-i18n="btn_sync">🔄 立即同步</button>
     </div>
+    <div class="sec-header"><span>💡 <span data-i18n="guide_section">智能引导</span></span></div>
+    <div class="setting-row" style="cursor:pointer" onclick="App.toggleAllGuides()">
+      <span class="setting-label" data-i18n="guide_enable">显示智能引导</span>
+      <span class="setting-value" id="set-guide-all" style="color:var(--accent-green)">-</span>
+    </div>
+    <div class="setting-row" style="cursor:pointer" onclick="App.restoreAllGuides()">
+      <span class="setting-label" data-i18n="guide_restore">恢复全部引导</span>
+      <span class="setting-value" style="color:var(--accent-blue)">→</span>
+    </div>
+    <div style="padding:6px 12px 10px;font-size:11px;color:var(--text-muted);line-height:1.6" data-i18n="guide_hint">同一栏目引导累计显示 3 次后会自动停止，也可在引导条上点「不再显示」。</div>
     <div class="sec-header"><span>🔔 推送通知 · Apple Watch</span></div>
     <div id="push-panel"></div>
     <div class="sec-header"><span>🤖 <span data-i18n="ai_title">智能海外助理</span> · 知识库</span><span style="font-size:11px;color:var(--text-secondary);font-weight:normal">仅管理员</span></div>
@@ -1077,6 +1094,6 @@ body.rtl .card-meta { flex-direction: row-reverse; }
 
 </div>
 
-<script type="module" src="bundle.js?v=139"></script>
+<script type="module" src="bundle.js?v=140"></script>
 </body>
 </html>
