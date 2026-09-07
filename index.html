@@ -654,10 +654,13 @@ body.rtl .card-meta { flex-direction: row-reverse; }
     border:1px solid color-mix(in srgb, var(--g-color) 32%, transparent);
   }
   .ai-guide .guide-close{
-    flex:0 0 auto; width:24px; height:24px; line-height:24px; text-align:center; border-radius:50%;
-    font-size:12px; color:var(--text-muted); cursor:pointer;
+    flex:0 0 auto; width:28px; height:28px; line-height:27px; text-align:center; border-radius:50%;
+    font-size:13px; color:var(--text-secondary); cursor:pointer;
+    border:1px solid var(--border); background:color-mix(in srgb, var(--bg-card) 70%, transparent);
+    transition:background .15s, color .15s, transform .15s;
   }
-  .ai-guide .guide-close:active{ background:rgba(255,255,255,.12); color:var(--text-primary); }
+  .ai-guide .guide-close:hover{ background:var(--g-color); border-color:var(--g-color); color:#fff; transform:scale(1.06); }
+  .ai-guide .guide-close:active{ transform:scale(.94); }
   /* 主句：这栏是什么（加粗，一眼扫到） */
   .ai-guide .guide-title{ font-size:15px; font-weight:700; line-height:1.35; color:var(--text-primary); }
   /* 副句：能干啥 / 为啥要在乎（小字，不抢戏） */
@@ -1074,6 +1077,6 @@ body.rtl .card-meta { flex-direction: row-reverse; }
 
 </div>
 
-<script type="module" src="bundle.js?v=138"></script>
+<script type="module" src="bundle.js?v=139"></script>
 </body>
 </html>
