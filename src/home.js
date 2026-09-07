@@ -26,7 +26,7 @@ const sectorOf = n => (n && (n.sector || SECTOR_BY_CATEGORY[n.category])) || 'au
 
 /* ── World Clock ── */
 const WC_CLOCKS = [
-  { city: '中国', flag: '🇨🇳', tz: 'Asia/Shanghai',    accent: '#e94560' },
+  { city: '中国', flag: '🇨🇳', tz: 'Asia/Shanghai',    accent: '#FF9500' },
   { city: '越南', flag: '🇻🇳', tz: 'Asia/Ho_Chi_Minh', accent: '#2ed573' },
   { city: '印度', flag: '🇮🇳', tz: 'Asia/Kolkata',     accent: '#ffa502' },
 ];
