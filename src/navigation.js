@@ -9,7 +9,7 @@ const GUIDE_TEXTS = {
   factory:          { icon:'🏭', color:'#4E8AF5', t:'海外工厂档案',               s:'查地址、产线与对口人，要找哪个厂、找谁先看这里' },
   planning:         { icon:'📅', color:'#A06BFF', t:'项目与生产计划',             s:'建项目讯息，再排主计划与子计划，交期延误这里最先看到' },
   materials:        { icon:'📦', color:'#FF9F0A', t:'物料、治具与缺料预警',       s:'看齐套率、在途与库存，缺料会提前亮红灯，别等停线' },
-  production:       { icon:'⚙️', color:'#FF6B6B', t:'现场提报的生产问题',         s:'每条可补 NG 数、不良率与处理方式，没补等于没记录' },
+  production:       { icon:'🔥', color:'#FF6B6B', t:'现场提报的生产问题',         s:'每条可补 NG 数、不良率与处理方式，没补等于没记录' },
   engineering:      { icon:'🛠️', color:'#2DD4BF', t:'现场提报的工程问题',         s:'补上处理人与临时、永久对策，工程改了什么这里留痕' },
   factory_process:  { icon:'🔧', color:'#5E5CE6', t:'现场提报的制程问题',         s:'记录处理与永久对策，同一问题反复发生这里看得出来' },
   quality:          { icon:'✅', color:'#34C759', t:'品质问题与客户客诉',         s:'现场问题与客诉都能留言追踪，客诉没回红点会一直提醒' },
