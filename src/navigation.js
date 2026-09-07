@@ -127,14 +127,23 @@ export function setupNavigation(App) {
     document.body.appendChild(el);
     // 进入动画
     requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('show')));
-    // 停留 8 秒（旧版 1.5 秒根本读不完），带底部进度条提示会自动收起，也可手动 ✕ 关闭
+    // 手机：碰一下画面任意处即收起（不拦截这次点击，点按钮照样生效）；电脑：右上 ✕ 自行关闭
+    // 8 秒只是兜底上限，不用干等。
     clearTimeout(this._guideTimer);
     this._guideTimer = setTimeout(() => this.hideGuide(), 8000);
+    this._guideDismiss = () => this.hideGuide();
+    document.addEventListener('touchstart', this._guideDismiss, { passive: true });
+    document.addEventListener('mousedown', this._guideDismiss);
   };
 
   App.hideGuide = function() {
     const el = document.getElementById('ai-guide');
-    if (!el) return;
+    if (this._guideDismiss) {
+      document.removeEventListener('touchstart', this._guideDismiss);
+      document.removeEventListener('mousedown', this._guideDismiss);
+      this._guideDismiss = null;
+    }
+    if (!el) { clearTimeout(this._guideTimer); return; }
     clearTimeout(this._guideTimer);
     el.classList.remove('show');
     setTimeout(() => el.remove(), 320);
