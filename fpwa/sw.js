@@ -1,13 +1,13 @@
-/* FPWA Service Worker — v1 */
-const VERSION = '1';
-const CACHE = 'pmapp-fpwa-v1';
+/* FPWA Service Worker — v2 */
+const VERSION = '2';
+const CACHE = 'pmapp-fpwa-v2';
 const ASSETS = [
   './',
   './index.html',
   './manifest.json',
   './icon-192.png',
   './icon-512.png',
-  './bundle.js?v=1',
+  './bundle.js?v=2',
 ];
 
 self.addEventListener('install', e => {
