@@ -776,6 +776,8 @@ body.rtl .card-meta { flex-direction: row-reverse; }
   <div id="proj-info-form" class="plan-add" style="display:none">
     <input type="text" id="pi-factory-no" class="plan-add-input" onkeydown="if(event.key==='Enter')App.saveProjectInfo()" />
     <input type="text" id="pi-customer-no" class="plan-add-input" />
+    <!-- 客户：点选，来源＝客户资料的 customers 表 -->
+    <button type="button" class="btn btn-secondary" id="pi-customer-btn" style="width:100%;font-size:14px" onclick="App.pickProjectCustomer()"></button>
     <!-- 生产工厂：点选，来源＝工厂模块的 factory_info -->
     <button type="button" class="btn btn-secondary" id="pi-factory-btn" style="width:100%;font-size:14px" onclick="App.pickProjectFactory()"></button>
     <select id="pi-stage" class="plan-add-sel"></select>
@@ -824,8 +826,18 @@ body.rtl .card-meta { flex-direction: row-reverse; }
 <!-- ═══ 工厂讯息 ═══ -->
 <div id="page-factory" class="page">
   <div class="ptr-indicator" id="ptr-factory" data-i18n="ptr_pull">↓ 下拉刷新</div>
-  <div class="sec-header"><span data-i18n="tab_factory">工厂</span><span class="sec-action" id="factory-add" style="display:none" onclick="App.showCreateFor('factory_info')" data-i18n="btn_new">+ 新建</span></div>
+  <div class="sec-header"><span data-i18n="tab_factory">工厂/客户</span><span class="sec-action" id="factory-add" style="display:none" onclick="App.showCreateFor('factory_info')" data-i18n="btn_new">+ 新建</span></div>
   <div id="factory-list"><div class="loading"><div class="spinner"></div><span data-i18n="loading">加载中...</span></div></div>
+  <!-- 客户资料：与工厂同页维护，作为项目讯息「客户选择」的数据来源 -->
+  <div class="sec-header"><span data-i18n="customer_title">客户资料</span><span class="sec-action" id="customer-add" style="display:none" onclick="App.toggleCustomerForm()">+ 新建</span></div>
+  <div id="customer-form" class="plan-add" style="display:none">
+    <div class="plan-sec" style="margin:0 0 6px"><span>🤝 <span id="customer-form-title">新建客户</span></span></div>
+    <input type="text" id="cust-name-zh" class="plan-add-input" placeholder="客户中文名" onkeydown="if(event.key==='Enter')App.saveCustomer()" />
+    <input type="text" id="cust-name-en" class="plan-add-input" placeholder="客户英文名" />
+    <input type="text" id="cust-country" class="plan-add-input" placeholder="客户国家" />
+    <button class="btn btn-primary plan-add-btn" onclick="App.saveCustomer()">保存</button>
+  </div>
+  <div id="customer-list"></div>
 </div>
 
 <!-- ═══ 生产 ═══ -->
@@ -1094,6 +1106,6 @@ body.rtl .card-meta { flex-direction: row-reverse; }
 
 </div>
 
-<script type="module" src="bundle.js?v=142"></script>
+<script type="module" src="bundle.js?v=143"></script>
 </body>
 </html>
