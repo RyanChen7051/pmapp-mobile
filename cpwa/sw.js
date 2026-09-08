@@ -1,13 +1,13 @@
-/* CPWA Service Worker — v4 */
-const VERSION = '4';
-const CACHE = 'pmapp-cpwa-v4';
+/* CPWA Service Worker — v6 */
+const VERSION = '6';
+const CACHE = 'pmapp-cpwa-v6';
 const ASSETS = [
   './',
   './index.html',
   './manifest.json',
   './icon-192.png',
   './icon-512.png',
-  './bundle.js?v=4',
+  './bundle.js?v=6',
 ];
 
 self.addEventListener('install', e => {
