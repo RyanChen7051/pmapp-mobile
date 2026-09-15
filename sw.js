@@ -1,7 +1,7 @@
 // PMApp PWA Service Worker v101
-const VERSION = 'v144';
+const VERSION = 'v145';
 const CACHE_NAME = 'pmapp-pwa-' + VERSION;
-const ASSETS = ['./', './index.html', './bundle.js', './manifest.json', './icon-192-v2.png', './icon-512-v2.png', './apple-touch-icon-v2.png', './favicon-32-v2.png'];
+const ASSETS = ['./', './index.html', './bundle.js', './manifest.json', './pmapp-watermark.png', './icon-192-v2.png', './icon-512-v2.png', './apple-touch-icon-v2.png', './favicon-32-v2.png'];
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE_NAME).then((c) => c.addAll(ASSETS)).catch(() => {}));

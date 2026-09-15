@@ -685,9 +685,14 @@ body.rtl .card-meta { flex-direction: row-reverse; }
     .ai-guide .guide-title{ font-size:14.5px; }
     .ai-guide .guide-text{ font-size:12px; }
   }
+
+/* ═══ PMApp 右下角浮水印（三叉戟 mark，小标）═══ */
+.pmapp-wm{position:fixed;right:calc(env(safe-area-inset-right,0px) + 14px);bottom:calc(var(--safe-bottom,0px) + 60px);width:84px;height:auto;opacity:.12;pointer-events:none;z-index:1;user-select:none;-webkit-user-select:none;}
+@media (max-width:430px){.pmapp-wm{width:72px;}}
 </style>
 </head>
 <body>
+<img class="pmapp-wm" src="pmapp-watermark.png" alt="" aria-hidden="true">
 <div id="app">
 
 <!-- ═══ 首页 ═══ -->
