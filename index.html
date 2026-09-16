@@ -456,6 +456,7 @@ body.rtl .card-meta { flex-direction: row-reverse; }
 /* ═══ 领导电脑端（宽屏自适应 + 驾驶舱）═══ */
 #cockpit { display: block; }
 .sidebar-brand { display: none; }
+.sidebar-foot { display: none; }
 
 /* ─── 领导驾驶舱（手机/电脑通用样式）─── */
 .cockpit-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; flex-wrap: wrap; gap: 8px; }
@@ -528,7 +529,10 @@ body.rtl .card-meta { flex-direction: row-reverse; }
     background: var(--bg-secondary);
     z-index: 2;
   }
-  .sidebar-brand .sb-logo { font-size: 26px; }
+  .sidebar-brand .sb-logo-img { width: 30px; height: 30px; object-fit: contain; display: block; }
+  /* 侧边栏底部品牌标（lockup） */
+  .sidebar-foot { display: block; margin-top: auto; padding: 22px 20px 30px; }
+  .sidebar-foot img { width: 192px; max-width: 100%; height: auto; opacity: .82; display: block; }
   .tab {
     flex: 0 0 auto; width: 100%;
     flex-direction: row; justify-content: flex-start; align-items: center;
@@ -1067,7 +1071,7 @@ body.rtl .card-meta { flex-direction: row-reverse; }
 
 <!-- Tab bar (v3.16.0 保留 DOM 以兼容，CSS 隐藏) -->
 <div class="tabbar" id="tabbar" style="display:none">
-  <div class="sidebar-brand"><span class="sb-logo">🛰️</span><span>PMApp 驾驶舱</span></div>
+  <div class="sidebar-brand"><img src="./logo-mark-white.png" class="sb-logo-img" alt="PMApp"><span>PMApp 驾驶舱</span></div>
   <div class="tab active" onclick="App.navigate('home')" data-page="home"><span class="tab-icon">🏠</span><span data-i18n="tab_home">首页</span></div>
   <div class="tab" onclick="App.navigate('factory')" data-page="factory"><span class="tab-icon">🏭</span><span data-i18n="tab_factory">工厂</span></div>
   <div class="tab" onclick="App.navigate('planning')" data-page="planning"><span class="tab-icon">📋</span><span data-i18n="tab_planning">计划</span></div>
@@ -1080,6 +1084,7 @@ body.rtl .card-meta { flex-direction: row-reverse; }
   <div class="tab" onclick="App.navigate('fieldlog')" data-page="fieldlog"><span class="tab-icon">📸</span><span>现场</span></div>
   <div class="tab" onclick="App.navigate('reports')" data-page="reports"><span class="tab-icon">📊</span><span data-i18n="tab_reports">报告</span></div>
   <div class="tab" onclick="App.navigate('settings')" data-page="settings"><span class="tab-icon">⚙️</span><span data-i18n="tab_settings">设定</span></div>
+  <div class="sidebar-foot"><img src="./logo-lockup-white.png" alt="PMApp"></div>
 </div>
 
 <!-- FAB -->
