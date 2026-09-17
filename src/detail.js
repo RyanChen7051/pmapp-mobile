@@ -164,6 +164,10 @@ export function setupDetail(App) {
         html += '</div>';
       }
       const rec = record;
+      const locText = this._flLocText ? this._flLocText(rec) : '';
+      if (locText) {
+        html += `<div class="sec-header"><span>📍 ${tr('现场定位')}</span></div><div style="font-size:14px;line-height:1.6;padding:2px 0">${this.esc(locText)}${rec.gps ? ` <span style="color:var(--text-muted,#9aa0b4);font-size:12px">(${this.esc(rec.gps)})</span>` : ''}</div>`;
+      }
       html += `<div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">`;
       if (rec.responsible_email || rec.reporter_email) {
         html += `<button class="btn btn-secondary" style="flex:1;min-width:140px" onclick="App._flMailto(${id})">📧 ${tr('发送邮件通知')}</button>`;

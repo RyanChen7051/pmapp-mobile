@@ -113,7 +113,7 @@ export function setupFieldLog(App) {
         <div class="card">
           <div class="card-head"><div class="card-title">📸 ${this.esc(r.project ? tr(r.project) : tr('未指定项目'))}</div>
           ${r.status ? `<span class="badge ${r.status === '已处理' ? 'badge-green' : r.status === '处理中' ? 'badge-orange' : 'badge-red'}">${this.esc(tr(r.status))}</span>` : ''}</div>
-          <div class="card-meta"><span>🏭 ${this.esc(r.problem_factory || r.factory || '—')}</span>${r.photos ? `<span>📷 ${r.photos.length}</span>` : ''}<span>🕒 ${this.esc((r.created_at || '').slice(0, 16))}</span></div>
+          <div class="card-meta"><span>🏭 ${this.esc(r.problem_factory || r.factory || '—')}</span>${this._flLocHtml(r) ? this._flLocHtml(r) : ''}${r.photos ? `<span>📷 ${r.photos.length}</span>` : ''}<span>🕒 ${this.esc((r.created_at || '').slice(0, 16))}</span></div>
           ${r.description ? `<div class="card-desc">${this.esc((r.description || '').slice(0, 80))}</div>` : ''}
         </div>
       </div>
@@ -184,6 +184,7 @@ export function setupFieldLog(App) {
       </div>
       <div class="card-meta">
         ${r.problem_factory ? `<span>🏭 ${this.esc(r.problem_factory)}</span>` : ''}
+        ${this._flLocHtml(r) ? this._flLocHtml(r) : ''}
         ${rate ? `<span>📉 ${this.esc(rate)}</span>` : ''}
         ${r.handler ? `<span>👤 ${this.esc(r.handler)}</span>` : ''}
         <span>🕒 ${this.esc((r.created_at || '').slice(0, 16))}</span>
@@ -271,6 +272,56 @@ export function setupFieldLog(App) {
       const p = n => String(n).padStart(2, '0');
       return p(d.getMonth() + 1) + '-' + p(d.getDate()) + ' ' + p(d.getHours()) + ':' + p(d.getMinutes());
     } catch (e) { return String(iso).slice(5, 16); }
+  };
+
+  // ═══ 现场定位 → 国家/城市/区域（逆地理编码）═══
+  // 抓取 GPS 后调用免费逆地理服务解析人类可读地名；离线/失败则降级为原始坐标。
+  // 优先 BigDataCloud（免 key、CORS 友好、localityLanguage=zh 直接返回中文地名），
+  // 失败回退 Nominatim。返回 {country, city, region}（city/region 可能为空）。
+  App._flReverseGeocode = async function (lat, lon) {
+    const out = { country: '', city: '', region: '' };
+    const tryBigData = async () => {
+      const url = `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=zh`;
+      const r = await fetch(url, { signal: AbortSignal.timeout(6000) });
+      if (!r.ok) throw new Error('bdc ' + r.status);
+      const d = await r.json();
+      out.country = d.countryName || '';
+      out.city = d.city || d.locality || '';
+      out.region = d.principalSubdivision || '';
+      if (!out.country) throw new Error('no country');
+    };
+    const tryNominatim = async () => {
+      const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}&accept-language=zh`;
+      const r = await fetch(url, { signal: AbortSignal.timeout(6000), headers: { 'Accept': 'application/json' } });
+      if (!r.ok) throw new Error('nom ' + r.status);
+      const d = await r.json();
+      const a = d.address || {};
+      out.country = a.country || '';
+      out.city = a.city || a.town || a.village || a.municipality || '';
+      out.region = a.state || a.county || a.region || '';
+      if (!out.country) throw new Error('no country');
+    };
+    try { await tryBigData(); } catch (e) { try { await tryNominatim(); } catch (e2) {} }
+    return out;
+  };
+
+  // 由记录拼出「国家 · 区域 · 城市」展示文本；无地名则回退坐标；全无则返回空串
+  App._flLocText = function (rec) {
+    const country = (rec && rec.gps_country) || '';
+    const region = (rec && rec.gps_region) || '';
+    const city = (rec && rec.gps_city) || '';
+    const parts = [country, region, city].filter(Boolean);
+    if (parts.length) return parts.join(' · ');
+    if (rec && rec.gps) return rec.gps;
+    return '';
+  };
+
+  // 列表/详情里用的定位标签（含坐标 tooltip）
+  App._flLocHtml = function (rec) {
+    const txt = this._flLocText(rec);
+    if (!txt) return '';
+    const coords = rec && rec.gps ? this.esc(rec.gps) : '';
+    return `<span title="${coords ? tr('坐标') + ' ' + coords : ''}">📍 ${this.esc(txt)}</span>`;
   };
 
   // 通用留言板：每条问题卡片下方一条对话式留言板（评论存 rec.comments）
@@ -496,15 +547,24 @@ export function setupFieldLog(App) {
     }, 220);
   };
 
-  // 记录现场 GPS 定位（无信号/拒绝授权时静默降级）
+  // 记录现场 GPS 定位，并逆地理编码为国家/城市/区域（无信号/拒绝授权时静默降级）
   App.flCaptureGPS = function () {
     if (!navigator.geolocation) { this.toast(tr('此设备不支持定位')); return; }
     const btn = document.getElementById('fl-gps-btn');
     if (btn) btn.textContent = tr('📍 定位中…');
     navigator.geolocation.getCurrentPosition(
-      pos => {
-        this._flGps = pos.coords.latitude.toFixed(5) + ',' + pos.coords.longitude.toFixed(5);
-        if (btn) btn.textContent = tr('✅ 已记录') + ' ' + this._flGps;
+      async (pos) => {
+        const lat = pos.coords.latitude, lon = pos.coords.longitude;
+        this._flGps = lat.toFixed(5) + ',' + lon.toFixed(5);
+        let place = '';
+        try {
+          const g = await this._flReverseGeocode(lat, lon);
+          this._flGpsCountry = g.country || '';
+          this._flGpsCity = g.city || '';
+          this._flGpsRegion = g.region || '';
+          place = this._flLocText({ gps_country: g.country, gps_region: g.region, gps_city: g.city, gps: this._flGps });
+        } catch (e) {}
+        if (btn) btn.textContent = place ? ('✅ ' + place) : (tr('✅ 已记录') + ' ' + this._flGps);
         this.toast(tr('现场定位已记录'));
       },
       err => {
@@ -530,7 +590,11 @@ export function setupFieldLog(App) {
     const nowISO = new Date().toISOString();
     const newRec = rec || { id: this._newLocalId('field_log'), created_at: nowISO.slice(0, 19).replace('T', ' '), status: '待处理', reporter: this.session?.user?.display_name || this.session?.user?.username || '' };
     this._flPhotos = rec && rec.photos ? rec.photos.slice() : [];
-    this._flEditingId = newRec.id; this._flGps = '';
+    this._flEditingId = newRec.id;
+    this._flGps = rec && rec.gps ? rec.gps : '';
+    this._flGpsCountry = rec && rec.gps_country ? rec.gps_country : '';
+    this._flGpsCity = rec && rec.gps_city ? rec.gps_city : '';
+    this._flGpsRegion = rec && rec.gps_region ? rec.gps_region : '';
 
     if (this._flVoiceActive) this.flStopVoice();
     const kw = VOICE_CMD_KW[getLang()] || '栏目';
@@ -594,6 +658,11 @@ export function setupFieldLog(App) {
       const pef = document.getElementById('fl-problem-factory'); if (pef && rec.problem_factory) pef.value = rec.problem_factory;
       const pcat = document.getElementById('fl-problem-category'); if (pcat && rec.problem_category) pcat.value = rec.problem_category;
     }
+    const gpsBtn = document.getElementById('fl-gps-btn');
+    if (gpsBtn) {
+      const existingPlace = this._flLocText(newRec);
+      gpsBtn.textContent = existingPlace ? ('📍 ' + existingPlace) : tr('📍 记录现场定位');
+    }
     this._flRenderPhotos();
     this._fieldCopilotRefresh();
   };
@@ -613,6 +682,9 @@ export function setupFieldLog(App) {
       reporter_email: reporterEmail, responsible_email: responsibleEmail,
       photos: this._flPhotos.slice(),
       gps: this._flGps || '',
+      gps_country: this._flGpsCountry || (existing && existing.gps_country) || '',
+      gps_city: this._flGpsCity || (existing && existing.gps_city) || '',
+      gps_region: this._flGpsRegion || (existing && existing.gps_region) || '',
       reporter: this.session?.user?.display_name || this.session?.user?.username || '',
       created_at: now.slice(0, 19).replace('T', ' '),
       updated_at: now.slice(0, 19).replace('T', ' '),
@@ -673,7 +745,7 @@ export function setupFieldLog(App) {
       `报告人: ${rec.reporter || ''}`,
       `报告人邮箱: ${rec.reporter_email || ''}`,
       `负责处理人邮箱: ${rec.responsible_email || ''}`,
-      `现场定位: ${rec.gps || ''}`,
+      `现场定位: ${[rec.gps_country || '', rec.gps_region || '', rec.gps_city || ''].filter(Boolean).join(' · ') || tr('（未记录）')}${rec.gps ? ' (' + rec.gps + ')' : ''}`,
       `记录时间: ${rec.created_at || ''}`,
       '',
       `问题叙述:`,

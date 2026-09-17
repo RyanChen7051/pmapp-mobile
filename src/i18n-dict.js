@@ -644,6 +644,8 @@ export const DICT = {
   '选时间区段一键生成，要给领导看的东西从这里出': { en: 'Pick a date range, generate in one tap. Everything for management comes from here', es: 'Elija un rango y genere con un toque. Lo que ve la direccion sale de aqui', ja: '期間を選んでワンタップ生成。上司へ出す資料はここから', fr: 'Choisissez une periode, genere en un clic. Tout pour la direction part d ici', de: 'Zeitraum waehlen, einmal tippen, fertig. Alles fuer die Geschaeftsleitung von hier', ar: 'اختر فترة وولد بضغطة. ما يراه المديرون يخرج من هنا', vi: 'Chon khoang thoi gian, tao bang mot cham. Tai lieu cho lanh dao deu tu day', hi: 'समयावधि चुनें, एक टैप में बनाएँ। मैनेजमेंट को दिखाने वाली चीजें यहीं से' },
 
   '智能引导': { en: 'Guide', es: 'Guia', ja: 'ガイド', fr: 'Guide', de: 'Hinweis', ar: 'دليل', vi: 'Huong dan', hi: 'गाइड' },
+  '现场定位': { en: 'Location', es: 'Ubicación', ja: '現場位置', fr: 'Emplacement', de: 'Standort', ar: 'الموقع', vi: 'Vị trí', hi: 'स्थान' },
+  '坐标': { en: 'Coords', es: 'Coord.', ja: '座標', fr: 'Coord.', de: 'Koord.', ar: 'الإحداثيات', vi: 'Tọa độ', hi: 'निर्देशांक' },
 
   /* ── 智能引导开关（2026-09-07）── */
   '显示智能引导': { en: 'Show AI guide', es: 'Mostrar guia IA', ja: 'AIガイドを表示', fr: 'Afficher le guide IA', de: 'AI-Hinweis anzeigen', ar: 'إظهار دليل الذكاء', vi: 'Hien huong dan AI', hi: 'AI गाइड दिखाएँ' },
