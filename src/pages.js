@@ -7,7 +7,9 @@ export function setupPages(App) {
   /* ─── 工厂名实时解析：优先按 factory_id 从工厂缓存取「当前」名字，改名后立刻跟着变；无 id 时回退到存储的名字副本 ─── */
   App.facDisp = function(rec, key) {
     if (!rec) return '';
-    if (rec.factory_id) {
+    // 仅当请求的字段就是工厂外键 id 时才解析为工厂名；其余字段一律返回原始值，
+    // 避免「记录带 factory_id 时把 name/编号/阶段等所有字段都误显示成工厂名」的 bug。
+    if (key === 'factory_id' && rec.factory_id) {
       const f = (this.cache.factory_info || []).find(x => String(x.id) === String(rec.factory_id));
       if (f && f.factory_name) return f.factory_name;
     }
@@ -18,7 +20,8 @@ export function setupPages(App) {
   /* ─── 客户名实时解析：优先按 customer_id 从客户缓存取「当前」名字，改名后立刻跟着变 ─── */
   App.custDisp = function(rec, key) {
     if (!rec) return '';
-    if (rec.customer_id) {
+    // 同理：仅当请求字段为客户外键 id 时才解析为客户名。
+    if (key === 'customer_id' && rec.customer_id) {
       const c = (this.cache.customer_info || []).find(x => String(x.id) === String(rec.customer_id));
       if (c && c.customer_name) return c.customer_name;
     }
@@ -240,11 +243,26 @@ export function setupPages(App) {
 
   App._piLabel = function(p) {
     if (!p) return '';
-    return [p.name, p.factory_project_no, p.customer_project_no].filter(Boolean).join(' / ');
+    const name = this._piName(p);
+    return [name, p.customer_project_no].filter(Boolean).join(' / ');
+  };
+
+  // 项目名兜底：旧记录（创建时还没有 name 字段）用「工厂项目编号 + 客户项目编号」组成可读名称
+  App._piName = function(p) {
+    if (!p) return '';
+    if (p.name) return p.name;
+    return [p.factory_project_no, p.customer_project_no].filter(Boolean).join(' ').trim();
   };
 
   App._piStageText = function(v) {
     return v === 'MP' ? tr('量产') : (v || '');
+  };
+
+  App._piStatusText = function(v) {
+    if (v === 'active') return tr('进行中');
+    if (v === 'on_hold') return tr('暂停中');
+    if (v === 'cancelled') return tr('全面停止');
+    return v || '';
   };
 
   App.renderProjectInfo = function() {
@@ -275,6 +293,7 @@ export function setupPages(App) {
         ${p.production_factory || p.factory_id ? `<span>🏭 ${this.esc(this.facDisp(p, 'production_factory'))}</span>` : ''}
         ${p.customer_name_display || p.customer_id ? `<span>🤝 ${this.esc(this.custDisp(p, 'customer_name_display'))}</span>` : ''}
         ${p.stage ? `<span class="badge ${this.badgeClass(p.stage)}">${this.esc(this._piStageText(p.stage))}</span>` : ''}
+        ${p.status ? `<span class="badge ${this.badgeClass(p.status)}">${this.esc(this._piStatusText(p.status))}</span>` : ''}
         ${this.canEdit('project_info') ? `<span class="todo-edit" title="${tr('编辑')}" onclick="event.stopPropagation();App.showEditFor('project_info', ${p.id})">✎</span>` : ''}
         <span class="todo-del" onclick="event.stopPropagation();App.deleteProjectInfo(${p.id})">✕</span>
       </div></div>`).join('');
@@ -284,17 +303,17 @@ export function setupPages(App) {
    * 用 #picker-overlay（edit.js 的 _openPicker/closePicker），不占用主 modal。 */
   /* ─── 项目讯息快速新建表单：生产工厂 / 客户 用原生下拉框（选项），来源＝工厂/客户模块 ─── */
   App.populateProjectFormSelects = function() {
-    const fill = (selId, mod, nameKey) => {
+    const fill = (selId, mod, nameKey, placeholder) => {
       const sel = document.getElementById(selId);
       if (!sel) return;
       const list = (this.cache[mod] || []);
       const cur = sel.value;
-      sel.innerHTML = `<option value="">${tr('请选择')}</option>` +
+      sel.innerHTML = `<option value="">${this.esc(placeholder || tr('请选择'))}</option>` +
         list.map(o => `<option value="${o.id}">${this.esc(o[nameKey] || '')}</option>`).join('');
       if (cur) sel.value = cur;
     };
-    fill('pi-factory', 'factory_info', 'factory_name');
-    fill('pi-customer', 'customer_info', 'customer_name');
+    fill('pi-factory', 'factory_info', 'factory_name', '请选择生产工厂');
+    fill('pi-customer', 'customer_info', 'customer_name', '请选择项目所属客户');
   };
 
   App.toggleProjectInfoForm = function() {
@@ -330,6 +349,7 @@ export function setupPages(App) {
       customer_id: cid || '',
       customer_name_display: cus ? (cus.customer_name || '') : '',
       stage: stg ? stg.value : 'NPI',
+      status: 'active',
       created_at: now, updated_at: now,
     };
     (this.cache.project_info = this.cache.project_info || []).unshift(rec);

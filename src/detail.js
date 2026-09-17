@@ -119,9 +119,16 @@ export function setupDetail(App) {
   App.renderDetail = function(moduleKey, id) {
     const mod = MODULES[moduleKey];
     const records = this.cache[moduleKey] || [];
-    const record = records.find(r => r.id === id);
+    const raw = records.find(r => r.id === id);
+    if (!raw) { const el0 = document.getElementById('module-detail-content'); if (el0) el0.innerHTML = `<div class="empty">${tr('记录不存在')}</div>`; return; }
+    // 项目讯息：旧记录缺 name / 用旧字段 project_stage 存阶段，渲染前做兜底归一，确保详情不显示空白
+    let record = raw;
+    if (moduleKey === 'project_info') {
+      record = { ...raw };
+      if (!record.name) record.name = [raw.factory_project_no, raw.customer_project_no].filter(Boolean).join(' ').trim();
+      if (!record.stage && raw.project_stage) record.stage = raw.project_stage;
+    }
     const el = document.getElementById('module-detail-content');
-    if (!record) { el.innerHTML = `<div class="empty">${tr('记录不存在')}</div>`; return; }
     const canEdit = this.canEdit(moduleKey) && (mod.editFields || moduleKey === 'field_log');
     // v3.16.0 顶部工具栏（替代 nav bar tb-back/tb-action）
     let html = `<div class="detail-toolbar">

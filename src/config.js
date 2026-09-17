@@ -1,7 +1,7 @@
 /* ═══ Configuration & Constants ═══ */
 export const SUPABASE_URL = 'https://nsnmtkukxquhinlmbejg.supabase.co';
 export const SUPABASE_KEY = 'sb_publishable_YB5z3cQK-vCg67--oKpSrg_63STgMJW';
-export const APP_VERSION = 'v3.16.64';
+export const APP_VERSION = 'v3.16.65';
 
 // Web Push VAPID 公钥（客户端订阅用；私钥仅服务端发送端持有，绝不提交前端）
 export const VAPID_PUBLIC = 'BBEsbi_NqN1vqWfwbYx3XV-qUVTqgJNbaNg71TR2tx0k8158CViUZnLfdiLosv6n_sycP2S3yexNFYFzKHChL_c';
@@ -144,8 +144,8 @@ export const MODULES = {
   },
   project_info: {
     title: '项目讯息', icon: '🗂', table: 'project_info',
-    listFields: [{key:'name',label:'项目名'},{key:'factory_project_no',label:'工厂项目编号'},{key:'customer_project_no',label:'客户项目编号'},{key:'production_factory',label:'生产工厂'},{key:'customer_name_display',label:'客户'},{key:'stage',label:'项目阶段',badge:true}],
-    detailFields: [{key:'name',label:'项目名'},{key:'factory_project_no',label:'工厂项目编号'},{key:'customer_project_no',label:'客户项目编号'},{key:'production_factory',label:'生产工厂'},{key:'customer_name_display',label:'客户'},{key:'stage',label:'项目阶段'}],
+    listFields: [{key:'name',label:'项目名'},{key:'factory_project_no',label:'工厂项目编号'},{key:'customer_project_no',label:'客户项目编号'},{key:'production_factory',label:'生产工厂'},{key:'customer_name_display',label:'客户'},{key:'stage',label:'项目阶段',badge:true},{key:'status',label:'状态',badge:true}],
+    detailFields: [{key:'name',label:'项目名'},{key:'factory_project_no',label:'工厂项目编号'},{key:'customer_project_no',label:'客户项目编号'},{key:'production_factory',label:'生产工厂'},{key:'customer_name_display',label:'客户'},{key:'stage',label:'项目阶段'},{key:'status',label:'状态'}],
     editFields: [
       {key:'name',label:'项目名',type:'text',required:true},
       {key:'factory_project_no',label:'工厂项目编号',type:'text',required:true},
@@ -153,6 +153,7 @@ export const MODULES = {
       {key:'factory_id',label:'生产工厂',type:'selectsrc',source:'factory_info',nameKey:'factory_name',labelKey:'production_factory'},
       {key:'customer_id',label:'客户',type:'selectsrc',source:'customer_info',nameKey:'customer_name',labelKey:'customer_name_display'},
       {key:'stage',label:'项目阶段',type:'select',options:[{v:'NPI',t:'NPI'},{v:'EVT',t:'EVT'},{v:'DVT',t:'DVT'},{v:'PVT',t:'PVT'},{v:'MP',t:'量产'}]},
+      {key:'status',label:'项目状态',type:'select',options:[{v:'active',t:'进行中'},{v:'on_hold',t:'暂停中'},{v:'cancelled',t:'全面停止'}]},
     ],
   },
   material_master: {

@@ -11,12 +11,21 @@ export function setupCockpit(App) {
     if (!el) return;
 
     const C = this.cache || {};
-    const projects = C.projects || [];
     const issues = C.issues || [];
     const doa = C.doa || [];
 
     // KPI 1: 进行中项目
-    const active = projects.filter(p => p.status === 'active').length;
+    // 桥接后桌面 projects 与 PWA 项目讯息 project_info 同源（云端均为 project_info），
+    // 此处合并两者、按 id 去重后统计 status === 'active'（进行中）。
+    const _projAll = [...(C.project_info || []), ...(C.projects || [])];
+    const _projSeen = new Set();
+    const allProjects = _projAll.filter(p => {
+      if (!p || !p.id) return false;
+      if (_projSeen.has(p.id)) return false;
+      _projSeen.add(p.id);
+      return true;
+    });
+    const active = allProjects.filter(p => p.status === 'active').length;
     // KPI 2: 待处理问题
     const openIssues = issues.filter(i => i.status === 'open').length;
     // KPI 3: 生产计划完成（主计划 tasks 本周到期且已完成的数量；口径可后续按需调）
