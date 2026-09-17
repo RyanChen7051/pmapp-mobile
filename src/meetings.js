@@ -15,7 +15,7 @@ export function setupMeetings(App) {
     const rec = id ? (this.cache.meetings || []).find(r => r.id === id) : null;
     const title = rec && rec.title ? rec.title : '';
     const date = rec && rec.meeting_date ? rec.meeting_date : new Date().toISOString().slice(0, 10);
-    const notes = rec && rec.notes ? rec.notes : '';
+    const notes = rec && (rec.notes || rec.transcript) ? (rec.notes || rec.transcript) : '';
     const html =
       '<div class="modal-handle"></div>' +
       '<div class="modal-title">' + (rec ? tr('编辑') : tr('上传')) + tr('会议记录') + '</div>' +
@@ -71,7 +71,7 @@ export function setupMeetings(App) {
       !q ||
       (m.title || '').toLowerCase().includes(q) ||
       (m.meeting_date || '').includes(q) ||
-      (m.notes || '').toLowerCase().includes(q)
+      ((m.notes || m.transcript) || '').toLowerCase().includes(q)
     );
     if (!list.length) { el.innerHTML = `<div class="empty">${tr('暂无会议记录')}</div>`; return; }
     el.innerHTML = list.map(m =>
