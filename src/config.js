@@ -1,7 +1,7 @@
 /* ═══ Configuration & Constants ═══ */
 export const SUPABASE_URL = 'https://nsnmtkukxquhinlmbejg.supabase.co';
 export const SUPABASE_KEY = 'sb_publishable_YB5z3cQK-vCg67--oKpSrg_63STgMJW';
-export const APP_VERSION = 'v3.16.61';
+export const APP_VERSION = 'v3.16.62';
 
 // Web Push VAPID 公钥（客户端订阅用；私钥仅服务端发送端持有，绝不提交前端）
 export const VAPID_PUBLIC = 'BBEsbi_NqN1vqWfwbYx3XV-qUVTqgJNbaNg71TR2tx0k8158CViUZnLfdiLosv6n_sycP2S3yexNFYFzKHChL_c';
@@ -133,7 +133,7 @@ export const MODULES = {
     editFields: [
       {key:'factory_project_no',label:'工厂项目编号',type:'text',required:true},
       {key:'customer_project_no',label:'客户项目编号',type:'text'},
-      {key:'production_factory',label:'生产工厂',type:'text'},
+      {key:'factory_id',label:'生产工厂',type:'picker',source:'factory_info',textKeys:['factory_name'],textSep:' / ',labelKey:'production_factory'},
       {key:'project_stage',label:'项目阶段',type:'select',options:[{v:'NPI',t:'NPI'},{v:'EVT',t:'EVT'},{v:'DVT',t:'DVT'},{v:'PVT',t:'PVT'},{v:'MP',t:'量产'}]},
     ],
   },

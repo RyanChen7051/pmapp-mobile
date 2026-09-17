@@ -4,6 +4,45 @@ import { t, tr } from './i18n.js';
 import * as XLSX from 'xlsx';
 
 export function setupPages(App) {
+  /* ─── 工厂名实时解析：优先按 factory_id 从工厂缓存取「当前」名字，改名后立刻跟着变；无 id 时回退到存储的名字副本 ─── */
+  App.facDisp = function(rec, key) {
+    if (!rec) return '';
+    if (rec.factory_id) {
+      const f = (this.cache.factory_info || []).find(x => String(x.id) === String(rec.factory_id));
+      if (f && f.factory_name) return f.factory_name;
+    }
+    const v = rec[key];
+    return (v === null || v === undefined) ? '' : v;
+  };
+
+  /* ─── 工厂改名联动：工厂讯息更名时，自动把所有引用该名字的记录同步为新名（并补上 factory_id） ─── */
+  App.propagateFactoryRename = function(oldName, newName, factoryId) {
+    if (!oldName || oldName === newName) return;
+    const fields = ['production_factory', 'factory', 'problem_factory'];
+    let changed = 0;
+    Object.keys(MODULES).forEach(mk => {
+      if (mk === 'factory_info') return;
+      (this.cache[mk] || []).forEach(r => {
+        let touched = false;
+        fields.forEach(fk => {
+          if (r[fk] === oldName) {
+            r[fk] = newName;
+            if ('factory_id' in r && !r.factory_id) r.factory_id = factoryId;
+            touched = true;
+          }
+        });
+        if (touched) {
+          changed++;
+          const sbId = r._sb_id;
+          if (sbId) {
+            this.sbPatch('sync_data', `supabase_id=eq.${sbId}`, { payload: JSON.stringify(r), updated_at: new Date().toISOString(), device_id: this.deviceId }).catch(() => {});
+          }
+        }
+      });
+    });
+    if (changed) this.toast(tr('已同步 ') + changed + tr(' 条工厂引用记录'));
+  };
+
   /* ─── Planning Tab ─── */
   App.loadPlanning = function() {
     this.updateAdminButtons();
@@ -194,7 +233,7 @@ export function setupPages(App) {
     el.innerHTML = list.map(p => `<div class="card" style="cursor:pointer" onclick="App.openDetail('project_info', ${p.id})">
       <div class="card-title">🗂 ${this.esc(this._piLabel(p))}</div>
       <div class="card-meta">
-        ${p.production_factory ? `<span>🏭 ${this.esc(p.production_factory)}</span>` : ''}
+        ${p.production_factory || p.factory_id ? `<span>🏭 ${this.esc(this.facDisp(p, 'production_factory'))}</span>` : ''}
         ${p.project_stage ? `<span class="badge ${this.badgeClass(p.project_stage)}">${this.esc(this._piStageText(p.project_stage))}</span>` : ''}
         ${this.canEdit('project_info') ? `<span class="todo-edit" title="${tr('编辑')}" onclick="event.stopPropagation();App.showEditFor('project_info', ${p.id})">✎</span>` : ''}
         <span class="todo-del" onclick="event.stopPropagation();App.deleteProjectInfo(${p.id})">✕</span>
@@ -536,9 +575,9 @@ export function setupPages(App) {
     const list = this.cache[moduleKey] || [];
     if (!list.length) { el.innerHTML = `<div class="empty"><div class="empty-icon">${mod.icon || '📦'}</div>${tr(emptyKey || '暂无库存')}</div>`; return; }
     el.innerHTML = list.map(r => `<div class="card" onclick="App.openDetail('${moduleKey}', ${r.id})">
-      <div class="card-title">${mod.icon || ''} ${this.esc(mod.listFields.slice(0, 2).map(f => r[f.key] == null ? '' : r[f.key]).filter(v => v !== '').join(' · '))}</div>
+      <div class="card-title">${mod.icon || ''} ${this.esc(mod.listFields.slice(0, 2).map(f => this.facDisp(r, f.key) == null ? '' : this.facDisp(r, f.key)).filter(v => v !== '').join(' · '))}</div>
       <div class="card-meta">${mod.listFields.slice(2).map(f => {
-        const v = r[f.key];
+        const v = this.facDisp(r, f.key);
         if (v === null || v === undefined || v === '') return '';
         return f.badge ? `<span class="badge ${this.badgeClass(v)}">${this.esc(tr(v))}</span>` : `<span>${this.esc(v)}</span>`;
       }).join('')}</div>
@@ -729,7 +768,7 @@ export function setupPages(App) {
       list.map(p => `<div class="card" onclick="App.jigSelectProject(${p.id})">
         <div class="card-title">🗂 ${this.esc(this._piLabel(p))}</div>
         <div class="card-meta">
-          ${p.production_factory ? `<span>🏭 ${this.esc(p.production_factory)}</span>` : ''}
+          ${p.production_factory || p.factory_id ? `<span>🏭 ${this.esc(this.facDisp(p, 'production_factory'))}</span>` : ''}
           ${p.project_stage ? `<span class="badge ${this.badgeClass(p.project_stage)}">${this.esc(tr(p.project_stage))}</span>` : ''}
         </div></div>`).join('') +
       `<div style="height:10px"></div>

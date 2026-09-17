@@ -183,8 +183,14 @@ export function setupEdit(App) {
     mod.editFields.forEach(f => {
       if (f.type === 'picker') {
         const sel = (this._pickerSel || {})[moduleKey + '.' + f.key];
-        updated[f.key] = sel ? sel.id : '';
-        if (f.labelKey) updated[f.labelKey] = sel ? sel.label : '';
+        if (sel) {
+          updated[f.key] = sel.id;
+          if (f.labelKey) updated[f.labelKey] = sel.label;
+        } else {
+          // 未重新选择：保留原值，避免清空 factory_id / 名字副本（否则打开旧记录不重选就存盘会把工厂清空）
+          if (record[f.key] !== undefined) updated[f.key] = record[f.key];
+          if (f.labelKey && record[f.labelKey] !== undefined) updated[f.labelKey] = record[f.labelKey];
+        }
         return;
       }
       const el = document.getElementById('edit-' + f.key);
@@ -217,6 +223,10 @@ export function setupEdit(App) {
       const idx = (this.cache[moduleKey] || []).findIndex(r => r.id === id);
       if (idx >= 0) this.cache[moduleKey][idx] = { ...updated, _sb_id: sbId, _updated: nowISO };
       else { this.cache[moduleKey] = this.cache[moduleKey] || []; this.cache[moduleKey].unshift({ ...updated, _sb_id: sbId, _updated: nowISO }); }
+      // 工厂讯息更名：联动更新所有引用该工厂名的记录
+      if (moduleKey === 'factory_info' && record && record.factory_name && record.factory_name !== updated.factory_name) {
+        this.propagateFactoryRename(record.factory_name, updated.factory_name, id);
+      }
       this.closeModal();
       if (this.currentPage === 'project-detail' && moduleKey === 'projects') this.renderProjectDetail(updated);
       else if (this.currentPage === 'module-detail') this.renderDetail(moduleKey, id);

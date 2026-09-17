@@ -132,7 +132,7 @@ export function setupDetail(App) {
     html += this.esc(record[mod.detailFields[0].key] || mod.title + ' #' + id);
     html += '</div></div><div class="card">';
     mod.detailFields.forEach(f => {
-      const val = record[f.key];
+      const val = this.facDisp(record, f.key);
       if (val === null || val === undefined || val === '') return;
       html += `<div class="detail-sec"><div class="detail-label">${tr(f.label)}</div>`;
       if (typeof val === 'string' && val.startsWith('http')) {
