@@ -240,7 +240,7 @@ export function setupPages(App) {
 
   App._piLabel = function(p) {
     if (!p) return '';
-    return [p.factory_project_no, p.customer_project_no].filter(Boolean).join(' / ');
+    return [p.name, p.factory_project_no, p.customer_project_no].filter(Boolean).join(' / ');
   };
 
   App._piStageText = function(v) {
@@ -274,7 +274,7 @@ export function setupPages(App) {
       <div class="card-meta">
         ${p.production_factory || p.factory_id ? `<span>🏭 ${this.esc(this.facDisp(p, 'production_factory'))}</span>` : ''}
         ${p.customer_name_display || p.customer_id ? `<span>🤝 ${this.esc(this.custDisp(p, 'customer_name_display'))}</span>` : ''}
-        ${p.project_stage ? `<span class="badge ${this.badgeClass(p.project_stage)}">${this.esc(this._piStageText(p.project_stage))}</span>` : ''}
+        ${p.stage ? `<span class="badge ${this.badgeClass(p.stage)}">${this.esc(this._piStageText(p.stage))}</span>` : ''}
         ${this.canEdit('project_info') ? `<span class="todo-edit" title="${tr('编辑')}" onclick="event.stopPropagation();App.showEditFor('project_info', ${p.id})">✎</span>` : ''}
         <span class="todo-del" onclick="event.stopPropagation();App.deleteProjectInfo(${p.id})">✕</span>
       </div></div>`).join('');
@@ -308,6 +308,7 @@ export function setupPages(App) {
   App.saveProjectInfo = async function() {
     const fno = document.getElementById('pi-factory-no');
     if (!fno) return;
+    const nameEl = document.getElementById('pi-name');
     const cno = document.getElementById('pi-customer-no');
     const stg = document.getElementById('pi-stage');
     const factory_project_no = fno.value.trim();
@@ -321,17 +322,18 @@ export function setupPages(App) {
     const fac = (this.cache.factory_info || []).find(r => String(r.id) === String(fid));
     const cus = (this.cache.customer_info || []).find(r => String(r.id) === String(cid));
     const rec = {
-      id, factory_project_no,
+      id, name: nameEl ? nameEl.value.trim() : '',
+      factory_project_no,
       customer_project_no: cno ? cno.value.trim() : '',
       factory_id: fid || '',
       production_factory: fac ? (fac.factory_name || '') : '',
       customer_id: cid || '',
       customer_name_display: cus ? (cus.customer_name || '') : '',
-      project_stage: stg ? stg.value : 'NPI',
+      stage: stg ? stg.value : 'NPI',
       created_at: now, updated_at: now,
     };
     (this.cache.project_info = this.cache.project_info || []).unshift(rec);
-    fno.value = ''; if (cno) cno.value = '';
+    if (nameEl) nameEl.value = ''; fno.value = ''; if (cno) cno.value = '';
     const box = document.getElementById('proj-info-form'); if (box) box.style.display = 'none';
     this.renderProjectInfo();
     try {
@@ -790,7 +792,7 @@ export function setupPages(App) {
         <div class="card-title">🗂 ${this.esc(this._piLabel(p))}</div>
         <div class="card-meta">
           ${p.production_factory || p.factory_id ? `<span>🏭 ${this.esc(this.facDisp(p, 'production_factory'))}</span>` : ''}
-          ${p.project_stage ? `<span class="badge ${this.badgeClass(p.project_stage)}">${this.esc(tr(p.project_stage))}</span>` : ''}
+          ${p.stage ? `<span class="badge ${this.badgeClass(p.stage)}">${this.esc(tr(p.stage))}</span>` : ''}
         </div></div>`).join('') +
       `<div style="height:10px"></div>
        <button class="btn btn-secondary" onclick="App.closePicker()">${tr('取消')}</button>`;

@@ -109,7 +109,7 @@ export function setupEdit(App) {
         <div class="card-title">🗂 ${this.esc(this._pickerText(r, f.textKeys, f.textSep))}</div>
         <div class="card-meta">
           ${r.production_factory ? `<span>🏭 ${this.esc(r.production_factory)}</span>` : ''}
-          ${r.project_stage ? `<span class="badge ${this.badgeClass(r.project_stage)}">${this.esc(tr(r.project_stage === 'MP' ? '量产' : r.project_stage))}</span>` : ''}
+          ${r.stage ? `<span class="badge ${this.badgeClass(r.stage)}">${this.esc(tr(r.stage === 'MP' ? '量产' : r.stage))}</span>` : ''}
         </div></div>`).join('') +
       `<div style="height:10px"></div>
        <button class="btn btn-secondary" onclick="App.clearField('${moduleKey}','${fieldKey}')">${tr('清除选择')}</button>
