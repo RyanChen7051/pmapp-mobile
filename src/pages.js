@@ -53,6 +53,7 @@ export function setupPages(App) {
           ${r.plan_code ? `<div class="todo-parent">🔢 ${this.esc(r.plan_code)}</div>` : (r.parent_plan ? `<div class="todo-parent">🔗 ${this.esc(r.parent_plan)}</div>` : '')}
           ${r.project_ref ? `<div class="todo-parent">🗂 ${this.esc(r.project_ref)}</div>` : ''}
         </div>
+        ${this.canEdit('todos') ? `<span class="todo-edit" title="${tr('编辑')}" onclick="App.showEditFor('todos', ${r.id})">✎</span>` : ''}
         <span class="todo-del" onclick="App.deleteTodo(${r.id})">✕</span>
       </div>`;
     }).join('');
@@ -190,12 +191,13 @@ export function setupPages(App) {
     if (!el) return;
     const list = this.cache.project_info || [];
     if (list.length === 0) { el.innerHTML = `<div class="empty"><div class="empty-icon">🗂</div>${tr('暂无项目讯息')}</div>`; return; }
-    el.innerHTML = list.map(p => `<div class="card">
+    el.innerHTML = list.map(p => `<div class="card" style="cursor:pointer" onclick="App.openDetail('project_info', ${p.id})">
       <div class="card-title">🗂 ${this.esc(this._piLabel(p))}</div>
       <div class="card-meta">
         ${p.production_factory ? `<span>🏭 ${this.esc(p.production_factory)}</span>` : ''}
         ${p.project_stage ? `<span class="badge ${this.badgeClass(p.project_stage)}">${this.esc(this._piStageText(p.project_stage))}</span>` : ''}
-        <span class="todo-del" onclick="App.deleteProjectInfo(${p.id})">✕</span>
+        ${this.canEdit('project_info') ? `<span class="todo-edit" title="${tr('编辑')}" onclick="event.stopPropagation();App.showEditFor('project_info', ${p.id})">✎</span>` : ''}
+        <span class="todo-del" onclick="event.stopPropagation();App.deleteProjectInfo(${p.id})">✕</span>
       </div></div>`).join('');
   };
 
