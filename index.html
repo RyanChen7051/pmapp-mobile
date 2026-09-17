@@ -787,10 +787,10 @@ body.rtl .card-meta { flex-direction: row-reverse; }
   <div id="proj-info-form" class="plan-add" style="display:none">
     <input type="text" id="pi-factory-no" class="plan-add-input" onkeydown="if(event.key==='Enter')App.saveProjectInfo()" />
     <input type="text" id="pi-customer-no" class="plan-add-input" />
-    <!-- 客户：点选，来源＝客户资料的 customers 表 -->
-    <button type="button" class="btn btn-secondary" id="pi-customer-btn" style="width:100%;font-size:14px" onclick="App.pickProjectCustomer()"></button>
-    <!-- 生产工厂：点选，来源＝工厂模块的 factory_info -->
-    <button type="button" class="btn btn-secondary" id="pi-factory-btn" style="width:100%;font-size:14px" onclick="App.pickProjectFactory()"></button>
+    <!-- 客户：下拉选择，来源＝客户基础资料 -->
+    <select id="pi-customer" class="plan-add-sel"></select>
+    <!-- 生产工厂：下拉选择，来源＝工厂模块 -->
+    <select id="pi-factory" class="plan-add-sel"></select>
     <select id="pi-stage" class="plan-add-sel"></select>
     <button class="btn btn-primary plan-add-btn" onclick="App.saveProjectInfo()"></button>
   </div>
@@ -1118,6 +1118,6 @@ body.rtl .card-meta { flex-direction: row-reverse; }
 
 </div>
 
-<script type="module" src="bundle.js?v=150"></script>
+<script type="module" src="bundle.js?v=151"></script>
 </body>
 </html>

@@ -157,6 +157,13 @@ export function setupEdit(App) {
         html += `<div class="input-group"><label>${tr(f.label)}</label><select id="edit-${f.key}">`;
         f.options.forEach(o => { html += `<option value="${o.v}" ${String(val) === o.v ? 'selected' : ''}>${tr(o.t)}</option>`; });
         html += '</select></div>';
+      } else if (f.type === 'selectsrc') {
+        // 原生下拉框，选项来自另一个模块（如 factory_info / customer_info）
+        const opts = (this.cache[f.source] || []);
+        const cur = record[f.key] || '';
+        html += `<div class="input-group"><label>${tr(f.label)}${f.required ? ' *' : ''}</label><select id="edit-${f.key}"><option value="">${tr('请选择')}</option>`;
+        opts.forEach(o => { const v = o[f.nameKey] || ''; html += `<option value="${o.id}" ${String(o.id) === String(cur) ? 'selected' : ''}>${this.esc(v)}</option>`; });
+        html += '</select></div>';
       } else if (f.type === 'textarea') {
         html += `<div class="input-group"><label>${tr(f.label)}</label><textarea id="edit-${f.key}">${this.esc(val)}</textarea></div>`;
       } else if (f.type === 'number') {
@@ -198,11 +205,18 @@ export function setupEdit(App) {
       if (f.type === 'toggle') updated[f.key] = el.checked ? 1 : 0;
       else if (f.type === 'autocode') updated[f.key] = el.value.trim();
       else if (f.type === 'number') updated[f.key] = el.value ? parseFloat(el.value) : null;
+      else if (f.type === 'selectsrc') {
+        updated[f.key] = el.value ? el.value : '';
+        if (f.labelKey) {
+          const o = (this.cache[f.source] || []).find(x => String(x.id) === String(el.value));
+          updated[f.labelKey] = o ? (o[f.nameKey] || '') : '';
+        }
+      }
       else updated[f.key] = el.value.trim();
     });
     for (const f of mod.editFields) {
       if (!f.required) continue;
-      const v = f.type === 'picker' ? ((this._pickerSel || {})[moduleKey + '.' + f.key] ? 'x' : '') : updated[f.key];
+      const v = (f.type === 'picker' || f.type === 'selectsrc') ? (updated[f.key] ? 'x' : '') : updated[f.key];
       if (!v) { this.toast(tr(f.label) + ' ' + tr('不能为空')); return; }
     }
     updated.updated_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
@@ -226,6 +240,10 @@ export function setupEdit(App) {
       // 工厂讯息更名：联动更新所有引用该工厂名的记录
       if (moduleKey === 'factory_info' && record && record.factory_name && record.factory_name !== updated.factory_name) {
         this.propagateFactoryRename(record.factory_name, updated.factory_name, id);
+      }
+      // 客户基础资料更名：联动更新所有引用该客户名的记录
+      if (moduleKey === 'customer_info' && record && record.customer_name && record.customer_name !== updated.customer_name) {
+        this.propagateCustomerRename(record.customer_name, updated.customer_name, id);
       }
       this.closeModal();
       if (this.currentPage === 'project-detail' && moduleKey === 'projects') this.renderProjectDetail(updated);

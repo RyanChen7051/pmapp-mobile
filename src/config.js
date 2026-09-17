@@ -1,7 +1,7 @@
 /* ═══ Configuration & Constants ═══ */
 export const SUPABASE_URL = 'https://nsnmtkukxquhinlmbejg.supabase.co';
 export const SUPABASE_KEY = 'sb_publishable_YB5z3cQK-vCg67--oKpSrg_63STgMJW';
-export const APP_VERSION = 'v3.16.62';
+export const APP_VERSION = 'v3.16.63';
 
 // Web Push VAPID 公钥（客户端订阅用；私钥仅服务端发送端持有，绝不提交前端）
 export const VAPID_PUBLIC = 'BBEsbi_NqN1vqWfwbYx3XV-qUVTqgJNbaNg71TR2tx0k8158CViUZnLfdiLosv6n_sycP2S3yexNFYFzKHChL_c';
@@ -120,6 +120,22 @@ export const MODULES = {
       {key:'quality',label:'质量工程师',type:'text'},
     ],
   },
+  customer_info: {
+    title: '客户基础资料', icon: '🤝', table: 'customer_info',
+    listFields: [{key:'customer_name',label:'客户名称'},{key:'code',label:'客户代码'},{key:'contact',label:'联系人'},{key:'phone',label:'电话'},{key:'country',label:'国家'},{key:'region',label:'区域'}],
+    detailFields: [{key:'customer_name',label:'客户名称'},{key:'code',label:'客户代码'},{key:'contact',label:'联系人'},{key:'phone',label:'电话'},{key:'email',label:'邮箱'},{key:'country',label:'国家'},{key:'region',label:'区域'},{key:'address',label:'地址'},{key:'remarks',label:'备注'}],
+    editFields: [
+      {key:'customer_name',label:'客户名称',type:'text',required:true},
+      {key:'code',label:'客户代码',type:'text'},
+      {key:'contact',label:'联系人',type:'text'},
+      {key:'phone',label:'电话',type:'text'},
+      {key:'email',label:'邮箱',type:'text'},
+      {key:'country',label:'国家',type:'text'},
+      {key:'region',label:'区域',type:'text'},
+      {key:'address',label:'地址',type:'text'},
+      {key:'remarks',label:'备注',type:'textarea'},
+    ],
+  },
   todos: {
     title: '生产计划（子计划）', icon: '✅', table: 'todos',
     listFields: [{key:'content',label:'任务'},{key:'plan_code',label:'项目计划编号'},{key:'project_ref',label:'项目'},{key:'due_date',label:'完成时间'},{key:'done',label:'完成',toggle:true}],
@@ -128,12 +144,13 @@ export const MODULES = {
   },
   project_info: {
     title: '项目讯息', icon: '🗂', table: 'project_info',
-    listFields: [{key:'factory_project_no',label:'工厂项目编号'},{key:'customer_project_no',label:'客户项目编号'},{key:'production_factory',label:'生产工厂'},{key:'project_stage',label:'项目阶段',badge:true}],
-    detailFields: [{key:'factory_project_no',label:'工厂项目编号'},{key:'customer_project_no',label:'客户项目编号'},{key:'production_factory',label:'生产工厂'},{key:'project_stage',label:'项目阶段'}],
+    listFields: [{key:'factory_project_no',label:'工厂项目编号'},{key:'customer_project_no',label:'客户项目编号'},{key:'production_factory',label:'生产工厂'},{key:'customer_name_display',label:'客户'},{key:'project_stage',label:'项目阶段',badge:true}],
+    detailFields: [{key:'factory_project_no',label:'工厂项目编号'},{key:'customer_project_no',label:'客户项目编号'},{key:'production_factory',label:'生产工厂'},{key:'customer_name_display',label:'客户'},{key:'project_stage',label:'项目阶段'}],
     editFields: [
       {key:'factory_project_no',label:'工厂项目编号',type:'text',required:true},
       {key:'customer_project_no',label:'客户项目编号',type:'text'},
-      {key:'factory_id',label:'生产工厂',type:'picker',source:'factory_info',textKeys:['factory_name'],textSep:' / ',labelKey:'production_factory'},
+      {key:'factory_id',label:'生产工厂',type:'selectsrc',source:'factory_info',nameKey:'factory_name',labelKey:'production_factory'},
+      {key:'customer_id',label:'客户',type:'selectsrc',source:'customer_info',nameKey:'customer_name',labelKey:'customer_name_display'},
       {key:'project_stage',label:'项目阶段',type:'select',options:[{v:'NPI',t:'NPI'},{v:'EVT',t:'EVT'},{v:'DVT',t:'DVT'},{v:'PVT',t:'PVT'},{v:'MP',t:'量产'}]},
     ],
   },

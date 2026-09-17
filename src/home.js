@@ -174,7 +174,7 @@ export function setupHome(App) {
     { page: 'materials',       icon: '📦',  i18n: 'tab_materials',       label: '物料治具' },
     { page: 'production',      icon: '🔥', i18n: 'tab_production',      label: '生产' },
     { page: 'engineering',     icon: '🛠️', i18n: 'tab_engineering',     label: '工程' },
-    { page: 'factory',         icon: '🏭',  i18n: 'tab_factory',         label: '国际工厂' },
+    { page: 'factory',         icon: '🏭',  i18n: 'tab_factory',         label: '工厂/客户' },
     { page: 'fieldlog',        icon: '📍',  i18n: null,                  label: '现场/客诉' },
     { page: 'inspection',      icon: '🔁',  i18n: null,                  label: 'DOA',  sub: '/RMA' },
     { page: 'factory_process', icon: '🔧',  i18n: 'tab_factory_process', label: '制程' },

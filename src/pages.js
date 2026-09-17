@@ -15,6 +15,17 @@ export function setupPages(App) {
     return (v === null || v === undefined) ? '' : v;
   };
 
+  /* ─── 客户名实时解析：优先按 customer_id 从客户缓存取「当前」名字，改名后立刻跟着变 ─── */
+  App.custDisp = function(rec, key) {
+    if (!rec) return '';
+    if (rec.customer_id) {
+      const c = (this.cache.customer_info || []).find(x => String(x.id) === String(rec.customer_id));
+      if (c && c.customer_name) return c.customer_name;
+    }
+    const v = rec[key];
+    return (v === null || v === undefined) ? '' : v;
+  };
+
   /* ─── 工厂改名联动：工厂讯息更名时，自动把所有引用该名字的记录同步为新名（并补上 factory_id） ─── */
   App.propagateFactoryRename = function(oldName, newName, factoryId) {
     if (!oldName || oldName === newName) return;
@@ -41,6 +52,34 @@ export function setupPages(App) {
       });
     });
     if (changed) this.toast(tr('已同步 ') + changed + tr(' 条工厂引用记录'));
+  };
+
+  /* ─── 客户改名联动：客户基础资料更名时，自动把所有引用该客户名的记录同步为新名（并补上 customer_id） ─── */
+  App.propagateCustomerRename = function(oldName, newName, customerId) {
+    if (!oldName || oldName === newName) return;
+    const fields = ['customer_name_display', 'customer_name', 'customer'];
+    let changed = 0;
+    Object.keys(MODULES).forEach(mk => {
+      if (mk === 'customer_info') return;
+      (this.cache[mk] || []).forEach(r => {
+        let touched = false;
+        fields.forEach(fk => {
+          if (r[fk] === oldName) {
+            r[fk] = newName;
+            if ('customer_id' in r && !r.customer_id) r.customer_id = customerId;
+            touched = true;
+          }
+        });
+        if (touched) {
+          changed++;
+          const sbId = r._sb_id;
+          if (sbId) {
+            this.sbPatch('sync_data', `supabase_id=eq.${sbId}`, { payload: JSON.stringify(r), updated_at: new Date().toISOString(), device_id: this.deviceId }).catch(() => {});
+          }
+        }
+      });
+    });
+    if (changed) this.toast(tr('已同步 ') + changed + tr(' 条客户引用记录'));
   };
 
   /* ─── Planning Tab ─── */
@@ -217,7 +256,7 @@ export function setupPages(App) {
     if (saveBtn) saveBtn.textContent = tr('保存');
     const fno = document.getElementById('pi-factory-no'); if (fno) fno.placeholder = tr('工厂项目编号');
     const cno = document.getElementById('pi-customer-no'); if (cno) cno.placeholder = tr('客户项目编号');
-    this.updateProjectFactoryButton();
+    this.populateProjectFormSelects();
     const stage = document.getElementById('pi-stage');
     if (stage) {
       const cur = stage.value;
@@ -234,6 +273,7 @@ export function setupPages(App) {
       <div class="card-title">🗂 ${this.esc(this._piLabel(p))}</div>
       <div class="card-meta">
         ${p.production_factory || p.factory_id ? `<span>🏭 ${this.esc(this.facDisp(p, 'production_factory'))}</span>` : ''}
+        ${p.customer_name_display || p.customer_id ? `<span>🤝 ${this.esc(this.custDisp(p, 'customer_name_display'))}</span>` : ''}
         ${p.project_stage ? `<span class="badge ${this.badgeClass(p.project_stage)}">${this.esc(this._piStageText(p.project_stage))}</span>` : ''}
         ${this.canEdit('project_info') ? `<span class="todo-edit" title="${tr('编辑')}" onclick="event.stopPropagation();App.showEditFor('project_info', ${p.id})">✎</span>` : ''}
         <span class="todo-del" onclick="event.stopPropagation();App.deleteProjectInfo(${p.id})">✕</span>
@@ -242,44 +282,19 @@ export function setupPages(App) {
 
   /* ─── 项目讯息的「生产工厂」：点选，来源＝工厂模块（factory_info）───
    * 用 #picker-overlay（edit.js 的 _openPicker/closePicker），不占用主 modal。 */
-  App.updateProjectFactoryButton = function() {
-    const btn = document.getElementById('pi-factory-btn');
-    if (!btn) return;
-    const label = this._piFactory ? this._piFactory.name : tr('生产工厂');
-    btn.innerHTML = `🏭 ${this.esc(label)}`;
-  };
-
-  App.pickProjectFactory = function() {
-    const list = this.cache.factory_info || [];
-    if (list.length === 0) { this.toast(tr('暂无工厂讯息')); return; }
-    const html = `<div class="modal-handle"></div><div class="modal-title">${tr('生产工厂')}</div>` +
-      list.map(f => `<div class="card" onclick="App.selectProjectFactory(${f.id})">
-        <div class="card-title">🏭 ${this.esc(f.factory_name || '')}</div>
-        <div class="card-meta">
-          ${f.address ? `<span>🏠 ${this.esc(f.address)}</span>` : ''}
-          ${f.region ? `<span>📍 ${this.esc(f.region)}</span>` : ''}
-          ${f.country ? `<span>🏳️ ${this.esc(f.country)}</span>` : ''}
-          ${f.pm ? `<span>👤 ${this.esc(f.pm)}</span>` : ''}
-        </div></div>`).join('') +
-      `<div style="height:10px"></div>
-       <button class="btn btn-secondary" onclick="App.clearProjectFactory()">${tr('清除选择')}</button>
-       <div style="height:10px"></div>
-       <button class="btn btn-secondary" onclick="App.closePicker()">${tr('取消')}</button>`;
-    this._openPicker(html);
-  };
-
-  App.selectProjectFactory = function(id) {
-    const f = (this.cache.factory_info || []).find(r => String(r.id) === String(id));
-    if (!f) return;
-    this._piFactory = { id: f.id, name: f.factory_name || '' };
-    this.updateProjectFactoryButton();
-    this.closePicker();
-  };
-
-  App.clearProjectFactory = function() {
-    this._piFactory = null;
-    this.updateProjectFactoryButton();
-    this.closePicker();
+  /* ─── 项目讯息快速新建表单：生产工厂 / 客户 用原生下拉框（选项），来源＝工厂/客户模块 ─── */
+  App.populateProjectFormSelects = function() {
+    const fill = (selId, mod, nameKey) => {
+      const sel = document.getElementById(selId);
+      if (!sel) return;
+      const list = (this.cache[mod] || []);
+      const cur = sel.value;
+      sel.innerHTML = `<option value="">${tr('请选择')}</option>` +
+        list.map(o => `<option value="${o.id}">${this.esc(o[nameKey] || '')}</option>`).join('');
+      if (cur) sel.value = cur;
+    };
+    fill('pi-factory', 'factory_info', 'factory_name');
+    fill('pi-customer', 'customer_info', 'customer_name');
   };
 
   App.toggleProjectInfoForm = function() {
@@ -299,18 +314,24 @@ export function setupPages(App) {
     if (!factory_project_no) { this.toast(tr('请输入工厂项目编号')); fno.focus(); return; }
     const now = new Date().toISOString().slice(0, 19).replace('T', ' ');
     const id = this._newLocalId('project_info');
+    const fSel = document.getElementById('pi-factory');
+    const cSel = document.getElementById('pi-customer');
+    const fid = fSel ? fSel.value : '';
+    const cid = cSel ? cSel.value : '';
+    const fac = (this.cache.factory_info || []).find(r => String(r.id) === String(fid));
+    const cus = (this.cache.customer_info || []).find(r => String(r.id) === String(cid));
     const rec = {
       id, factory_project_no,
       customer_project_no: cno ? cno.value.trim() : '',
-      // 生产工厂来自「工厂」模块点选，不再手输
-      production_factory: this._piFactory ? this._piFactory.name : '',
-      factory_id: this._piFactory ? this._piFactory.id : '',
+      factory_id: fid || '',
+      production_factory: fac ? (fac.factory_name || '') : '',
+      customer_id: cid || '',
+      customer_name_display: cus ? (cus.customer_name || '') : '',
       project_stage: stg ? stg.value : 'NPI',
       created_at: now, updated_at: now,
     };
     (this.cache.project_info = this.cache.project_info || []).unshift(rec);
     fno.value = ''; if (cno) cno.value = '';
-    this._piFactory = null;
     const box = document.getElementById('proj-info-form'); if (box) box.style.display = 'none';
     this.renderProjectInfo();
     try {
@@ -856,15 +877,71 @@ export function setupPages(App) {
     this.updateAdminButtons();
     const factories = this.cache.factory_info || [];
     const el = document.getElementById('factory-list');
-    if (factories.length === 0) { el.innerHTML = `<div class="empty"><div class="empty-icon">🏭</div>${t('empty_factories')}</div>`; return; }
-    el.innerHTML = factories.map(f => `<div class="card" onclick="App.openDetail('factory_info', ${f.id})">
-      <div class="card-title">🏭 ${this.esc(f.factory_name)}</div>
+    if (factories.length === 0) { el.innerHTML = `<div class="empty"><div class="empty-icon">🏭</div>${t('empty_factories')}</div>`; }
+    else {
+      el.innerHTML = factories.map(f => `<div class="card" onclick="App.openDetail('factory_info', ${f.id})">
+        <div class="card-title">🏭 ${this.esc(f.factory_name)}</div>
+        <div class="card-meta">
+          ${f.address ? `<span>🏠 ${this.esc(f.address)}</span>` : ''}
+          ${f.region ? `<span>📍 ${this.esc(f.region)}</span>` : ''}
+          ${f.country ? `<span>🏳️ ${this.esc(f.country)}</span>` : ''}
+          ${f.pm ? `<span>👤 ${this.esc(f.pm)}</span>` : ''}
+        </div></div>`).join('');
+    }
+    this.loadCustomers();
+  };
+
+  /* ─── 客户基础资料（与工厂同页维护）─── */
+  App.loadCustomers = function() {
+    const customers = this.cache.customer_info || [];
+    const el = document.getElementById('customer-list');
+    if (!el) return;
+    if (customers.length === 0) { el.innerHTML = `<div class="empty"><div class="empty-icon">🤝</div>${tr('暂无客户资料')}</div>`; return; }
+    el.innerHTML = customers.map(c => `<div class="card" onclick="App.openDetail('customer_info', ${c.id})">
+      <div class="card-title">🤝 ${this.esc(c.customer_name || '')}</div>
       <div class="card-meta">
-        ${f.address ? `<span>🏠 ${this.esc(f.address)}</span>` : ''}
-        ${f.region ? `<span>📍 ${this.esc(f.region)}</span>` : ''}
-        ${f.country ? `<span>🏳️ ${this.esc(f.country)}</span>` : ''}
-        ${f.pm ? `<span>👤 ${this.esc(f.pm)}</span>` : ''}
+        ${c.code ? `<span>🏷️ ${this.esc(c.code)}</span>` : ''}
+        ${c.country ? `<span>🏳️ ${this.esc(c.country)}</span>` : ''}
+        ${c.contact ? `<span>👤 ${this.esc(c.contact)}</span>` : ''}
       </div></div>`).join('');
+  };
+
+  App.toggleCustomerForm = function() {
+    const box = document.getElementById('customer-form');
+    if (!box) return;
+    const open = box.style.display === 'none' || box.style.display === '';
+    box.style.display = open ? 'flex' : 'none';
+    if (open) document.getElementById('cust-name-zh')?.focus();
+  };
+
+  App.saveCustomer = async function() {
+    const nameEl = document.getElementById('cust-name-zh');
+    if (!nameEl) return;
+    const name = nameEl.value.trim();
+    if (!name) { this.toast(tr('请输入客户名称')); nameEl.focus(); return; }
+    const now = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    const id = this._newLocalId('customer_info');
+    const rec = {
+      id, customer_name: name,
+      customer_name_en: (document.getElementById('cust-name-en')?.value || '').trim(),
+      country: (document.getElementById('cust-country')?.value || '').trim(),
+      created_at: now, updated_at: now,
+    };
+    (this.cache.customer_info = this.cache.customer_info || []).unshift(rec);
+    nameEl.value = '';
+    const en = document.getElementById('cust-name-en'); if (en) en.value = '';
+    const co = document.getElementById('cust-country'); if (co) co.value = '';
+    const box = document.getElementById('customer-form'); if (box) box.style.display = 'none';
+    this.loadCustomers();
+    this.populateProjectFormSelects();
+    try {
+      await this.sbPost('sync_data', {
+        table_name: 'customer_info', local_id: id,
+        payload: JSON.stringify(rec), supabase_id: this.uuid(),
+        is_deleted: false, updated_at: new Date().toISOString(), device_id: this.deviceId,
+      });
+      this.toast(tr('已保存客户资料'));
+    } catch (e) { /* 离线时由同步队列兜底 */ }
   };
 
   /* ─── Production Tab ─── */
@@ -1193,6 +1270,7 @@ export function setupPages(App) {
       'mat-alert-add': this.isAdmin(),            // 物料栏目
       'mat-factory-add': this.isAdmin(),          // 冗余占位（物料页无此钮）
       'factory-add': this.isAdmin(),              // 工厂讯息
+      'customer-add': this.isAdmin(),             // 客户基础资料
       'fieldlog-add': this.isAdmin(),             // 现场记录
       'kb-rebuild-btn': this.isSuperAdmin(),      // 重建知识库 → 仅超级管理员
     };
