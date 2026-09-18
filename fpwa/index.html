@@ -200,12 +200,19 @@ textarea.inp{resize:vertical;min-height:88px}
 .ni-title{font-size:14.5px;font-weight:700;color:var(--ink);line-height:1.35}
 .ni-sum{font-size:12.5px;color:var(--ink2);margin-top:6px;line-height:1.5}
 .ni-meta{font-size:11px;color:var(--mut);margin-top:8px;display:flex;gap:12px;flex-wrap:wrap}
+.fl-card{position:relative;overflow:hidden;padding:0!important}
+.fl-card-inner{position:relative;z-index:1;background:var(--card);padding:15px 16px;transition:transform .2s ease}
+.fl-del{position:absolute;top:0;right:0;bottom:0;width:78px;border:0;background:#d83a3a;color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;z-index:0}
+.fl-del:active{background:#b62c2c}
+.sheet.sm{max-width:320px}
+.confirm-row{display:flex;gap:10px;margin-top:16px}
+.confirm-row .btn-main,.confirm-row .btn-ghost{flex:1}
 </style>
 </head>
 <body>
 <div id="app"></div>
 <div id="toast"></div>
-<script src="bundle.js?v=14"></script>
+<script src="bundle.js?v=15"></script>
 
 <script>
 if ('serviceWorker' in navigator) {
