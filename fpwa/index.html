@@ -124,18 +124,67 @@ textarea.inp{resize:vertical;min-height:88px}
   background:#1e6b3a;color:#fff;padding:11px 20px;border-radius:24px;font-size:14px;
   opacity:0;pointer-events:none;transition:.25s;z-index:100;box-shadow:0 4px 14px rgba(0,0,0,.2);max-width:88%}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* 版本更新提示条 */
+#sw-update-bar{position:fixed;left:0;right:0;bottom:calc(66px + env(safe-area-inset-bottom));
+  z-index:80;display:flex;align-items:center;justify-content:space-between;gap:12px;
+  background:var(--thd);color:#fff;padding:11px 16px;box-shadow:0 -4px 14px rgba(16,32,56,.18);
+  font-size:14px;animation:upbar .25s ease}
+@keyframes upbar{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.sw-ub-txt{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;opacity:.96}
+.sw-ub-btn{flex:0 0 auto;background:#fff;color:var(--thd);border:none;border-radius:9px;
+  padding:8px 18px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer}
+.sw-ub-btn:active{opacity:.85}
 </style>
 </head>
 <body>
 <div id="app"></div>
 <div id="toast"></div>
-<script src="bundle.js?v=7"></script>
+<script src="bundle.js?v=8"></script>
 
 <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
-    navigator.serviceWorker.register('./sw.js').catch(function(e){ console.warn('SW', e); });
+    navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' })
+      .then(function(reg){
+        // 已有一个等待中的新 SW（例如跨版本直接加载）
+        if (reg.waiting) { showUpdateBar(); }
+        // 检测到新版本正在安装
+        reg.addEventListener('updatefound', function(){
+          var installing = reg.installing;
+          if (!installing) return;
+          installing.addEventListener('statechange', function(){
+            // 新 SW 安装完成、且当前已有旧版本在控制页面时才提示更新
+            if (installing.state === 'installed' && navigator.serviceWorker.controller) {
+              showUpdateBar();
+            }
+          });
+        });
+      })
+      .catch(function(e){ console.warn('SW', e); });
   });
+
+  // 新 SW 接管后自动刷新，加载最新资源
+  var swRefreshing = false;
+  navigator.serviceWorker.addEventListener('controllerchange', function(){
+    if (swRefreshing) return;
+    swRefreshing = true;
+    window.location.reload();
+  });
+
+  function showUpdateBar(){
+    if (document.getElementById('sw-update-bar')) return;
+    var bar = document.createElement('div');
+    bar.id = 'sw-update-bar';
+    bar.innerHTML = '<span class="sw-ub-txt">🔄 发现新版本 (New version available)</span>' +
+                    '<button id="sw-update-btn" class="sw-ub-btn">更新</button>';
+    document.body.appendChild(bar);
+    document.getElementById('sw-update-btn').addEventListener('click', function(){
+      var sw = navigator.serviceWorker;
+      if (sw.waiting) { sw.waiting.postMessage('SKIP_WAITING'); }
+      else { window.location.reload(); }
+    });
+  }
 }
 </script>
 </body>
