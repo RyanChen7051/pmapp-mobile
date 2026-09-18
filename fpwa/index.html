@@ -175,12 +175,37 @@ textarea.inp{resize:vertical;min-height:88px}
 .um-btn{border:none;border-radius:9px;padding:6px 14px;font-size:12.5px;font-weight:700;font-family:inherit;cursor:pointer;background:#fdeceb;color:#b8461f}
 .um-btn.off{background:#eaf5ec;color:#1e6b3a}
 .um-btn:disabled{opacity:.5}
+
+/* 现场记录卡片 + 徽章 + 操作按钮 */
+.badge{display:inline-block;padding:2px 9px;border-radius:11px;font-size:11px;font-weight:700;
+  margin-left:6px;vertical-align:middle;line-height:1.5}
+.badge.cat{background:var(--acc);color:var(--thd);border:1px solid var(--line)}
+.badge-red{background:#fdeceb;color:#b8461f}
+.badge-orange{background:#fdf0e0;color:#b8741f}
+.badge-blue{background:#e8f2f9;color:#0e5a8a}
+.row-actions{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap}
+.btn-ghost.sm{padding:7px 13px;font-size:12.5px;font-weight:600;width:auto;margin-top:0}
+.btn-main.fab{margin-top:14px}
+.fl-card .card-head{align-items:center}
+
+/* 新闻 tab（全英文界面） */
+.news-wrap{padding:2px 2px 8px}
+.news-head{display:flex;align-items:center;justify-content:space-between;margin:2px 0 12px}
+.news-title{font-size:16px;font-weight:800;color:var(--thd)}
+.news-upd{font-size:11.5px;color:var(--mut);margin-bottom:9px}
+.news-list{display:flex;flex-direction:column;gap:11px}
+.news-item{display:block;background:var(--card);border:1px solid var(--line);border-radius:13px;
+  padding:13px 15px;text-decoration:none;color:inherit;box-shadow:0 1px 3px rgba(16,32,56,.06);transition:transform .12s}
+.news-item:active{transform:scale(.99)}
+.ni-title{font-size:14.5px;font-weight:700;color:var(--ink);line-height:1.35}
+.ni-sum{font-size:12.5px;color:var(--ink2);margin-top:6px;line-height:1.5}
+.ni-meta{font-size:11px;color:var(--mut);margin-top:8px;display:flex;gap:12px;flex-wrap:wrap}
 </style>
 </head>
 <body>
 <div id="app"></div>
 <div id="toast"></div>
-<script src="bundle.js?v=13"></script>
+<script src="bundle.js?v=14"></script>
 
 <script>
 if ('serviceWorker' in navigator) {
