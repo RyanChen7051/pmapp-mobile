@@ -88,6 +88,19 @@ select.inp{appearance:none;background:#fbfcfe url("data:image/svg+xml,%3Csvg xml
 .lang-row{display:flex;gap:10px;margin-top:10px}
 .lang-row .btn-ghost{margin-top:0;flex:1}
 
+/* 语言选择网格 */
+.lang-block{margin-top:20px;padding-top:18px;border-top:1px solid var(--line)}
+.lang-block-title{font-size:12.5px;color:var(--ink2);font-weight:600;margin-bottom:11px;
+  display:flex;align-items:center;gap:6px}
+.lang-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.lang-chip{display:flex;align-items:center;justify-content:center;min-height:42px;padding:8px 5px;
+  border:1px solid var(--line);border-radius:11px;background:#fbfcfe;color:var(--ink2);
+  font-size:13px;font-family:inherit;cursor:pointer;text-align:center;line-height:1.25;
+  transition:background .15s,border-color .15s,color .15s}
+.lang-chip:active{transform:scale(.97)}
+.lang-chip.on{background:var(--th);color:#fff;border-color:var(--th);font-weight:700;
+  box-shadow:0 2px 8px rgba(30,107,58,.22)}
+
 /* 底部 tab */
 .tabbar{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);
   display:flex;z-index:30;padding-bottom:env(safe-area-inset-bottom);
@@ -140,7 +153,7 @@ textarea.inp{resize:vertical;min-height:88px}
 <body>
 <div id="app"></div>
 <div id="toast"></div>
-<script src="bundle.js?v=8"></script>
+<script src="bundle.js?v=9"></script>
 
 <script>
 if ('serviceWorker' in navigator) {

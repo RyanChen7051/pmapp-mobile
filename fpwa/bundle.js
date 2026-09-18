@@ -16,7 +16,7 @@
       <label class="lbl">${s("factoryCode")}</label>
       <input id="inp-fcode" class="inp" type="text" placeholder="${s("factoryCode")}" inputmode="text" autocapitalize="characters" style="text-transform:uppercase;letter-spacing:2px">
       <button class="btn-main" id="btn-login">${s("enter")}</button>
-      <div class="lang-grid" id="lang-grid">${G()}</div>
+      <div class="lang-block"><div class="lang-block-title">🌐 ${s("language")}</div><div class="lang-grid" id="lang-grid">${G()}</div></div>
       <div class="hint">${o.code} \xB7 \u5916\u90E8\u534F\u4F5C\u7AEF \xB7 v0.3.0</div>
     </div>
   </div>`,document.querySelectorAll("#lang-grid .lang-chip").forEach(el=>el.onclick=()=>{c=el.dataset.lang,localStorage.setItem(o.sessionKey+"_lang",c),document.documentElement.setAttribute("dir",LANGUAGES[c].rtl?"rtl":"ltr"),L()}),n("btn-login").onclick=P,n("inp-code").onkeydown=e=>{e.key==="Enter"&&P()},n("inp-fcode").onkeydown=e=>{e.key==="Enter"&&P()}};(function(){["zh","en","es","ja","fr","de","ar","vi","hi"].forEach(function(lc){j[lc]=j[lc]||{};});
