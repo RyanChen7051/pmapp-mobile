@@ -1,13 +1,13 @@
-/* FPWA Service Worker — v18 */
-const VERSION = '18';
-const CACHE = 'pmapp-fpwa-v18';
+/* FPWA Service Worker — v19 */
+const VERSION = '19';
+const CACHE = 'pmapp-fpwa-v19';
 const ASSETS = [
   './',
   './index.html',
   './manifest.json',
   './icon-192.png',
   './icon-512.png',
-  './bundle.js?v=18',
+  './bundle.js?v=19',
 ];
 
 // 让新版本立即生效：收到 SKIP_WAITING 后结束旧的等待
