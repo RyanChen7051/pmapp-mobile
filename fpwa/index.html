@@ -138,30 +138,30 @@ textarea.inp{resize:vertical;min-height:88px}
   opacity:0;pointer-events:none;transition:.25s;z-index:100;box-shadow:0 4px 14px rgba(0,0,0,.2);max-width:88%}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-/* 版本更新提示条 */
-#sw-update-bar{position:fixed;left:0;right:0;bottom:calc(66px + env(safe-area-inset-bottom));
-  z-index:80;display:flex;align-items:center;justify-content:space-between;gap:12px;
-  background:var(--thd);color:#fff;padding:11px 16px;box-shadow:0 -4px 14px rgba(16,32,56,.18);
-  font-size:14px;animation:upbar .25s ease}
-@keyframes upbar{from{transform:translateY(100%)}to{transform:translateY(0)}}
-.sw-ub-txt{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;opacity:.96}
-.sw-ub-btn{flex:0 0 auto;background:#fff;color:var(--thd);border:none;border-radius:9px;
-  padding:8px 18px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer}
-.sw-ub-btn:active{opacity:.85}
+/* 版本更新提示（登录后显示的悬浮小按钮，不遮画面） */
+#sw-update-bar{position:fixed;right:12px;bottom:calc(78px + env(safe-area-inset-bottom));
+  z-index:80;display:inline-flex;align-items:center;gap:6px;
+  background:var(--th);color:#fff;padding:10px 18px;border-radius:22px;
+  font-size:13.5px;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(16,32,56,.22);
+  animation:upbar .25s ease}
+#sw-update-bar:active{opacity:.85}
+@keyframes upbar{from{transform:translateY(16px);opacity:0}to{transform:translateY(0);opacity:1}}
 </style>
 </head>
 <body>
 <div id="app"></div>
 <div id="toast"></div>
-<script src="bundle.js?v=9"></script>
+<script src="bundle.js?v=10"></script>
 
 <script>
 if ('serviceWorker' in navigator) {
+  window.__fpwaSwUpdate = false;
+  window.fpwaShowUpdate = function(){ if (window.__fpwaSwUpdate) showUpdateBar(); };
   window.addEventListener('load', function() {
     navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' })
       .then(function(reg){
         // 已有一个等待中的新 SW（例如跨版本直接加载）
-        if (reg.waiting) { showUpdateBar(); }
+        if (reg.waiting) window.__fpwaSwUpdate = true;
         // 检测到新版本正在安装
         reg.addEventListener('updatefound', function(){
           var installing = reg.installing;
@@ -169,7 +169,7 @@ if ('serviceWorker' in navigator) {
           installing.addEventListener('statechange', function(){
             // 新 SW 安装完成、且当前已有旧版本在控制页面时才提示更新
             if (installing.state === 'installed' && navigator.serviceWorker.controller) {
-              showUpdateBar();
+              window.__fpwaSwUpdate = true;
             }
           });
         });
@@ -189,10 +189,9 @@ if ('serviceWorker' in navigator) {
     if (document.getElementById('sw-update-bar')) return;
     var bar = document.createElement('div');
     bar.id = 'sw-update-bar';
-    bar.innerHTML = '<span class="sw-ub-txt">🔄 发现新版本 (New version available)</span>' +
-                    '<button id="sw-update-btn" class="sw-ub-btn">更新</button>';
+    bar.textContent = '\u{1F504} \u66F4\u65B0';
     document.body.appendChild(bar);
-    document.getElementById('sw-update-btn').addEventListener('click', function(){
+    bar.addEventListener('click', function(){
       var sw = navigator.serviceWorker;
       if (sw.waiting) { sw.waiting.postMessage('SKIP_WAITING'); }
       else { window.location.reload(); }
