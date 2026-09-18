@@ -66,7 +66,7 @@ const I18N = {
     allFields: '全部信息', refresh: '刷新', ok: '成功',
     problems: '问题记录', noProblem: '暂无相关问题记录', submitComplaint: '提交客诉',
     complaintCat: '问题类别', complaintProject: '关联项目', complaintDesc: '问题描述',
-    commentPlaceholder: '写留言…', cmtTitle: '留言板', custComplaint: '客户投诉',
+    commentPlaceholder: '写留言…', cmtTitle: '留言板', custComplaint: '客户投诉', intIssue: '内部问题',
   },
   en: {
     login: 'Sign In', selectRole: CFG.roleLabelEn, accessCode: 'Access Code', enter: 'Enter',
@@ -81,7 +81,7 @@ const I18N = {
     allFields: 'Full Information', refresh: 'Refresh', ok: 'OK',
     problems: 'Issues', noProblem: 'No related issues', submitComplaint: 'Submit Complaint',
     complaintCat: 'Category', complaintProject: 'Project', complaintDesc: 'Description',
-    commentPlaceholder: 'Write a comment…', cmtTitle: 'Comments', custComplaint: 'Customer Complaint',
+    commentPlaceholder: 'Write a comment…', cmtTitle: 'Comments', custComplaint: 'Customer Complaint', intIssue: 'Internal Issue',
   },
 };
 /* 其余 7 语言先以英文占位（与用户选择一致：中/英先译，其余待补译）*/
@@ -158,7 +158,7 @@ function setSession(s) { localStorage.setItem(CFG.sessionKey, JSON.stringify(s))
 function clearSession() { localStorage.removeItem(CFG.sessionKey); }
 
 /* ─────────── 状态 ─────────── */
-const S = { idents: [], projects: [], records: [], fieldlog: [], current: null };
+const S = { idents: [], projects: [], records: [], fieldlog: [], issues: [], current: null };
 
 const $ = id => document.getElementById(id);
 const esc = s => String(s == null ? '' : s)
@@ -481,6 +481,13 @@ function cmtFmt(iso) {
   } catch (e) { return String(iso).slice(5, 16); }
 }
 
+// 兼容 comments 在 Supabase 中以 JSON 字符串 '[]' 存储（payload 序列化后），统一转回数组
+function asCmtArr(c) {
+  if (Array.isArray(c)) return c;
+  if (typeof c === 'string') { try { const a = JSON.parse(c); if (Array.isArray(a)) return a; } catch (e) {} }
+  return [];
+}
+
 // 读取客户可见的 field_log：自己提交的客诉(customer_code) + 其项目相关的全部问题
 async function loadFieldLog() {
   const sess = getSession();
@@ -493,7 +500,8 @@ async function loadFieldLog() {
   return all.filter(r => {
     if (String(r.customer_code || '').trim().toLowerCase() === v) return true;
     return projSet.has(String(r.project || '').trim());
-  }).sort((a, b) => String(b.created_at || '').localeCompare(String(a.created_at || '')));
+  }).sort((a, b) => String(b.created_at || '').localeCompare(String(a.created_at || '')))
+    .map(r => ({ ...r, _kind: 'field_log' }));
 }
 
 // 写/更新一条 field_log（客诉或留言均走此）
@@ -506,6 +514,36 @@ async function saveFieldLogRecord(r) {
   } else {
     sbId = uuid();
     await sbPost('sync_data', { table_name: 'field_log', local_id: Date.now(), payload, supabase_id: sbId, is_deleted: false, updated_at: now, device_id: 'ext-customer' });
+    r._sb = sbId;
+  }
+}
+
+// 读取客户可见的 issues（内部问题）：通过 project_id 映射项目讯息(project_info.id)
+async function loadIssues() {
+  const sess = getSession();
+  if (!sess) return [];
+  const all = await loadTable('issues', 2000);
+  const projIds = new Set((S.projects || []).map(p => String(p.id)).filter(Boolean));
+  return all.filter(r => projIds.has(String(r.project_id)))
+    .sort((a, b) => String(b.created_at || '').localeCompare(String(a.created_at || '')))
+    .map(r => ({ ...r, _kind: 'issues' }));
+}
+
+function projRefById(id) {
+  const p = (S.projects || []).find(x => String(x.id) === String(id));
+  if (!p) return '';
+  return p.factory_project_no || p.customer_project_no || p.name || String(id);
+}
+
+async function saveIssueRecord(r) {
+  const now = new Date().toISOString();
+  let sbId = r._sb;
+  const payload = JSON.stringify(r);
+  if (sbId) {
+    await sbPatch('sync_data', `supabase_id=eq.${sbId}`, { payload, updated_at: now, device_id: 'ext-customer' });
+  } else {
+    sbId = uuid();
+    await sbPost('sync_data', { table_name: 'issues', local_id: Date.now(), payload, supabase_id: sbId, is_deleted: false, updated_at: now, device_id: 'ext-customer' });
     r._sb = sbId;
   }
 }
@@ -527,8 +565,27 @@ function problemCard(r) {
   </div>`;
 }
 
+function issueCard(r) {
+  const proj = projRefById(r.project_id);
+  const sev = r.severity || 'medium';
+  return `<div class="card" data-id="${esc(r.id)}">
+    <div class="card-head">
+      <div class="card-title">🛠 ${esc(proj || '—')}</div>
+      <span class="badge" style="background:#7a4fb5;color:#fff">${T('intIssue')}</span>
+      ${r.status ? `<span class="badge ${r.status === 'closed' || r.status === '已解决' || r.status === 'resolved' ? 'badge-green' : (r.status === '处理中' || r.status === 'in_progress' || r.status === 'open') ? 'badge-orange' : 'badge-red'}">${esc(r.status)}</span>` : ''}
+    </div>
+    <div class="card-meta">
+      ${r.title ? `<span>题:${esc(r.title)}</span>` : ''}
+      ${r.severity ? `<span>级:${esc(sev)}</span>` : ''}
+      ${r.issue_type ? `<span>类:${esc(r.issue_type)}</span>` : ''}
+      <span>🕒 ${esc((r.created_at || '').slice(0, 16))}</span>
+    </div>
+    ${r.description ? `<div class="card-desc">${esc((r.description || '').slice(0, 120))}</div>` : ''}
+  </div>`;
+}
+
 function problemCommentsHtml(r) {
-  const cmts = r.comments || [];
+  const cmts = asCmtArr(r.comments);
   return `<div class="cmt-box">
     <div class="cmt-title">💬 ${T('cmtTitle')}</div>
     ${cmts.length ? cmts.map(c => `<div class="cmt">
@@ -540,32 +597,43 @@ function problemCommentsHtml(r) {
 }
 
 async function cpwaAddComment(id) {
-  const r = (S.fieldlog || []).find(x => String(x.id) === String(id));
+  const r = findProblem(id);
   const inp = $('cmt-' + id);
   if (!r || !inp) return;
   const m = inp.value.trim();
   if (!m) return toast(T('commentPlaceholder'));
   const sess = getSession();
-  (r.comments = r.comments || []).push({ u: sess ? sess.name : '?', m, t: new Date().toISOString() });
-    try { await saveFieldLogRecord(r); toast(T('submitted')); openProblem(r); }
-    catch (e) { toast(T('errNet'), true); }
-  }
-  // 留言发送由 inline onclick 字符串调用，esbuild 会改名顶层函数名；
-  // 显式挂到 window，保证 onx="cpwaAddComment('id')" 在运行时能命中。
-  window.cpwaAddComment = cpwaAddComment;
+  r.comments = asCmtArr(r.comments);
+  r.comments.push({ u: sess ? sess.name : '?', m, t: new Date().toISOString() });
+  try {
+    if (r._kind === 'issues') await saveIssueRecord(r);
+    else await saveFieldLogRecord(r);
+    toast(T('submitted')); openProblem(r);
+  } catch (e) { toast(T('errNet'), true); }
+}
+// 留言发送由 inline onclick 字符串调用，esbuild 会改名顶层函数名；
+// 显式挂到 window，保证 onclick="cpwaAddComment('id')" 在运行时能命中。
+window.cpwaAddComment = cpwaAddComment;
+
+function findProblem(id) {
+  return (S.fieldlog || []).find(x => String(x.id) === String(id))
+      || (S.issues || []).find(x => String(x.id) === String(id));
+}
 
 function renderProblems() {
   const m = $('main');
-  if (!S.fieldlog.length) {
+  const list = [...(S.fieldlog || []), ...(S.issues || [])]
+    .sort((a, b) => String(b.created_at || '').localeCompare(String(a.created_at || '')));
+  if (!list.length) {
     m.innerHTML = `<div class="empty"><div class="empty-ico">🐞</div><div>${T('noProblem')}</div>
       <button class="btn-ghost" id="btn-reload2">${T('refresh')}</button></div>`;
     const b = $('btn-reload2'); if (b) b.onclick = refreshData;
     renderComplaintFab(); return;
   }
-  m.innerHTML = `<div class="list">${S.fieldlog.map(problemCard).join('')}</div>`;
+  m.innerHTML = `<div class="list">${list.map(r => r._kind === 'issues' ? issueCard(r) : problemCard(r)).join('')}</div>`;
   document.querySelectorAll('.card').forEach(c => {
     c.onclick = () => {
-      const r = S.fieldlog.find(x => String(x.id) === String(c.dataset.id));
+      const r = findProblem(c.dataset.id);
       if (r) openProblem(r);
     };
   });
@@ -581,8 +649,8 @@ function openProblem(r) {
   $('modal').innerHTML = `
   <div class="sheet">
     <div class="sheet-bar"></div>
-    <div class="sheet-head"><div><div class="sheet-title">${esc(r.project || '—')}</div>
-      <div class="sheet-sub">${r.is_customer_complaint ? T('custComplaint') : T('problems')} · ${esc(r.status || '')}</div></div>
+    <div class="sheet-head"><div><div class="sheet-title">${esc(r.project || projRefById(r.project_id) || '—')}</div>
+      <div class="sheet-sub">${r.is_customer_complaint ? T('custComplaint') : (r._kind === 'issues' ? T('intIssue') : T('problems'))} · ${esc(r.status || '')}</div></div>
       <button class="sheet-x" id="m-xo">✕</button></div>
     <div class="kv-list">${rows || '<div class="empty-sm">—</div>'}</div>
     ${problemCommentsHtml(r)}
@@ -665,7 +733,7 @@ async function refreshData() {
   try {
     S.projects = await loadProjects();
     S.records = await loadRecords();
-    if (IS_CUSTOMER) S.fieldlog = await loadFieldLog();
+    if (IS_CUSTOMER) { S.fieldlog = await loadFieldLog(); S.issues = await loadIssues(); }
     if (S.tab === 'projects') renderProjects();
     else if (S.tab === 'problems') renderProblems();
     else if (S.tab === 'records') renderRecords();
