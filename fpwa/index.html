@@ -102,19 +102,6 @@ select.inp{appearance:none;background:#fbfcfe url("data:image/svg+xml,%3Csvg xml
 .lang-row{display:flex;gap:10px;margin-top:10px}
 .lang-row .btn-ghost{margin-top:0;flex:1}
 
-/* 语言选择网格 */
-.lang-block{margin-top:20px;padding-top:18px;border-top:1px solid var(--line)}
-.lang-block-title{font-size:12.5px;color:var(--ink2);font-weight:600;margin-bottom:11px;
-  display:flex;align-items:center;gap:6px}
-.lang-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
-.lang-chip{display:flex;align-items:center;justify-content:center;min-height:42px;padding:8px 5px;
-  border:1px solid var(--line);border-radius:11px;background:#fbfcfe;color:var(--ink2);
-  font-size:13px;font-family:inherit;cursor:pointer;text-align:center;line-height:1.25;
-  transition:background .15s,border-color .15s,color .15s}
-.lang-chip:active{transform:scale(.97)}
-.lang-chip.on{background:var(--th);color:#fff;border-color:var(--th);font-weight:700;
-  box-shadow:0 2px 8px rgba(30,107,58,.22)}
-
 /* 底部 tab */
 .tabbar{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);
   display:flex;z-index:30;padding-bottom:env(safe-area-inset-bottom);
@@ -133,7 +120,7 @@ select.inp{appearance:none;background:#fbfcfe url("data:image/svg+xml,%3Csvg xml
   max-height:88vh;overflow-y:auto;animation:up .22s ease}
 @keyframes up{from{transform:translateY(100%)}to{transform:translateY(0)}}
 .sheet-bar{width:38px;height:4px;background:#d8dfe8;border-radius:3px;margin:4px auto 12px}
-.sheet-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:6px}
+.sheet-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:6px}
 .sheet-title{font-size:18px;font-weight:700}
 .sheet-sub{font-size:12px;color:var(--mut);margin-top:2px}
 .sheet-x{background:#f0f3f7;border:none;width:30px;height:30px;border-radius:50%;
@@ -161,7 +148,58 @@ textarea.inp{resize:vertical;min-height:88px}
 #sw-update-bar:active{opacity:.85}
 @keyframes upbar{from{transform:translateY(16px);opacity:0}to{transform:translateY(0);opacity:1}}
 
-/* 用户权限管理 */
+/* 语言选择网格（9 语言） */
+.lang-block{margin-top:20px;padding-top:18px;border-top:1px solid var(--line)}
+.lang-block-title{font-size:12.5px;color:var(--ink2);font-weight:600;margin-bottom:11px;
+  display:flex;align-items:center;gap:6px}
+.lang-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.lang-chip{display:flex;align-items:center;justify-content:center;min-height:42px;padding:8px 5px;
+  border:1px solid var(--line);border-radius:11px;background:#fbfcfe;color:var(--ink2);
+  font-size:13px;font-family:inherit;cursor:pointer;text-align:center;line-height:1.25;
+  transition:background .15s,border-color .15s,color .15s}
+.lang-chip:active{transform:scale(.97)}
+.lang-chip.on{background:var(--th);color:#fff;border-color:var(--th);font-weight:700;
+  box-shadow:0 2px 8px rgba(14,90,138,.22)}
+
+/* 状态徽章（super：含工厂/客户两端用到的全部变体） */
+.badge{display:inline-block;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;
+  background:#eef2f7;color:var(--ink2);flex:0 0 auto}
+.badge-green{background:#e3f5ea;color:#1d9e75}
+.badge-orange{background:#fdeede;color:#ef9f27}
+.badge-red{background:#fbe3e0;color:#e24b4a}
+.badge.cat{background:var(--acc);color:var(--thd);border:1px solid var(--line);margin-left:6px;vertical-align:middle;line-height:1.5}
+.badge-blue{background:#e8f2f9;color:#0e5a8a}
+
+/* 问题记录卡描述 */
+.card-desc{margin-top:9px;font-size:13.5px;color:var(--ink2);white-space:pre-wrap;word-break:break-word}
+
+/* 留言板 */
+.cmt-box{margin-top:13px;border-top:1px dashed var(--line);padding-top:11px}
+.cmt-title{font-size:13px;font-weight:700;color:var(--ink2);margin-bottom:9px;display:flex;align-items:center;gap:6px}
+.cmt{background:#f7f9fb;border-radius:9px;padding:9px 11px;margin-bottom:8px}
+.cmt-top{display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--mut);margin-bottom:4px;flex-wrap:wrap}
+.cmt-u{font-weight:700;color:var(--ink2)}
+.cmt-c{color:var(--th)}
+.cmt-t{margin-left:auto}
+.cmt-m{font-size:13.5px;color:var(--ink);white-space:pre-wrap;word-break:break-word}
+.cmt-row{display:flex;gap:8px;margin-top:6px}
+.cmt-row input{flex:1;padding:10px 12px;border:1px solid var(--line);border-radius:10px;
+  font-size:14px;background:#fbfcfe;color:var(--ink);font-family:inherit;outline:none}
+.cmt-row input:focus{border-color:var(--th)}
+
+/* 提交客诉悬浮按钮 */
+.fab{position:fixed;right:16px;bottom:calc(80px + env(safe-area-inset-bottom));z-index:40;
+  width:54px;height:54px;border-radius:50%;background:var(--th);color:#fff;border:none;
+  font-size:26px;line-height:1;cursor:pointer;box-shadow:0 6px 18px rgba(14,90,138,.35);
+  display:flex;align-items:center;justify-content:center}
+.fab:active{transform:scale(.94)}
+
+/* 次要按钮（留言发送） */
+.btn-primary{background:var(--th);color:#fff;border:none;border-radius:10px;font-weight:700;
+  font-family:inherit;cursor:pointer;font-size:13px}
+.btn-primary:active{opacity:.85}
+
+/* 用户权限管理（FPWA） */
 .um-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 2px;border-bottom:1px solid var(--line)}
 .um-row:last-child{border-bottom:none}
 .um-info{min-width:0;flex:1}
@@ -176,19 +214,20 @@ textarea.inp{resize:vertical;min-height:88px}
 .um-btn.off{background:#eaf5ec;color:#1e6b3a}
 .um-btn:disabled{opacity:.5}
 
-/* 现场记录卡片 + 徽章 + 操作按钮 */
-.badge{display:inline-block;padding:2px 9px;border-radius:11px;font-size:11px;font-weight:700;
-  margin-left:6px;vertical-align:middle;line-height:1.5}
-.badge.cat{background:var(--acc);color:var(--thd);border:1px solid var(--line)}
-.badge-red{background:#fdeceb;color:#b8461f}
-.badge-orange{background:#fdf0e0;color:#b8741f}
-.badge-blue{background:#e8f2f9;color:#0e5a8a}
+/* 现场记录卡片 + 徽章 + 操作按钮（FPWA） */
 .row-actions{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap}
 .btn-ghost.sm{padding:7px 13px;font-size:12.5px;font-weight:600;width:auto;margin-top:0}
 .btn-main.fab{margin-top:14px}
+.fl-card{position:relative;overflow:hidden;padding:0!important}
+.fl-card-inner{position:relative;z-index:1;background:var(--card);padding:15px 16px;transition:transform .2s ease}
 .fl-card .card-head{align-items:center}
+.fl-del{position:absolute;top:0;right:0;bottom:0;width:78px;border:0;background:#d83a3a;color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;z-index:0}
+.fl-del:active{background:#b62c2c}
+.sheet.sm{max-width:320px}
+.confirm-row{display:flex;gap:10px;margin-top:16px}
+.confirm-row .btn-main,.confirm-row .btn-ghost{flex:1}
 
-/* 新闻 tab（全英文界面） */
+/* 新闻 tab（全英文界面，FPWA） */
 .news-wrap{padding:2px 2px 8px}
 .news-head{display:flex;align-items:center;justify-content:space-between;margin:2px 0 12px}
 .news-title{font-size:16px;font-weight:800;color:var(--thd)}
@@ -200,23 +239,8 @@ textarea.inp{resize:vertical;min-height:88px}
 .ni-title{font-size:14.5px;font-weight:700;color:var(--ink);line-height:1.35}
 .ni-sum{font-size:12.5px;color:var(--ink2);margin-top:6px;line-height:1.5}
 .ni-meta{font-size:11px;color:var(--mut);margin-top:8px;display:flex;gap:12px;flex-wrap:wrap}
-.fl-card{position:relative;overflow:hidden;padding:0!important}
-.fl-card-inner{position:relative;z-index:1;background:var(--card);padding:15px 16px;transition:transform .2s ease}
-.fl-del{position:absolute;top:0;right:0;bottom:0;width:78px;border:0;background:#d83a3a;color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;z-index:0}
-.fl-del:active{background:#b62c2c}
-.sheet.sm{max-width:320px}
-.confirm-row{display:flex;gap:10px;margin-top:16px}
-.confirm-row .btn-main,.confirm-row .btn-ghost{flex:1}
 
-/* SW 更新浮条 */
-#sw-update-bar{position:fixed;left:50%;transform:translateX(-50%);
-  bottom:calc(76px + env(safe-area-inset-bottom));z-index:60;
-  background:var(--th);color:#fff;font-size:14px;font-weight:700;
-  padding:11px 22px;border-radius:24px;box-shadow:0 6px 18px rgba(16,32,56,.25);
-  cursor:pointer;display:flex;align-items:center;gap:8px;animation:up .22s ease}
-#sw-update-bar:active{opacity:.88}
-
-/* 照片附件 */
+/* 照片附件（FPWA） */
 .photo-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
 .photo-row.sm{gap:6px;margin-top:9px}
 .photo-thumb{position:relative;width:84px;height:84px;border-radius:10px;overflow:hidden;border:1px solid var(--line);background:#f0f3f7}
@@ -229,7 +253,7 @@ textarea.inp{resize:vertical;min-height:88px}
 <body>
 <div id="app"></div>
 <div id="toast"></div>
-<script src="bundle.js?v=20"></script>
+<script src="bundle.js?v=8"></script>
 
 <script>
 if ('serviceWorker' in navigator) {
@@ -268,7 +292,7 @@ if ('serviceWorker' in navigator) {
     if (document.getElementById('sw-update-bar')) return;
     var bar = document.createElement('div');
     bar.id = 'sw-update-bar';
-    bar.textContent = '\u{1F504} \u66F4\u65B0';
+    bar.textContent = '🔄 更新';
     document.body.appendChild(bar);
     bar.addEventListener('click', function(){
       var sw = navigator.serviceWorker;
