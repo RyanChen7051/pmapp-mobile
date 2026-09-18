@@ -1,16 +1,16 @@
-/* FPWA Service Worker — v20 */
-const VERSION = '20';
-const CACHE = 'pmapp-fpwa-v20';
+/* FPWA Service Worker — v8 */
+const VERSION = '8';
+const CACHE = 'pmapp-fpwa-v8';
 const ASSETS = [
   './',
   './index.html',
   './manifest.json',
   './icon-192.png',
   './icon-512.png',
-  './bundle.js?v=20',
+  './bundle.js?v=8',
 ];
 
-// 让新版本立即生效：收到 SKIP_WAITING 后结束旧的等待
+// 让新版本立即生效：收到 SKIP_WAITING 后结束旧的等待（由首页「更新」按钮触发）
 self.addEventListener('message', e => {
   if (e.data === 'SKIP_WAITING') self.skipWaiting();
 });
@@ -36,8 +36,6 @@ self.addEventListener('fetch', e => {
   const url = new URL(req.url);
   // Supabase API：始终走网络，不缓存
   if (url.hostname.includes('supabase')) return;
-  // 新闻 JSON：始终走网络，绝不缓存（每日刷新）
-  if (url.pathname.endsWith('news.json')) return;
   // 同源静态资源：每次都向网络 revalidate，确保部署后第一时间拿到新版本
   e.respondWith(
     fetch(req, { cache: 'no-cache' })
