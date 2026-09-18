@@ -55,6 +55,7 @@ const LANGUAGES = {
 const I18N = {
   zh: {
     login: '登录', selectRole: CFG.roleLabel, accessCode: '访问码', enter: '进入',
+    custAccount: '客户账号', custCode: '客户代号', password: '密码', errLogin: '账号、代号或密码错误',
     myProjects: '我的项目', noProject: '暂无项目', loading: '加载中…',
     stage: '阶段', progress: '项目进度', custNo: '客户项目号', factoryNo: '工厂项目号',
     submit: '提交', cancel: '取消', remark: '备注', qty: '数量', date: '日期',
@@ -70,6 +71,7 @@ const I18N = {
   },
   en: {
     login: 'Sign In', selectRole: CFG.roleLabelEn, accessCode: 'Access Code', enter: 'Enter',
+    custAccount: 'Customer Account', custCode: 'Customer Code', password: 'Password', errLogin: 'Invalid account, code or password',
     myProjects: 'My Projects', noProject: 'No projects yet', loading: 'Loading…',
     stage: 'Stage', progress: 'Progress', custNo: 'Customer Program', factoryNo: 'Factory P/N',
     submit: 'Submit', cancel: 'Cancel', remark: 'Remarks', qty: 'Quantity', date: 'Date',
@@ -180,10 +182,14 @@ async function loadIdents() {
     const seen = new Set(), out = [];
     rows.forEach(r => {
       const v = (r[CFG.idValueKey] || '').toString().trim();
-      if (v && !seen.has(v)) {
-        seen.add(v);
-        out.push({ id: v, name: (r[CFG.idTextKey] || r.customer_name || v).toString().trim() });
-      }
+      if (!v || seen.has(v)) return;
+      seen.add(v);
+      out.push({
+        id: v,
+        name: (r[CFG.idTextKey] || r.customer_name || v).toString().trim(),
+        account: (r.account || '').toString().trim(),
+        password: (r.password || '').toString(),
+      });
     });
     return out.sort((a, b) => a.name.localeCompare(b.name));
   }
@@ -219,7 +225,17 @@ async function loadRecords() {
 }
 
 /* ─────────── 渲染：登录页 ─────────── */
+function loginLangGrid() {
+  return `<div class="lang-block" style="margin-top:8px">
+    <div class="lang-block-title">🌐 ${T('language')}</div>
+    <div class="lang-grid">
+      ${Object.entries(LANGUAGES).map(([k, o]) => `<button class="lang-chip ${LANG === k ? 'on' : ''}" data-l="${k}">${o.flag} ${o.name}</button>`).join('')}
+    </div>
+  </div>`;
+}
+
 function renderLogin() {
+  const isC = IS_CUSTOMER;
   $('app').innerHTML = `
   <div class="login-wrap">
     <div class="login-card">
@@ -230,6 +246,14 @@ function renderLogin() {
           <div class="brand-sub">${LANG === 'zh' ? CFG.tagline : CFG.taglineEn}</div>
         </div>
       </div>
+      ${isC ? `
+      <label class="lbl">${T('custAccount')}</label>
+      <input id="inp-account" class="inp" type="text" placeholder="${T('custAccount')}" autocomplete="off">
+      <label class="lbl">${T('custCode')}</label>
+      <input id="inp-code" class="inp" type="text" placeholder="${T('custCode')}" autocomplete="off">
+      <label class="lbl">${T('password')}</label>
+      <input id="inp-pass" class="inp" type="password" placeholder="${T('password')}" autocomplete="off">
+      ` : `
       <label class="lbl">${T('selectRole')}</label>
       <select id="sel-ident" class="inp">
         <option value="">-- ${T('selectRole')} --</option>
@@ -237,21 +261,38 @@ function renderLogin() {
       </select>
       <label class="lbl">${T('accessCode')}</label>
       <input id="inp-code" class="inp" type="password" placeholder="${T('accessCode')}" autocomplete="off">
+      `}
       <button class="btn-main" id="btn-login">${T('enter')}</button>
-      <button class="btn-lang" id="btn-lang">🌐 ${LANG === 'zh' ? 'English' : '中文'}</button>
+      ${loginLangGrid()}
       <div class="hint">${CFG.code} · 外部协作端 · v0.1.0</div>
     </div>
   </div>`;
-  $('btn-lang').onclick = () => {
-    LANG = LANG === 'zh' ? 'en' : 'zh';
-    localStorage.setItem(CFG.sessionKey + '_lang', LANG);
-    renderLogin();
-  };
+  document.querySelectorAll('#app [data-l]').forEach(b => {
+    b.onclick = () => {
+      LANG = b.dataset.l;
+      localStorage.setItem(CFG.sessionKey + '_lang', LANG);
+      renderLogin();
+    };
+  });
   $('btn-login').onclick = doLogin;
-  $('inp-code').onkeydown = e => { if (e.key === 'Enter') doLogin(); };
+  if (isC) $('inp-pass').onkeydown = e => { if (e.key === 'Enter') doLogin(); };
+  else $('inp-code').onkeydown = e => { if (e.key === 'Enter') doLogin(); };
 }
 
 function doLogin() {
+  if (IS_CUSTOMER) {
+    const account = $('inp-account').value.trim();
+    const code = $('inp-code').value.trim();
+    const pass = $('inp-pass').value;
+    if (!account || !code || !pass) return toast(T('errLogin'), true);
+    const row = S.idents.find(o =>
+      (o.account || '').toString().toLowerCase() === account.toLowerCase() &&
+      (o.id || '').toString().toLowerCase() === code.toLowerCase() &&
+      (o.password || '') === pass);
+    if (!row) return toast(T('errLogin'), true);
+    setSession({ value: row.id, name: row.name, account: row.account, at: Date.now() });
+    return boot();
+  }
   const sel = $('sel-ident'), code = $('inp-code').value.trim();
   if (!sel.value) return toast(T('errSelect'), true);
   if (code !== CFG.accessCode) return toast(T('errCode'), true);
