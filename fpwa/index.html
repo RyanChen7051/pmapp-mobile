@@ -207,12 +207,20 @@ textarea.inp{resize:vertical;min-height:88px}
 .sheet.sm{max-width:320px}
 .confirm-row{display:flex;gap:10px;margin-top:16px}
 .confirm-row .btn-main,.confirm-row .btn-ghost{flex:1}
+
+/* SW 更新浮条 */
+#sw-update-bar{position:fixed;left:50%;transform:translateX(-50%);
+  bottom:calc(76px + env(safe-area-inset-bottom));z-index:60;
+  background:var(--th);color:#fff;font-size:14px;font-weight:700;
+  padding:11px 22px;border-radius:24px;box-shadow:0 6px 18px rgba(16,32,56,.25);
+  cursor:pointer;display:flex;align-items:center;gap:8px;animation:up .22s ease}
+#sw-update-bar:active{opacity:.88}
 </style>
 </head>
 <body>
 <div id="app"></div>
 <div id="toast"></div>
-<script src="bundle.js?v=16"></script>
+<script src="bundle.js?v=17"></script>
 
 <script>
 if ('serviceWorker' in navigator) {
@@ -222,7 +230,7 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' })
       .then(function(reg){
         // 已有一个等待中的新 SW（例如跨版本直接加载）
-        if (reg.waiting) window.__fpwaSwUpdate = true;
+        if (reg.waiting) { window.__fpwaSwUpdate = true; window.fpwaShowUpdate(); }
         // 检测到新版本正在安装
         reg.addEventListener('updatefound', function(){
           var installing = reg.installing;
@@ -231,6 +239,7 @@ if ('serviceWorker' in navigator) {
             // 新 SW 安装完成、且当前已有旧版本在控制页面时才提示更新
             if (installing.state === 'installed' && navigator.serviceWorker.controller) {
               window.__fpwaSwUpdate = true;
+              window.fpwaShowUpdate();
             }
           });
         });
