@@ -26,8 +26,9 @@ export function setupCockpit(App) {
       return true;
     });
     const active = allProjects.filter(p => p.status === 'active').length;
-    // KPI 2: 待处理问题
-    const openIssues = issues.filter(i => i.status === 'open').length;
+    // KPI 2: 待处理问题 = 内部 issues(open) + 客户投诉(field_log.is_customer_complaint 且未处理)
+    const openIssues = issues.filter(i => i.status === 'open').length
+      + (C.field_log || []).filter(r => r.is_customer_complaint && r.status !== '已处理').length;
     // KPI 3: 生产计划完成（主计划 tasks 本周到期且已完成的数量；口径可后续按需调）
     const now = new Date();
     const day = now.getDay() || 7; // 周日视作 7
@@ -48,9 +49,9 @@ export function setupCockpit(App) {
     const defectRate = totalRec > 0 ? (totalDef / totalRec * 100) : 0;
     // KPI 5: 每周 DOA 增加数（doa.date 落在本周）
     const doaWeek = doa.filter(r => { const d = (r.date || '').slice(0, 10); return d && d >= md && d < nd; }).length;
-    // KPI 6: 每周新增客户投诉（现场记录 类别=客诉，created_at 落在本周）
+    // KPI 6: 每周新增客户投诉（field_log.is_customer_complaint，created_at 落在本周）
     const compWeek = (C.field_log || []).filter(r => {
-      if (r.problem_category !== '客诉') return false;
+      if (!r.is_customer_complaint) return false;
       const d = (r.created_at || '').slice(0, 10);
       return d && d >= md && d < nd;
     }).length;
