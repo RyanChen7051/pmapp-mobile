@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1e88c7"/>
+      <stop offset="1" stop-color="#0a3d64"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="115" fill="url(#bg)"/>
+
+  <!-- 对话气泡 + 确认勾（放大并居中，与 FPWA 工厂同样的视觉分量） -->
+  <g transform="translate(56,-12) scale(0.78)">
+    <rect x="86" y="112" width="340" height="238" rx="52" fill="#ffffff"/>
+    <path d="M148 336 L148 416 L238 350 Z" fill="#ffffff"/>
+    <path d="M158 232 L226 298 L356 168" fill="none" stroke="#0e5a8a"
+          stroke-width="38" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <!-- 品牌文字 -->
+  <text x="256" y="412" text-anchor="middle"
+        font-family="-apple-system,Helvetica,Arial,sans-serif"
+        font-size="92" font-weight="800" letter-spacing="2" fill="#ffffff">C-PWA</text>
+</svg>
