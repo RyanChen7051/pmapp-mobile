@@ -181,9 +181,11 @@ export function setupFieldLog(App) {
         <div class="card-title">📸 ${this.esc(r.project ? tr(r.project) : tr('未指定项目'))}</div>
         ${r.problem_level ? `<span class="badge ${this._flLevelBadge(r.problem_level)}">${this.esc(tr(r.problem_level))}</span>` : ''}
         ${r.status ? `<span class="badge ${r.status === '已处理' ? 'badge-green' : r.status === '处理中' ? 'badge-orange' : 'badge-red'}">${this.esc(tr(r.status))}</span>` : ''}
+        ${r.is_customer_complaint ? `<span class="badge" style="background:#378ADD;color:#fff">${getLang() === 'zh' ? '客户投诉' : 'Complaint'}</span>` : ''}
       </div>
       <div class="card-meta">
         ${r.problem_factory ? `<span>🏭 ${this.esc(r.problem_factory)}</span>` : ''}
+        ${r.is_customer_complaint && r.customer_code ? `<span>🗣️ ${this.esc(r.customer_code)}</span>` : ''}
         ${this._flLocHtml(r) ? this._flLocHtml(r) : ''}
         ${rate ? `<span>📉 ${this.esc(rate)}</span>` : ''}
         ${r.handler ? `<span>👤 ${this.esc(r.handler)}</span>` : ''}
@@ -353,11 +355,13 @@ export function setupFieldLog(App) {
   };
 
   // 客诉问题区块（品质页）：每条客诉 = 历史卡 + 留言板
+  // 口径：is_customer_complaint===true（不再依赖 problem_category==='客诉'），
+  // 这样客户在 CPWA 自选 生产/工程/制程/品质 类别提交的客诉也会汇总到此块。
   App.renderComplaintsBlock = function(containerId) {
     const el = document.getElementById(containerId);
     if (!el) return;
     const list = (this.cache.field_log || [])
-      .filter(r => r.problem_category === '客诉')
+      .filter(r => r.is_customer_complaint)
       .slice().sort((a, b) => (b.created_at || '').localeCompare(a.created_at || ''));
     if (!list.length) { el.innerHTML = `<div class="empty"><div class="empty-icon">🗣️</div>${tr('暂无客诉')}</div>`; return; }
     el.innerHTML = list.map(r => this._flHistoryCard(r) + this._flCommentsHtml(r, containerId)).join('');
