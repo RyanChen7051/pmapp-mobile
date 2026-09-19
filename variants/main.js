@@ -440,7 +440,7 @@ function setSession(s) { localStorage.setItem(CFG.sessionKey, JSON.stringify(s))
 function clearSession() { localStorage.removeItem(CFG.sessionKey); }
 
 /* ─────────── 状态 ─────────── */
-const S = { idents: [], projects: [], records: [], fieldlog: [], issues: [], news: [], current: null };
+const S = { idents: [], projects: [], records: [], fieldlog: [], issues: [], problems: [], news: [], current: null };
 
 const $ = id => document.getElementById(id);
 const esc = s => String(s == null ? '' : s)
@@ -553,13 +553,15 @@ async function loadRecords() {
 
 /* 耳机/音频产业新闻（全英文）：主源 Supabase ai_industry_news，缺失时回落 fpwa/news.json */
 async function loadNews() {
+  // 耳机行业新闻要求「全英文」：过滤掉含中文标题/摘要的条目
+  const cjk = s => /[一-鿿]/.test(s || '');
   try {
     const rows = await loadTable('ai_industry_news', 200);
     if (rows && rows.length) {
       const out = rows.map(n => ({
         title: n.title || '', summary: n.summary || '', source: n.source || '',
         url: n.url || '', date: n.news_date || n.date || '', importance: n.importance || ''
-      })).filter(n => n.title);
+      })).filter(n => n.title && !cjk(n.title) && !cjk(n.summary));
       if (out.length) return out;
     }
   } catch (e) {}
@@ -570,7 +572,7 @@ async function loadNews() {
       const items = (j.items || []).map(n => ({
         title: n.title || '', summary: n.summary || '', source: n.source || '',
         url: n.url || '', date: n.date || '', importance: ''
-      })).filter(n => n.title);
+      })).filter(n => n.title && !cjk(n.title) && !cjk(n.summary));
       if (items.length) return items;
     }
   } catch (e) {}
@@ -853,14 +855,8 @@ function recordCard(r) {
 }
 function renderSummary() {
   const m = $('main');
-  let list;
-  if (IS_CUSTOMER) {
-    list = [...(S.fieldlog || []), ...(S.issues || [])].sort((a, b) => String(b.created_at || '').localeCompare(String(a.created_at || '')));
-  } else {
-    list = [...(S.issues || []).map(r => ({ ...r, _kind: 'issues' })),
-            ...(S.fieldlog || []).map(r => ({ ...r, _kind: 'field_log' }))]
-      .sort((a, b) => String(b.created_at || '').localeCompare(String(a.created_at || '')));
-  }
+  const list = (S.problems || []).slice()
+    .sort((a, b) => String(b.created_at || '').localeCompare(String(a.created_at || '')));
   if (!list.length) {
     m.innerHTML = `<div class="empty"><div class="empty-ico">📋</div><div>${IS_FACTORY ? TL('recFactory') : TL('recCustomer')}：${T('noProblem')}</div></div>`;
     return;
@@ -947,7 +943,8 @@ async function loadFieldLog() {
 async function saveFieldLogRecord(r) {
   const now = new Date().toISOString();
   let sbId = r._sb;
-  const payload = JSON.stringify(r);
+  const { _sb, _table, _cat, _kind, ...clean } = r;
+  const payload = JSON.stringify(clean);
   if (sbId) {
     await sbPatch('sync_data', `supabase_id=eq.${sbId}`, { payload, updated_at: now, device_id: 'ext-customer' });
   } else {
@@ -968,6 +965,34 @@ async function loadIssues() {
     .map(r => ({ ...r, _kind: 'issues' }));
 }
 
+async function loadProblems() {
+  const sess = getSession();
+  if (!sess) return [];
+  // 主 PWA 的问题分布在多张表：issues(issue_type) + engineering/factory_process/production/quality 独立表 + field_log(客诉)
+  const tables = ['issues', 'engineering', 'factory_process', 'production', 'quality', 'field_log'];
+  let all = [];
+  for (const t of tables) {
+    const rows = await loadTable(t, 2000);
+    all = all.concat(rows.map(r => ({ ...r, _table: t, _kind: t === 'field_log' ? 'field_log' : 'issues' })));
+  }
+  // 客户端：仅看其项目相关的问题（project_id 关联）及其客诉（customer_code）
+  if (sess.role !== 'super' && IS_CUSTOMER) {
+    const projIds = new Set((S.projects || []).map(p => String(p.id)).filter(Boolean));
+    const projSet = new Set((S.projects || []).map(p =>
+      [p.name, p.factory_project_no, p.customer_project_no, p.id]
+        .map(x => String(x || '').trim()).filter(Boolean)).flat());
+    const v = String(sess.value).trim().toLowerCase();
+    all = all.filter(r => {
+      if (r._table === 'field_log') {
+        if (String(r.customer_code || '').trim().toLowerCase() === v) return true;
+        return projSet.has(String(r.project || '').trim());
+      }
+      return projIds.has(String(r.project_id));
+    });
+  }
+  return all.map(r => ({ ...r, _cat: normCat(r, r._table) }));
+}
+
 function projRefById(id) {
   const p = (S.projects || []).find(x => String(x.id) === String(id));
   if (!p) return '';
@@ -977,7 +1002,8 @@ function projRefById(id) {
 async function saveIssueRecord(r) {
   const now = new Date().toISOString();
   let sbId = r._sb;
-  const payload = JSON.stringify(r);
+  const { _sb, _table, _cat, _kind, ...clean } = r;
+  const payload = JSON.stringify(clean);
   if (sbId) {
     await sbPatch('sync_data', `supabase_id=eq.${sbId}`, { payload, updated_at: now, device_id: 'ext-customer' });
   } else {
@@ -1045,8 +1071,8 @@ async function cpwaAddComment(id) {
   r.comments = asCmtArr(r.comments);
   r.comments.push({ u: sess ? sess.name : '?', m, t: new Date().toISOString() });
   try {
-    if (r._kind === 'issues') await saveIssueRecord(r);
-    else await saveFieldLogRecord(r);
+    if (r._table === 'field_log') await saveFieldLogRecord(r);
+    else await saveIssueRecord(r);
     toast(T('submitted')); if (S.tab === 'records') renderSummary(); else if (S.tab === 'onsite') renderOnsite(); else if (S.tab === 'news') renderNews();
   } catch (e) { toast(T('errNet'), true); }
 }
@@ -1055,8 +1081,7 @@ async function cpwaAddComment(id) {
 window.cpwaAddComment = cpwaAddComment;
 
 function findProblem(id) {
-  return (S.fieldlog || []).find(x => String(x.id) === String(id))
-      || (S.issues || []).find(x => String(x.id) === String(id));
+  return (S.problems || []).find(x => String(x.id) === String(id));
 }
 
 
@@ -1159,14 +1184,31 @@ function weekRange() {
   return [f(mon), f(nd)];
 }
 const CATS = ['生产', '工程', '制程', '品质'];
+// 归一化：主 PWA 的 issue_type / 问题表名 可能是英文(production/engineering/quality)或中文，
+// 统一映射到 FPWA/CPWA 现场的 4 类，确保两端「串在一起」
+const CATMAP = {
+  production: '生产', '生产': '生产',
+  engineering: '工程', '工程': '工程', eng: '工程',
+  factory_process: '制程', '制程': '制程', process: '制程',
+  quality: '品质', '品质': '品质', '质量': '品质',
+};
+function normCat(r, table) {
+  if (table === 'engineering') return '工程';
+  if (table === 'factory_process') return '制程';
+  if (table === 'production') return '生产';
+  if (table === 'quality') return '品质';
+  const t = r.issue_type || r.problem_category || '';
+  return CATMAP[t] || '';
+}
 function catItems(cat) {
-  const iss = (S.issues || []).filter(i => (i.issue_type || '') === cat).map(r => ({ ...r, _kind: 'issues' }));
-  const fl = (S.fieldlog || []).filter(r => (r.problem_category || '') === cat).map(r => ({ ...r, _kind: 'field_log' }));
-  return [...fl, ...iss].sort((a, b) => String(b.created_at || '').localeCompare(String(a.created_at || '')));
+  return (S.problems || [])
+    .filter(r => r._cat === cat)
+    .sort((a, b) => String(b.created_at || '').localeCompare(String(a.created_at || '')));
 }
 function kpiPending() {
-  return (S.issues || []).filter(i => i.status === 'open').length
-    + (S.fieldlog || []).filter(r => r.is_customer_complaint && r.status !== '已处理').length;
+  const P = S.problems || [];
+  return P.filter(r => r._table === 'issues' && r.status === 'open').length
+    + P.filter(r => r._table === 'field_log' && r.is_customer_complaint && r.status !== '已处理').length;
 }
 function kpiWeeklyDoa() {
   const [ms, ne] = weekRange();
@@ -1174,7 +1216,7 @@ function kpiWeeklyDoa() {
 }
 function kpiWeeklyComp() {
   const [ms, ne] = weekRange();
-  return (S.fieldlog || []).filter(r => r.is_customer_complaint && (r.created_at || '').slice(0, 10) >= ms && (r.created_at || '').slice(0, 10) < ne).length;
+  return (S.problems || []).filter(r => r._table === 'field_log' && r.is_customer_complaint && (r.created_at || '').slice(0, 10) >= ms && (r.created_at || '').slice(0, 10) < ne).length;
 }
 function kpiCard(num, label, color) {
   return `<div class="kpi-card"><div class="kpi-dot" style="background:${color}"></div>
@@ -1224,15 +1266,13 @@ async function refreshData() {
   try {
     S.projects = await loadProjects();
     if (IS_FACTORY || IS_CUSTOMER) { try { S.news = await loadNews(); } catch (e) { S.news = []; } }
+    // 统一拉取 PWA 全部问题表（issues/engineering/factory_process/production/quality/field_log），
+    // 归一化到 4 类（生产/工程/制程/品质），使 FPWA/CPWA 现场与 PWA「串在一起」
+    S.problems = await loadProblems();
     if (IS_FACTORY) {
-      // 工厂端：拉取全部问题/客诉/DOA，使「现场」4 类与看板 KPI 与 PWA 打通
-      S.issues = await loadTable('issues', 2000);
-      S.fieldlog = await loadTable('field_log', 2000);
       S.doa = await loadTable('doa', 2000);
       S.records = await loadRecords();
     } else {
-      S.fieldlog = await loadFieldLog();
-      S.issues = await loadIssues();
       S.doa = [];
     }
     if (S.tab === 'onsite') renderOnsite();
