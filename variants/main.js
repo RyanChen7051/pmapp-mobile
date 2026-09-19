@@ -827,7 +827,7 @@ function renderRecords() {
     m.innerHTML = `<div class="list">${S.records.map(r => recordCard(r)).join('')}</div>`;
     return;
   }
-  const news = S.news || [];
+  const news = (S.news || []).slice().sort((a, b) => String(b.date || '').localeCompare(String(a.date || ''))).slice(0, 15);
   const newsCards = news.length ? news.map(n => `
     <a class="news-item" href="${esc(n.url)}" target="_blank" rel="noopener">
       <div class="ni-title">${esc(n.title)}</div>
