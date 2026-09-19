@@ -476,6 +476,44 @@ const LBL = {
 };
 const TL = k => (LBL[k] && LBL[k][LANG]) || (LBL[k] && LBL[k].en) || k;
 
+/* 编辑/删除相关多语言标签（与 LBL 同构，不污染 I18N 主字典） */
+const EXT = {
+  editRecord:  {zh:'编辑记录', en:'Edit Record', es:'Editar registro', ja:'記録を編集', fr:"Modifier l'enregistrement", de:'Datensatz bearbeiten', ar:'تحرير السجل', vi:'Sửa bản ghi', hi:'रिकॉर्ड संपादित करें'},
+  btnSave:     {zh:'保存', en:'Save', es:'Guardar', ja:'保存', fr:'Enregistrer', de:'Speichern', ar:'حفظ', vi:'Lưu', hi:'सहेजें'},
+  btnDelete:   {zh:'删除', en:'Delete', es:'Borrar', ja:'削除', fr:'Supprimer', de:'Löschen', ar:'حذف', vi:'Xóa', hi:'हटाएँ'},
+  deleted:     {zh:'已删除', en:'Deleted', es:'Borrado', ja:'削除済み', fr:'Supprimé', de:'Gelöscht', ar:'تم الحذف', vi:'Đã xóa', hi:'हटाया गया'},
+  saved:       {zh:'已保存', en:'Saved', es:'Guardado', ja:'保存済み', fr:'Enregistré', de:'Gespeichert', ar:'تم الحفظ', vi:'Đã lưu', hi:'सहेजा गया'},
+  confirmDelete:{zh:'确定删除这条记录？此操作不可撤销。', en:'Delete this record? This cannot be undone.', es:'¿Eliminar este registro? No se puede deshacer.', ja:'この記録を削除しますか？元に戻せません。', fr:'Supprimer cet enregistrement ? Action irréversible.', de:'Diesen Datensatz löschen? Kann nicht rückgängig gemacht werden.', ar:'حذف هذا السجل؟ لا يمكن التراجع.', vi:'Xóa bản ghi này? Không thể hoàn tác.', hi:'इस रिकॉर्ड को हटाएं? इसे पूर्ववत नहीं किया जा सकता।'},
+  /* ─── 现场记录编辑器（与 PWA 现场记录模块对齐）─── */
+  flOnsite:        {zh:'现场记录', en:'Onsite Record'},
+  flRaiseIssue:    {zh:'上报现场问题', en:'Report On-site Issue', es:'Reportar problema', ja:'現場問題を報告', fr:"Signaler un problème", de:'Problem melden', ar:'الإبلاغ عن مشكلة', vi:'Báo cáo sự cố', hi:'समस्या रिपोर्ट करें'},
+  flReportProd:    {zh:'生产上报', en:'Production Report'},
+  flProject:       {zh:'生产项目', en:'Project'},
+  flFactory:       {zh:'问题发生工厂', en:'Problem Factory'},
+  flCategory:      {zh:'问题类别', en:'Category'},
+  flDesc:          {zh:'生产问题叙述', en:'Description'},
+  flDescPh:        {zh:'描述产线遇到的状况、异常、数量等…', en:'Describe the issue on the line…'},
+  flStatus:        {zh:'处理状态', en:'Status'},
+  flPhotos:        {zh:'现场照片', en:'Photos'},
+  flPickPhoto:     {zh:'📷 选择照片', en:'📷 Pick Photo'},
+  flGPS:           {zh:'📍 记录现场定位', en:'📍 Capture Location'},
+  flReporterEmail: {zh:'报告人邮箱', en:'Reporter Email'},
+  flRespEmail:     {zh:'负责处理人邮箱', en:'Assignee Email'},
+  flNew:           {zh:'新建现场记录', en:'New Record'},
+  flEdit:          {zh:'编辑现场记录', en:'Edit Record'},
+  flSaved:         {zh:'已保存现场记录', en:'Saved'},
+  flIssued:        {zh:'已提交', en:'Submitted'},
+  flFillProjOrDesc:{zh:'请至少填写项目或问题叙述', en:'Fill project or description'},
+  flMaxPhotos:     {zh:'照片已达上限（最多 3 张）', en:'Max 3 photos'},
+  flPhotoFail:     {zh:'照片处理失败', en:'Photo processing failed'},
+  flNoGeo:         {zh:'此设备不支持定位', en:'Geolocation not supported'},
+  flLocating:      {zh:'📍 定位中…', en:'📍 Locating…'},
+  flLocOk:         {zh:'✅ 已记录', en:'✅ Recorded'},
+  flLocRec:        {zh:'现场定位已记录', en:'Location recorded'},
+  flLocFail:       {zh:'定位失败: ', en:'Location failed: '},
+};
+const TE = k => (EXT[k] && EXT[k][LANG]) || (EXT[k] && EXT[k].en) || k;
+
 /* 超级管理员：内置账号，登录时跳过工厂/客户代码，仅账号+密码 */
 const ADMINS = {
   admin:  { name: '超级管理员', pass: 'taiwangunbase' },
@@ -839,51 +877,70 @@ function openDetail(p) {
   $('modal').classList.add('open');
   $('m-x').onclick = closeModal;
   $('modal').onclick = e => { if (e.target.id === 'modal') closeModal(); };
-  $('m-report').onclick = () => { if (IS_CUSTOMER) openComplaintForm(p); else openReport(p); };
+  $('m-report').onclick = () => { if (IS_CUSTOMER) openFieldLogEditor(null, p); else openReport(p); };
 }
 
 function closeModal() { $('modal').classList.remove('open'); $('modal').innerHTML = ''; }
 
-function openReport(p) {
-  const projOpts = `<option value="">${T('notSelected')}</option>` + (S.projects || []).map(pr => { const v = pr.factory_project_no || pr.customer_project_no || pr.name || pr.id || ''; return `<option value="${esc(v)}">${esc(v)}</option>`; }).join('');
+function openReport(p, rec) {
+  const isEdit = !!(rec && rec._sb);
+  const projOpts = `<option value="">${T('notSelected')}</option>` + (S.projects || []).map(pr => { const v = pr.factory_project_no || pr.customer_project_no || pr.name || pr.id || ''; const sel = (rec && rec.project === v) ? ' selected' : ''; return `<option value="${esc(v)}"${sel}>${esc(v)}</option>`; }).join('');
   const today = new Date().toISOString().slice(0, 10);
+  const dateVal = (rec && rec.date) ? rec.date : today;
+  const qtyVal = (rec && rec.qty != null) ? rec.qty : '';
+  const noteVal = (rec && rec.note) ? rec.note : '';
+  const projVal = (rec && rec.project) ? rec.project : (p ? (p.factory_project_no || p.customer_project_no || '') : '');
   $('modal').innerHTML = `
   <div class="sheet">
     <div class="sheet-bar"></div>
     <div class="sheet-head">
-      <div><div class="sheet-title">${T('reportTitle')}</div>
-      <div class="sheet-sub">${esc(p.factory_project_no || p.customer_project_no || '')}</div></div>
+      <div><div class="sheet-title">${isEdit ? TE('editRecord') : T('reportTitle')}</div>
+      <div class="sheet-sub">${esc(projVal)}</div></div>
       <button class="sheet-x" id="m-x2">✕</button>
     </div>
     <label class="lbl">${T('date')}</label>
-    <input id="f-date" class="inp" type="date" value="${today}">
+    <input id="f-date" class="inp" type="date" value="${esc(dateVal)}">
     ${IS_FACTORY ? `<label class="lbl">${T('qty')}</label>
-    <input id="f-qty" class="inp" type="number" placeholder="0">` : ''}
+    <input id="f-qty" class="inp" type="number" placeholder="0" value="${esc(qtyVal)}">` : ''}
     ${!p ? `<label class="lbl">${T('complaintProject')}</label>\n    <select id="f-project" class="inp">${projOpts}</select>` : ''}
     <label class="lbl">${T('remark')}</label>
-    <textarea id="f-note" class="inp" rows="4" placeholder="${T('remark')}"></textarea>
-    <button class="btn-main" id="f-send">${T('submit')}</button>
+    <textarea id="f-note" class="inp" rows="4" placeholder="${T('remark')}">${esc(noteVal)}</textarea>
+    <button class="btn-main" id="f-send">${isEdit ? TE('btnSave') : T('submit')}</button>
     <button class="btn-ghost" id="f-cancel">${T('cancel')}</button>
+    ${isEdit ? `<button class="btn-main danger" id="f-del" style="background:#b8461f">${TE('btnDelete')}</button>` : ''}
     <div class="spacer"></div>
   </div>`;
+  $('modal').classList.add('open');
   $('m-x2').onclick = closeModal;
   $('f-cancel').onclick = closeModal;
+  if (isEdit) {
+    $('f-del').onclick = () => deleteExtRecord(rec, 'records');
+  }
   $('f-send').onclick = async () => {
     const btn = $('f-send'); btn.disabled = true; btn.textContent = '…';
     try {
-      const projVal = p ? (p.factory_project_no || p.customer_project_no || '') : ($('f-project') ? $('f-project').value.trim() : '');
-      await writeRecord({
+      const projVal2 = p ? (p.factory_project_no || p.customer_project_no || '') : ($('f-project') ? $('f-project').value.trim() : '');
+      const payload = {
         ident: String(getSession().value),
-        project: String(projVal),
-        customer_no: String(p ? (p.customer_project_no || '') : projVal),
+        project: String(projVal2),
+        customer_no: String(p ? (p.customer_project_no || '') : projVal2),
         date: $('f-date').value,
         qty: IS_FACTORY ? Number($('f-qty')?.value || 0) : null,
         note: $('f-note').value,
-      });
-      closeModal(); toast(T('submitted'));
+        variant: VARIANT,
+        created_at: (rec && rec.created_at) || new Date().toISOString(),
+      };
+      if (isEdit) {
+        await sbPatch('sync_data', `supabase_id=eq.${rec._sb}`, { payload: JSON.stringify(payload), updated_at: new Date().toISOString(), device_id: 'ext-' + VARIANT });
+        const idx = (S.records || []).findIndex(x => String(x._sb) === String(rec._sb));
+        if (idx >= 0) S.records[idx] = { ...S.records[idx], project: payload.project, date: payload.date, qty: payload.qty, note: payload.note, customer_no: payload.customer_no, updated_at: new Date().toISOString() };
+      } else {
+        await writeRecord(payload);
+      }
+      closeModal(); toast(isEdit ? TE('saved') : T('submitted'));
       await refreshData(); switchTab('records');
     } catch (e) {
-      btn.disabled = false; btn.textContent = T('submit'); toast(T('errNet'), true);
+      btn.disabled = false; btn.textContent = isEdit ? TE('btnSave') : T('submit'); toast(T('errNet'), true);
     }
   };
 }
@@ -900,16 +957,33 @@ function recordCard(r) {
 }
 function renderSummary() {
   const m = $('main');
-  const list = (S.problems || []).slice()
-    .sort((a, b) => String(b.created_at || '').localeCompare(String(a.created_at || '')));
-  if (!list.length) {
-    m.innerHTML = `<div class="empty"><div class="empty-ico">📋</div><div>${IS_FACTORY ? TL('recFactory') : TL('recCustomer')}：${T('noProblem')}</div></div>`;
-    return;
+  let html = '';
+  if (IS_FACTORY) {
+    html += `<div class="cat-head"><span>${TE('flReportProd')}</span><button class="rec-edit" id="btn-new-report" style="margin-left:auto">＋ ${T('reportTitle')}</button></div>`;
+    const recs = (S.records || []).slice().sort((a, b) => String(b.created_at || '').localeCompare(String(a.created_at || '')));
+    html += `<div class="cat-head"><span>${T('myRecords')}</span><span class="cat-count">${recs.length}</span></div>`;
+    html += recs.length
+      ? `<div class="list">${recs.map(r => `<div class="rec-item">${recordCard(r)}${recordActions(r)}</div>`).join('')}</div>`
+      : `<div class="empty-sm">${T('noRecord')}</div>`;
+    const probs = (S.problems || []).slice().sort((a, b) => String(b.created_at || '').localeCompare(String(a.created_at || '')));
+    html += `<div class="cat-head"><span>${TL('recFactory')} · ${T('problems')}</span><span class="cat-count">${probs.length}</span></div>`;
+    html += probs.length
+      ? `<div class="list">${probs.map(r => { const card = r._kind === 'issues' ? issueCard(r) : problemCard(r); return `<div class="sum-item">${card}${problemCommentsHtml(r)}</div>`; }).join('')}</div>`
+      : `<div class="empty-sm">${T('noProblem')}</div>`;
+  } else {
+    const list = (S.problems || []).slice().sort((a, b) => String(b.created_at || '').localeCompare(String(a.created_at || '')));
+    if (!list.length) {
+      m.innerHTML = `<div class="empty"><div class="empty-ico">📋</div><div>${TL('recCustomer')}：${T('noProblem')}</div></div>`;
+      return;
+    }
+    html = `<div class="list">${list.map(r => { const card = r._kind === 'issues' ? issueCard(r) : problemCard(r); return `<div class="sum-item">${card}${problemCommentsHtml(r)}</div>`; }).join('')}</div>`;
   }
-  m.innerHTML = `<div class="list">${list.map(r => {
-    const card = r._kind === 'issues' ? issueCard(r) : problemCard(r);
-    return `<div class="sum-item">${card}${problemCommentsHtml(r)}</div>`;
-  }).join('')}</div>`;
+  m.innerHTML = html;
+  if (IS_FACTORY) {
+    const nr = $('btn-new-report'); if (nr) nr.onclick = () => openReport(null);
+    document.querySelectorAll('.rec-edit').forEach(b => { if (!b.dataset.sb) return; b.onclick = () => { const r = findRecord(b.dataset.sb); if (r) openReport(null, r); }; });
+    document.querySelectorAll('.rec-del').forEach(b => { b.onclick = () => deleteExtRecord(findRecord(b.dataset.sb), 'records'); });
+  }
   document.querySelectorAll('.sum-item .card').forEach(c => {
     c.onclick = () => { const r = findProblem(c.dataset.id); if (r) openProblem(r); };
   });
@@ -1008,10 +1082,10 @@ async function saveFieldLogRecord(r) {
   const { _sb, _table, _cat, _kind, ...clean } = r;
   const payload = JSON.stringify(clean);
   if (sbId) {
-    await sbPatch('sync_data', `supabase_id=eq.${sbId}`, { payload, updated_at: now, device_id: 'ext-customer' });
+    await sbPatch('sync_data', `supabase_id=eq.${sbId}`, { payload, updated_at: now, device_id: 'ext-' + VARIANT });
   } else {
     sbId = uuid();
-    await sbPost('sync_data', { table_name: 'field_log', local_id: Date.now(), payload, supabase_id: sbId, is_deleted: false, updated_at: now, device_id: 'ext-customer' });
+    await sbPost('sync_data', { table_name: 'field_log', local_id: Date.now(), payload, supabase_id: sbId, is_deleted: false, updated_at: now, device_id: 'ext-' + VARIANT });
     r._sb = sbId;
   }
 }
@@ -1067,10 +1141,10 @@ async function saveIssueRecord(r) {
   const { _sb, _table, _cat, _kind, ...clean } = r;
   const payload = JSON.stringify(clean);
   if (sbId) {
-    await sbPatch('sync_data', `supabase_id=eq.${sbId}`, { payload, updated_at: now, device_id: 'ext-customer' });
+    await sbPatch('sync_data', `supabase_id=eq.${sbId}`, { payload, updated_at: now, device_id: 'ext-' + VARIANT });
   } else {
     sbId = uuid();
-    await sbPost('sync_data', { table_name: 'issues', local_id: Date.now(), payload, supabase_id: sbId, is_deleted: false, updated_at: now, device_id: 'ext-customer' });
+    await sbPost('sync_data', { table_name: 'issues', local_id: Date.now(), payload, supabase_id: sbId, is_deleted: false, updated_at: now, device_id: 'ext-' + VARIANT });
     r._sb = sbId;
   }
 }
@@ -1150,10 +1224,18 @@ function findProblem(id) {
 
 // 只读详情：展示完整字段 + 留言板（客户可在下方留言，但不可改记录字段）
 function openProblem(r) {
-  const skip = new Set(['id', '_sb', 'is_deleted', 'created_at', 'updated_at', 'comments']);
+  const sess = getSession();
+  const canManage = (r._table === 'field_log' || r.is_customer_complaint) && (
+    sess.role === 'super' ||
+    (IS_CUSTOMER && String(r.customer_code || '').toLowerCase() === String(sess.value).toLowerCase()) ||
+    (IS_FACTORY && String(r.problem_factory || '').toLowerCase() === String(sess.name || '').toLowerCase())
+  );
+  const skip = new Set(['id', '_sb', 'is_deleted', 'created_at', 'updated_at', 'comments', 'photos']);
   const rows = Object.entries(r)
     .filter(([k, v]) => !skip.has(k) && v !== '' && v != null)
     .map(([k, v]) => `<div class="kv"><span>${esc(k)}</span><b>${esc(v)}</b></div>`).join('');
+  const photosHtml = (Array.isArray(r.photos) && r.photos.length)
+    ? `<div class="photo-row">${r.photos.map(p => `<div class="photo-thumb"><img src="${p.data}" alt="${esc(p.name)}"></div>`).join('')}</div>` : '';
   $('modal').innerHTML = `
   <div class="sheet">
     <div class="sheet-bar"></div>
@@ -1161,11 +1243,21 @@ function openProblem(r) {
       <div class="sheet-sub">${r.is_customer_complaint ? T('custComplaint') : (r._kind === 'issues' ? T('intIssue') : T('problems'))} · ${esc(r.status || '')}</div></div>
       <button class="sheet-x" id="m-xo">✕</button></div>
     <div class="kv-list">${rows || '<div class="empty-sm">—</div>'}</div>
+    ${photosHtml}
     ${problemCommentsHtml(r)}
+    ${canManage ? `<div class="sheet-actions" style="display:flex;gap:8px;margin-top:10px">
+      <button class="btn-main" id="op-edit" style="flex:1">✎ ${TE('editRecord')}</button>
+      <button class="btn-main danger" id="op-del" style="flex:1;background:#b8461f">🗑 ${TE('btnDelete')}</button>
+    </div>` : ''}
     <div class="spacer"></div>
   </div>`;
+  $('modal').classList.add('open');
   $('m-xo').onclick = closeModal;
   $('modal').onclick = e => { if (e.target.id === 'modal') closeModal(); };
+  if (canManage) {
+    $('op-edit').onclick = () => openComplaintForm(null, r);
+    $('op-del').onclick = () => deleteExtRecord(r, 'complaint');
+  }
 }
 
 function renderComplaintFab() {
@@ -1181,61 +1273,308 @@ function renderComplaintFab() {
   }
 }
 
-// 客诉/现场记录提交表单：客户自选 生产/工程/制程/品质 类别
-function openComplaintForm(p) {
+// 客诉/现场记录提交表单：客户自选 生产/工程/制程/品质 类别（rec 存在则进入编辑模式）
+function openComplaintForm(p, rec) {
+  const isEdit = !!(rec && rec._sb);
   const projOpts = `<option value="">${T('notSelected')}</option>` + (S.projects || []).map(pr => {
     const val = pr.factory_project_no || pr.customer_project_no || pr.name || pr.id || '';
-    return `<option value="${esc(val)}">${esc(val)}</option>`;
+    const sel = (rec && rec.project === val) ? ' selected' : '';
+    return `<option value="${esc(val)}"${sel}>${esc(val)}</option>`;
   }).join('');
   const sess = getSession();
+  const projVal = (rec && rec.project) ? rec.project : (p ? (p.factory_project_no || p.customer_project_no || '') : '');
+  const catVal = (rec && rec.problem_category) ? rec.problem_category : '生产';
+  const descVal = (rec && rec.description) ? rec.description : '';
   $('modal').innerHTML = `
   <div class="sheet">
     <div class="sheet-bar"></div>
-    <div class="sheet-head"><div><div class="sheet-title">${T('submitComplaint')}</div>
+    <div class="sheet-head"><div><div class="sheet-title">${isEdit ? TE('editRecord') : T('submitComplaint')}</div>
       <div class="sheet-sub">${T('custComplaint')} · CPWA</div></div>
       <button class="sheet-x" id="m-xc">✕</button></div>
     <label class="lbl">${T('complaintProject')}</label>
     <select id="cf-project" class="inp">${projOpts}</select>
     <label class="lbl">${T('complaintCat')}</label>
     <select id="cf-cat" class="inp">
-      <option value="生产">${T('catProd')}</option><option value="工程">${T('catEng')}</option>
-      <option value="制程">${T('catProc')}</option><option value="品质">${T('catQual')}</option>
+      <option value="生产"${catVal === '生产' ? ' selected' : ''}>${T('catProd')}</option><option value="工程"${catVal === '工程' ? ' selected' : ''}>${T('catEng')}</option>
+      <option value="制程"${catVal === '制程' ? ' selected' : ''}>${T('catProc')}</option><option value="品质"${catVal === '品质' ? ' selected' : ''}>${T('catQual')}</option>
     </select>
     <label class="lbl">${T('complaintDesc')}</label>
-    <textarea id="cf-desc" class="inp" rows="5" placeholder="${T('descPlaceholder')}"></textarea>
-    <button class="btn-main" id="cf-send">${T('submit')}</button>
+    <textarea id="cf-desc" class="inp" rows="5" placeholder="${T('descPlaceholder')}">${esc(descVal)}</textarea>
+    <button class="btn-main" id="cf-send">${isEdit ? TE('btnSave') : T('submit')}</button>
     <button class="btn-ghost" id="cf-cancel">${T('cancel')}</button>
+    ${isEdit ? `<button class="btn-main danger" id="cf-del" style="background:#b8461f">${TE('btnDelete')}</button>` : ''}
     <div class="spacer"></div>
   </div>`;
-  if (p) { const pe = $('cf-project'); if (pe) pe.value = (p.factory_project_no || p.customer_project_no || ''); }
+  if (p && !rec) { const pe = $('cf-project'); if (pe) pe.value = (p.factory_project_no || p.customer_project_no || ''); }
+  if (rec) { const pe = $('cf-project'); if (pe && projVal) pe.value = projVal; }
+  $('modal').classList.add('open');
   $('m-xc').onclick = closeModal;
   $('cf-cancel').onclick = closeModal;
+  if (isEdit) {
+    $('cf-del').onclick = () => deleteExtRecord(rec, 'complaint');
+  }
   $('cf-send').onclick = async () => {
     const btn = $('cf-send'); btn.disabled = true; btn.textContent = '…';
-    const rec = {
+    const base = isEdit ? { ...rec } : {
       id: 'cf_' + Date.now(),
-      project: $('cf-project').value.trim(),
-      problem_category: $('cf-cat').value,
-      description: $('cf-desc').value.trim(),
-      status: '待处理',
-      is_customer_complaint: true,
-      customer_code: sess ? sess.value : '',
-      brand_code: sess ? (sess.brand || '') : '',
-      customer_name: sess ? sess.name : '',
-      reporter: sess ? (sess.user_name || sess.name) : '客户',
+      status: '待处理', is_customer_complaint: true,
+      customer_code: sess ? sess.value : '', brand_code: sess ? (sess.brand || '') : '',
+      customer_name: sess ? sess.name : '', reporter: sess ? (sess.user_name || sess.name) : '客户',
       reporter_account: sess ? (sess.account || '') : '',
-      created_at: new Date().toISOString().slice(0, 19).replace('T', ' '),
-      updated_at: new Date().toISOString().slice(0, 19).replace('T', ' '),
-      comments: [],
+      created_at: new Date().toISOString().slice(0, 19).replace('T', ' '), comments: [],
     };
-    if (!rec.description) { btn.disabled = false; btn.textContent = T('submit'); return toast(T('complaintDesc'), true); }
-    if (!rec.project) { btn.disabled = false; btn.textContent = T('submit'); return toast(T('complaintProject'), true); }
+    base.project = $('cf-project').value.trim();
+    base.problem_category = $('cf-cat').value;
+    base.description = $('cf-desc').value.trim();
+    base.updated_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    if (!base.description) { btn.disabled = false; btn.textContent = isEdit ? TE('btnSave') : T('submit'); return toast(T('complaintDesc'), true); }
+    if (!base.project) { btn.disabled = false; btn.textContent = isEdit ? TE('btnSave') : T('submit'); return toast(T('complaintProject'), true); }
     try {
-      await saveFieldLogRecord(rec);
-      closeModal(); toast(T('submitted'));
+      await saveFieldLogRecord(base);
+      closeModal(); toast(isEdit ? TE('saved') : T('submitted'));
       await refreshData(); switchTab('records');
-    } catch (e) { btn.disabled = false; btn.textContent = T('submit'); toast(T('errNet'), true); }
+    } catch (e) { btn.disabled = false; btn.textContent = isEdit ? TE('btnSave') : T('submit'); toast(T('errNet'), true); }
   };
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+ * 现场记录编辑器（与 PWA「现场记录」模块对齐）
+ * 工厂端：提交「生产问题」(field_log, is_customer_complaint=false)
+ * 客户端：提交「客诉」(field_log, is_customer_complaint=true)
+ * 字段：生产项目 / 问题发生工厂 / 问题类别 / 生产问题叙述 / 处理状态 /
+ *       现场照片(自动压缩，最多3张) / 现场定位(GPS) / 报告人邮箱。
+ * 保存写入 sync_data(field_log) → 自动同步进 PWA 现场记录模块，
+ * 工厂端的「问题」、客户端的「客诉」因此与 PWA 完全打通。
+ * ══════════════════════════════════════════════════════════════════════ */
+const FL_MAX_PHOTOS = 3;
+
+async function flAddPhotos(input) {
+  const files = Array.from(input.files || []).filter(f => f.type.startsWith('image/'));
+  if (!files.length) return;
+  let added = 0;
+  for (const f of files) {
+    if ((S._flPhotos || []).length >= FL_MAX_PHOTOS) { toast(TE('flMaxPhotos')); break; }
+    try {
+      const dataUrl = await flCompress(f, 1280, 0.55);
+      S._flPhotos = S._flPhotos || [];
+      S._flPhotos.push({ data: dataUrl, name: f.name || ('photo_' + Date.now()), size: Math.round(dataUrl.length * 0.75) });
+      added++;
+    } catch (e) { toast(TE('flPhotoFail')); }
+  }
+  input.value = '';
+  flRenderPhotos();
+  if (added > 0 && (S._flPhotos || []).length >= FL_MAX_PHOTOS) toast(TE('flMaxPhotos'));
+}
+
+function flCompress(file, maxDim, quality) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = () => reject(new Error('read'));
+    reader.onload = () => {
+      const img = new Image();
+      img.onerror = () => reject(new Error('decode'));
+      img.onload = () => {
+        let { width, height } = img;
+        if (width > maxDim || height > maxDim) {
+          const r = Math.min(maxDim / width, maxDim / height);
+          width = Math.round(width * r); height = Math.round(height * r);
+        }
+        const c = document.createElement('canvas');
+        c.width = width; c.height = height;
+        const ctx = c.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+        c.toBlob(b => {
+          if (!b) return reject(new Error('compress'));
+          const rd = new FileReader();
+          rd.onerror = () => reject(new Error('encode'));
+          rd.onload = () => resolve(rd.result);
+          rd.readAsDataURL(b);
+        }, 'image/jpeg', quality);
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function flRenderPhotos() {
+  const box = $('fl-photos');
+  if (!box) return;
+  const photos = S._flPhotos || [];
+  if (!photos.length) { box.innerHTML = ''; return; }
+  box.innerHTML = photos.map((p, i) => `<div class="photo-thumb"><img src="${p.data}" alt="${esc(p.name)}"><span class="photo-x" onclick="flDelPhoto(${i})">✕</span></div>`).join('');
+}
+window.flDelPhoto = function (i) { (S._flPhotos || []).splice(i, 1); flRenderPhotos(); };
+
+async function flReverseGeocode(lat, lon) {
+  const out = { country: '', city: '', region: '' };
+  const tryBigData = async () => {
+    const url = `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=zh`;
+    const r = await fetch(url, { signal: AbortSignal.timeout(6000) });
+    if (!r.ok) throw new Error('bdc');
+    const d = await r.json();
+    out.country = d.countryName || ''; out.city = d.city || d.locality || ''; out.region = d.principalSubdivision || '';
+    if (!out.country) throw new Error('nocity');
+  };
+  const tryNominatim = async () => {
+    const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}&accept-language=zh`;
+    const r = await fetch(url, { signal: AbortSignal.timeout(6000), headers: { 'Accept': 'application/json' } });
+    if (!r.ok) throw new Error('nom');
+    const d = await r.json(); const a = d.address || {};
+    out.country = a.country || ''; out.city = a.city || a.town || a.village || a.municipality || ''; out.region = a.state || a.county || a.region || '';
+    if (!out.country) throw new Error('nocity');
+  };
+  try { await tryBigData(); } catch (e) { try { await tryNominatim(); } catch (e2) {} }
+  return out;
+}
+
+function flLocText(rec) {
+  const country = (rec && rec.gps_country) || '';
+  const region = (rec && rec.gps_region) || '';
+  const city = (rec && rec.gps_city) || '';
+  const parts = [country, region, city].filter(Boolean);
+  if (parts.length) return parts.join(' · ');
+  if (rec && rec.gps) return rec.gps;
+  return '';
+}
+
+function flCaptureGPS() {
+  if (!navigator.geolocation) { toast(TE('flNoGeo')); return; }
+  const btn = $('fl-gps-btn'); if (btn) btn.textContent = TE('flLocating');
+  navigator.geolocation.getCurrentPosition(async (pos) => {
+    const lat = pos.coords.latitude, lon = pos.coords.longitude;
+    S._flGps = lat.toFixed(5) + ',' + lon.toFixed(5);
+    let place = '';
+    try { const g = await flReverseGeocode(lat, lon); S._flGpsCountry = g.country || ''; S._flGpsCity = g.city || ''; S._flGpsRegion = g.region || ''; place = flLocText({ gps_country: g.country, gps_region: g.region, gps_city: g.city, gps: S._flGps }); } catch (e) {}
+    if (btn) btn.textContent = place ? ('✅ ' + place) : (TE('flLocOk') + ' ' + S._flGps);
+    toast(TE('flLocRec'));
+  }, err => { if (btn) btn.textContent = TE('flGPS'); toast(TE('flLocFail') + err.message); }, { enableHighAccuracy: true, timeout: 8000 });
+}
+window.flCaptureGPS = flCaptureGPS;
+window.flAddPhotos = flAddPhotos;
+
+function openFieldLogEditor(rec, p) {
+  const sess = getSession();
+  const isEdit = !!(rec && rec._sb);
+  const isComplaint = rec ? !!rec.is_customer_complaint : IS_CUSTOMER;
+  const projects = S.projects || [];
+  const facs = (S.factories || []);
+  const projOpts = `<option value="">${T('notSelected')}</option>` + projects.map(pr => {
+    const v = pr.factory_project_no || pr.customer_project_no || pr.name || pr.id || '';
+    const sel = (rec && rec.project === v) ? ' selected' : '';
+    return `<option value="${esc(v)}"${sel}>${esc(v)}</option>`;
+  }).join('');
+  const facOpts = `<option value="">${T('notSelected')}</option>` + facs.map(f => {
+    const v = f.factory_name || '';
+    const sel = (rec && rec.problem_factory === v) ? ' selected' : '';
+    return `<option value="${esc(v)}"${sel}>${esc(v)}</option>`;
+  }).join('');
+  const newRec = rec || { id: 'fl_' + Date.now(), status: '待处理', is_customer_complaint: isComplaint, created_at: new Date().toISOString().slice(0, 19).replace('T', ' '), comments: [] };
+  S._flPhotos = rec && rec.photos ? rec.photos.slice() : [];
+  S._flEditingId = newRec.id;
+  S._flGps = rec && rec.gps ? rec.gps : '';
+  S._flGpsCountry = rec && rec.gps_country ? rec.gps_country : '';
+  S._flGpsCity = rec && rec.gps_city ? rec.gps_city : '';
+  S._flGpsRegion = rec && rec.gps_region ? rec.gps_region : '';
+  const catVal = (rec && rec.problem_category) || '生产';
+  const descVal = (rec && rec.description) ? rec.description : '';
+  const statusVal = (rec && rec.status) ? rec.status : '待处理';
+  const projVal = (rec && rec.project) ? rec.project : (p ? (p.factory_project_no || p.customer_project_no || '') : (projects[0] ? (projects[0].factory_project_no || projects[0].customer_project_no || '') : ''));
+  const facVal = (rec && rec.problem_factory) ? rec.problem_factory : (IS_FACTORY ? (sess ? sess.name : '') : '');
+  const repEmail = (rec && rec.reporter_email) || '';
+  const respEmail = (rec && rec.responsible_email) || '';
+  $('modal').innerHTML = `
+  <div class="sheet">
+    <div class="sheet-bar"></div>
+    <div class="sheet-head"><div><div class="sheet-title">${isEdit ? TE('flEdit') : TE('flNew')}</div>
+      <div class="sheet-sub">${isComplaint ? T('custComplaint') : TE('flOnsite')} · ${CFG.code}</div></div>
+      <button class="sheet-x" id="m-xf">✕</button></div>
+    <label class="lbl">${TE('flProject')}</label>
+    <select id="fl-project" class="inp">${projOpts}</select>
+    ${IS_FACTORY ? `<label class="lbl">${TE('flFactory')}</label><select id="fl-factory" class="inp">${facOpts}</select>` : ''}
+    <label class="lbl">${TE('flCategory')}</label>
+    <select id="fl-cat" class="inp">
+      ${['工程','品质','制程','生产','客诉'].map(c => `<option value="${esc(c)}"${catVal === c ? ' selected' : ''}>${esc(c)}</option>`).join('')}
+    </select>
+    <label class="lbl">${TE('flDesc')}</label>
+    <textarea id="fl-desc" class="inp" rows="5" placeholder="${esc(TE('flDescPh'))}">${esc(descVal)}</textarea>
+    <label class="lbl">${TE('flStatus')}</label>
+    <select id="fl-status" class="inp">
+      ${['待处理','处理中','已处理'].map(s => `<option value="${esc(s)}"${statusVal === s ? ' selected' : ''}>${esc(s)}</option>`).join('')}
+    </select>
+    <label class="lbl">${TE('flPhotos')}</label>
+    <input type="file" id="fl-photos-input" accept="image/*" multiple style="display:none" onchange="flAddPhotos(this)">
+    <button type="button" class="btn btn-secondary" style="width:100%;margin-bottom:8px" onclick="document.getElementById('fl-photos-input').click()">📷 ${TE('flPickPhoto')}</button>
+    <div class="photo-row" id="fl-photos"></div>
+    <button class="btn btn-secondary" id="fl-gps-btn" onclick="flCaptureGPS()" style="margin-bottom:8px">${TE('flGPS')}</button>
+    <label class="lbl">${TE('flReporterEmail')}</label>
+    <input id="fl-rep-email" class="inp" type="email" placeholder="name@gunbase.com" value="${esc(repEmail)}">
+    <label class="lbl">${TE('flRespEmail')}</label>
+    <input id="fl-resp-email" class="inp" type="email" placeholder="负责同事邮箱" value="${esc(respEmail)}">
+    <button class="btn-main" id="fl-save">${isEdit ? TE('btnSave') : T('submit')}</button>
+    <button class="btn-ghost" id="fl-cancel">${T('cancel')}</button>
+    ${isEdit ? `<button class="btn-main danger" id="fl-del" style="background:#b8461f">${TE('btnDelete')}</button>` : ''}
+    <div class="spacer"></div>
+  </div>`;
+  if (projVal) { const pe = $('fl-project'); if (pe) pe.value = projVal; }
+  if (IS_FACTORY && facVal) { const fe = $('fl-factory'); if (fe) fe.value = facVal; }
+  $('modal').classList.add('open');
+  $('m-xf').onclick = closeModal;
+  $('fl-cancel').onclick = closeModal;
+  flRenderPhotos();
+  const gpsBtn = $('fl-gps-btn'); if (gpsBtn) { const ep = flLocText(newRec); gpsBtn.textContent = ep ? ('📍 ' + ep) : TE('flGPS'); }
+  if (isEdit) { const dr = rec; $('fl-del').onclick = () => deleteExtRecord(dr, 'fieldlog'); }
+  $('fl-save').onclick = async () => {
+    const btn = $('fl-save'); btn.disabled = true; btn.textContent = '…';
+    const base = isEdit ? { ...rec } : {
+      id: newRec.id, is_customer_complaint: isComplaint,
+      customer_code: isComplaint ? (sess ? sess.value : '') : '',
+      brand_code: isComplaint ? (sess ? (sess.brand || '') : '') : '',
+      customer_name: isComplaint ? (sess ? sess.name : '') : '',
+      reporter: isComplaint ? (sess ? (sess.user_name || sess.name) : '客户') : (sess ? sess.name : ''),
+      reporter_account: sess ? (sess.account || '') : '',
+      created_at: new Date().toISOString().slice(0, 19).replace('T', ' '), comments: [],
+    };
+    base.project = $('fl-project').value.trim();
+    if (IS_FACTORY) base.problem_factory = $('fl-factory') ? $('fl-factory').value.trim() : (sess ? sess.name : '');
+    base.problem_category = $('fl-cat').value;
+    base.description = $('fl-desc').value.trim();
+    base.status = $('fl-status').value;
+    base.reporter_email = $('fl-rep-email').value.trim();
+    base.responsible_email = $('fl-resp-email').value.trim();
+    base.photos = (S._flPhotos || []).slice();
+    base.gps = S._flGps || '';
+    base.gps_country = S._flGpsCountry || ''; base.gps_city = S._flGpsCity || ''; base.gps_region = S._flGpsRegion || '';
+    base.updated_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    if (!base.description && !base.project) { btn.disabled = false; btn.textContent = isEdit ? TE('btnSave') : T('submit'); return toast(TE('flFillProjOrDesc'), true); }
+    try {
+      await saveFieldLogRecord(base);
+      closeModal(); toast(isEdit ? TE('flSaved') : TE('flIssued'));
+      await refreshData(); switchTab('onsite');
+    } catch (e) { btn.disabled = false; btn.textContent = isEdit ? TE('btnSave') : T('submit'); toast(T('errNet'), true); }
+  };
+}
+
+/* ─────────── 通用删除（软删：置 is_deleted=true）─────────── */
+// 同时过滤 S.records（工厂上报）与 S.problems（含客诉），按 supabase_id 定位
+async function deleteExtRecord(rec, kind) {
+  if (!rec || !rec._sb) return;
+  if (!confirm(TE('confirmDelete'))) return;
+  try {
+    await sbPatch('sync_data', `supabase_id=eq.${rec._sb}`, { is_deleted: true, updated_at: new Date().toISOString() });
+    S.records = (S.records || []).filter(x => String(x._sb) !== String(rec._sb));
+    S.problems = (S.problems || []).filter(x => String(x._sb) !== String(rec._sb));
+    closeModal();
+    toast(TE('deleted'));
+    switchTab(S.tab || 'records');
+  } catch (e) { toast(T('errNet'), true); }
+}
+function findRecord(sb) { return (S.records || []).find(x => String(x._sb) === String(sb)); }
+function recordActions(r) {
+  return `<div class="rec-actions">
+    <button class="rec-edit" data-sb="${esc(r._sb)}">✎ ${TE('editRecord')}</button>
+    <button class="rec-del" data-sb="${esc(r._sb)}">🗑 ${TE('btnDelete')}</button>
+  </div>`;
 }
 
 /* ─────────── 现场 / 汇总 / 新闻（三端统一区块）─────────── */
@@ -1300,11 +1639,11 @@ function renderOnsite() {
   }).join('');
   m.innerHTML = `<div class="onsite">
     <div class="kpi-strip">${kpis.join('')}</div>
-    <div class="onsite-actions"><button class="btn-main" id="btn-onsite-new">＋ ${IS_FACTORY ? TL('submitReport') : T('submitComplaint')}</button></div>
+    <div class="onsite-actions"><button class="btn-main" id="btn-onsite-new">＋ ${IS_FACTORY ? TE('flRaiseIssue') : T('submitComplaint')}</button></div>
     <div class="cat-grid">${secs}</div>
   </div>`;
   const ob = $('btn-onsite-new');
-  if (ob) ob.onclick = () => IS_FACTORY ? openReport(S.projects && S.projects[0] ? S.projects[0] : null) : openComplaintForm(null);
+  if (ob) ob.onclick = () => openFieldLogEditor(null);
   document.querySelectorAll('.onsite .card').forEach(c => {
     c.onclick = () => { const r = findProblem(c.dataset.id); if (r) openProblem(r); };
   });
@@ -1333,6 +1672,7 @@ async function refreshData() {
     // 统一拉取 PWA 全部问题表（issues/engineering/factory_process/production/quality/field_log），
     // 归一化到 4 类（生产/工程/制程/品质），使 FPWA/CPWA 现场与 PWA「串在一起」
     S.problems = await loadProblems();
+    S.factories = await loadTable('factory_info', 500);
     if (IS_FACTORY) {
       S.doa = await loadTable('doa', 2000);
       S.records = await loadRecords();
