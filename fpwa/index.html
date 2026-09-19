@@ -139,13 +139,14 @@ textarea.inp{resize:vertical;min-height:88px}
   opacity:0;pointer-events:none;transition:.25s;z-index:100;box-shadow:0 4px 14px rgba(0,0,0,.2);max-width:88%}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-/* 版本更新提示（登录后显示的悬浮小按钮，不遮画面） */
+/* 版本更新按钮（常驻悬浮小按钮：登录页与登录后都显示，靠右下、不遮画面） */
 #sw-update-bar{position:fixed;right:12px;bottom:calc(78px + env(safe-area-inset-bottom));
   z-index:80;display:inline-flex;align-items:center;gap:6px;
   background:var(--th);color:#fff;padding:10px 18px;border-radius:22px;
   font-size:13.5px;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(16,32,56,.22);
-  animation:upbar .25s ease}
+  animation:upbar .25s ease;user-select:none;-webkit-user-select:none}
 #sw-update-bar:active{opacity:.85}
+#sw-update-bar.busy{opacity:.75;pointer-events:none}
 @keyframes upbar{from{transform:translateY(16px);opacity:0}to{transform:translateY(0);opacity:1}}
 
 /* 语言选择网格（9 语言） */
@@ -253,31 +254,30 @@ textarea.inp{resize:vertical;min-height:88px}
 <body>
 <div id="app"></div>
 <div id="toast"></div>
-<script src="bundle.js?v=3"></script>
+<script src="bundle.js?v=4"></script>
 
 <script>
 if ('serviceWorker' in navigator) {
   window.__fpwaSwUpdate = false;
-  window.fpwaShowUpdate = function(){ if (window.__fpwaSwUpdate) showUpdateBar(); };
+
+  // 常驻「更新」按钮：进入页面即显示（登录页也有），点击=检查更新并刷新
   window.addEventListener('load', function() {
     navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' })
       .then(function(reg){
-        // 已有一个等待中的新 SW（例如跨版本直接加载）
-        if (reg.waiting) { window.__fpwaSwUpdate = true; window.fpwaShowUpdate(); }
+        // 已有等待中的新版本（例如跨版本直接加载）
+        if (reg.waiting) window.__fpwaSwUpdate = true;
         // 检测到新版本正在安装
         reg.addEventListener('updatefound', function(){
           var installing = reg.installing;
           if (!installing) return;
           installing.addEventListener('statechange', function(){
-            // 新 SW 安装完成、且当前已有旧版本在控制页面时才提示更新
-            if (installing.state === 'installed' && navigator.serviceWorker.controller) {
-              window.__fpwaSwUpdate = true;
-              window.fpwaShowUpdate();
-            }
+            if (installing.state === 'installed') window.__fpwaSwUpdate = true;
           });
         });
       })
       .catch(function(e){ console.warn('SW', e); });
+    // 无论是否有新版本，都常驻显示按钮
+    showUpdateBar();
   });
 
   // 新 SW 接管后自动刷新，加载最新资源
@@ -296,8 +296,24 @@ if ('serviceWorker' in navigator) {
     document.body.appendChild(bar);
     bar.addEventListener('click', function(){
       var sw = navigator.serviceWorker;
-      if (sw.waiting) { sw.waiting.postMessage('SKIP_WAITING'); }
-      else { window.location.reload(); }
+      // 有等待中的新版本：直接启用并接管（接管后 controllerchange 会自动刷新）
+      if (sw.waiting) {
+        bar.classList.add('busy');
+        bar.textContent = '🔄 更新中…';
+        sw.waiting.postMessage('SKIP_WAITING');
+        // 兜底：3 秒仍未接管则强制刷新
+        setTimeout(function(){ window.location.reload(); }, 3000);
+        return;
+      }
+      // 没有等待版本：主动检查一次再刷新
+      bar.classList.add('busy');
+      bar.textContent = '🔄 检查中…';
+      var go = function(){ window.location.reload(); };
+      if (sw.getRegistration) {
+        sw.getRegistration().then(function(r){
+          if (r && r.update) { r.update().then(go).catch(go); } else { go(); }
+        }).catch(go);
+      } else { go(); }
     });
   }
 }
