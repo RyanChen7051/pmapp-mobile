@@ -819,14 +819,6 @@ function recordCard(r) {
 }
 function renderRecords() {
   const m = $('main');
-  if (!IS_FACTORY) {
-    if (!S.records.length) {
-      m.innerHTML = `<div class="empty"><div class="empty-ico">📝</div><div>${T('noRecord')}</div></div>`;
-      return;
-    }
-    m.innerHTML = `<div class="list">${S.records.map(r => recordCard(r)).join('')}</div>`;
-    return;
-  }
   const news = (S.news || []).slice().sort((a, b) => String(b.date || '').localeCompare(String(a.date || ''))).slice(0, 15);
   const newsCards = news.length ? news.map(n => `
     <a class="news-item" href="${esc(n.url)}" target="_blank" rel="noopener">
@@ -834,12 +826,36 @@ function renderRecords() {
       <div class="ni-meta"><span>📅 ${esc(n.date || '')}</span>${n.source ? `<span>· ${esc(n.source)}</span>` : ''}</div>
       <div class="ni-sum">${esc(n.summary || '')}</div>
     </a>`).join('') : `<div class="empty sm"><div class="empty-ico">📰</div><div>No industry news yet</div></div>`;
-  const recHtml = S.records.length ? S.records.map(r => recordCard(r)).join('')
-    : `<div class="empty sm"><div class="empty-ico">📝</div><div>${T('noRecord')}</div></div>`;
+  if (IS_FACTORY) {
+    const recHtml = S.records.length ? S.records.map(r => recordCard(r)).join('')
+      : `<div class="empty sm"><div class="empty-ico">📝</div><div>${T('noRecord')}</div></div>`;
+    m.innerHTML = `
+    <div class="records-2col">
+      <section class="onsite-col">
+        <div class="onsite-head"><span>🛠 现场功能</span><button class="btn-mini" id="btn-new-report">＋ ${T('submit')}</button></div>
+        <div class="list">${recHtml}</div>
+      </section>
+      <aside class="news-col">
+        <div class="news-wrap">
+          <div class="news-head"><div class="news-title">🎧 Headphone Industry News</div></div>
+          ${news.length && news[0].date ? `<div class="news-upd">Updated ${esc(news[0].date)}</div>` : ''}
+          <div class="news-list">${newsCards}</div>
+        </div>
+      </aside>
+    </div>`;
+    const nb = $('btn-new-report');
+    if (nb) nb.onclick = () => openReport((S.projects && S.projects[0]) ? S.projects[0] : null);
+    return;
+  }
+  // CPWA：现场 = 客诉；左栏展示本人提交的客户投诉（同步至 PWA 生产/工程/制程/品质），右栏耳机产业新闻（全英文）
+  const myC = (S.fieldlog || []).filter(r => r.is_customer_complaint)
+    .sort((a, b) => String(b.created_at || '').localeCompare(String(a.created_at || '')));
+  const recHtml = myC.length ? myC.map(r => problemCard(r)).join('')
+    : `<div class="empty sm"><div class="empty-ico">🗣️</div><div>${T('noRecord')}</div></div>`;
   m.innerHTML = `
   <div class="records-2col">
     <section class="onsite-col">
-      <div class="onsite-head"><span>🛠 现场功能</span><button class="btn-mini" id="btn-new-report">＋ ${T('submit')}</button></div>
+      <div class="onsite-head"><span>🛠 现场功能</span><button class="btn-mini" id="btn-new-report">＋ ${T('submitComplaint')}</button></div>
       <div class="list">${recHtml}</div>
     </section>
     <aside class="news-col">
@@ -851,7 +867,7 @@ function renderRecords() {
     </aside>
   </div>`;
   const nb = $('btn-new-report');
-  if (nb) nb.onclick = () => openReport((S.projects && S.projects[0]) ? S.projects[0] : null);
+  if (nb) nb.onclick = () => openComplaintForm(null);
 }
 
 function renderSettings() {
@@ -1152,7 +1168,7 @@ async function refreshData() {
   try {
     S.projects = await loadProjects();
     S.records = await loadRecords();
-    if (IS_FACTORY) { try { S.news = await loadNews(); } catch (e) { S.news = []; } }
+    if (IS_FACTORY || IS_CUSTOMER) { try { S.news = await loadNews(); } catch (e) { S.news = []; } }
     if (IS_CUSTOMER) { S.fieldlog = await loadFieldLog(); S.issues = await loadIssues(); }
     if (S.tab === 'projects') renderProjects();
     else if (S.tab === 'problems') renderProblems();
