@@ -71,6 +71,16 @@ const I18N = {
     commentPlaceholder: '写留言…', cmtTitle: '留言板', custComplaint: '客户投诉', intIssue: '内部问题',
     appName: IS_FACTORY ? 'PMApp Factory' : 'PMApp 客户中心',
     tagline: IS_FACTORY ? '合作工厂协同平台' : '客户项目协同平台',
+    extPortal: '外部协作端',
+    lblCat: '类',
+    lblTitle: '题',
+    lblLevel: '级',
+    notSelected: '（未选）',
+    catProd: '生产',
+    catEng: '工程',
+    catProc: '制程',
+    catQual: '品质',
+    descPlaceholder: '请描述您遇到的问题…',
   },
   en: {
     login: 'Sign In', selectRole: CFG.roleLabelEn, accessCode: 'Access Code', enter: 'Enter',
@@ -90,6 +100,16 @@ const I18N = {
     commentPlaceholder: 'Write a comment…', cmtTitle: 'Comments', custComplaint: 'Customer Complaint', intIssue: 'Internal Issue',
     appName: IS_FACTORY ? 'PMApp Factory' : 'PMApp Customer Portal',
     tagline: IS_FACTORY ? 'Partner Factory Portal' : 'Customer Project Portal',
+    extPortal: 'External Portal',
+    lblCat: 'Cat',
+    lblTitle: 'Title',
+    lblLevel: 'Level',
+    notSelected: '(Not selected)',
+    catProd: 'Production',
+    catEng: 'Engineering',
+    catProc: 'Process',
+    catQual: 'Quality',
+    descPlaceholder: 'Describe the issue…',
   },
 };
 /* ─────────── 7 种扩展语言（真实翻译，非英文占位）─────────── */
@@ -116,6 +136,16 @@ I18N.es = {
   custComplaint: 'Queja del cliente', intIssue: 'Problema interno',
   appName: IS_FACTORY ? 'PMApp Factory' : 'PMApp Customer Portal',
   tagline: IS_FACTORY ? 'Portal de fábrica asociada' : 'Portal de proyectos de clientes',
+  extPortal: 'Portal externo',
+  lblCat: 'Cat.',
+  lblTitle: 'Título',
+  lblLevel: 'Nivel',
+  notSelected: '(Sin seleccionar)',
+  catProd: 'Producción',
+  catEng: 'Ingeniería',
+  catProc: 'Proceso',
+  catQual: 'Calidad',
+  descPlaceholder: 'Describa el problema…',
 };
 I18N.ja = {
   login: 'ログイン',
@@ -140,6 +170,16 @@ I18N.ja = {
   custComplaint: '顧客クレーム', intIssue: '内部問題',
   appName: IS_FACTORY ? 'PMApp Factory' : 'PMApp 顧客ポータル',
   tagline: IS_FACTORY ? '協力工場ポータル' : '顧客プロジェクトポータル',
+  extPortal: '外部連携ポータル',
+  lblCat: '分類',
+  lblTitle: '件名',
+  lblLevel: 'レベル',
+  notSelected: '（未選択）',
+  catProd: '生産',
+  catEng: 'エンジニアリング',
+  catProc: '工程',
+  catQual: '品質',
+  descPlaceholder: '問題を記述してください…',
 };
 I18N.fr = {
   login: 'Connexion',
@@ -164,6 +204,16 @@ I18N.fr = {
   custComplaint: 'Réclamation client', intIssue: 'Problème interne',
   appName: IS_FACTORY ? 'PMApp Factory' : 'PMApp Customer Portal',
   tagline: IS_FACTORY ? 'Portail des usines partenaires' : 'Portail des projets clients',
+  extPortal: 'Portail externe',
+  lblCat: 'Cat.',
+  lblTitle: 'Titre',
+  lblLevel: 'Niveau',
+  notSelected: '(Non sélectionné)',
+  catProd: 'Production',
+  catEng: 'Ingénierie',
+  catProc: 'Processus',
+  catQual: 'Qualité',
+  descPlaceholder: 'Décrivez le problème…',
 };
 I18N.de = {
   login: 'Anmelden',
@@ -188,6 +238,16 @@ I18N.de = {
   custComplaint: 'Kundenbeschwerde', intIssue: 'Internes Problem',
   appName: IS_FACTORY ? 'PMApp Factory' : 'PMApp Kundenportal',
   tagline: IS_FACTORY ? 'Partnerwerk-Portal' : 'Kundenprojekt-Portal',
+  extPortal: 'Externes Portal',
+  lblCat: 'Kat.',
+  lblTitle: 'Titel',
+  lblLevel: 'Stufe',
+  notSelected: '(Nicht ausgewählt)',
+  catProd: 'Produktion',
+  catEng: 'Engineering',
+  catProc: 'Prozess',
+  catQual: 'Qualität',
+  descPlaceholder: 'Beschreiben Sie das Problem…',
 };
 I18N.ar = {
   login: 'تسجيل الدخول',
@@ -212,6 +272,16 @@ I18N.ar = {
   custComplaint: 'شكوى العميل', intIssue: 'مشكلة داخلية',
   appName: IS_FACTORY ? 'PMApp Factory' : 'PMApp بوابة العملاء',
   tagline: IS_FACTORY ? 'بوابة المصنع الشريك' : 'بوابة مشاريع العملاء',
+  extPortal: 'البوابة الخارجية',
+  lblCat: 'الفئة',
+  lblTitle: 'العنوان',
+  lblLevel: 'المستوى',
+  notSelected: '(غير محدد)',
+  catProd: 'الإنتاج',
+  catEng: 'الهندسة',
+  catProc: 'العملية',
+  catQual: 'الجودة',
+  descPlaceholder: 'صف المشكلة…',
 };
 I18N.vi = {
   login: 'Đăng nhập',
@@ -236,6 +306,16 @@ I18N.vi = {
   custComplaint: 'Khiếu nại khách hàng', intIssue: 'Vấn đề nội bộ',
   appName: IS_FACTORY ? 'PMApp Factory' : 'PMApp Cổng khách hàng',
   tagline: IS_FACTORY ? 'Cổng nhà máy đối tác' : 'Cổng dự án khách hàng',
+  extPortal: 'Cổng đối tác',
+  lblCat: 'Loại',
+  lblTitle: 'Tiêu đề',
+  lblLevel: 'Mức',
+  notSelected: '(Chưa chọn)',
+  catProd: 'Sản xuất',
+  catEng: 'Kỹ thuật',
+  catProc: 'Quy trình',
+  catQual: 'Chất lượng',
+  descPlaceholder: 'Mô tả vấn đề…',
 };
 I18N.hi = {
   login: 'लॉग इन',
@@ -260,6 +340,16 @@ I18N.hi = {
   custComplaint: 'ग्राहक शिकायत', intIssue: 'आंतरिक समस्या',
   appName: IS_FACTORY ? 'PMApp Factory' : 'PMApp ग्राहक पोर्टल',
   tagline: IS_FACTORY ? 'साझेदार कारखाना पोर्टल' : 'ग्राहक परियोजना पोर्टल',
+  extPortal: 'बाहरी पोर्टल',
+  lblCat: 'श्रेणी',
+  lblTitle: 'शीर्षक',
+  lblLevel: 'स्तर',
+  notSelected: '(चयनित नहीं)',
+  catProd: 'उत्पादन',
+  catEng: 'इंजीनियरिंग',
+  catProc: 'प्रक्रिया',
+  catQual: 'गुणवत्ता',
+  descPlaceholder: 'समस्या का वर्णन करें…',
 };
 let LANG = localStorage.getItem(CFG.sessionKey + '_lang') || 'zh';
 const T = k => (I18N[LANG] && I18N[LANG][k]) || k;
@@ -433,7 +523,7 @@ function renderLogin() {
       <input id="inp-pass" class="inp" type="password" placeholder="${T('password')}" autocomplete="off">
       <button class="btn-main" id="btn-login">${T('enter')}</button>
       ${loginLangGrid()}
-      <div class="hint">${CFG.code} · 外部协作端 · v0.1.0</div>
+      <div class="hint">${CFG.code} · ${T('extPortal')} · v0.1.0</div>
     </div>
   </div>`;
   document.querySelectorAll('#app [data-l]').forEach(b => {
@@ -773,7 +863,7 @@ function problemCard(r) {
       ${r.status ? `<span class="badge ${r.status === '已处理' ? 'badge-green' : r.status === '处理中' ? 'badge-orange' : 'badge-red'}">${esc(r.status)}</span>` : ''}
     </div>
     <div class="card-meta">
-      ${r.problem_category ? `<span>类:${esc(r.problem_category)}</span>` : ''}
+      ${r.problem_category ? `<span>${T('lblCat')}:${esc(r.problem_category)}</span>` : ''}
       ${isC && r.customer_code ? `<span>🗣️ ${esc(r.customer_code)}</span>` : ''}
       <span>🕒 ${esc((r.created_at || '').slice(0, 16))}</span>
     </div>
@@ -791,9 +881,9 @@ function issueCard(r) {
       ${r.status ? `<span class="badge ${r.status === 'closed' || r.status === '已解决' || r.status === 'resolved' ? 'badge-green' : (r.status === '处理中' || r.status === 'in_progress' || r.status === 'open') ? 'badge-orange' : 'badge-red'}">${esc(r.status)}</span>` : ''}
     </div>
     <div class="card-meta">
-      ${r.title ? `<span>题:${esc(r.title)}</span>` : ''}
-      ${r.severity ? `<span>级:${esc(sev)}</span>` : ''}
-      ${r.issue_type ? `<span>类:${esc(r.issue_type)}</span>` : ''}
+      ${r.title ? `<span>${T('lblTitle')}:${esc(r.title)}</span>` : ''}
+      ${r.severity ? `<span>${T('lblLevel')}:${esc(sev)}</span>` : ''}
+      ${r.issue_type ? `<span>${T('lblCat')}:${esc(r.issue_type)}</span>` : ''}
       <span>🕒 ${esc((r.created_at || '').slice(0, 16))}</span>
     </div>
     ${r.description ? `<div class="card-desc">${esc((r.description || '').slice(0, 120))}</div>` : ''}
@@ -891,7 +981,7 @@ function renderComplaintFab() {
 
 // 客诉/现场记录提交表单：客户自选 生产/工程/制程/品质 类别
 function openComplaintForm(p) {
-  const projOpts = `<option value="">（未选）</option>` + (S.projects || []).map(pr => {
+  const projOpts = `<option value="">${T('notSelected')}</option>` + (S.projects || []).map(pr => {
     const val = pr.factory_project_no || pr.customer_project_no || pr.name || pr.id || '';
     return `<option value="${esc(val)}">${esc(val)}</option>`;
   }).join('');
@@ -906,11 +996,11 @@ function openComplaintForm(p) {
     <select id="cf-project" class="inp">${projOpts}</select>
     <label class="lbl">${T('complaintCat')}</label>
     <select id="cf-cat" class="inp">
-      <option value="生产">生产</option><option value="工程">工程</option>
-      <option value="制程">制程</option><option value="品质">品质</option>
+      <option value="生产">${T('catProd')}</option><option value="工程">${T('catEng')}</option>
+      <option value="制程">${T('catProc')}</option><option value="品质">${T('catQual')}</option>
     </select>
     <label class="lbl">${T('complaintDesc')}</label>
-    <textarea id="cf-desc" class="inp" rows="5" placeholder="请描述您遇到的问题…"></textarea>
+    <textarea id="cf-desc" class="inp" rows="5" placeholder="${T('descPlaceholder')}"></textarea>
     <button class="btn-main" id="cf-send">${T('submit')}</button>
     <button class="btn-ghost" id="cf-cancel">${T('cancel')}</button>
     <div class="spacer"></div>
