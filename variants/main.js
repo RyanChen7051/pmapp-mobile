@@ -512,13 +512,31 @@ async function loadProjects() {
   if (sess.role === 'super') {
     return all.sort((a, b) => String(b.created_at || '').localeCompare(String(a.created_at || '')));
   }
-  const v = String(sess.value).trim().toLowerCase();
-  // 按客户过滤：兼容 customer_id / customer_project_no / 客户名称 多种关联写法
+  const v = nrm(sess.value);
+  if (IS_FACTORY) {
+    // 工厂端：项目以 factory_id 关联工厂账号（兼容项目编号/客户名兜底）
+    return all.filter(p => {
+      const fid = nrm(p[CFG.idKey] ?? '');
+      const cno = nrm(p.customer_project_no ?? '');
+      const cnm = nrm(p.customer_name_display ?? p.customer_name ?? '');
+      return fid === v || (v.length >= 3 && (cno.includes(v) || cnm.includes(v)));
+    });
+  }
+  // 客户端：解析 customer_info 数字主键，按 customer_id 关联真实项目；
+  // 兜底：项目编号本身含客户代码（如 HARMAN-CP-001）
+  let custId = null;
+  try {
+    const custs = await loadTable('customer_info');
+    const me = custs.find(c => nrm(c.code ?? '') === v
+      || nrm(c.customer_name ?? '') === v
+      || String(c.id) === String(sess.value));
+    custId = me ? me.id : null;
+  } catch (e) { custId = null; }
   return all.filter(p => {
-    const cid = String(p[CFG.idKey] ?? '').trim().toLowerCase();
-    const cno = String(p.customer_project_no ?? '').trim().toLowerCase();
-    const cnm = String(p.customer_name_display ?? p.customer_name ?? '').trim().toLowerCase();
-    return cid === v || cno === v || cnm.includes(v);
+    const cno = nrm(p.customer_project_no ?? '');
+    const cnm = nrm(p.customer_name_display ?? p.customer_name ?? '');
+    return (custId != null && String(p.customer_id) === String(custId))
+        || (v.length >= 3 && (cno.includes(v) || cnm.includes(v)));
   });
 }
 
