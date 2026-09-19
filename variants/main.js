@@ -448,6 +448,14 @@ const esc = s => String(s == null ? '' : s)
 /* 代码/账号比较：忽略大小写、空格、连字符、下划线（HIP-PH = hipph = hip ph） */
 const nrm = s => String(s == null ? '' : s).toLowerCase().replace(/[\s\-_]/g, '');
 
+/* 客户身份容错：登录客户代码 / 内部品牌码 / 客户名称，任一命中即视为本人数据 */
+function sessVals(sess) {
+  if (!sess) return [];
+  return [sess.value, sess.brand, sess.name]
+    .map(x => String(x == null ? '' : x).trim().toLowerCase())
+    .filter(Boolean);
+}
+
 /* 三端统一区块的多语言标签（不污染 I18N 主字典，en 兜底） */
 const LBL = {
   onsite:      {zh:'现场', en:'Onsite', es:'Sitio', ja:'現場', fr:'Site', de:'Vor Ort', ar:'الموقع', vi:'Tại chỗ', hi:'साइट'},
@@ -459,6 +467,12 @@ const LBL = {
   weeklyDoa:   {zh:'每周DOA增加数', en:'Weekly DOA Added', es:'DOA Semanales', ja:'週間DOA増加数', fr:'DOA Hebdo', de:'Wöchentl. DOA', ar:'زيادة DOA أسبوعياً', vi:'DOA tăng hàng tuần', hi:'साप्ताहिक DOA वृद्धि'},
   weeklyComp:  {zh:'每周新增客诉投诉', en:'Weekly New Complaints', es:'Quejas Nuevas Sem.', ja:'週間新規苦情', fr:'Nouvelles Réclamations', de:'Wöchentl. Beschwerden', ar:'شكاوى جديدة أسبوعياً', vi:'Khiếu nại mới hàng tuần', hi:'साप्ताहिक नई शिकायतें'},
   submitReport:{zh:'上报生产进度', en:'Report Production', es:'Reportar Producción', ja:'生産報告', fr:'Reporter Production', de:'Produktion melden', ar:'إبلاغ الإنتاج', vi:'Báo cáo Sản xuất', hi:'उत्पादन रिपोर्ट'},
+  lblUser:     {zh:'使用者', en:'User', es:'Usuario', ja:'使用者', fr:'Utilisateur', de:'Benutzer', ar:'المستخدم', vi:'Người dùng', hi:'उपयोगकर्ता'},
+  lblAcct:     {zh:'登录账号', en:'Account', es:'Cuenta', ja:'アカウント', fr:'Compte', de:'Konto', ar:'الحساب', vi:'Tài khoản', hi:'खाता'},
+  lblCode:     {zh:'客户代码', en:'Customer Code', es:'Código de Cliente', ja:'顧客コード', fr:'Code Client', de:'Kundencode', ar:'رمز العميل', vi:'Mã khách hàng', hi:'ग्राहक कोड'},
+  lblRole:     {zh:'属性', en:'Role', es:'Rol', ja:'属性', fr:'Rôle', de:'Rolle', ar:'الدور', vi:'Vai trò', hi:'भूमिका'},
+  lblAuth:     {zh:'权限', en:'Authority', es:'Permiso', ja:'権限', fr:'Autorisation', de:'Berechtigung', ar:'الصلاحية', vi:'Quyền hạn', hi:'अधिकार'},
+  lblPersons:  {zh:'本公司使用者', en:'Company Users', es:'Usuarios', ja:'会社の使用者', fr:'Utilisateurs', de:'Benutzer', ar:'المستخدمون', vi:'Người dùng', hi:'उपयोगकर्ता'},
 };
 const TL = k => (LBL[k] && LBL[k][LANG]) || (LBL[k] && LBL[k].en) || k;
 
@@ -481,20 +495,47 @@ function toast(msg, bad) {
 async function loadIdents() {
   if (__VARIANT__ === 'factory') return loadTable('factory_info');
   if (CFG.idSource === 'customer_info') {
+    // ① 优先读「客户使用者」表（customer_user）：同一客户公司多人，一人一号
+    //    每家客户的使用者账号各不相同，密码可为同一预设密码
+    let users = [];
+    try { users = await loadTable('customer_user'); } catch (e) { users = []; }
+    const covered = new Set();   // 已有独立使用者账号的客户 → 停用其公司级共用账号
+    const out = [];
+    (users || []).forEach(u => {
+      if (!u || u.active === false) return;
+      const idv = (u.customer_code || '').toString().trim();
+      const brand = (u.brand_code || '').toString().trim();
+      if (idv) covered.add(nrm(idv));
+      if (brand) covered.add(nrm(brand));
+      if (!idv || !u.account) return;
+      out.push({
+        id: idv, brand: brand,
+        name: (u.company || u.customer_name || idv).toString().trim(),
+        user_name: (u.user_name || '').toString().trim(),
+        account: (u.account || '').toString().trim(),
+        password: (u.password || '').toString(),
+        role: (u.role || '').toString(),
+        authority: (u.authority || '').toString(),
+      });
+    });
+    // ② 尚无独立使用者账号的客户，保留公司级账号（过渡兼容）
     const rows = await loadTable('customer_info');
-    const seen = new Set(), out = [];
+    const seen = new Set();
     rows.forEach(r => {
       const v = (r[CFG.idValueKey] || '').toString().trim();
       if (!v || seen.has(v)) return;
       seen.add(v);
+      if (covered.has(nrm(v)) || covered.has(nrm(r.brand_code || ''))) return;
       out.push({
-        id: v,
+        id: v, brand: (r.brand_code || '').toString().trim(),
         name: (r[CFG.idTextKey] || r.customer_name || v).toString().trim(),
+        user_name: '',
         account: (r.account || '').toString().trim(),
         password: (r.password || '').toString(),
+        role: '', authority: '',
       });
     });
-    return out.sort((a, b) => a.name.localeCompare(b.name));
+    return out.sort((a, b) => (a.name + a.account).localeCompare(b.name + b.account));
   }
   const ps = await loadTable('project_info');
   const seen = new Set(), out = [];
@@ -661,10 +702,14 @@ function doLogin() {
     if (!account || !code || !pass) return toast(T('errLogin'), true);
     const row = S.idents.find(o =>
       nrm(o.account) === nrm(account) &&
-      nrm(o.id) === nrm(code) &&
+      (nrm(o.id) === nrm(code) || nrm(o.brand) === nrm(code)) &&
       (o.password || '') === pass);
     if (!row) return toast(T('errLogin'), true);
-    setSession({ value: row.id, name: row.name, account: row.account, at: Date.now() });
+    setSession({
+      value: row.id, brand: row.brand || '', name: row.name,
+      user_name: row.user_name || '', account: row.account,
+      role: row.role || '', authority: row.authority || '', at: Date.now(),
+    });
     return boot();
   }
   const account = $('inp-account').value.trim();
@@ -689,8 +734,8 @@ function renderShell() {
     <div class="tb-left">
       <div class="tb-badge">${CFG.code}</div>
       <div>
-        <div class="tb-title">${esc(sess.name)}</div>
-        <div class="tb-sub">${esc(T('tagline'))}</div>
+        <div class="tb-title">${esc(sess.name)}${sess.user_name ? ' · ' + esc(sess.user_name) : ''}</div>
+        <div class="tb-sub">${sess.account ? esc(sess.account + (sess.authority ? ' · ' + sess.authority : '')) : esc(T('tagline'))}</div>
       </div>
     </div>
     <div class="tb-right">
@@ -871,17 +916,34 @@ function renderSummary() {
 }
 
 function renderSettings() {
+  const me = getSession() || {};
   $('main').innerHTML = `
   <div class="list">
     <div class="card flat">
       <div class="card-head"><div class="card-title">${CFG.code} v0.1.0</div></div>
       <div class="card-meta">
         <div><span>Variant</span>${VARIANT}</div>
-        <div><span>${CFG.idLabel}</span>${esc(getSession().name)}</div>
+        <div><span>${CFG.idLabel}</span>${esc(me.name || '')}</div>
+        ${IS_CUSTOMER ? `
+        <div><span>${TL('lblUser')}</span>${esc(me.user_name || '—')}</div>
+        <div><span>${TL('lblAcct')}</span>${esc(me.account || '—')}</div>
+        <div><span>${TL('lblCode')}</span>${esc(me.value || '—')}</div>
+        <div><span>${TL('lblRole')}</span>${esc(me.role || '普通使用者')}</div>
+        <div><span>${TL('lblAuth')}</span>${esc(me.authority || '只可读、写')}</div>` : ''}
         <div><span>${T('myProjects')}</span>${S.projects.length}</div>
         <div><span>${T('myRecords')}</span>${S.records.length}</div>
       </div>
     </div>
+    ${IS_CUSTOMER ? `
+    <div class="card flat">
+      <div class="card-head"><div class="card-title">${TL('lblPersons')}</div></div>
+      <div class="card-meta">
+        ${((S.idents || []).filter(o => o.user_name &&
+            (nrm(o.id) === nrm(me.value) || (me.brand && nrm(o.brand) === nrm(me.brand))))
+          .map(o => `<div><span>${esc(o.user_name)}</span>${esc(o.account)}</div>`).join(''))
+          || `<div><span>—</span>${esc(me.user_name || '')}</div>`}
+      </div>
+    </div>` : ''}
     <div class="card flat">
       <div class="lang-block">
         <div class="lang-block-title">🌐 ${T('language')}</div>
@@ -928,12 +990,12 @@ async function loadFieldLog() {
   const sess = getSession();
   if (!sess) return [];
   const all = await loadTable('field_log', 2000);
-  const v = String(sess.value).trim().toLowerCase();
+  const vals = sessVals(sess);
   const projSet = new Set((S.projects || []).map(p =>
     [p.name, p.factory_project_no, p.customer_project_no, p.id]
       .map(x => String(x || '').trim()).filter(Boolean)).flat());
   return all.filter(r => {
-    if (String(r.customer_code || '').trim().toLowerCase() === v) return true;
+    if (vals.includes(String(r.customer_code || '').trim().toLowerCase())) return true;
     return projSet.has(String(r.project || '').trim());
   }).sort((a, b) => String(b.created_at || '').localeCompare(String(a.created_at || '')))
     .map(r => ({ ...r, _kind: 'field_log' }));
@@ -981,10 +1043,10 @@ async function loadProblems() {
     const projSet = new Set((S.projects || []).map(p =>
       [p.name, p.factory_project_no, p.customer_project_no, p.id]
         .map(x => String(x || '').trim()).filter(Boolean)).flat());
-    const v = String(sess.value).trim().toLowerCase();
+    const vals = sessVals(sess);
     all = all.filter(r => {
       if (r._table === 'field_log') {
-        if (String(r.customer_code || '').trim().toLowerCase() === v) return true;
+        if (vals.includes(String(r.customer_code || '').trim().toLowerCase())) return true;
         return projSet.has(String(r.project || '').trim());
       }
       return projIds.has(String(r.project_id));
@@ -1158,8 +1220,10 @@ function openComplaintForm(p) {
       status: '待处理',
       is_customer_complaint: true,
       customer_code: sess ? sess.value : '',
+      brand_code: sess ? (sess.brand || '') : '',
       customer_name: sess ? sess.name : '',
-      reporter: sess ? sess.name : '客户',
+      reporter: sess ? (sess.user_name || sess.name) : '客户',
+      reporter_account: sess ? (sess.account || '') : '',
       created_at: new Date().toISOString().slice(0, 19).replace('T', ' '),
       updated_at: new Date().toISOString().slice(0, 19).replace('T', ' '),
       comments: [],
