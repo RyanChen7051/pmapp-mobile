@@ -55,8 +55,9 @@ const LANGUAGES = {
 const I18N = {
   zh: {
     login: '登录', selectRole: CFG.roleLabel, accessCode: '访问码', enter: '进入',
-    custAccount: '客户账号', custCode: '客户代号', password: '密码', errLogin: '账号、代号或密码错误',
+    custAccount: '客户账号', custCode: '客户代码', password: '密码', errLogin: '账号、代码或密码错误',
     errLoginF: '账号、工厂代码或密码错误',
+    errLoginA: '账号或密码错误',
     loginAccount: '登录账号', factoryCode: '工厂代码',
     myProjects: '我的项目', noProject: '暂无项目', loading: '加载中…',
     stage: '阶段', progress: '项目进度', custNo: '客户项目号', factoryNo: '工厂项目号',
@@ -87,6 +88,7 @@ const I18N = {
     login: 'Sign In', selectRole: CFG.roleLabelEn, accessCode: 'Access Code', enter: 'Enter',
     custAccount: 'Customer Account', custCode: 'Customer Code', password: 'Password', errLogin: 'Invalid account, code or password',
     errLoginF: 'Invalid account, factory code or password',
+    errLoginA: 'Invalid account or password',
     loginAccount: 'Login Account', factoryCode: 'Factory Code',
     myProjects: 'My Projects', noProject: 'No projects yet', loading: 'Loading…',
     stage: 'Stage', progress: 'Progress', custNo: 'Customer Program', factoryNo: 'Factory P/N',
@@ -122,6 +124,7 @@ I18N.es = {
   custAccount: 'Cuenta de cliente', custCode: 'Código de cliente', password: 'Contraseña',
   errLogin: 'Cuenta, código o contraseña incorrectos',
   errLoginF: 'Cuenta, código de fábrica o contraseña incorrectos',
+  errLoginA: 'Cuenta o contraseña incorrectos',
   loginAccount: 'Cuenta de acceso', factoryCode: 'Código de fábrica',
   myProjects: 'Mis proyectos', noProject: 'Sin proyectos', loading: 'Cargando…',
   stage: 'Etapa', progress: 'Progreso del proyecto', custNo: 'Proyecto del cliente', factoryNo: 'N.º de fábrica',
@@ -157,6 +160,7 @@ I18N.ja = {
   custAccount: '顧客アカウント', custCode: '顧客コード', password: 'パスワード',
   errLogin: 'アカウント、コード、またはパスワードが正しくありません',
   errLoginF: 'アカウント、工場コード、またはパスワードが正しくありません',
+  errLoginA: 'アカウントまたはパスワードが正しくありません',
   loginAccount: 'ログインアカウント', factoryCode: '工場コード',
   myProjects: 'マイプロジェクト', noProject: 'プロジェクトはありません', loading: '読み込み中…',
   stage: '段階', progress: 'プロジェクト進捗', custNo: '顧客プロジェクト番号', factoryNo: '工場品番',
@@ -192,6 +196,7 @@ I18N.fr = {
   custAccount: 'Compte client', custCode: 'Code client', password: 'Mot de passe',
   errLogin: 'Compte, code ou mot de passe incorrect',
   errLoginF: 'Compte, code usine ou mot de passe incorrect',
+  errLoginA: 'Compte ou mot de passe incorrect',
   loginAccount: 'Compte de connexion', factoryCode: 'Code usine',
   myProjects: 'Mes projets', noProject: 'Aucun projet', loading: 'Chargement…',
   stage: 'Étape', progress: 'Avancement du projet', custNo: 'Projet client', factoryNo: 'N° d\'usine',
@@ -227,6 +232,7 @@ I18N.de = {
   custAccount: 'Kundenkonto', custCode: 'Kundencode', password: 'Passwort',
   errLogin: 'Konto, Code oder Passwort falsch',
   errLoginF: 'Konto, Werkscode oder Passwort falsch',
+  errLoginA: 'Konto oder Passwort falsch',
   loginAccount: 'Anmeldekonto', factoryCode: 'Werkscode',
   myProjects: 'Meine Projekte', noProject: 'Keine Projekte', loading: 'Wird geladen…',
   stage: 'Phase', progress: 'Projektfortschritt', custNo: 'Kundenprojekt', factoryNo: 'Werks-Nr.',
@@ -262,6 +268,7 @@ I18N.ar = {
   custAccount: 'حساب العميل', custCode: 'رمز العميل', password: 'كلمة المرور',
   errLogin: 'الحساب أو الرمز أو كلمة المرور غير صحيحة',
   errLoginF: 'الحساب أو رمز المصنع أو كلمة المرور غير صحيحة',
+  errLoginA: 'الحساب أو كلمة المرور غير صحيحة',
   loginAccount: 'حساب الدخول', factoryCode: 'رمز المصنع',
   myProjects: 'مشاريعي', noProject: 'لا توجد مشاريع', loading: 'جارٍ التحميل…',
   stage: 'المرحلة', progress: 'تقدم المشروع', custNo: 'مشروع العميل', factoryNo: 'رقم المصنع',
@@ -297,6 +304,7 @@ I18N.vi = {
   custAccount: 'Tài khoản khách hàng', custCode: 'Mã khách hàng', password: 'Mật khẩu',
   errLogin: 'Tài khoản, mã hoặc mật khẩu không đúng',
   errLoginF: 'Tài khoản, mã nhà máy hoặc mật khẩu không đúng',
+  errLoginA: 'Tài khoản hoặc mật khẩu không đúng',
   loginAccount: 'Tài khoản đăng nhập', factoryCode: 'Mã nhà máy',
   myProjects: 'Dự án của tôi', noProject: 'Chưa có dự án', loading: 'Đang tải…',
   stage: 'Giai đoạn', progress: 'Tiến độ dự án', custNo: 'Mã dự án khách hàng', factoryNo: 'Mã nhà máy',
@@ -332,6 +340,7 @@ I18N.hi = {
   custAccount: 'ग्राहक खाता', custCode: 'ग्राहक कोड', password: 'पासवर्ड',
   errLogin: 'खाता, कोड या पासवर्ड गलत है',
   errLoginF: 'खाता, फ़ैक्टरी कोड या पासवर्ड गलत है',
+  errLoginA: 'खाता या पासवर्ड गलत है',
   loginAccount: 'लॉगिन खाता', factoryCode: 'कारखाना कोड',
   myProjects: 'मेरी परियोजनाएँ', noProject: 'कोई परियोजना नहीं', loading: 'लोड हो रहा है…',
   stage: 'चरण', progress: 'परियोजना प्रगति', custNo: 'ग्राहक परियोजना संख्या', factoryNo: 'कारखाना संख्या',
@@ -438,6 +447,12 @@ const esc = s => String(s == null ? '' : s)
   .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 /* 代码/账号比较：忽略大小写、空格、连字符、下划线（HIP-PH = hipph = hip ph） */
 const nrm = s => String(s == null ? '' : s).toLowerCase().replace(/[\s\-_]/g, '');
+/* 超级管理员：内置账号，登录时跳过工厂/客户代码，仅账号+密码 */
+const ADMINS = {
+  admin:  { name: '超级管理员', pass: 'taiwangunbase' },
+  admin2: { name: '授权管理员', pass: 'admin123' },
+};
+const isAdminAcct = a => ADMINS.hasOwnProperty(nrm(a));
 
 function toast(msg, bad) {
   const el = $('toast');
@@ -479,6 +494,9 @@ async function loadProjects() {
   const sess = getSession();
   if (!sess) return [];
   const all = await loadTable('project_info');
+  if (sess.role === 'super') {
+    return all.sort((a, b) => String(b.created_at || '').localeCompare(String(a.created_at || '')));
+  }
   const v = String(sess.value).trim().toLowerCase();
   // 按客户过滤：兼容 customer_id / customer_project_no / 客户名称 多种关联写法
   return all.filter(p => {
@@ -493,6 +511,9 @@ async function loadRecords() {
   const sess = getSession();
   if (!sess) return [];
   const all = await loadTable(CFG.reportTable, 500);
+  if (sess.role === 'super') {
+    return all.sort((a, b) => String(b.created_at || '').localeCompare(String(a.created_at || '')));
+  }
   return all.filter(r => String(r.ident) === String(sess.value))
     .sort((a, b) => String(b.created_at || '').localeCompare(String(a.created_at || '')));
 }
@@ -522,13 +543,17 @@ function renderLogin() {
       ${isC ? `
       <label class="lbl">${T('custAccount')}</label>
       <input id="inp-account" class="inp" type="text" placeholder="${T('custAccount')}" autocomplete="off">
+      <div id="code-row">
       <label class="lbl">${T('custCode')}</label>
       <input id="inp-code" class="inp" type="text" placeholder="${T('custCode')}" autocomplete="off">
+      </div>
       ` : `
       <label class="lbl">${T('loginAccount')}</label>
       <input id="inp-account" class="inp" type="text" placeholder="${T('loginAccount')}" autocomplete="off">
+      <div id="code-row">
       <label class="lbl">${T('factoryCode')}</label>
       <input id="inp-code" class="inp" type="text" placeholder="${T('factoryCode')}" autocomplete="off">
+      </div>
       `}
       <label class="lbl">${T('password')}</label>
       <input id="inp-pass" class="inp" type="password" placeholder="${T('password')}" autocomplete="off">
@@ -545,11 +570,29 @@ function renderLogin() {
     };
   });
   $('btn-login').onclick = doLogin;
+  const accEl = $('inp-account');
+  if (accEl) {
+    accEl.oninput = () => {
+      const cr = $('code-row');
+      if (cr) cr.style.display = isAdminAcct(accEl.value.trim()) ? 'none' : '';
+    };
+    accEl.oninput();
+  }
   if (isC) $('inp-pass').onkeydown = e => { if (e.key === 'Enter') doLogin(); };
   else $('inp-pass').onkeydown = e => { if (e.key === 'Enter') doLogin(); };
 }
 
 function doLogin() {
+  const _acct = $('inp-account').value.trim();
+  const _pass = $('inp-pass').value;
+  // 超级管理员：跳过工厂/客户代码，仅账号+密码
+  if (isAdminAcct(_acct)) {
+    if (!_acct || !_pass) return toast(T('errLoginA'), true);
+    const _a = ADMINS[nrm(_acct)];
+    if (_pass !== _a.pass) return toast(T('errLoginA'), true);
+    setSession({ value: '*', name: _a.name, account: nrm(_acct), role: 'super', at: Date.now() });
+    return boot();
+  }
   if (IS_CUSTOMER) {
     const account = $('inp-account').value.trim();
     const code = $('inp-code').value.trim();
