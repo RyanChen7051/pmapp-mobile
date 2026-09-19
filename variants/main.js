@@ -447,6 +447,21 @@ const esc = s => String(s == null ? '' : s)
   .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 /* 代码/账号比较：忽略大小写、空格、连字符、下划线（HIP-PH = hipph = hip ph） */
 const nrm = s => String(s == null ? '' : s).toLowerCase().replace(/[\s\-_]/g, '');
+
+/* 三端统一区块的多语言标签（不污染 I18N 主字典，en 兜底） */
+const LBL = {
+  onsite:      {zh:'现场', en:'Onsite', es:'Sitio', ja:'現場', fr:'Site', de:'Vor Ort', ar:'الموقع', vi:'Tại chỗ', hi:'साइट'},
+  newsTab:     {zh:'耳机行业新闻', en:'Headphone News', es:'Noticias Auriculares', ja:'ヘッドホン業界ニュース', fr:'Actualités Casques', de:'Headphone-News', ar:'أخبار سماعات الرأس', vi:'Tin ngành Tai nghe', hi:'हेडफोन उद्योग समाचार'},
+  recFactory:  {zh:'上报问题记录汇总', en:'Reported Issues', es:'Informes de Problemas', ja:'報告問題集計', fr:'Problèmes Signalés', de:'Gemeldete Probleme', ar:'المشاكل المبلّغة', vi:'Tổng hợp Sự cố Báo cáo', hi:'रिपोर्ट किए गए मुद्दे'},
+  recCustomer: {zh:'问题汇总', en:'Issue Summary', es:'Resumen de Problemas', ja:'問題集計', fr:'Résumé des Problèmes', de:'Problemübersicht', ar:'ملخص المشاكل', vi:'Tổng hợp Sự cố', hi:'मुद्दों का सारांश'},
+  syncing:     {zh:'同步中…', en:'Syncing…', es:'Sincronizando…', ja:'同期中…', fr:'Synchronisation…', de:'Synchronisiere…', ar:'جارٍ المزامنة…', vi:'Đang đồng bộ…', hi:'सिंक हो रहा है…'},
+  pending:     {zh:'待处理问题', en:'Pending Issues', es:'Problemas Pendientes', ja:'未処理の問題', fr:'Problèmes en Attente', de:'Offene Probleme', ar:'المشاكل المعلقة', vi:'Sự cố Đang xử lý', hi:'लंबित मुद्दे'},
+  weeklyDoa:   {zh:'每周DOA增加数', en:'Weekly DOA Added', es:'DOA Semanales', ja:'週間DOA増加数', fr:'DOA Hebdo', de:'Wöchentl. DOA', ar:'زيادة DOA أسبوعياً', vi:'DOA tăng hàng tuần', hi:'साप्ताहिक DOA वृद्धि'},
+  weeklyComp:  {zh:'每周新增客诉投诉', en:'Weekly New Complaints', es:'Quejas Nuevas Sem.', ja:'週間新規苦情', fr:'Nouvelles Réclamations', de:'Wöchentl. Beschwerden', ar:'شكاوى جديدة أسبوعياً', vi:'Khiếu nại mới hàng tuần', hi:'साप्ताहिक नई शिकायतें'},
+  submitReport:{zh:'上报生产进度', en:'Report Production', es:'Reportar Producción', ja:'生産報告', fr:'Reporter Production', de:'Produktion melden', ar:'إبلاغ الإنتاج', vi:'Báo cáo Sản xuất', hi:'उत्पादन रिपोर्ट'},
+};
+const TL = k => (LBL[k] && LBL[k][LANG]) || (LBL[k] && LBL[k].en) || k;
+
 /* 超级管理员：内置账号，登录时跳过工厂/客户代码，仅账号+密码 */
 const ADMINS = {
   admin:  { name: '超级管理员', pass: 'taiwangunbase' },
@@ -648,6 +663,7 @@ function doLogin() {
 /* ─────────── 渲染：主界面 ─────────── */
 function renderShell() {
   const sess = getSession();
+  const recLabel = IS_FACTORY ? TL('recFactory') : TL('recCustomer');
   $('app').innerHTML = `
   <header class="topbar">
     <div class="tb-left">
@@ -658,39 +674,39 @@ function renderShell() {
       </div>
     </div>
     <div class="tb-right">
+      <button class="tb-btn" id="btn-sync" title="Sync">🔄<span class="tb-sync-tx">${TL('syncing').slice(0,2)}</span></button>
       <button class="tb-btn" id="btn-lang2" title="Language">🌐</button>
-      <button class="tb-btn" id="btn-refresh" title="Refresh">↻</button>
       <button class="tb-btn" id="btn-out" title="Logout">⏻</button>
     </div>
   </header>
   <main id="main"></main>
   <nav class="tabbar">
-    <button class="tab active" data-tab="projects">📦<span>${T('myProjects')}</span></button>
-    ${IS_CUSTOMER ? `<button class="tab" data-tab="problems">🐞<span>${T('problems')}</span></button>` : `<button class="tab" data-tab="records">📝<span>${T('myRecords')}</span></button>`}
+    <button class="tab active" data-tab="onsite">🛠<span>${TL('onsite')}</span></button>
+    <button class="tab" data-tab="records">📋<span>${esc(recLabel)}</span></button>
+    <button class="tab" data-tab="news">🎧<span>${TL('newsTab')}</span></button>
     <button class="tab" data-tab="settings">⚙️<span>${T('settings')}</span></button>
   </nav>
   <div id="modal" class="modal"></div>`;
 
   $('btn-out').onclick = () => { clearSession(); S.current = null; boot(); };
-  $('btn-refresh').onclick = () => refreshData();
+  $('btn-sync').onclick = () => { toast(TL('syncing')); refreshData(); };
   $('btn-lang2').onclick = () => {
     LANG = LANG === 'zh' ? 'en' : 'zh';
     localStorage.setItem(CFG.sessionKey + '_lang', LANG);
-    renderShell(); switchTab(S.tab || 'projects');
+    renderShell(); switchTab(S.tab || 'onsite');
   };
   document.querySelectorAll('.tab').forEach(b => {
     b.onclick = () => switchTab(b.dataset.tab);
   });
-  switchTab('projects');
+  switchTab('onsite');
 }
 
 function switchTab(tab) {
   S.tab = tab;
   document.querySelectorAll('.tab').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
-  if (tab !== 'problems') { const f = $('complaint-fab'); if (f) f.remove(); }
-  if (tab === 'projects') renderProjects();
-  else if (tab === 'problems') renderProblems();
-  else if (tab === 'records') renderRecords();
+  if (tab === 'onsite') renderOnsite();
+  else if (tab === 'records') renderSummary();
+  else if (tab === 'news') renderNews();
   else renderSettings();
 }
 
@@ -817,41 +833,27 @@ function recordCard(r) {
     ${r.note ? `<div class="note">${esc(r.note)}</div>` : ''}
   </div>`;
 }
-function renderRecords() {
+function renderSummary() {
   const m = $('main');
-  if (!IS_FACTORY) {
-    if (!S.records.length) {
-      m.innerHTML = `<div class="empty"><div class="empty-ico">📝</div><div>${T('noRecord')}</div></div>`;
-      return;
-    }
-    m.innerHTML = `<div class="list">${S.records.map(r => recordCard(r)).join('')}</div>`;
+  let list;
+  if (IS_CUSTOMER) {
+    list = [...(S.fieldlog || []), ...(S.issues || [])].sort((a, b) => String(b.created_at || '').localeCompare(String(a.created_at || '')));
+  } else {
+    list = [...(S.issues || []).map(r => ({ ...r, _kind: 'issues' })),
+            ...(S.fieldlog || []).map(r => ({ ...r, _kind: 'field_log' }))]
+      .sort((a, b) => String(b.created_at || '').localeCompare(String(a.created_at || '')));
+  }
+  if (!list.length) {
+    m.innerHTML = `<div class="empty"><div class="empty-ico">📋</div><div>${IS_FACTORY ? TL('recFactory') : TL('recCustomer')}：${T('noProblem')}</div></div>`;
     return;
   }
-  const news = (S.news || []).slice().sort((a, b) => String(b.date || '').localeCompare(String(a.date || ''))).slice(0, 15);
-  const newsCards = news.length ? news.map(n => `
-    <a class="news-item" href="${esc(n.url)}" target="_blank" rel="noopener">
-      <div class="ni-title">${esc(n.title)}</div>
-      <div class="ni-meta"><span>📅 ${esc(n.date || '')}</span>${n.source ? `<span>· ${esc(n.source)}</span>` : ''}</div>
-      <div class="ni-sum">${esc(n.summary || '')}</div>
-    </a>`).join('') : `<div class="empty sm"><div class="empty-ico">📰</div><div>No industry news yet</div></div>`;
-  const recHtml = S.records.length ? S.records.map(r => recordCard(r)).join('')
-    : `<div class="empty sm"><div class="empty-ico">📝</div><div>${T('noRecord')}</div></div>`;
-  m.innerHTML = `
-  <div class="records-2col">
-    <section class="onsite-col">
-      <div class="onsite-head"><span>🛠 现场功能</span><button class="btn-mini" id="btn-new-report">＋ ${T('submit')}</button></div>
-      <div class="list">${recHtml}</div>
-    </section>
-    <aside class="news-col">
-      <div class="news-wrap">
-        <div class="news-head"><div class="news-title">🎧 Headphone Industry News</div></div>
-        ${news.length && news[0].date ? `<div class="news-upd">Updated ${esc(news[0].date)}</div>` : ''}
-        <div class="news-list">${newsCards}</div>
-      </div>
-    </aside>
-  </div>`;
-  const nb = $('btn-new-report');
-  if (nb) nb.onclick = () => openReport((S.projects && S.projects[0]) ? S.projects[0] : null);
+  m.innerHTML = `<div class="list">${list.map(r => {
+    const card = r._kind === 'issues' ? issueCard(r) : problemCard(r);
+    return `<div class="sum-item">${card}${problemCommentsHtml(r)}</div>`;
+  }).join('')}</div>`;
+  document.querySelectorAll('.sum-item .card').forEach(c => {
+    c.onclick = () => { const r = findProblem(c.dataset.id); if (r) openProblem(r); };
+  });
 }
 
 function renderSettings() {
@@ -1027,7 +1029,7 @@ async function cpwaAddComment(id) {
   try {
     if (r._kind === 'issues') await saveIssueRecord(r);
     else await saveFieldLogRecord(r);
-    toast(T('submitted')); openProblem(r);
+    toast(T('submitted')); if (S.tab === 'records') renderSummary(); else if (S.tab === 'onsite') renderOnsite(); else if (S.tab === 'news') renderNews();
   } catch (e) { toast(T('errNet'), true); }
 }
 // 留言发送由 inline onclick 字符串调用，esbuild 会改名顶层函数名；
@@ -1039,53 +1041,7 @@ function findProblem(id) {
       || (S.issues || []).find(x => String(x.id) === String(id));
 }
 
-function renderProblems() {
-  const m = $('main');
-  const list = [...(S.fieldlog || []), ...(S.issues || [])]
-    .sort((a, b) => String(b.created_at || '').localeCompare(String(a.created_at || '')));
-  const news = (S.news || []).slice().sort((a, b) => String(b.date || '').localeCompare(String(a.date || ''))).slice(0, 15);
-  const newsCards = news.length ? news.map(n => `
-    <a class="news-item" href="${esc(n.url)}" target="_blank" rel="noopener">
-      <div class="ni-title">${esc(n.title)}</div>
-      <div class="ni-meta"><span>📅 ${esc(n.date || '')}</span>${n.source ? `<span>· ${esc(n.source)}</span>` : ''}</div>
-      <div class="ni-sum">${esc(n.summary || '')}</div>
-    </a>`).join('') : `<div class="empty sm"><div class="empty-ico">📰</div><div>No industry news yet</div></div>`;
-  if (!list.length) {
-    m.innerHTML = `<div class="records-2col">
-      <section class="onsite-col">
-        <div class="onsite-head"><span>🛠 现场功能</span><button class="btn-mini" id="btn-new-report">＋ ${T('submitComplaint')}</button></div>
-        <div class="empty sm"><div class="empty-ico">🐞</div><div>${T('noProblem')}</div>
-          <button class="btn-ghost" id="btn-reload2">${T('refresh')}</button></div>
-      </section>
-      <aside class="news-col"><div class="news-wrap">
-        <div class="news-head"><div class="news-title">🎧 Headphone Industry News</div></div>
-        ${news.length && news[0].date ? `<div class="news-upd">Updated ${esc(news[0].date)}</div>` : ''}
-        <div class="news-list">${newsCards}</div>
-      </div></aside>
-    </div>`;
-    const b = $('btn-reload2'); if (b) b.onclick = refreshData;
-    const nb = $('btn-new-report'); if (nb) nb.onclick = () => openComplaintForm(null);
-    return;
-  }
-  m.innerHTML = `<div class="records-2col">
-    <section class="onsite-col">
-      <div class="onsite-head"><span>🛠 现场功能</span><button class="btn-mini" id="btn-new-report">＋ ${T('submitComplaint')}</button></div>
-      <div class="list">${list.map(r => r._kind === 'issues' ? issueCard(r) : problemCard(r)).join('')}</div>
-    </section>
-    <aside class="news-col"><div class="news-wrap">
-      <div class="news-head"><div class="news-title">🎧 Headphone Industry News</div></div>
-      ${news.length && news[0].date ? `<div class="news-upd">Updated ${esc(news[0].date)}</div>` : ''}
-      <div class="news-list">${newsCards}</div>
-    </div></aside>
-  </div>`;
-  document.querySelectorAll('.card').forEach(c => {
-    c.onclick = () => {
-      const r = findProblem(c.dataset.id);
-      if (r) openProblem(r);
-    };
-  });
-  const nb = $('btn-new-report'); if (nb) nb.onclick = () => openComplaintForm(null);
-}
+
 
 // 只读详情：展示完整字段 + 留言板（客户可在下方留言，但不可改记录字段）
 function openProblem(r) {
@@ -1170,21 +1126,100 @@ function openComplaintForm(p) {
     try {
       await saveFieldLogRecord(rec);
       closeModal(); toast(T('submitted'));
-      await refreshData(); switchTab('problems');
+      await refreshData(); switchTab('records');
     } catch (e) { btn.disabled = false; btn.textContent = T('submit'); toast(T('errNet'), true); }
   };
+}
+
+/* ─────────── 现场 / 汇总 / 新闻（三端统一区块）─────────── */
+function weekRange() {
+  const now = new Date();
+  const day = now.getDay() || 7;
+  const mon = new Date(now); mon.setDate(now.getDate() - (day - 1)); mon.setHours(0, 0, 0, 0);
+  const nd = new Date(mon); nd.setDate(mon.getDate() + 7);
+  const f = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  return [f(mon), f(nd)];
+}
+const CATS = ['生产', '工程', '制程', '品质'];
+function catItems(cat) {
+  const iss = (S.issues || []).filter(i => (i.issue_type || '') === cat).map(r => ({ ...r, _kind: 'issues' }));
+  const fl = (S.fieldlog || []).filter(r => (r.problem_category || '') === cat).map(r => ({ ...r, _kind: 'field_log' }));
+  return [...fl, ...iss].sort((a, b) => String(b.created_at || '').localeCompare(String(a.created_at || '')));
+}
+function kpiPending() {
+  return (S.issues || []).filter(i => i.status === 'open').length
+    + (S.fieldlog || []).filter(r => r.is_customer_complaint && r.status !== '已处理').length;
+}
+function kpiWeeklyDoa() {
+  const [ms, ne] = weekRange();
+  return (S.doa || []).filter(r => { const d = (r.date || '').slice(0, 10); return d && d >= ms && d < ne; }).length;
+}
+function kpiWeeklyComp() {
+  const [ms, ne] = weekRange();
+  return (S.fieldlog || []).filter(r => r.is_customer_complaint && (r.created_at || '').slice(0, 10) >= ms && (r.created_at || '').slice(0, 10) < ne).length;
+}
+function kpiCard(num, label, color) {
+  return `<div class="kpi-card"><div class="kpi-dot" style="background:${color}"></div>
+    <div class="kpi-num" style="color:${color}">${num}</div><div class="kpi-label">${esc(label)}</div></div>`;
+}
+function renderOnsite() {
+  const m = $('main');
+  const kpis = [kpiCard(kpiPending(), TL('pending'), '#EF9F27')];
+  if (IS_FACTORY) kpis.push(kpiCard(kpiWeeklyDoa(), TL('weeklyDoa'), '#D85A30'));
+  else kpis.push(kpiCard(kpiWeeklyComp(), TL('weeklyComp'), '#378ADD'));
+  const secs = CATS.map(cat => {
+    const items = catItems(cat);
+    return `<section class="cat-sec">
+      <div class="cat-head"><span>${esc(cat)}问题</span><span class="cat-count">${items.length}</span></div>
+      <div class="list">${items.length ? items.slice(0, 10).map(r => r._kind === 'issues' ? issueCard(r) : problemCard(r)).join('') : '<div class="empty-sm">—</div>'}</div>
+    </section>`;
+  }).join('');
+  m.innerHTML = `<div class="onsite">
+    <div class="kpi-strip">${kpis.join('')}</div>
+    <div class="onsite-actions"><button class="btn-main" id="btn-onsite-new">＋ ${IS_FACTORY ? TL('submitReport') : T('submitComplaint')}</button></div>
+    <div class="cat-grid">${secs}</div>
+  </div>`;
+  const ob = $('btn-onsite-new');
+  if (ob) ob.onclick = () => IS_FACTORY ? openReport(S.projects && S.projects[0] ? S.projects[0] : null) : openComplaintForm(null);
+  document.querySelectorAll('.onsite .card').forEach(c => {
+    c.onclick = () => { const r = findProblem(c.dataset.id); if (r) openProblem(r); };
+  });
+}
+function renderNews() {
+  const m = $('main');
+  const news = (S.news || []).slice().sort((a, b) => String(b.date || '').localeCompare(String(a.date || ''))).slice(0, 40);
+  const items = news.length ? news.map(n => `
+    <a class="news-item" href="${esc(n.url)}" target="_blank" rel="noopener">
+      <div class="ni-title">${esc(n.title)}</div>
+      <div class="ni-meta"><span>📅 ${esc(n.date || '')}</span>${n.source ? `<span>· ${esc(n.source)}</span>` : ''}</div>
+      <div class="ni-sum">${esc(n.summary || '')}</div>
+    </a>`).join('') : `<div class="empty"><div class="empty-ico">📰</div><div>No industry news yet</div></div>`;
+  m.innerHTML = `<div class="news-full">
+    <div class="news-head"><div class="news-title">🎧 Headphone Industry News</div></div>
+    ${news.length && news[0].date ? `<div class="news-upd">Updated ${esc(news[0].date)} · 每天 08:00 (GMT+8) 自动更新</div>` : ''}
+    <div class="news-list">${items}</div>
+  </div>`;
 }
 
 /* ─────────── 数据刷新 ─────────── */
 async function refreshData() {
   try {
     S.projects = await loadProjects();
-    S.records = await loadRecords();
     if (IS_FACTORY || IS_CUSTOMER) { try { S.news = await loadNews(); } catch (e) { S.news = []; } }
-    if (IS_CUSTOMER) { S.fieldlog = await loadFieldLog(); S.issues = await loadIssues(); }
-    if (S.tab === 'projects') renderProjects();
-    else if (S.tab === 'problems') renderProblems();
-    else if (S.tab === 'records') renderRecords();
+    if (IS_FACTORY) {
+      // 工厂端：拉取全部问题/客诉/DOA，使「现场」4 类与看板 KPI 与 PWA 打通
+      S.issues = await loadTable('issues', 2000);
+      S.fieldlog = await loadTable('field_log', 2000);
+      S.doa = await loadTable('doa', 2000);
+      S.records = await loadRecords();
+    } else {
+      S.fieldlog = await loadFieldLog();
+      S.issues = await loadIssues();
+      S.doa = [];
+    }
+    if (S.tab === 'onsite') renderOnsite();
+    else if (S.tab === 'records') renderSummary();
+    else if (S.tab === 'news') renderNews();
     else if (S.tab === 'settings') renderSettings();
   } catch (e) { toast(T('errNet'), true); }
 }
