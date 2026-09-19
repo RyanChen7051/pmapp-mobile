@@ -249,12 +249,23 @@ textarea.inp{resize:vertical;min-height:88px}
 .photo-thumb img{width:100%;height:100%;object-fit:cover;display:block}
 .photo-x{position:absolute;top:2px;right:2px;width:22px;height:22px;border:0;border-radius:50%;background:rgba(12,22,38,.6);color:#fff;font-size:12px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .btn-ghost.photo-add{margin-top:8px;width:auto;align-self:flex-start}
+
+/* 我的上报记录：左=现场功能 / 右=耳机产业新闻 两栏 */
+.records-2col{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:12px;align-items:start}
+.onsite-col,.news-col{min-width:0}
+.onsite-head{display:flex;align-items:center;justify-content:space-between;margin:2px 0 12px}
+.onsite-head span{font-size:16px;font-weight:800;color:var(--thd)}
+.btn-mini{background:var(--thd);color:#fff;border:none;border-radius:10px;padding:6px 12px;font-size:13px;font-weight:700;cursor:pointer}
+.btn-mini:active{transform:scale(.97)}
+.news-item{color:inherit;text-decoration:none}
+.empty.sm{padding:18px}
+@media(max-width:680px){.records-2col{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <div id="app"></div>
 <div id="toast"></div>
-<script src="bundle.js?v=8"></script>
+<script src="bundle.js?v=9"></script>
 
 <script>
 if ('serviceWorker' in navigator) {
