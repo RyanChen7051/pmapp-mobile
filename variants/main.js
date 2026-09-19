@@ -440,7 +440,7 @@ function setSession(s) { localStorage.setItem(CFG.sessionKey, JSON.stringify(s))
 function clearSession() { localStorage.removeItem(CFG.sessionKey); }
 
 /* ─────────── 状态 ─────────── */
-const S = { idents: [], projects: [], records: [], fieldlog: [], issues: [], current: null };
+const S = { idents: [], projects: [], records: [], fieldlog: [], issues: [], news: [], current: null };
 
 const $ = id => document.getElementById(id);
 const esc = s => String(s == null ? '' : s)
@@ -516,6 +516,32 @@ async function loadRecords() {
   }
   return all.filter(r => String(r.ident) === String(sess.value))
     .sort((a, b) => String(b.created_at || '').localeCompare(String(a.created_at || '')));
+}
+
+/* 耳机/音频产业新闻（全英文）：主源 Supabase ai_industry_news，缺失时回落 fpwa/news.json */
+async function loadNews() {
+  try {
+    const rows = await loadTable('ai_industry_news', 200);
+    if (rows && rows.length) {
+      const out = rows.map(n => ({
+        title: n.title || '', summary: n.summary || '', source: n.source || '',
+        url: n.url || '', date: n.news_date || n.date || '', importance: n.importance || ''
+      })).filter(n => n.title);
+      if (out.length) return out;
+    }
+  } catch (e) {}
+  try {
+    const r = await fetch('news.json', { cache: 'no-store' });
+    if (r.ok) {
+      const j = await r.json();
+      const items = (j.items || []).map(n => ({
+        title: n.title || '', summary: n.summary || '', source: n.source || '',
+        url: n.url || '', date: n.date || '', importance: ''
+      })).filter(n => n.title);
+      if (items.length) return items;
+    }
+  } catch (e) {}
+  return [];
 }
 
 /* ─────────── 渲染：登录页 ─────────── */
@@ -738,6 +764,7 @@ function openDetail(p) {
 function closeModal() { $('modal').classList.remove('open'); $('modal').innerHTML = ''; }
 
 function openReport(p) {
+  const projOpts = `<option value="">${T('notSelected')}</option>` + (S.projects || []).map(pr => { const v = pr.factory_project_no || pr.customer_project_no || pr.name || pr.id || ''; return `<option value="${esc(v)}">${esc(v)}</option>`; }).join('');
   const today = new Date().toISOString().slice(0, 10);
   $('modal').innerHTML = `
   <div class="sheet">
@@ -751,6 +778,7 @@ function openReport(p) {
     <input id="f-date" class="inp" type="date" value="${today}">
     ${IS_FACTORY ? `<label class="lbl">${T('qty')}</label>
     <input id="f-qty" class="inp" type="number" placeholder="0">` : ''}
+    ${!p ? `<label class="lbl">${T('complaintProject')}</label>\n    <select id="f-project" class="inp">${projOpts}</select>` : ''}
     <label class="lbl">${T('remark')}</label>
     <textarea id="f-note" class="inp" rows="4" placeholder="${T('remark')}"></textarea>
     <button class="btn-main" id="f-send">${T('submit')}</button>
@@ -762,10 +790,11 @@ function openReport(p) {
   $('f-send').onclick = async () => {
     const btn = $('f-send'); btn.disabled = true; btn.textContent = '…';
     try {
+      const projVal = p ? (p.factory_project_no || p.customer_project_no || '') : ($('f-project') ? $('f-project').value.trim() : '');
       await writeRecord({
         ident: String(getSession().value),
-        project: String(p.factory_project_no || p.customer_project_no || ''),
-        customer_no: String(p.customer_project_no || ''),
+        project: String(projVal),
+        customer_no: String(p ? (p.customer_project_no || '') : projVal),
         date: $('f-date').value,
         qty: IS_FACTORY ? Number($('f-qty')?.value || 0) : null,
         note: $('f-note').value,
@@ -778,21 +807,51 @@ function openReport(p) {
   };
 }
 
+function recordCard(r) {
+  return `<div class="card flat">
+    <div class="card-head">
+      <div class="card-title">${esc(r.project || '—')}</div>
+      <span class="date-badge">${esc((r.date || (r.created_at || '').slice(0, 10)) || '')}</span>
+    </div>
+    ${r.qty ? `<div class="card-meta"><div><span>${T('qty')}</span>${esc(r.qty)}</div></div>` : ''}
+    ${r.note ? `<div class="note">${esc(r.note)}</div>` : ''}
+  </div>`;
+}
 function renderRecords() {
   const m = $('main');
-  if (!S.records.length) {
-    m.innerHTML = `<div class="empty"><div class="empty-ico">📝</div><div>${T('noRecord')}</div></div>`;
+  if (!IS_FACTORY) {
+    if (!S.records.length) {
+      m.innerHTML = `<div class="empty"><div class="empty-ico">📝</div><div>${T('noRecord')}</div></div>`;
+      return;
+    }
+    m.innerHTML = `<div class="list">${S.records.map(r => recordCard(r)).join('')}</div>`;
     return;
   }
-  m.innerHTML = `<div class="list">${S.records.map(r => `
-    <div class="card flat">
-      <div class="card-head">
-        <div class="card-title">${esc(r.project || '—')}</div>
-        <span class="date-badge">${esc((r.date || (r.created_at || '').slice(0, 10)) || '')}</span>
+  const news = S.news || [];
+  const newsCards = news.length ? news.map(n => `
+    <a class="news-item" href="${esc(n.url)}" target="_blank" rel="noopener">
+      <div class="ni-title">${esc(n.title)}</div>
+      <div class="ni-meta"><span>📅 ${esc(n.date || '')}</span>${n.source ? `<span>· ${esc(n.source)}</span>` : ''}</div>
+      <div class="ni-sum">${esc(n.summary || '')}</div>
+    </a>`).join('') : `<div class="empty sm"><div class="empty-ico">📰</div><div>No industry news yet</div></div>`;
+  const recHtml = S.records.length ? S.records.map(r => recordCard(r)).join('')
+    : `<div class="empty sm"><div class="empty-ico">📝</div><div>${T('noRecord')}</div></div>`;
+  m.innerHTML = `
+  <div class="records-2col">
+    <section class="onsite-col">
+      <div class="onsite-head"><span>🛠 现场功能</span><button class="btn-mini" id="btn-new-report">＋ ${T('submit')}</button></div>
+      <div class="list">${recHtml}</div>
+    </section>
+    <aside class="news-col">
+      <div class="news-wrap">
+        <div class="news-head"><div class="news-title">🎧 Headphone Industry News</div></div>
+        ${news.length && news[0].date ? `<div class="news-upd">Updated ${esc(news[0].date)}</div>` : ''}
+        <div class="news-list">${newsCards}</div>
       </div>
-      ${r.qty ? `<div class="card-meta"><div><span>${T('qty')}</span>${esc(r.qty)}</div></div>` : ''}
-      ${r.note ? `<div class="note">${esc(r.note)}</div>` : ''}
-    </div>`).join('')}</div>`;
+    </aside>
+  </div>`;
+  const nb = $('btn-new-report');
+  if (nb) nb.onclick = () => openReport((S.projects && S.projects[0]) ? S.projects[0] : null);
 }
 
 function renderSettings() {
@@ -1093,6 +1152,7 @@ async function refreshData() {
   try {
     S.projects = await loadProjects();
     S.records = await loadRecords();
+    if (IS_FACTORY) { try { S.news = await loadNews(); } catch (e) { S.news = []; } }
     if (IS_CUSTOMER) { S.fieldlog = await loadFieldLog(); S.issues = await loadIssues(); }
     if (S.tab === 'projects') renderProjects();
     else if (S.tab === 'problems') renderProblems();
