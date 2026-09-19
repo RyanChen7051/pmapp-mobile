@@ -735,7 +735,7 @@ function renderShell() {
       <div class="tb-badge">${CFG.code}</div>
       <div>
         <div class="tb-title">${esc(sess.name)}${sess.user_name ? ' · ' + esc(sess.user_name) : ''}</div>
-        <div class="tb-sub">${sess.account ? esc(sess.account + (sess.authority ? ' · ' + sess.authority : '')) : esc(T('tagline'))}</div>
+        <div class="tb-sub">${sess.user_name ? esc(sess.account + (sess.authority ? ' · ' + sess.authority : '')) : esc(T('tagline'))}</div>
       </div>
     </div>
     <div class="tb-right">
