@@ -69,6 +69,8 @@ const I18N = {
     problems: '问题记录', noProblem: '暂无相关问题记录', submitComplaint: '提交客诉',
     complaintCat: '问题类别', complaintProject: '关联项目', complaintDesc: '问题描述',
     commentPlaceholder: '写留言…', cmtTitle: '留言板', custComplaint: '客户投诉', intIssue: '内部问题',
+    appName: IS_FACTORY ? 'PMApp Factory' : 'PMApp 客户中心',
+    tagline: IS_FACTORY ? '合作工厂协同平台' : '客户项目协同平台',
   },
   en: {
     login: 'Sign In', selectRole: CFG.roleLabelEn, accessCode: 'Access Code', enter: 'Enter',
@@ -86,11 +88,179 @@ const I18N = {
     problems: 'Issues', noProblem: 'No related issues', submitComplaint: 'Submit Complaint',
     complaintCat: 'Category', complaintProject: 'Project', complaintDesc: 'Description',
     commentPlaceholder: 'Write a comment…', cmtTitle: 'Comments', custComplaint: 'Customer Complaint', intIssue: 'Internal Issue',
+    appName: IS_FACTORY ? 'PMApp Factory' : 'PMApp Customer Portal',
+    tagline: IS_FACTORY ? 'Partner Factory Portal' : 'Customer Project Portal',
   },
 };
-/* 其余 7 语言先以英文占位（与用户选择一致：中/英先译，其余待补译）*/
-const __EN_DICT__ = I18N.en;
-['es', 'ja', 'fr', 'de', 'ar', 'vi', 'hi'].forEach(l => { if (!I18N[l]) I18N[l] = __EN_DICT__; });
+/* ─────────── 7 种扩展语言（真实翻译，非英文占位）─────────── */
+I18N.es = {
+  login: 'Iniciar sesión',
+  selectRole: IS_FACTORY ? 'Seleccionar fábrica' : 'Seleccionar cliente',
+  accessCode: 'Código de acceso', enter: 'Entrar',
+  custAccount: 'Cuenta de cliente', custCode: 'Código de cliente', password: 'Contraseña',
+  errLogin: 'Cuenta, código o contraseña incorrectos',
+  loginAccount: 'Cuenta de acceso', factoryCode: 'Código de fábrica',
+  myProjects: 'Mis proyectos', noProject: 'Sin proyectos', loading: 'Cargando…',
+  stage: 'Etapa', progress: 'Progreso del proyecto', custNo: 'Proyecto del cliente', factoryNo: 'N.º de fábrica',
+  submit: 'Enviar', cancel: 'Cancelar', remark: 'Nota', qty: 'Cantidad', date: 'Fecha',
+  reportTitle: IS_FACTORY ? 'Reportar progreso' : 'Enviar comentarios',
+  myRecords: IS_FACTORY ? 'Mis reportes' : 'Mis comentarios',
+  noRecord: 'Sin registros', logout: 'Cerrar sesión', settings: 'Ajustes', language: 'Idioma',
+  detail: 'Detalle del proyecto', submitted: 'Enviado', errCode: 'Código de acceso incorrecto',
+  errNet: 'Error de red, inténtelo de nuevo',
+  errSelect: IS_FACTORY ? 'Seleccione la fábrica' : 'Seleccione el cliente',
+  allFields: 'Información completa', refresh: 'Actualizar', ok: 'Hecho',
+  problems: 'Problemas', noProblem: 'Sin problemas relacionados', submitComplaint: 'Enviar queja',
+  complaintCat: 'Categoría', complaintProject: 'Proyecto', complaintDesc: 'Descripción',
+  commentPlaceholder: 'Escriba un comentario…', cmtTitle: 'Comentarios',
+  custComplaint: 'Queja del cliente', intIssue: 'Problema interno',
+  appName: IS_FACTORY ? 'PMApp Factory' : 'PMApp Customer Portal',
+  tagline: IS_FACTORY ? 'Portal de fábrica asociada' : 'Portal de proyectos de clientes',
+};
+I18N.ja = {
+  login: 'ログイン',
+  selectRole: IS_FACTORY ? '工場を選択' : '顧客を選択',
+  accessCode: 'アクセスコード', enter: '入室',
+  custAccount: '顧客アカウント', custCode: '顧客コード', password: 'パスワード',
+  errLogin: 'アカウント、コード、またはパスワードが正しくありません',
+  loginAccount: 'ログインアカウント', factoryCode: '工場コード',
+  myProjects: 'マイプロジェクト', noProject: 'プロジェクトはありません', loading: '読み込み中…',
+  stage: '段階', progress: 'プロジェクト進捗', custNo: '顧客プロジェクト番号', factoryNo: '工場品番',
+  submit: '送信', cancel: 'キャンセル', remark: '備考', qty: '数量', date: '日付',
+  reportTitle: IS_FACTORY ? '生産進捗を報告' : 'フィードバックを送信',
+  myRecords: IS_FACTORY ? 'マイ報告' : 'マイフィードバック',
+  noRecord: '記録はありません', logout: 'ログアウト', settings: '設定', language: '言語',
+  detail: 'プロジェクト詳細', submitted: '送信しました', errCode: 'アクセスコードが正しくありません',
+  errNet: 'ネットワークエラー、再試行してください',
+  errSelect: IS_FACTORY ? '工場を選択してください' : '顧客を選択してください',
+  allFields: 'すべての情報', refresh: '更新', ok: '完了',
+  problems: '問題記録', noProblem: '関連する問題はありません', submitComplaint: '苦情を送信',
+  complaintCat: 'カテゴリ', complaintProject: '関連プロジェクト', complaintDesc: '説明',
+  commentPlaceholder: 'コメントを入力…', cmtTitle: 'コメント',
+  custComplaint: '顧客クレーム', intIssue: '内部問題',
+  appName: IS_FACTORY ? 'PMApp Factory' : 'PMApp 顧客ポータル',
+  tagline: IS_FACTORY ? '協力工場ポータル' : '顧客プロジェクトポータル',
+};
+I18N.fr = {
+  login: 'Connexion',
+  selectRole: IS_FACTORY ? 'Choisir l\'usine' : 'Choisir le client',
+  accessCode: 'Code d\'accès', enter: 'Entrer',
+  custAccount: 'Compte client', custCode: 'Code client', password: 'Mot de passe',
+  errLogin: 'Compte, code ou mot de passe incorrect',
+  loginAccount: 'Compte de connexion', factoryCode: 'Code usine',
+  myProjects: 'Mes projets', noProject: 'Aucun projet', loading: 'Chargement…',
+  stage: 'Étape', progress: 'Avancement du projet', custNo: 'Projet client', factoryNo: 'N° d\'usine',
+  submit: 'Envoyer', cancel: 'Annuler', remark: 'Remarque', qty: 'Quantité', date: 'Date',
+  reportTitle: IS_FACTORY ? 'Rapporter l\'avancement' : 'Envoyer un commentaire',
+  myRecords: IS_FACTORY ? 'Mes rapports' : 'Mes commentaires',
+  noRecord: 'Aucun enregistrement', logout: 'Déconnexion', settings: 'Paramètres', language: 'Langue',
+  detail: 'Détail du projet', submitted: 'Envoyé', errCode: 'Code d\'accès incorrect',
+  errNet: 'Erreur réseau, réessayez',
+  errSelect: IS_FACTORY ? 'Veuillez sélectionner l\'usine' : 'Veuillez sélectionner le client',
+  allFields: 'Informations complètes', refresh: 'Actualiser', ok: 'OK',
+  problems: 'Problèmes', noProblem: 'Aucun problème associé', submitComplaint: 'Envoyer une réclamation',
+  complaintCat: 'Catégorie', complaintProject: 'Projet associé', complaintDesc: 'Description',
+  commentPlaceholder: 'Écrivez un commentaire…', cmtTitle: 'Commentaires',
+  custComplaint: 'Réclamation client', intIssue: 'Problème interne',
+  appName: IS_FACTORY ? 'PMApp Factory' : 'PMApp Customer Portal',
+  tagline: IS_FACTORY ? 'Portail des usines partenaires' : 'Portail des projets clients',
+};
+I18N.de = {
+  login: 'Anmelden',
+  selectRole: IS_FACTORY ? 'Werk auswählen' : 'Kunde auswählen',
+  accessCode: 'Zugangscode', enter: 'Eintreten',
+  custAccount: 'Kundenkonto', custCode: 'Kundencode', password: 'Passwort',
+  errLogin: 'Konto, Code oder Passwort falsch',
+  loginAccount: 'Anmeldekonto', factoryCode: 'Werkscode',
+  myProjects: 'Meine Projekte', noProject: 'Keine Projekte', loading: 'Wird geladen…',
+  stage: 'Phase', progress: 'Projektfortschritt', custNo: 'Kundenprojekt', factoryNo: 'Werks-Nr.',
+  submit: 'Senden', cancel: 'Abbrechen', remark: 'Bemerkung', qty: 'Menge', date: 'Datum',
+  reportTitle: IS_FACTORY ? 'Fortschritt melden' : 'Feedback senden',
+  myRecords: IS_FACTORY ? 'Meine Berichte' : 'Mein Feedback',
+  noRecord: 'Keine Einträge', logout: 'Abmelden', settings: 'Einstellungen', language: 'Sprache',
+  detail: 'Projektdetails', submitted: 'Gesendet', errCode: 'Falscher Zugangscode',
+  errNet: 'Netzwerkfehler, bitte erneut versuchen',
+  errSelect: IS_FACTORY ? 'Bitte Werk auswählen' : 'Bitte Kunde auswählen',
+  allFields: 'Alle Informationen', refresh: 'Aktualisieren', ok: 'OK',
+  problems: 'Probleme', noProblem: 'Keine zugehörigen Probleme', submitComplaint: 'Beschwerde senden',
+  complaintCat: 'Kategorie', complaintProject: 'Projekt', complaintDesc: 'Beschreibung',
+  commentPlaceholder: 'Kommentar schreiben…', cmtTitle: 'Kommentare',
+  custComplaint: 'Kundenbeschwerde', intIssue: 'Internes Problem',
+  appName: IS_FACTORY ? 'PMApp Factory' : 'PMApp Kundenportal',
+  tagline: IS_FACTORY ? 'Partnerwerk-Portal' : 'Kundenprojekt-Portal',
+};
+I18N.ar = {
+  login: 'تسجيل الدخول',
+  selectRole: IS_FACTORY ? 'اختر المصنع' : 'اختر العميل',
+  accessCode: 'رمز الوصول', enter: 'دخول',
+  custAccount: 'حساب العميل', custCode: 'رمز العميل', password: 'كلمة المرور',
+  errLogin: 'الحساب أو الرمز أو كلمة المرور غير صحيحة',
+  loginAccount: 'حساب الدخول', factoryCode: 'رمز المصنع',
+  myProjects: 'مشاريعي', noProject: 'لا توجد مشاريع', loading: 'جارٍ التحميل…',
+  stage: 'المرحلة', progress: 'تقدم المشروع', custNo: 'مشروع العميل', factoryNo: 'رقم المصنع',
+  submit: 'إرسال', cancel: 'إلغاء', remark: 'ملاحظة', qty: 'الكمية', date: 'التاريخ',
+  reportTitle: IS_FACTORY ? 'إبلاغ عن التقدم' : 'إرسال ملاحظات',
+  myRecords: IS_FACTORY ? 'تقاريري' : 'ملاحظاتي',
+  noRecord: 'لا توجد سجلات', logout: 'تسجيل الخروج', settings: 'الإعدادات', language: 'اللغة',
+  detail: 'تفاصيل المشروع', submitted: 'تم الإرسال', errCode: 'رمز الوصول غير صحيح',
+  errNet: 'خطأ في الشبكة، حاول مرة أخرى',
+  errSelect: IS_FACTORY ? 'يرجى اختيار المصنع' : 'يرجى اختيار العميل',
+  allFields: 'جميع المعلومات', refresh: 'تحديث', ok: 'موافق',
+  problems: 'المشاكل', noProblem: 'لا توجد مشاكل ذات صلة', submitComplaint: 'إرسال شكوى',
+  complaintCat: 'الفئة', complaintProject: 'المشروع المرتبط', complaintDesc: 'الوصف',
+  commentPlaceholder: 'اكتب تعليقًا…', cmtTitle: 'التعليقات',
+  custComplaint: 'شكوى العميل', intIssue: 'مشكلة داخلية',
+  appName: IS_FACTORY ? 'PMApp Factory' : 'PMApp بوابة العملاء',
+  tagline: IS_FACTORY ? 'بوابة المصنع الشريك' : 'بوابة مشاريع العملاء',
+};
+I18N.vi = {
+  login: 'Đăng nhập',
+  selectRole: IS_FACTORY ? 'Chọn nhà máy' : 'Chọn khách hàng',
+  accessCode: 'Mã truy cập', enter: 'Vào',
+  custAccount: 'Tài khoản khách hàng', custCode: 'Mã khách hàng', password: 'Mật khẩu',
+  errLogin: 'Tài khoản, mã hoặc mật khẩu không đúng',
+  loginAccount: 'Tài khoản đăng nhập', factoryCode: 'Mã nhà máy',
+  myProjects: 'Dự án của tôi', noProject: 'Chưa có dự án', loading: 'Đang tải…',
+  stage: 'Giai đoạn', progress: 'Tiến độ dự án', custNo: 'Mã dự án khách hàng', factoryNo: 'Mã nhà máy',
+  submit: 'Gửi', cancel: 'Hủy', remark: 'Ghi chú', qty: 'Số lượng', date: 'Ngày',
+  reportTitle: IS_FACTORY ? 'Báo cáo tiến độ' : 'Gửi phản hồi',
+  myRecords: IS_FACTORY ? 'Báo cáo của tôi' : 'Phản hồi của tôi',
+  noRecord: 'Chưa có bản ghi', logout: 'Đăng xuất', settings: 'Cài đặt', language: 'Ngôn ngữ',
+  detail: 'Chi tiết dự án', submitted: 'Đã gửi', errCode: 'Mã truy cập không đúng',
+  errNet: 'Lỗi mạng, vui lòng thử lại',
+  errSelect: IS_FACTORY ? 'Vui lòng chọn nhà máy' : 'Vui lòng chọn khách hàng',
+  allFields: 'Tất cả thông tin', refresh: 'Làm mới', ok: 'Xong',
+  problems: 'Vấn đề', noProblem: 'Chưa có vấn đề liên quan', submitComplaint: 'Gửi khiếu nại',
+  complaintCat: 'Danh mục', complaintProject: 'Dự án liên quan', complaintDesc: 'Mô tả',
+  commentPlaceholder: 'Viết bình luận…', cmtTitle: 'Bình luận',
+  custComplaint: 'Khiếu nại khách hàng', intIssue: 'Vấn đề nội bộ',
+  appName: IS_FACTORY ? 'PMApp Factory' : 'PMApp Cổng khách hàng',
+  tagline: IS_FACTORY ? 'Cổng nhà máy đối tác' : 'Cổng dự án khách hàng',
+};
+I18N.hi = {
+  login: 'लॉग इन',
+  selectRole: IS_FACTORY ? 'कारखाना चुनें' : 'ग्राहक चुनें',
+  accessCode: 'एक्सेस कोड', enter: 'प्रवेश',
+  custAccount: 'ग्राहक खाता', custCode: 'ग्राहक कोड', password: 'पासवर्ड',
+  errLogin: 'खाता, कोड या पासवर्ड गलत है',
+  loginAccount: 'लॉगिन खाता', factoryCode: 'कारखाना कोड',
+  myProjects: 'मेरी परियोजनाएँ', noProject: 'कोई परियोजना नहीं', loading: 'लोड हो रहा है…',
+  stage: 'चरण', progress: 'परियोजना प्रगति', custNo: 'ग्राहक परियोजना संख्या', factoryNo: 'कारखाना संख्या',
+  submit: 'जमा करें', cancel: 'रद्द करें', remark: 'टिप्पणी', qty: 'मात्रा', date: 'तारीख',
+  reportTitle: IS_FACTORY ? 'उत्पादन प्रगति रिपोर्ट' : 'प्रतिक्रिया भेजें',
+  myRecords: IS_FACTORY ? 'मेरी रिपोर्ट' : 'मेरी प्रतिक्रिया',
+  noRecord: 'कोई रिकॉर्ड नहीं', logout: 'लॉग आउट', settings: 'सेटिंग्स', language: 'भाषा',
+  detail: 'परियोजना विवरण', submitted: 'जमा हुआ', errCode: 'गलत एक्सेस कोड',
+  errNet: 'नेटवर्क त्रुटि, पुनः प्रयास करें',
+  errSelect: IS_FACTORY ? 'कृपया कारखाना चुनें' : 'कृपया ग्राहक चुनें',
+  allFields: 'संपूर्ण जानकारी', refresh: 'रीफ्रेश', ok: 'ठीक है',
+  problems: 'समस्याएँ', noProblem: 'कोई संबंधित समस्या नहीं', submitComplaint: 'शिकायत भेजें',
+  complaintCat: 'श्रेणी', complaintProject: 'संबंधित परियोजना', complaintDesc: 'विवरण',
+  commentPlaceholder: 'टिप्पणी लिखें…', cmtTitle: 'टिप्पणियाँ',
+  custComplaint: 'ग्राहक शिकायत', intIssue: 'आंतरिक समस्या',
+  appName: IS_FACTORY ? 'PMApp Factory' : 'PMApp ग्राहक पोर्टल',
+  tagline: IS_FACTORY ? 'साझेदार कारखाना पोर्टल' : 'ग्राहक परियोजना पोर्टल',
+};
 let LANG = localStorage.getItem(CFG.sessionKey + '_lang') || 'zh';
 const T = k => (I18N[LANG] && I18N[LANG][k]) || k;
 
@@ -244,8 +414,8 @@ function renderLogin() {
       <div class="brand">
         <div class="brand-badge">${CFG.code}</div>
         <div>
-          <div class="brand-name">${LANG === 'zh' ? CFG.appName : CFG.appNameEn}</div>
-          <div class="brand-sub">${LANG === 'zh' ? CFG.tagline : CFG.taglineEn}</div>
+          <div class="brand-name">${esc(T('appName'))}</div>
+          <div class="brand-sub">${esc(T('tagline'))}</div>
         </div>
       </div>
       ${isC ? `
@@ -314,7 +484,7 @@ function renderShell() {
       <div class="tb-badge">${CFG.code}</div>
       <div>
         <div class="tb-title">${esc(sess.name)}</div>
-        <div class="tb-sub">${LANG === 'zh' ? CFG.tagline : CFG.taglineEn}</div>
+        <div class="tb-sub">${esc(T('tagline'))}</div>
       </div>
     </div>
     <div class="tb-right">
