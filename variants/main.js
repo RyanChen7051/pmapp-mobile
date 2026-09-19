@@ -56,6 +56,7 @@ const I18N = {
   zh: {
     login: '登录', selectRole: CFG.roleLabel, accessCode: '访问码', enter: '进入',
     custAccount: '客户账号', custCode: '客户代号', password: '密码', errLogin: '账号、代号或密码错误',
+    loginAccount: '登录账号', factoryCode: '工厂代码',
     myProjects: '我的项目', noProject: '暂无项目', loading: '加载中…',
     stage: '阶段', progress: '项目进度', custNo: '客户项目号', factoryNo: '工厂项目号',
     submit: '提交', cancel: '取消', remark: '备注', qty: '数量', date: '日期',
@@ -72,6 +73,7 @@ const I18N = {
   en: {
     login: 'Sign In', selectRole: CFG.roleLabelEn, accessCode: 'Access Code', enter: 'Enter',
     custAccount: 'Customer Account', custCode: 'Customer Code', password: 'Password', errLogin: 'Invalid account, code or password',
+    loginAccount: 'Login Account', factoryCode: 'Factory Code',
     myProjects: 'My Projects', noProject: 'No projects yet', loading: 'Loading…',
     stage: 'Stage', progress: 'Progress', custNo: 'Customer Program', factoryNo: 'Factory P/N',
     submit: 'Submit', cancel: 'Cancel', remark: 'Remarks', qty: 'Quantity', date: 'Date',
@@ -251,17 +253,14 @@ function renderLogin() {
       <input id="inp-account" class="inp" type="text" placeholder="${T('custAccount')}" autocomplete="off">
       <label class="lbl">${T('custCode')}</label>
       <input id="inp-code" class="inp" type="text" placeholder="${T('custCode')}" autocomplete="off">
+      ` : `
+      <label class="lbl">${T('loginAccount')}</label>
+      <input id="inp-account" class="inp" type="text" placeholder="${T('loginAccount')}" autocomplete="off">
+      <label class="lbl">${T('factoryCode')}</label>
+      <input id="inp-code" class="inp" type="text" placeholder="${T('factoryCode')}" autocomplete="off">
+      `}
       <label class="lbl">${T('password')}</label>
       <input id="inp-pass" class="inp" type="password" placeholder="${T('password')}" autocomplete="off">
-      ` : `
-      <label class="lbl">${T('selectRole')}</label>
-      <select id="sel-ident" class="inp">
-        <option value="">-- ${T('selectRole')} --</option>
-        ${S.idents.map(o => `<option value="${esc(o.id)}">${esc(o.name || o.id)}</option>`).join('')}
-      </select>
-      <label class="lbl">${T('accessCode')}</label>
-      <input id="inp-code" class="inp" type="password" placeholder="${T('accessCode')}" autocomplete="off">
-      `}
       <button class="btn-main" id="btn-login">${T('enter')}</button>
       ${loginLangGrid()}
       <div class="hint">${CFG.code} · 外部协作端 · v0.1.0</div>
@@ -276,7 +275,7 @@ function renderLogin() {
   });
   $('btn-login').onclick = doLogin;
   if (isC) $('inp-pass').onkeydown = e => { if (e.key === 'Enter') doLogin(); };
-  else $('inp-code').onkeydown = e => { if (e.key === 'Enter') doLogin(); };
+  else $('inp-pass').onkeydown = e => { if (e.key === 'Enter') doLogin(); };
 }
 
 function doLogin() {
@@ -293,10 +292,16 @@ function doLogin() {
     setSession({ value: row.id, name: row.name, account: row.account, at: Date.now() });
     return boot();
   }
-  const sel = $('sel-ident'), code = $('inp-code').value.trim();
-  if (!sel.value) return toast(T('errSelect'), true);
-  if (code !== CFG.accessCode) return toast(T('errCode'), true);
-  setSession({ value: sel.value, name: sel.options[sel.selectedIndex].text, at: Date.now() });
+  const account = $('inp-account').value.trim();
+  const code = $('inp-code').value.trim();
+  const pass = $('inp-pass').value;
+  if (!account || !code || !pass) return toast(T('errLogin'), true);
+  const row = S.idents.find(o =>
+    (o.account || '').toString().toLowerCase() === account.toLowerCase() &&
+    (o.code || '').toString().toLowerCase() === code.toLowerCase() &&
+    (o.password || '') === pass);
+  if (!row) return toast(T('errLogin'), true);
+  setSession({ value: row.id, name: row.factory_name || row.name, account: row.account, at: Date.now() });
   boot();
 }
 
