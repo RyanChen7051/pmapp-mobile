@@ -56,6 +56,7 @@ const I18N = {
   zh: {
     login: '登录', selectRole: CFG.roleLabel, accessCode: '访问码', enter: '进入',
     custAccount: '客户账号', custCode: '客户代号', password: '密码', errLogin: '账号、代号或密码错误',
+    errLoginF: '账号、工厂代码或密码错误',
     loginAccount: '登录账号', factoryCode: '工厂代码',
     myProjects: '我的项目', noProject: '暂无项目', loading: '加载中…',
     stage: '阶段', progress: '项目进度', custNo: '客户项目号', factoryNo: '工厂项目号',
@@ -85,6 +86,7 @@ const I18N = {
   en: {
     login: 'Sign In', selectRole: CFG.roleLabelEn, accessCode: 'Access Code', enter: 'Enter',
     custAccount: 'Customer Account', custCode: 'Customer Code', password: 'Password', errLogin: 'Invalid account, code or password',
+    errLoginF: 'Invalid account, factory code or password',
     loginAccount: 'Login Account', factoryCode: 'Factory Code',
     myProjects: 'My Projects', noProject: 'No projects yet', loading: 'Loading…',
     stage: 'Stage', progress: 'Progress', custNo: 'Customer Program', factoryNo: 'Factory P/N',
@@ -119,6 +121,7 @@ I18N.es = {
   accessCode: 'Código de acceso', enter: 'Entrar',
   custAccount: 'Cuenta de cliente', custCode: 'Código de cliente', password: 'Contraseña',
   errLogin: 'Cuenta, código o contraseña incorrectos',
+  errLoginF: 'Cuenta, código de fábrica o contraseña incorrectos',
   loginAccount: 'Cuenta de acceso', factoryCode: 'Código de fábrica',
   myProjects: 'Mis proyectos', noProject: 'Sin proyectos', loading: 'Cargando…',
   stage: 'Etapa', progress: 'Progreso del proyecto', custNo: 'Proyecto del cliente', factoryNo: 'N.º de fábrica',
@@ -153,6 +156,7 @@ I18N.ja = {
   accessCode: 'アクセスコード', enter: '入室',
   custAccount: '顧客アカウント', custCode: '顧客コード', password: 'パスワード',
   errLogin: 'アカウント、コード、またはパスワードが正しくありません',
+  errLoginF: 'アカウント、工場コード、またはパスワードが正しくありません',
   loginAccount: 'ログインアカウント', factoryCode: '工場コード',
   myProjects: 'マイプロジェクト', noProject: 'プロジェクトはありません', loading: '読み込み中…',
   stage: '段階', progress: 'プロジェクト進捗', custNo: '顧客プロジェクト番号', factoryNo: '工場品番',
@@ -187,6 +191,7 @@ I18N.fr = {
   accessCode: 'Code d\'accès', enter: 'Entrer',
   custAccount: 'Compte client', custCode: 'Code client', password: 'Mot de passe',
   errLogin: 'Compte, code ou mot de passe incorrect',
+  errLoginF: 'Compte, code usine ou mot de passe incorrect',
   loginAccount: 'Compte de connexion', factoryCode: 'Code usine',
   myProjects: 'Mes projets', noProject: 'Aucun projet', loading: 'Chargement…',
   stage: 'Étape', progress: 'Avancement du projet', custNo: 'Projet client', factoryNo: 'N° d\'usine',
@@ -221,6 +226,7 @@ I18N.de = {
   accessCode: 'Zugangscode', enter: 'Eintreten',
   custAccount: 'Kundenkonto', custCode: 'Kundencode', password: 'Passwort',
   errLogin: 'Konto, Code oder Passwort falsch',
+  errLoginF: 'Konto, Werkscode oder Passwort falsch',
   loginAccount: 'Anmeldekonto', factoryCode: 'Werkscode',
   myProjects: 'Meine Projekte', noProject: 'Keine Projekte', loading: 'Wird geladen…',
   stage: 'Phase', progress: 'Projektfortschritt', custNo: 'Kundenprojekt', factoryNo: 'Werks-Nr.',
@@ -255,6 +261,7 @@ I18N.ar = {
   accessCode: 'رمز الوصول', enter: 'دخول',
   custAccount: 'حساب العميل', custCode: 'رمز العميل', password: 'كلمة المرور',
   errLogin: 'الحساب أو الرمز أو كلمة المرور غير صحيحة',
+  errLoginF: 'الحساب أو رمز المصنع أو كلمة المرور غير صحيحة',
   loginAccount: 'حساب الدخول', factoryCode: 'رمز المصنع',
   myProjects: 'مشاريعي', noProject: 'لا توجد مشاريع', loading: 'جارٍ التحميل…',
   stage: 'المرحلة', progress: 'تقدم المشروع', custNo: 'مشروع العميل', factoryNo: 'رقم المصنع',
@@ -289,6 +296,7 @@ I18N.vi = {
   accessCode: 'Mã truy cập', enter: 'Vào',
   custAccount: 'Tài khoản khách hàng', custCode: 'Mã khách hàng', password: 'Mật khẩu',
   errLogin: 'Tài khoản, mã hoặc mật khẩu không đúng',
+  errLoginF: 'Tài khoản, mã nhà máy hoặc mật khẩu không đúng',
   loginAccount: 'Tài khoản đăng nhập', factoryCode: 'Mã nhà máy',
   myProjects: 'Dự án của tôi', noProject: 'Chưa có dự án', loading: 'Đang tải…',
   stage: 'Giai đoạn', progress: 'Tiến độ dự án', custNo: 'Mã dự án khách hàng', factoryNo: 'Mã nhà máy',
@@ -323,6 +331,7 @@ I18N.hi = {
   accessCode: 'एक्सेस कोड', enter: 'प्रवेश',
   custAccount: 'ग्राहक खाता', custCode: 'ग्राहक कोड', password: 'पासवर्ड',
   errLogin: 'खाता, कोड या पासवर्ड गलत है',
+  errLoginF: 'खाता, फ़ैक्टरी कोड या पासवर्ड गलत है',
   loginAccount: 'लॉगिन खाता', factoryCode: 'कारखाना कोड',
   myProjects: 'मेरी परियोजनाएँ', noProject: 'कोई परियोजना नहीं', loading: 'लोड हो रहा है…',
   stage: 'चरण', progress: 'परियोजना प्रगति', custNo: 'ग्राहक परियोजना संख्या', factoryNo: 'कारखाना संख्या',
@@ -427,6 +436,8 @@ const S = { idents: [], projects: [], records: [], fieldlog: [], issues: [], cur
 const $ = id => document.getElementById(id);
 const esc = s => String(s == null ? '' : s)
   .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+/* 代码/账号比较：忽略大小写、空格、连字符、下划线（HIP-PH = hipph = hip ph） */
+const nrm = s => String(s == null ? '' : s).toLowerCase().replace(/[\s\-_]/g, '');
 
 function toast(msg, bad) {
   const el = $('toast');
@@ -545,8 +556,8 @@ function doLogin() {
     const pass = $('inp-pass').value;
     if (!account || !code || !pass) return toast(T('errLogin'), true);
     const row = S.idents.find(o =>
-      (o.account || '').toString().toLowerCase() === account.toLowerCase() &&
-      (o.id || '').toString().toLowerCase() === code.toLowerCase() &&
+      nrm(o.account) === nrm(account) &&
+      nrm(o.id) === nrm(code) &&
       (o.password || '') === pass);
     if (!row) return toast(T('errLogin'), true);
     setSession({ value: row.id, name: row.name, account: row.account, at: Date.now() });
@@ -555,12 +566,12 @@ function doLogin() {
   const account = $('inp-account').value.trim();
   const code = $('inp-code').value.trim();
   const pass = $('inp-pass').value;
-  if (!account || !code || !pass) return toast(T('errLogin'), true);
+  if (!account || !code || !pass) return toast(T('errLoginF'), true);
   const row = S.idents.find(o =>
-    (o.account || '').toString().toLowerCase() === account.toLowerCase() &&
-    (o.code || '').toString().toLowerCase() === code.toLowerCase() &&
+    nrm(o.account) === nrm(account) &&
+    nrm(o.code) === nrm(code) &&
     (o.password || '') === pass);
-  if (!row) return toast(T('errLogin'), true);
+  if (!row) return toast(T('errLoginF'), true);
   setSession({ value: row.id, name: row.factory_name || row.name, account: row.account, at: Date.now() });
   boot();
 }
