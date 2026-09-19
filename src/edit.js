@@ -252,4 +252,29 @@ export function setupEdit(App) {
       this.toast(tr('已保存，桌面端将自动同步'));
     } catch (e) { this.toast(tr('保存失败: ') + e.message); }
   };
+
+  /* ═══ 通用删除（软删：置 is_deleted=true；无 _sb_id 则仅删本地缓存）═══
+   * 覆盖所有带 editFields 的业务模块；权限走 canEdit(moduleKey)。
+   * field_log 仍走专属 deleteFieldLog（含现场照片/定位等额外处理）。 */
+  App.deleteRecord = async function(moduleKey, id) {
+    if (!this.canEdit(moduleKey)) { this.toast(tr('只读模式，无法删除')); return; }
+    const mod = MODULES[moduleKey];
+    if (!mod) return;
+    if (!confirm(tr('确定删除这条记录？此操作不可撤销。'))) return;
+    const rec = (this.cache[moduleKey] || []).find(r => String(r.id) === String(id));
+    if (!rec) { this.toast(tr('记录不存在')); return; }
+    const sbId = rec._sb_id;
+    try {
+      if (sbId) {
+        const now = new Date().toISOString();
+        await this.sbPatch('sync_data', `supabase_id=eq.${sbId}`, { is_deleted: true, updated_at: now });
+      }
+      this.cache[moduleKey] = (this.cache[moduleKey] || []).filter(r => String(r.id) !== String(id));
+      this.toast(tr('已删除'));
+      if (this.currentPage === 'module-detail' && this.currentModule === moduleKey) {
+        this.goBack();
+      }
+      this.navigate(this.currentPage);
+    } catch (e) { this.toast(tr('删除失败: ') + e.message); }
+  };
 }
