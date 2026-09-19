@@ -819,6 +819,14 @@ function recordCard(r) {
 }
 function renderRecords() {
   const m = $('main');
+  if (!IS_FACTORY) {
+    if (!S.records.length) {
+      m.innerHTML = `<div class="empty"><div class="empty-ico">📝</div><div>${T('noRecord')}</div></div>`;
+      return;
+    }
+    m.innerHTML = `<div class="list">${S.records.map(r => recordCard(r)).join('')}</div>`;
+    return;
+  }
   const news = (S.news || []).slice().sort((a, b) => String(b.date || '').localeCompare(String(a.date || ''))).slice(0, 15);
   const newsCards = news.length ? news.map(n => `
     <a class="news-item" href="${esc(n.url)}" target="_blank" rel="noopener">
@@ -826,36 +834,12 @@ function renderRecords() {
       <div class="ni-meta"><span>📅 ${esc(n.date || '')}</span>${n.source ? `<span>· ${esc(n.source)}</span>` : ''}</div>
       <div class="ni-sum">${esc(n.summary || '')}</div>
     </a>`).join('') : `<div class="empty sm"><div class="empty-ico">📰</div><div>No industry news yet</div></div>`;
-  if (IS_FACTORY) {
-    const recHtml = S.records.length ? S.records.map(r => recordCard(r)).join('')
-      : `<div class="empty sm"><div class="empty-ico">📝</div><div>${T('noRecord')}</div></div>`;
-    m.innerHTML = `
-    <div class="records-2col">
-      <section class="onsite-col">
-        <div class="onsite-head"><span>🛠 现场功能</span><button class="btn-mini" id="btn-new-report">＋ ${T('submit')}</button></div>
-        <div class="list">${recHtml}</div>
-      </section>
-      <aside class="news-col">
-        <div class="news-wrap">
-          <div class="news-head"><div class="news-title">🎧 Headphone Industry News</div></div>
-          ${news.length && news[0].date ? `<div class="news-upd">Updated ${esc(news[0].date)}</div>` : ''}
-          <div class="news-list">${newsCards}</div>
-        </div>
-      </aside>
-    </div>`;
-    const nb = $('btn-new-report');
-    if (nb) nb.onclick = () => openReport((S.projects && S.projects[0]) ? S.projects[0] : null);
-    return;
-  }
-  // CPWA：现场 = 客诉；左栏展示本人提交的客户投诉（同步至 PWA 生产/工程/制程/品质），右栏耳机产业新闻（全英文）
-  const myC = (S.fieldlog || []).filter(r => r.is_customer_complaint)
-    .sort((a, b) => String(b.created_at || '').localeCompare(String(a.created_at || '')));
-  const recHtml = myC.length ? myC.map(r => problemCard(r)).join('')
-    : `<div class="empty sm"><div class="empty-ico">🗣️</div><div>${T('noRecord')}</div></div>`;
+  const recHtml = S.records.length ? S.records.map(r => recordCard(r)).join('')
+    : `<div class="empty sm"><div class="empty-ico">📝</div><div>${T('noRecord')}</div></div>`;
   m.innerHTML = `
   <div class="records-2col">
     <section class="onsite-col">
-      <div class="onsite-head"><span>🛠 现场功能</span><button class="btn-mini" id="btn-new-report">＋ ${T('submitComplaint')}</button></div>
+      <div class="onsite-head"><span>🛠 现场功能</span><button class="btn-mini" id="btn-new-report">＋ ${T('submit')}</button></div>
       <div class="list">${recHtml}</div>
     </section>
     <aside class="news-col">
@@ -867,7 +851,7 @@ function renderRecords() {
     </aside>
   </div>`;
   const nb = $('btn-new-report');
-  if (nb) nb.onclick = () => openComplaintForm(null);
+  if (nb) nb.onclick = () => openReport((S.projects && S.projects[0]) ? S.projects[0] : null);
 }
 
 function renderSettings() {
@@ -1059,20 +1043,48 @@ function renderProblems() {
   const m = $('main');
   const list = [...(S.fieldlog || []), ...(S.issues || [])]
     .sort((a, b) => String(b.created_at || '').localeCompare(String(a.created_at || '')));
+  const news = (S.news || []).slice().sort((a, b) => String(b.date || '').localeCompare(String(a.date || ''))).slice(0, 15);
+  const newsCards = news.length ? news.map(n => `
+    <a class="news-item" href="${esc(n.url)}" target="_blank" rel="noopener">
+      <div class="ni-title">${esc(n.title)}</div>
+      <div class="ni-meta"><span>📅 ${esc(n.date || '')}</span>${n.source ? `<span>· ${esc(n.source)}</span>` : ''}</div>
+      <div class="ni-sum">${esc(n.summary || '')}</div>
+    </a>`).join('') : `<div class="empty sm"><div class="empty-ico">📰</div><div>No industry news yet</div></div>`;
   if (!list.length) {
-    m.innerHTML = `<div class="empty"><div class="empty-ico">🐞</div><div>${T('noProblem')}</div>
-      <button class="btn-ghost" id="btn-reload2">${T('refresh')}</button></div>`;
+    m.innerHTML = `<div class="records-2col">
+      <section class="onsite-col">
+        <div class="onsite-head"><span>🛠 现场功能</span><button class="btn-mini" id="btn-new-report">＋ ${T('submitComplaint')}</button></div>
+        <div class="empty sm"><div class="empty-ico">🐞</div><div>${T('noProblem')}</div>
+          <button class="btn-ghost" id="btn-reload2">${T('refresh')}</button></div>
+      </section>
+      <aside class="news-col"><div class="news-wrap">
+        <div class="news-head"><div class="news-title">🎧 Headphone Industry News</div></div>
+        ${news.length && news[0].date ? `<div class="news-upd">Updated ${esc(news[0].date)}</div>` : ''}
+        <div class="news-list">${newsCards}</div>
+      </div></aside>
+    </div>`;
     const b = $('btn-reload2'); if (b) b.onclick = refreshData;
-    renderComplaintFab(); return;
+    const nb = $('btn-new-report'); if (nb) nb.onclick = () => openComplaintForm(null);
+    return;
   }
-  m.innerHTML = `<div class="list">${list.map(r => r._kind === 'issues' ? issueCard(r) : problemCard(r)).join('')}</div>`;
+  m.innerHTML = `<div class="records-2col">
+    <section class="onsite-col">
+      <div class="onsite-head"><span>🛠 现场功能</span><button class="btn-mini" id="btn-new-report">＋ ${T('submitComplaint')}</button></div>
+      <div class="list">${list.map(r => r._kind === 'issues' ? issueCard(r) : problemCard(r)).join('')}</div>
+    </section>
+    <aside class="news-col"><div class="news-wrap">
+      <div class="news-head"><div class="news-title">🎧 Headphone Industry News</div></div>
+      ${news.length && news[0].date ? `<div class="news-upd">Updated ${esc(news[0].date)}</div>` : ''}
+      <div class="news-list">${newsCards}</div>
+    </div></aside>
+  </div>`;
   document.querySelectorAll('.card').forEach(c => {
     c.onclick = () => {
       const r = findProblem(c.dataset.id);
       if (r) openProblem(r);
     };
   });
-  renderComplaintFab();
+  const nb = $('btn-new-report'); if (nb) nb.onclick = () => openComplaintForm(null);
 }
 
 // 只读详情：展示完整字段 + 留言板（客户可在下方留言，但不可改记录字段）
