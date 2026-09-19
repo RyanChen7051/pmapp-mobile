@@ -1,13 +1,13 @@
-/* CPWA Service Worker — v8 */
-const VERSION = '8';
-const CACHE = 'pmapp-cpwa-v8';
+/* CPWA Service Worker — v9 */
+const VERSION = '9';
+const CACHE = 'pmapp-cpwa-v9';
 const ASSETS = [
   './',
   './index.html',
   './manifest.json',
   './icon-192.png',
   './icon-512.png',
-  './bundle.js?v=8',
+  './bundle.js?v=9',
 ];
 
 // 让新版本立即生效：收到 SKIP_WAITING 后结束旧的等待（由首页「更新」按钮触发）
