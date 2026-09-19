@@ -28,11 +28,13 @@ export function setupDetail(App) {
     const progress = STAGE_PROGRESS[p.stage] || (p.status === 'completed' ? 100 : 0);
     const pColor = progress >= 75 ? 'var(--accent-green)' : progress >= 50 ? 'var(--accent-orange)' : 'var(--accent-blue)';
     const canEdit = this.isAdmin();
+    const canDel = this.canEdit('projects');
 
     // v3.16.0 顶部工具栏（替代 nav bar tb-back/tb-action）
     let html = `<div class="detail-toolbar">
       <span class="back-link" onclick="App.goBack()">← <span data-i18n="btn_back">返回</span></span>
       ${canEdit ? `<span class="edit-link" onclick="App.showEditFor('projects', ${p.id})">✎ <span data-i18n="btn_edit">编辑</span></span>` : ''}
+      ${canDel ? `<span class="edit-link" style="color:#e5484d" onclick="App.deleteRecord('projects', ${p.id})">🗑 <span data-i18n="btn_delete">删除</span></span>` : ''}
     </div>`;
 
     html += `<div class="card"><div class="card-title" style="font-size:17px">📦 ${this.esc(p.name)}</div>
@@ -134,6 +136,7 @@ export function setupDetail(App) {
     let html = `<div class="detail-toolbar">
       <span class="back-link" onclick="App.goBack()">← <span data-i18n="btn_back">返回</span></span>
       ${canEdit ? `<span class="edit-link" onclick="${moduleKey === 'field_log' ? `App.showFieldLogEditor(${id})` : `App.showEditFor('${moduleKey}', ${id})`}">✎ <span data-i18n="btn_edit">编辑</span></span>` : ''}
+      ${canEdit && moduleKey !== 'field_log' ? `<span class="edit-link" style="color:#e5484d" onclick="App.deleteRecord('${moduleKey}', ${id})">🗑 <span data-i18n="btn_delete">删除</span></span>` : ''}
     </div>`;
     html += `<div class="card"><div class="card-title" style="font-size:17px">${mod.icon} `;
     html += this.esc(record[mod.detailFields[0].key] || mod.title + ' #' + id);
