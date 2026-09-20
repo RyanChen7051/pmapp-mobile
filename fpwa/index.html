@@ -21,9 +21,10 @@ body{background:var(--bg);color:var(--ink);font-size:15px;line-height:1.6;
 #app{max-width:640px;margin:0 auto;min-height:100vh}
 
 /* 登录 */
-.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;
+.login-wrap{position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;
   background:linear-gradient(160deg,var(--thd) 0%,var(--th) 55%,var(--th) 100%)}
-.login-card{background:#fff;border-radius:16px;padding:26px 22px;width:100%;max-width:380px;
+.login-wrap::after{content:"";position:absolute;top:50%;left:50%;width:min(78vw,440px);height:min(78vw,440px);transform:translate(-50%,-50%);background:url(logo-mark-white.png) center center / contain no-repeat;opacity:.10;pointer-events:none;z-index:0}
+.login-card{position:relative;z-index:1;background:#fff;border-radius:16px;padding:26px 22px;width:100%;max-width:380px;
   box-shadow:0 12px 34px rgba(0,0,0,.18)}
 .brand{display:flex;align-items:center;gap:13px;margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid var(--line)}
 .brand-badge{background:var(--th);color:#fff;font-weight:700;font-size:12px;letter-spacing:.6px;
