@@ -693,8 +693,17 @@ body.rtl .card-meta { flex-direction: row-reverse; }
   }
 
 /* ═══ PMApp 右下角浮水印（三叉戟 mark，小标）═══ */
-.pmapp-wm{position:fixed;right:calc(env(safe-area-inset-right,0px) + 14px);bottom:calc(var(--safe-bottom,0px) + 60px);width:84px;height:auto;opacity:.12;pointer-events:none;z-index:1;user-select:none;-webkit-user-select:none;}
-@media (max-width:430px){.pmapp-wm{width:72px;}}
+.pmapp-wm{position:fixed;right:calc(env(safe-area-inset-right,0px) + 14px);bottom:calc(var(--safe-bottom,0px) + 60px);width:168px;height:auto;opacity:.12;pointer-events:none;z-index:1;user-select:none;-webkit-user-select:none;}
+@media (max-width:430px){.pmapp-wm{width:144px;}}
+
+/* 首页六个看版板区域的「圆形图腾」浮水印（独立浮水印，大图标、浅色、不挡操作） */
+#cockpit,#home-quick,#home-reports-block,#home-ai-block,#home-messages,#home-news{position:relative;}
+#cockpit::after,#home-quick::after,#home-reports-block::after,#home-ai-block::after,#home-messages::after,#home-news::after{
+  content:"";position:absolute;top:50%;left:50%;
+  width:46%;max-width:200px;aspect-ratio:1/1;transform:translate(-50%,-50%);
+  background:url(logo-mark-white.png) center center / contain no-repeat;
+  opacity:.06;pointer-events:none;z-index:2;
+}
 </style>
 </head>
 <body>
@@ -720,7 +729,7 @@ body.rtl .card-meta { flex-direction: row-reverse; }
       <span class="ai-head-right"><span class="ai-chev" style="transform:rotate(-90deg)">❯</span></span>
     </div>
   </div>
-  <div class="home-block">
+  <div class="home-block" id="home-ai-block">
     <div class="home-block-head" id="ai-head">
       <span>🤖 <span data-i18n="ai_title">智能海外助理</span></span>
       <span class="ai-head-right">
