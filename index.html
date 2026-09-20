@@ -696,8 +696,8 @@ body.rtl .card-meta { flex-direction: row-reverse; }
 .pmapp-wm{position:fixed;right:calc(env(safe-area-inset-right,0px) + 14px);bottom:calc(var(--safe-bottom,0px) + 60px);width:168px;height:auto;opacity:.12;pointer-events:none;z-index:1;user-select:none;-webkit-user-select:none;}
 @media (max-width:430px){.pmapp-wm{width:144px;}}
 
-/* 圆形图腾浮水印（单个，大图标、浅色、不挡操作） */
-.pmapp-wm-mark{position:fixed;left:50%;bottom:calc(var(--safe-bottom,0px) + 96px);width:200px;height:200px;transform:translateX(-50%);background:url(logo-mark-white.png) center center / contain no-repeat;opacity:.06;pointer-events:none;z-index:1;user-select:none;-webkit-user-select:none;}
+/* 圆形图腾浮水印（单个，居中于视口正中间、大图标、浅色、不挡操作） */
+.pmapp-wm-mark{position:fixed;top:50%;left:50%;width:200px;height:200px;transform:translate(-50%,-50%);background:url(logo-mark-white.png) center center / contain no-repeat;opacity:.06;pointer-events:none;z-index:1;user-select:none;-webkit-user-select:none;}
 @media (max-width:430px){.pmapp-wm-mark{width:160px;height:160px;}}
 </style>
 </head>
