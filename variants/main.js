@@ -511,6 +511,18 @@ const EXT = {
   flLocOk:         {zh:'✅ 已记录', en:'✅ Recorded'},
   flLocRec:        {zh:'现场定位已记录', en:'Location recorded'},
   flLocFail:       {zh:'定位失败: ', en:'Location failed: '},
+  /* ─── 现场分类大标题（生产/工程/制程/品质 + 问题 后缀）─── */
+  catProd:       {zh:'生产', en:'Production', es:'Producción', ja:'生産', fr:'Production', de:'Produktion', ar:'الإنتاج', vi:'Sản xuất', hi:'उत्पादन'},
+  catEng:        {zh:'工程', en:'Engineering', es:'Ingeniería', ja:'技術', fr:'Ingénierie', de:'Konstruktion', ar:'الهندسة', vi:'Kỹ thuật', hi:'इंजीनियरिंग'},
+  catProc:       {zh:'制程', en:'Process', es:'Proceso', ja:'工程', fr:'Procédé', de:'Prozess', ar:'العملية', vi:'Quy trình', hi:'प्रक्रिया'},
+  catQual:       {zh:'品质', en:'Quality', es:'Calidad', ja:'品質', fr:'Qualité', de:'Qualität', ar:'الجودة', vi:'Chất lượng', hi:'गुणवत्ता'},
+  probSuffix:    {zh:'问题', en:'Issues', es:'Problemas', ja:'問題', fr:'Problèmes', de:'Probleme', ar:'المشاكل', vi:'Sự cố', hi:'मुद्दे'},
+  catComp:       {zh:'客诉', en:'Complaint', es:'Queja', ja:'クレーム', fr:'Réclamation', de:'Beschwerde', ar:'شكوى', vi:'Khiếu nại', hi:'शिकायत'},
+  stPend:        {zh:'待处理', en:'Pending', es:'Pendiente', ja:'未処理', fr:'En attente', de:'Offen', ar:'معلق', vi:'Chờ xử lý', hi:'लंबित'},
+  stDoing:       {zh:'处理中', en:'In Progress', es:'En progreso', ja:'処理中', fr:'En cours', de:'In Bearbeitung', ar:'قيد المعالجة', vi:'Đang xử lý', hi:'प्रगति में'},
+  stDone:        {zh:'已处理', en:'Resolved', es:'Resuelto', ja:'処理済', fr:'Résolu', de:'Gelöst', ar:'تم الحل', vi:'Đã xử lý', hi:'हल हो गया'},
+  newsUpdNote:   {zh:'每天 08:00 (GMT+8) 自动更新', en:'Auto-updated daily 08:00 (GMT+8)', es:'Actualización automática 08:00 (GMT+8)', ja:'毎日 08:00 (GMT+8) 自動更新', fr:'Mise à jour auto 08:00 (GMT+8)', de:'Täglich 08:00 (GMT+8) auto-aktualisiert', ar:'تحديث تلقائي 08:00 (GMT+8)', vi:'Tự động cập nhật 08:00 (GMT+8)', hi:'दैनिक 08:00 (GMT+8) ऑटो-अपडेट'},
+  flRecorder:    {zh:'问题记录人', en:'Issue Recorder', es:'Reportador', ja:'記録者', fr:'Déclarant', de:'Erfasser', ar:'مسجل المشكلة', vi:'Người ghi nhận', hi:'समस्या रिकॉर्डर'},
 };
 const TE = k => (EXT[k] && EXT[k][LANG]) || (EXT[k] && EXT[k].en) || k;
 
@@ -1155,10 +1167,10 @@ function problemCard(r) {
     <div class="card-head">
       <div class="card-title">📸 ${esc(r.project || '—')}</div>
       ${isC ? `<span class="badge" style="background:#378ADD;color:#fff">${T('custComplaint')}</span>` : ''}
-      ${r.status ? `<span class="badge ${r.status === '已处理' ? 'badge-green' : r.status === '处理中' ? 'badge-orange' : 'badge-red'}">${esc(r.status)}</span>` : ''}
+      ${r.status ? `<span class="badge ${r.status === '已处理' ? 'badge-green' : r.status === '处理中' ? 'badge-orange' : 'badge-red'}">${esc(dispTr(r.status))}</span>` : ''}
     </div>
     <div class="card-meta">
-      ${r.problem_category ? `<span>${T('lblCat')}:${esc(r.problem_category)}</span>` : ''}
+      ${r.problem_category ? `<span>${T('lblCat')}:${esc(dispTr(r.problem_category))}</span>` : ''}
       ${isC && r.customer_code ? `<span>🗣️ ${esc(r.customer_code)}</span>` : ''}
       <span>🕒 ${esc((r.created_at || '').slice(0, 16))}</span>
     </div>
@@ -1173,7 +1185,7 @@ function issueCard(r) {
     <div class="card-head">
       <div class="card-title">🛠 ${esc(proj || '—')}</div>
       <span class="badge" style="background:#7a4fb5;color:#fff">${T('intIssue')}</span>
-      ${r.status ? `<span class="badge ${r.status === 'closed' || r.status === '已解决' || r.status === 'resolved' ? 'badge-green' : (r.status === '处理中' || r.status === 'in_progress' || r.status === 'open') ? 'badge-orange' : 'badge-red'}">${esc(r.status)}</span>` : ''}
+      ${r.status ? `<span class="badge ${r.status === 'closed' || r.status === '已解决' || r.status === 'resolved' ? 'badge-green' : (r.status === '处理中' || r.status === 'in_progress' || r.status === 'open') ? 'badge-orange' : 'badge-red'}">${esc(dispTr(r.status))}</span>` : ''}
     </div>
     <div class="card-meta">
       ${r.title ? `<span>${T('lblTitle')}:${esc(r.title)}</span>` : ''}
@@ -1483,6 +1495,7 @@ function openFieldLogEditor(rec, p) {
   const facVal = (rec && rec.problem_factory) ? rec.problem_factory : (IS_FACTORY ? (sess ? sess.name : '') : '');
   const repEmail = (rec && rec.reporter_email) || '';
   const respEmail = (rec && rec.responsible_email) || '';
+  const repName = (rec && rec.reporter) || (sess ? (sess.user_name || sess.name) : '');
   $('modal').innerHTML = `
   <div class="sheet">
     <div class="sheet-bar"></div>
@@ -1494,14 +1507,16 @@ function openFieldLogEditor(rec, p) {
     ${IS_FACTORY ? `<label class="lbl">${TE('flFactory')}</label><select id="fl-factory" class="inp">${facOpts}</select>` : ''}
     <label class="lbl">${TE('flCategory')}</label>
     <select id="fl-cat" class="inp">
-      ${['工程','品质','制程','生产','客诉'].map(c => `<option value="${esc(c)}"${catVal === c ? ' selected' : ''}>${esc(c)}</option>`).join('')}
+      ${['工程','品质','制程','生产','客诉'].map(c => `<option value="${esc(c)}"${catVal === c ? ' selected' : ''}>${esc(dispTr(c))}</option>`).join('')}
     </select>
     <label class="lbl">${TE('flDesc')}</label>
     <textarea id="fl-desc" class="inp" rows="5" placeholder="${esc(TE('flDescPh'))}">${esc(descVal)}</textarea>
     <label class="lbl">${TE('flStatus')}</label>
     <select id="fl-status" class="inp">
-      ${['待处理','处理中','已处理'].map(s => `<option value="${esc(s)}"${statusVal === s ? ' selected' : ''}>${esc(s)}</option>`).join('')}
+      ${['待处理','处理中','已处理'].map(s => `<option value="${esc(s)}"${statusVal === s ? ' selected' : ''}>${esc(dispTr(s))}</option>`).join('')}
     </select>
+    <label class="lbl">${TE('flRecorder')}</label>
+    <input id="fl-rep" class="inp" type="text" placeholder="${esc(TE('flRecorder'))}" value="${esc(repName)}">
     <label class="lbl">${TE('flPhotos')}</label>
     <input type="file" id="fl-photos-input" accept="image/*" multiple style="display:none" onchange="flAddPhotos(this)">
     <button type="button" class="btn btn-secondary" style="width:100%;margin-bottom:8px" onclick="document.getElementById('fl-photos-input').click()">📷 ${TE('flPickPhoto')}</button>
@@ -1541,6 +1556,7 @@ function openFieldLogEditor(rec, p) {
     base.description = $('fl-desc').value.trim();
     base.status = $('fl-status').value;
     base.reporter_email = $('fl-rep-email').value.trim();
+    base.reporter = $('fl-rep').value.trim();
     base.responsible_email = $('fl-resp-email').value.trim();
     base.photos = (S._flPhotos || []).slice();
     base.gps = S._flGps || '';
@@ -1587,6 +1603,10 @@ function weekRange() {
   return [f(mon), f(nd)];
 }
 const CATS = ['生产', '工程', '制程', '品质'];
+// 现场大标题多语言映射（内部键 → EXT 词典 key）
+const CAT_TR = { '生产': 'catProd', '工程': 'catEng', '制程': 'catProc', '品质': 'catQual' };
+const STATUS_TR = { '待处理': 'stPend', '处理中': 'stDoing', '已处理': 'stDone', '已解决': 'stDone' };
+function dispTr(v) { if (v == null) return v; const k = STATUS_TR[v] || CAT_TR[v]; return k ? (TE(k) || v) : v; }
 // 归一化：主 PWA 的 issue_type / 问题表名 可能是英文(production/engineering/quality)或中文，
 // 统一映射到 FPWA/CPWA 现场的 4 类，确保两端「串在一起」
 const CATMAP = {
@@ -1633,7 +1653,7 @@ function renderOnsite() {
   const secs = CATS.map(cat => {
     const items = catItems(cat);
     return `<section class="cat-sec">
-      <div class="cat-head"><span>${esc(cat)}问题</span><span class="cat-count">${items.length}</span></div>
+      <div class="cat-head"><span>${esc(TE(CAT_TR[cat] || cat))}${esc(TE('probSuffix'))}</span><span class="cat-count">${items.length}</span></div>
       <div class="list">${items.length ? items.slice(0, 10).map(r => r._kind === 'issues' ? issueCard(r) : problemCard(r)).join('') : '<div class="empty-sm">—</div>'}</div>
     </section>`;
   }).join('');
@@ -1659,7 +1679,7 @@ function renderNews() {
     </a>`).join('') : `<div class="empty"><div class="empty-ico">📰</div><div>No industry news yet</div></div>`;
   m.innerHTML = `<div class="news-full">
     <div class="news-head"><div class="news-title">🎧 Headphone Industry News</div></div>
-    ${news.length && news[0].date ? `<div class="news-upd">Updated ${esc(news[0].date)} · 每天 08:00 (GMT+8) 自动更新</div>` : ''}
+    ${news.length && news[0].date ? `<div class="news-upd">Updated ${esc(news[0].date)} · ${TE('newsUpdNote')}</div>` : ''}
     <div class="news-list">${items}</div>
   </div>`;
 }

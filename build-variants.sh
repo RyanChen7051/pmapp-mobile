@@ -34,11 +34,13 @@ VARIANTS = {
     'fpwa': dict(
         variant='factory', code='FPWA', cache='pmapp-fpwa', swpre='fpwa',
         name='PMApp Factory Portal', title='PMApp 工厂端 FPWA',
+        logomark='logo-mark-fpwa.png',
         theme='#1e6b3a', themedark='#155230', accbg='#eaf5ec',
     ),
     'cpwa': dict(
         variant='customer', code='CPWA', cache='pmapp-cpwa', swpre='cpwa',
         name='PMApp Customer Portal', title='PMApp 客户端 CPWA',
+        logomark='logo-mark-cpwa.png',
         theme='#0e5a8a', themedark='#0a4370', accbg='#e8f2f9',
     ),
 }

@@ -26,6 +26,7 @@ body{background:var(--bg);color:var(--ink);font-size:15px;line-height:1.6;
 .login-card{background:#fff;border-radius:16px;padding:26px 22px;width:100%;max-width:380px;
   box-shadow:0 12px 34px rgba(0,0,0,.18)}
 .brand{display:flex;align-items:center;gap:13px;margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid var(--line)}
+.brand::before{content:"";width:48px;height:48px;flex:0 0 auto;background:url(__LOGOMARK__) center center / contain no-repeat;opacity:.95;pointer-events:none}
 .brand-badge{background:var(--th);color:#fff;font-weight:700;font-size:12px;letter-spacing:.6px;
   padding:7px 11px;border-radius:9px;flex:0 0 auto}
 .brand-logo{width:56px;height:56px;border-radius:13px;flex:0 0 auto;
@@ -292,7 +293,10 @@ if ('serviceWorker' in navigator) {
     if (document.getElementById('sw-update-bar')) return;
     var bar = document.createElement('div');
     bar.id = 'sw-update-bar';
-    bar.textContent = '🔄 更新';
+    var _ulang = null;
+    try { for (var _i = 0; _i < localStorage.length; _i++) { var _k = localStorage.key(_i); if (/_lang$/.test(_k)) { _ulang = localStorage.getItem(_k); break; } } } catch (e) {}
+    var _umap = { zh: '🔄 更新', en: '🔄 Update', es: '🔄 Actualizar', ja: '🔄 更新', fr: '🔄 Mettre à jour', de: '🔄 Aktualisieren', ar: '🔄 تحديث', vi: '🔄 Cập nhật', hi: '🔄 अपडेट' };
+    bar.textContent = _umap[(_ulang || 'en').toLowerCase()] || '🔄 Update';
     document.body.appendChild(bar);
     bar.addEventListener('click', function(){
       var sw = navigator.serviceWorker;
