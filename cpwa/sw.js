@@ -1,5 +1,5 @@
 /* CPWA Service Worker — v5 */
-const VERSION = '8';
+const VERSION = '9';
 const CACHE = 'pmapp-cpwa-v6';
 const ASSETS = [
   './',
