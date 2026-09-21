@@ -1,6 +1,6 @@
 /* FPWA Service Worker — v5 */
-const VERSION = '5';
-const CACHE = 'pmapp-fpwa-v5';
+const VERSION = '6';
+const CACHE = 'pmapp-fpwa-v6';
 const ASSETS = [
   './',
   './index.html',
