@@ -70,6 +70,7 @@ select.inp{appearance:none;background:#fbfcfe url("data:image/svg+xml,%3Csvg xml
 .tb-title{font-size:15.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tb-sub{font-size:11px;color:rgba(255,255,255,.72)}
 .tb-right{display:flex;gap:6px;flex:0 0 auto}
+.tb-right::before{content:"";display:block;width:26px;height:26px;flex:0 0 auto;align-self:center;background:url(logo-mark-white.png) center center / contain no-repeat;opacity:.92;pointer-events:none}
 .tb-btn{background:rgba(255,255,255,.18);border:none;color:#fff;width:33px;height:33px;
   border-radius:9px;font-size:15px;cursor:pointer}
 
@@ -113,7 +114,7 @@ select.inp{appearance:none;background:#fbfcfe url("data:image/svg+xml,%3Csvg xml
 .tab.active{color:var(--th);font-weight:600}
 
 /* 弹层 */
-.modal{position:fixed;inset:0;background:rgba(12,22,38,.45);z-index:50;
+.modal{position:fixed;inset:0;background:rgba(12,22,38,.45);z-index:90;
   display:none;align-items:flex-end;justify-content:center}
 .modal.open{display:flex}
 .sheet{background:#fff;width:100%;max-width:640px;border-radius:18px 18px 0 0;
@@ -140,13 +141,14 @@ textarea.inp{resize:vertical;min-height:88px}
   opacity:0;pointer-events:none;transition:.25s;z-index:100;box-shadow:0 4px 14px rgba(0,0,0,.2);max-width:88%}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-/* 版本更新提示（登录后显示的悬浮小按钮，不遮画面） */
+/* 版本更新按钮（常驻悬浮小按钮：登录页与登录后都显示，靠右下、不遮画面） */
 #sw-update-bar{position:fixed;right:12px;bottom:calc(78px + env(safe-area-inset-bottom));
   z-index:80;display:inline-flex;align-items:center;gap:6px;
   background:var(--th);color:#fff;padding:10px 18px;border-radius:22px;
   font-size:13.5px;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(16,32,56,.22);
-  animation:upbar .25s ease}
+  animation:upbar .25s ease;user-select:none;-webkit-user-select:none}
 #sw-update-bar:active{opacity:.85}
+#sw-update-bar.busy{opacity:.75;pointer-events:none}
 @keyframes upbar{from{transform:translateY(16px);opacity:0}to{transform:translateY(0);opacity:1}}
 
 /* 语言选择网格（9 语言） */
@@ -249,36 +251,66 @@ textarea.inp{resize:vertical;min-height:88px}
 .photo-thumb img{width:100%;height:100%;object-fit:cover;display:block}
 .photo-x{position:absolute;top:2px;right:2px;width:22px;height:22px;border:0;border-radius:50%;background:rgba(12,22,38,.6);color:#fff;font-size:12px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .btn-ghost.photo-add{margin-top:8px;width:auto;align-self:flex-start}
+
+/* 我的上报记录：左=现场功能 / 右=耳机产业新闻 两栏 */
+.records-2col{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:12px;align-items:start}
+.onsite-col,.news-col{min-width:0}
+.onsite-head{display:flex;align-items:center;justify-content:space-between;margin:2px 0 12px}
+.onsite-head span{font-size:16px;font-weight:800;color:var(--thd)}
+.btn-mini{background:var(--thd);color:#fff;border:none;border-radius:10px;padding:6px 12px;font-size:13px;font-weight:700;cursor:pointer}
+.btn-mini:active{transform:scale(.97)}
+.news-item{color:inherit;text-decoration:none}
+.empty.sm{padding:18px}
+@media(max-width:680px){.records-2col{grid-template-columns:1fr}}
+
+/* ═══ 三端统一区块（现场 / 汇总 / 耳机行业新闻）═══ */
+.tb-sync-tx{display:block;font-size:9px;line-height:1;margin-top:1px;font-weight:700}
+/* 现场：KPI 看板 + 4 类问题 */
+.kpi-strip{display:flex;gap:10px;padding:12px;overflow-x:auto}
+.kpi-card{flex:1;min-width:118px;background:#fff;border:1px solid #e3e8ef;border-radius:12px;padding:12px 8px;text-align:center}
+.kpi-dot{width:8px;height:8px;border-radius:50%;margin:0 auto 6px}
+.kpi-num{font-size:26px;font-weight:800;line-height:1}
+.kpi-label{font-size:12px;color:#5b6b7b;margin-top:4px}
+.onsite-actions{padding:0 12px 10px}
+.cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 12px 18px}
+.cat-sec{background:#fff;border:1px solid #e3e8ef;border-radius:12px;padding:10px}
+.cat-head{display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:14px;margin-bottom:8px}
+.cat-count{background:#eef3f8;border-radius:20px;padding:1px 10px;font-size:12px;color:#33506b;font-weight:700}
+/* 耳机行业新闻（整页） */
+.news-full{padding:12px}
+/* 汇总：每条问题 + 留言板 */
+.sum-item{margin-bottom:12px}
+.sum-item .cmt-box{margin-top:8px;background:#f7fafc;border:1px solid #eef2f6;border-radius:10px;padding:8px}
+@media(max-width:680px){.cat-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <div id="app"></div>
 <div id="toast"></div>
-<script src="bundle.js?v=5"></script>
+<script src="bundle.js?v=3"></script>
 
 <script>
 if ('serviceWorker' in navigator) {
   window.__cpwaSwUpdate = false;
-  window.cpwaShowUpdate = function(){ if (window.__cpwaSwUpdate) showUpdateBar(); };
+
+  // 常驻「更新」按钮：进入页面即显示（登录页也有），点击=检查更新并刷新
   window.addEventListener('load', function() {
     navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' })
       .then(function(reg){
-        // 已有一个等待中的新 SW（例如跨版本直接加载）
-        if (reg.waiting) { window.__cpwaSwUpdate = true; window.cpwaShowUpdate(); }
+        // 已有等待中的新版本（例如跨版本直接加载）
+        if (reg.waiting) window.__cpwaSwUpdate = true;
         // 检测到新版本正在安装
         reg.addEventListener('updatefound', function(){
           var installing = reg.installing;
           if (!installing) return;
           installing.addEventListener('statechange', function(){
-            // 新 SW 安装完成、且当前已有旧版本在控制页面时才提示更新
-            if (installing.state === 'installed' && navigator.serviceWorker.controller) {
-              window.__cpwaSwUpdate = true;
-              window.cpwaShowUpdate();
-            }
+            if (installing.state === 'installed') window.__cpwaSwUpdate = true;
           });
         });
       })
       .catch(function(e){ console.warn('SW', e); });
+    // 无论是否有新版本，都常驻显示按钮
+    showUpdateBar();
   });
 
   // 新 SW 接管后自动刷新，加载最新资源
@@ -289,19 +321,46 @@ if ('serviceWorker' in navigator) {
     window.location.reload();
   });
 
+  function _swLang(){
+    var L = null;
+    try { for (var i = 0; i < localStorage.length; i++) { var k = localStorage.key(i); if (/_lang$/.test(k)) { L = localStorage.getItem(k); break; } } } catch (e) {}
+    return (L || 'en').toLowerCase();
+  }
+  function _swTxt(key){
+    var M = {
+      upd:      { zh: '🔄 更新', en: '🔄 Update', es: '🔄 Actualizar', ja: '🔄 更新', fr: '🔄 Mettre à jour', de: '🔄 Aktualisieren', ar: '🔄 تحديث', vi: '🔄 Cập nhật', hi: '🔄 अपडेट' },
+      updating: { zh: '🔄 更新中…', en: '🔄 Updating…', es: '🔄 Actualizando…', ja: '🔄 更新中…', fr: '🔄 Mise à jour…', de: '🔄 Aktualisiere…', ar: '🔄 جارٍ التحديث…', vi: '🔄 Đang cập nhật…', hi: '🔄 अपडेट हो रहा है…' },
+      checking: { zh: '🔄 检查中…', en: '🔄 Checking…', es: '🔄 Verificando…', ja: '🔄 確認中…', fr: '🔄 Vérification…', de: '🔄 Prüfe…', ar: '🔄 جارٍ التحقق…', vi: '🔄 Đang kiểm tra…', hi: '🔄 जाँच रहा है…' }
+    };
+    var row = M[key] || M.upd;
+    return row[_swLang()] || row.en;
+  }
   function showUpdateBar(){
     if (document.getElementById('sw-update-bar')) return;
     var bar = document.createElement('div');
     bar.id = 'sw-update-bar';
-    var _ulang = null;
-    try { for (var _i = 0; _i < localStorage.length; _i++) { var _k = localStorage.key(_i); if (/_lang$/.test(_k)) { _ulang = localStorage.getItem(_k); break; } } } catch (e) {}
-    var _umap = { zh: '🔄 更新', en: '🔄 Update', es: '🔄 Actualizar', ja: '🔄 更新', fr: '🔄 Mettre à jour', de: '🔄 Aktualisieren', ar: '🔄 تحديث', vi: '🔄 Cập nhật', hi: '🔄 अपडेट' };
-    bar.textContent = _umap[(_ulang || 'en').toLowerCase()] || '🔄 Update';
+    bar.textContent = _swTxt('upd');
     document.body.appendChild(bar);
     bar.addEventListener('click', function(){
       var sw = navigator.serviceWorker;
-      if (sw.waiting) { sw.waiting.postMessage('SKIP_WAITING'); }
-      else { window.location.reload(); }
+      // 有等待中的新版本：直接启用并接管（接管后 controllerchange 会自动刷新）
+      if (sw.waiting) {
+        bar.classList.add('busy');
+        bar.textContent = _swTxt('updating');
+        sw.waiting.postMessage('SKIP_WAITING');
+        // 兜底：3 秒仍未接管则强制刷新
+        setTimeout(function(){ window.location.reload(); }, 3000);
+        return;
+      }
+      // 没有等待版本：主动检查一次再刷新
+      bar.classList.add('busy');
+      bar.textContent = _swTxt('checking');
+      var go = function(){ window.location.reload(); };
+      if (sw.getRegistration) {
+        sw.getRegistration().then(function(r){
+          if (r && r.update) { r.update().then(go).catch(go); } else { go(); }
+        }).catch(go);
+      } else { go(); }
     });
   }
 }

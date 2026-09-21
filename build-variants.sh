@@ -4,6 +4,8 @@
 #   同一份 variants/main.js，注入不同 __VARIANT__ → FPWA / CPWA 两份产物
 #   用法: bash build-variants.sh [版本号]   例: bash build-variants.sh 3
 # ═══════════════════════════════════════════════════════════════
+# ⚠️ 警告（2026-09-21）：线上 fpwa/index.html 与 cpwa/index.html 含大量手工改动（logo、弹层z-index、两栏布局等）未回填模板。
+# 直接重跑本脚本会用旧模板覆盖 index.html、抹掉这些改动！重build前必须先把线上 index.html 的差异回填 variants/index.template.html。
 set -e
 cd "$(dirname "$0")"
 
