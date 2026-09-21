@@ -1,13 +1,13 @@
-/* FPWA Service Worker — v12 */
-const VERSION = '12';
-const CACHE = 'pmapp-fpwa-v12';
+/* FPWA Service Worker — v13 */
+const VERSION = '13';
+const CACHE = 'pmapp-fpwa-v13';
 const ASSETS = [
   './',
   './index.html',
   './manifest.json',
   './icon-192.png',
   './icon-512.png',
-  './bundle.js?v=12',
+  './bundle.js?v=13',
 ];
 
 // 新版本部署后立即生效：install 阶段直接 skipWaiting，配合 activate 的 clients.claim()
