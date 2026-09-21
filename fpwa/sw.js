@@ -1,25 +1,24 @@
-/* FPWA Service Worker — v5 */
-const VERSION = '11';
-const CACHE = 'pmapp-fpwa-v6';
+/* FPWA Service Worker — v12 */
+const VERSION = '12';
+const CACHE = 'pmapp-fpwa-v12';
 const ASSETS = [
   './',
   './index.html',
   './manifest.json',
   './icon-192.png',
   './icon-512.png',
-  './bundle.js?v=5',
+  './bundle.js?v=12',
 ];
 
-// 让新版本立即生效：收到 SKIP_WAITING 后结束旧的等待（由首页「更新」按钮触发）
+// 新版本部署后立即生效：install 阶段直接 skipWaiting，配合 activate 的 clients.claim()
+// 让新 SW 立即接管所有页面，无需用户手动点「更新」按钮。
 self.addEventListener('message', e => {
   if (e.data === 'SKIP_WAITING') self.skipWaiting();
 });
 
 self.addEventListener('install', e => {
-  // 注意：不在 install 阶段自动 skipWaiting，
-  // 留给首页「发现新版本」按钮在用户点击时再 postMessage('SKIP_WAITING')，
-  // 避免静默刷新、确保更新按钮有意义。
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS).catch(() => {})));
+  self.skipWaiting(); // 关键：新 SW 装好立即激活，杜绝旧 SW 一直喂旧 bundle
+  e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS).catch(() => {})).then(() => self.skipWaiting()));
 });
 
 self.addEventListener('activate', e => {
