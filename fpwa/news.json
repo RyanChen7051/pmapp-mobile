@@ -1,167 +1,114 @@
 {
-  "updated_at": "2026-09-21T08:26:22+08:00",
+  "updated_at": "2026-09-22T15:48:44+08:00",
+  "scope": "bluetooth_earbuds",
   "items": [
     {
-      "title": "Oppo Enco X4 TWS earbuds set for September 22 global launch with AI translation and Dynaudio tuning",
-      "summary": "Oppo's flagship Enco X4 earbuds debut globally on September 22 with AI-powered real-time two-way translation, a coaxial dual-driver system co-developed with Dynaudio, a dual DAC, 4K-class lossless transmission (up to 400 percent faster than the previous generation) and a 6nm AI noise-cancellation chip. Human-voice noise reduction is claimed to improve by up to 250 percent.",
-      "source": "Udaipur Times",
+      "title": "Apple's all-new AirPods 5 bring ANC to an open-ear design for $129",
+      "summary": "Apple announced AirPods 5 on September 9 with an all-new multiport acoustic architecture that removes up to 50 percent more external noise than AirPods 4 with ANC. The open-ear earbuds add next-generation Adaptive EQ, Live Translation, hands-free Siri AI and improved dust, sweat and water resistance, priced from $129, or $149 with a wireless charging case and on-stem volume control. They went on sale on September 18.",
+      "source": "TechRadar",
+      "url": "https://www.techradar.com/audio/earbuds-airpods/apples-all-new-airpods-5-bring-the-industrys-best-active-noise-cancellation-to-an-open-ear-design-preorder-now-for-just-usd129",
+      "date": "2026-09-09",
+      "importance": "critical",
+      "news_date": "2026-09-09"
+    },
+    {
+      "title": "Bose expands open-ear line with Sport Open Earbuds and Ultra Open Earbuds (2nd Gen)",
+      "summary": "Bose unveiled the Sport Open Earbuds at $199 and the Ultra Open Earbuds (2nd Gen) at $299 on September 17, both built on Bose OpenAudio technology and SpeechClarity AI voice isolation. The flagship Ultra Open adds deeper bass, Cinema Mode with TrueSpatial and up to 9 hours of playback, with pre-orders opening September 19 ahead of an October 1 launch.",
+      "source": "Bose Pressroom",
+      "url": "https://www.bose.com/pressroom/bose-sport-open-earbuds-and-bose-ultra-open-earbuds-2nd-gen",
+      "date": "2026-09-17",
+      "importance": "high",
+      "news_date": "2026-09-17"
+    },
+    {
+      "title": "Open-ear earbuds are booming while traditional TWS stalls, Omdia says",
+      "summary": "Omdia data shows open-ear audio growing rapidly while sealed TWS growth flattens, with Bose, Shokz, Sony and CMF all pushing new clip and cuff designs. Sony's $229.99 LinkBuds Clip and the $99 CMF Clip Pro bookend the category, and Omdia expects vendors to add more fitness, commuting and AI features as they chase the segment.",
+      "source": "eCoustics",
+      "url": "https://www.ecoustics.com/news/open-ear-earbuds-market-growth-2026/",
+      "date": "2026-09-17",
+      "importance": "high",
+      "news_date": "2026-09-17"
+    },
+    {
+      "title": "Sennheiser MOMENTUM True Wireless 5 ships with user-replaceable batteries",
+      "summary": "Sennheiser's flagship MOMENTUM True Wireless 5 arrived with user-replaceable batteries in both the earbuds and the case, Bluetooth 6.0 with aptX Lossless up to 24-bit/96kHz, Dolby Atmos head tracking and up to 40 hours of total playback. Priced at $299.95 in the US to match the previous generation, it began shipping on September 3 in five metallic colours.",
+      "source": "CiVL News",
+      "url": "https://civl.com/news/story/sennheiser-announces-wireless-earbuds-with-replaceable-batteries-ef8c996b",
+      "date": "2026-09-03",
+      "importance": "high",
+      "news_date": "2026-09-03"
+    },
+    {
+      "title": "Oppo Enco X4 goes global with AI translation and Dynaudio tuning",
+      "summary": "Oppo launched the Enco X4 true wireless earbuds globally on September 22, featuring a coaxial dual-driver system co-developed with Dynaudio, a 6nm chip with AI noise cancellation, lossless transmission claimed up to 400 percent faster than the previous generation, and AI-powered real-time translation. Each earbud weighs just 5.6g with IP55 dust and water protection.",
+      "source": "UdaipurTimes",
       "url": "https://udaipurtimes.com/technology/oppo-enco-x4-launch-date-ai-translation-features/cid19266137.htm",
-      "news_date": "2026-09-18",
-      "date": "2026-09-18",
-      "importance": "high"
+      "date": "2026-09-22",
+      "importance": "high",
+      "news_date": "2026-09-22"
     },
     {
-      "title": "TOZO launches NC9 Pro earbuds with 1.47-inch smart touchscreen case and LDAC Hi-Res audio",
-      "summary": "TOZO's NC9 Pro introduces a 1.47-inch smart touchscreen charging case that doubles as a control center, alongside LDAC and Hi-Res Audio Wireless, advanced ANC, AI translation and a 10mm SDLC dynamic driver. The earbuds add EarTune hearing optimization, Bluetooth 6.0 multipoint, IPX8 water resistance and a low-latency gaming mode, available from September 15.",
-      "source": "Hope Tribune",
-      "url": "https://news.hopetribune.com/story/577088/tozo-officially-launches-nc9-pro-with-smart-touchscreen-and-hires-audio.html",
-      "news_date": "2026-09-16",
-      "date": "2026-09-16",
-      "importance": "medium"
+      "title": "TOZO NC9 Pro adds a 1.47-inch touchscreen charging case",
+      "summary": "TOZO launched the NC9 Pro earbuds on September 15 with a 1.47-inch smart touchscreen case that doubles as a control centre, plus LDAC and Hi-Res Audio Wireless, a 10mm SDLC dynamic driver, EarTune hearing optimisation and a set of TOZO AI features. Bluetooth 6.0 multipoint, IPX8 protection and a low-latency gaming mode round out the package.",
+      "source": "ACCESS Newswire",
+      "url": "https://www.accessnewswire.com/newsroom/en/consumer-and-retail-products/tozo-officially-launches-nc9-pro-with-smart-touchscreen-and-hi-res-aud-1221135",
+      "date": "2026-09-15",
+      "importance": "medium",
+      "news_date": "2026-09-15"
     },
     {
-      "title": "Audeze Maxwell 2 ANC brings active noise cancellation to a planar magnetic gaming headphone",
-      "summary": "Audeze launched the Maxwell 2 ANC, which it calls the world's first full-range planar magnetic headphone with active noise cancellation. The hybrid ANC system is engineered to preserve the same frequency response whether ANC is on or off, retaining the 90mm planar drivers, SLAM bass technology and FILTER AI microphone noise removal. The PlayStation version is priced at $429 and the Xbox version at $449.",
-      "source": "The Gadgeteer",
-      "url": "https://the-gadgeteer.com/2026/07/22/audeze-maxwell-2-anc",
-      "news_date": "2026-07-22",
-      "date": "2026-07-22",
-      "importance": "medium"
+      "title": "HIFIMAN Svanar Wireless 2 brings R-2R DAC architecture to TWS at $299",
+      "summary": "HIFIMAN introduced the Svanar Wireless 2 reference true wireless earbud at $299, built around the company's new HYMALAYA Mini DAC chip that condenses its R-2R architecture into a single tiny component. Each earbud weighs 7.4g and offers Bluetooth 6.0 with L2HC and LDAC streaming, ANC rated up to -35dB and an independent Class AB balanced amplifier.",
+      "source": "The Absolute Sound",
+      "url": "https://www.theabsolutesound.com/articles/hifiman-debuts-svanar-wireless-2-a-reference-standard-in-tws-design/",
+      "date": "2026-09-02",
+      "importance": "medium",
+      "news_date": "2026-09-02"
     },
     {
-      "title": "Anker enters the OTC hearing aid market with AI-powered RIC Hearing Aids Pro at IFA 2026",
-      "summary": "Anker unveiled its first over-the-counter hearing aids at IFA 2026, the RIC Hearing Aids Pro built on the company's THUS AI chip running 7.2 billion operations per second with four beam-forming microphones to isolate speech in noisy places. The self-fitting devices include an onboard hearing test and a fast-charging case, targeting a US launch in early 2027 after two major OTC makers wound down operations.",
-      "source": "HearingTracker",
-      "url": "https://www.hearingtracker.com/news/anker-enters-otc-hearing-aid-market-with-ai-powered-ric-device",
-      "news_date": "2026-09-05",
-      "date": "2026-09-05",
-      "importance": "medium"
-    },
-    {
-      "title": "Sennheiser MOMENTUM True Wireless 5 add Dolby Atmos head tracking and user-replaceable batteries",
-      "summary": "Sennheiser's flagship earbuds gain Bluetooth 6.0, aptX Lossless up to 24-bit/96kHz, upgraded adaptive hybrid ANC and Dolby Atmos-optimized head tracking. Unusually for true wireless, both the earbuds and the charging case use user-replaceable batteries serviced with a small screwdriver, with up to 12 hours per charge and 40 hours total. Shipping began September 3 at $299.95.",
-      "source": "CE Critic",
-      "url": "https://cecritic.com/news/headphones/sennheiser-momentum-true-wireless-5-adds-dolby-atmos-and-bluetooth-6",
-      "news_date": "2026-09-03",
-      "date": "2026-09-03",
-      "importance": "high"
-    },
-    {
-      "title": "Hisense enters portable Bluetooth speakers with FlexBoom, WeBoom and VoyageBoom outdoor lineup",
-      "summary": "Hisense launched its first outdoor portable Bluetooth speakers - FlexBoom, WeBoom and VoyageBoom - in the US, expanding the TV maker into portable audio against established players JBL and Ultimate Ears. First shown at CES 2026, the rugged lineup marks a new front in the competitive Bluetooth speaker market.",
-      "source": "SoundGuys",
-      "url": "https://www.soundguys.com/hisense-boom-portable-bluetooth-speakers-us-launch-163354/",
-      "news_date": "2026-09-17",
-      "date": "2026-09-17",
-      "importance": "medium"
-    },
-    {
-      "title": "JBL takes on Sonos with new multi-room Cove speakers",
-      "summary": "JBL introduced the Cove series of connected speakers that can run independently, as a stereo pair, or linked into a multi-room sound system. The lineup marks the portable and party-speaker specialist's formal move into whole-home, app-controlled audio to challenge Sonos, with wi-fi enabled home models joining its Bluetooth range.",
-      "source": "The Verge",
-      "url": "https://www.theverge.com/tech/987322/jbl-cove-multi-room-speaker-series-price-availability",
-      "news_date": "2026-09-01",
-      "date": "2026-09-01",
-      "importance": "medium"
-    },
-    {
-      "title": "DPA and Wisycom deliver on Lorde's 'Ultrasound' world tour",
-      "summary": "FOH engineer Philip J. Harvey employed a DPA d:facto 4018VL capsule for Lorde while monitor engineer Keven Glendinning used Wisycom MPR50 beltpacks and MTK transmitters on the 'Ultrasound' world tour, highlighting the growing role of premium microphone and RF wireless systems in large-scale live productions.",
-      "source": "ProSoundWeb",
-      "url": "https://www.prosoundweb.com/",
-      "news_date": "2026-09-16",
-      "date": "2026-09-16",
-      "importance": "low"
-    },
-    {
-      "title": "Ceva launches Microsoft-certified RealSpace Elevate spatial audio software for PC gaming headsets",
-      "summary": "Ceva introduced RealSpace Elevate for Windows, a Microsoft-certified, licensable Windows Audio Processing Object (APO) that lets gaming headset and PC OEMs deliver customizable branded spatial audio without building a proprietary stack. It supports 7.1 multichannel rendering with pinpoint localization and game-focused presets that highlight footsteps and gunshots.",
-      "source": "Ceva",
-      "url": "https://www.ceva-ip.com/press/ceva-launches-microsoft-certified-spatial-audio-software-for-pc-gaming-headsets/",
-      "news_date": "2026-06-23",
-      "date": "2026-06-23",
-      "importance": "low"
-    },
-    {
-      "title": "Voicemod's pocket-friendly device brings real-time voice changing to your phone",
-      "summary": "Voicemod announced a new mobile device that extends its real-time voice-changing Key dongle to phones, letting users apply sound effects and a soundboard on the go. The hardware builds on the console-focused Voicemod Key launched in late 2024 and broadens the company's reach into mobile creators.",
-      "source": "The Verge",
-      "url": "https://www.theverge.com/tech/994828/voicemod-voice-changer-key-pocket-ios-android-soundboard",
-      "news_date": "2026-09-14",
-      "date": "2026-09-14",
-      "importance": "low"
-    },
-    {
-      "title": "Bose's next open earbuds have more bass, more volume, and more battery life",
-      "summary": "Bose unveiled the second-generation Ultra Open Earbuds with a more powerful bass driver, higher maximum volume and longer battery life, refining its open-ear, hear-through design for runners and audiophiles who want ambient awareness without isolating from the world.",
-      "source": "The Verge",
-      "url": "https://www.theverge.com/tech/996341/bose-ultra-open-earbuds-second-gen-wireless-sport",
-      "news_date": "2026-09-17",
-      "date": "2026-09-17",
-      "importance": "high"
-    },
-    {
-      "title": "A little-known audio company is trying to get Samsung, Apple, and Google devices banned in the US",
-      "summary": "An audio patent holder filed a complaint that could lead US regulators to block imports of Samsung, Apple and Google devices, alleging infringement in wireless audio and voice technology - a move that could ripple across the smartphone and earbud market if granted.",
-      "source": "Android Authority",
-      "url": "https://www.androidauthority.com/samsung-google-apple-us-import-bans-investigation-3712680/",
-      "news_date": "2026-09-18",
-      "date": "2026-09-18",
-      "importance": "high"
-    },
-    {
-      "title": "Winamp will be reborn in 2027 to take on streaming",
-      "summary": "Winamp announced it will return in 2027 through a partnership with Deezer, repositioning the iconic music player as a streaming-era service in a bid to challenge Spotify and Apple Music after years of dormancy.",
-      "source": "Engadget",
-      "url": "https://www.engadget.com/2259236/winamp-coming-back-2027-deezer-partnership-streaming-music/",
-      "news_date": "2026-09-20",
-      "date": "2026-09-20",
-      "importance": "medium"
-    },
-    {
-      "title": "Samsung's open-ear Galaxy Buds On leak with clip design, 'Auto Volume,' gestures",
-      "summary": "Leaked renders show Samsung's open-ear Galaxy Buds On with a clip-on design, 'Auto Volume' adaptive loudness and gesture controls, signaling Samsung's entry into the open-ear TWS category popularized by Bose.",
-      "source": "9to5Google",
-      "url": "https://9to5google.com/2026/09/10/samsung-galaxy-buds-on-open-ear-leak/",
-      "news_date": "2026-09-11",
-      "date": "2026-09-11",
-      "importance": "medium"
-    },
-    {
-      "title": "Nothing reportedly launching 'Headphone (1) Pro' later this month for $399",
-      "summary": "Nothing is reportedly preparing a 'Headphone (1) Pro' over-ear model priced at $399, expanding its audio lineup beyond the Headphone (1) and Ear (1) into the premium headphone segment.",
-      "source": "9to5Google",
-      "url": "https://9to5google.com/2026/09/10/nothing-reportedly-launching-headphone-1-pro-later-this-month-for-399/",
-      "news_date": "2026-09-10",
+      "title": "Vivo and iQOO launch budget TWS earbuds in India from Rs 1,899",
+      "summary": "Vivo and iQOO launched budget true wireless earbuds in India at Rs 1,999 and Rs 1,899 respectively. Vivo Buds claim up to 50 hours of battery life with AI call noise cancellation and multiple sound modes, while iQOO Buds add Bluetooth 6.1 dual-device connection, IP54 water resistance and app-based customisation for everyday music, calls and fitness use.",
+      "source": "The Balanced News",
+      "url": "https://thebalanced.news/technology/4c1d875b-70d6-4216-9e77-0eb91ebad045/vivo-and-iqoo-launch-budget-true-wireless-earbuds-with-long-battery-life-in-india",
       "date": "2026-09-10",
-      "importance": "medium"
+      "importance": "medium",
+      "news_date": "2026-09-10"
     },
     {
-      "title": "Sony's new party speakers have more bass, more LEDs, and more connectivity",
-      "summary": "Sony expanded its ULT Power Sound line with new party speakers adding more bass, LED lighting and expanded connectivity including XLR inputs for DJs and live performers.",
-      "source": "The Verge",
-      "url": "https://www.theverge.com/tech/986839/sony-ult-power-sound-speaker-tower-max-5-7-xlr-leds",
-      "news_date": "2026-09-01",
-      "date": "2026-09-01",
-      "importance": "medium"
+      "title": "Nothing Ear (3a) updated with 32MB storage and 12mm drivers for $99",
+      "summary": "Nothing refreshed its $99 Ear (3a) earbuds with 32MB of built-in storage that records calls at the pinch of your fingers before syncing to the Nothing X app, plus upgraded 12mm drivers for fuller hi-res audio. A new pink colourway joins the existing black, white and yellow options.",
+      "source": "Gear Patrol",
+      "url": "https://www.gearpatrol.com/audio/best-tech-audio-hi-fi-releases-2026-september-week-3/",
+      "date": "2026-09-19",
+      "importance": "medium",
+      "news_date": "2026-09-19"
     },
     {
-      "title": "Anker put a display on the case of its new sleepbuds",
-      "summary": "Anker added a small display to the charging case of its new Sleepbuds 4 Pro, which play ambient sound to help users fall asleep and now show battery and playback status at a glance.",
-      "source": "The Verge",
-      "url": "https://www.theverge.com/tech/988265/anker-sleep-earbuds-4-pro-price-date-specs",
-      "news_date": "2026-09-03",
-      "date": "2026-09-03",
-      "importance": "low"
+      "title": "Lab tests show earbud ANC quality depends on the mic array, not the price",
+      "summary": "SoundGuys' updated 2026 lab testing found the Apple AirPods Pro 3 leading average noise reduction at 90 percent, while the $69 CMF Buds 2 Plus reached 83 percent, matching the $249.99 Powerbeats Pro 2. It argues buyers should compare average attenuation across all frequencies rather than peak decibel claims measured at one favourable point.",
+      "source": "SoundGuys",
+      "url": "https://www.soundguys.com/best-bluetooth-earbuds-2014-2638/",
+      "date": "2026-09-19",
+      "importance": "medium",
+      "news_date": "2026-09-19"
     },
     {
-      "title": "Ikea supersized its cheap Bluetooth speaker and added an optical input",
-      "summary": "Ikea supersized its affordable Badkruka Bluetooth speaker and added an optical input, extending its budget home audio range with a larger cabinet and wired connectivity.",
-      "source": "The Verge",
-      "url": "https://www.theverge.com/tech/993910/ikea-badkruka-wireless-bluetooth-speaker-optical-input",
-      "news_date": "2026-09-11",
-      "date": "2026-09-11",
-      "importance": "low"
+      "title": "LE Audio reaches 41% of new TWS shipments, but Auracast usage lags at 8%",
+      "summary": "ABI Research data cited in a new Bluetooth headset market study shows LE Audio adoption reached 41 percent of global new consumer TWS shipments in 2025, yet real-world Auracast broadcast usage stayed below 8 percent. Measured Auracast multi-device latency averaged 45 to 70 milliseconds in congested 2.4GHz environments.",
+      "source": "PW Consulting",
+      "url": "https://pmarketresearch.com/worldwide-bluetooth-headsets-market-research/",
+      "date": "2026-09-22",
+      "importance": "medium",
+      "news_date": "2026-09-22"
+    },
+    {
+      "title": "TWS earbuds generate $14.1B as Bluetooth headphone revenue tops $22B",
+      "summary": "A new Bluetooth devices market report values Bluetooth headphones at $22.02 billion in 2025, about 38 percent of the category, with TWS earbuds alone contributing $14.1 billion. The study notes that adding Auracast and LE Audio raises bill-of-materials cost by $0.40 to $0.90 per unit while unlocking an estimated $4.8 billion of incremental revenue by 2030.",
+      "source": "Market Report Analytics",
+      "url": "https://www.marketreportanalytics.com/reports/bluetooth-devices-market-10374",
+      "date": "2026-09-22",
+      "importance": "low",
+      "news_date": "2026-09-22"
     }
   ]
 }
