@@ -1,13 +1,13 @@
-/* CPWA Service Worker — v13 */
-const VERSION = '13';
-const CACHE = 'pmapp-cpwa-v13';
+/* CPWA Service Worker — v14 */
+const VERSION = '14';
+const CACHE = 'pmapp-cpwa-v14';
 const ASSETS = [
   './',
   './index.html',
   './manifest.json',
   './icon-192.png',
   './icon-512.png',
-  './bundle.js?v=13',
+  './bundle.js?v=14',
 ];
 
 // 新版本部署后立即生效：install 阶段直接 skipWaiting，配合 activate 的 clients.claim()
