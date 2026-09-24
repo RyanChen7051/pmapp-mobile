@@ -1,19 +1,19 @@
 {
-  "updated_at": "2026-09-23T08:33:02+08:00",
+  "updated_at": "2026-09-24T08:30:00+08:00",
   "scope": "bluetooth_earbuds",
   "items": [
     {
-      "title": "Apple's all-new AirPods 5 bring ANC to an open-ear design for $129",
-      "summary": "Apple announced AirPods 5 on September 9 with a multiport acoustic architecture that removes up to 50 percent more external noise than AirPods 4 with ANC. The open-ear earbuds add next-generation Adaptive EQ, Live Translation, hands-free Siri AI and improved dust, sweat and water resistance, priced from $129, or $149 with a wireless charging case and on-stem volume control. They went on sale on September 18.",
-      "source": "TechRadar",
-      "url": "https://www.techradar.com/audio/earbuds-airpods/apples-all-new-airpods-5-bring-the-industrys-best-active-noise-cancellation-to-an-open-ear-design-preorder-now-for-just-usd129",
-      "date": "2026-09-09",
+      "title": "Omdia: OWS shipments grow 12% as TWS market stays flat in Q2 2026",
+      "summary": "Omdia's Q2 2026 data shows global true wireless stereo shipments fell 0.7% year over year to 82.1 million units, the first decline since Q2 2023, while open wireless stereo grew 12% to 11.1 million units and lifted its share to 13.5%. Mainland China dragged the total down with a 9.5% drop as stimulus-driven upgrades faded, but emerging markets and the sub-$50 OWS segment, up 323%, offset part of the weakness. Omdia forecasts OWS to nearly double to 90.5 million units by 2030.",
+      "source": "Stock Titan",
+      "url": "https://www.stocktitan.net/news/TTGT/omdia-ows-shipments-grow-12-as-tws-market-remains-broadly-flat-in-eet48rgars49.html",
+      "date": "2026-09-22",
       "importance": "critical",
-      "news_date": "2026-09-09"
+      "news_date": "2026-09-22"
     },
     {
-      "title": "Bose expands open-ear line with Sport Open Earbuds and Ultra Open Earbuds (2nd Gen)",
-      "summary": "Bose unveiled the Sport Open Earbuds at $199 and the Ultra Open Earbuds (2nd Gen) at $299 on September 17, both built on Bose OpenAudio technology and SpeechClarity AI voice isolation. The flagship Ultra Open adds deeper bass, Cinema Mode with TrueSpatial and up to 9 hours of playback, with pre-orders opening September 19 ahead of an October 1 launch.",
+      "title": "Bose expands open-ear lineup with Sport Open Earbuds and Ultra Open Earbuds 2nd Gen",
+      "summary": "Bose unveiled the Sport Open Earbuds at $199 and the Ultra Open Earbuds 2nd Gen at $299 on September 17, both built on Bose OpenAudio technology with SpeechClarity AI voice isolation. The flagship Ultra Open adds deeper bass, Cinema Mode with TrueSpatial and up to 9 hours of playback, with pre-orders opening September 19 ahead of an October 1 launch.",
       "source": "TechPowerUp",
       "url": "https://www.techpowerup.com/352794/bose-advances-open-ear-audio-with-new-sport-open-earbuds-and-ultra-open-earbuds-2nd-gen",
       "date": "2026-09-17",
@@ -21,9 +21,27 @@
       "news_date": "2026-09-17"
     },
     {
+      "title": "Sennheiser MOMENTUM True Wireless 5 add user-replaceable batteries",
+      "summary": "Sennheiser announced the MOMENTUM True Wireless 5 with user-replaceable batteries in both earbuds and the charging case, accessible with a screwdriver included in the box, a move aimed at cutting e-waste under incoming EU battery rules. Priced at $299.95 and shipping from September 3, the buds add Bluetooth 6.0, aptX Lossless, Dolby Atmos with head tracking and up to 12 hours of playback per earbud with ANC off.",
+      "source": "Particle News",
+      "url": "https://particle.news/story/sennheisers-momentum-true-wireless-5-add-userreplaceable-batteries",
+      "date": "2026-09-03",
+      "importance": "high",
+      "news_date": "2026-09-03"
+    },
+    {
+      "title": "HIFIMAN Svanar Wireless 2 puts an R-2R ladder DAC inside $299 earbuds",
+      "summary": "HIFIMAN announced the Svanar Wireless 2, a $299 true wireless earbud built around the company's R-2R resistor-ladder DAC in a dedicated HYMALAYA Mini chip, claiming twice the resistors of the original in a package five times smaller. The buds pair the converter with a Class AB balanced amp, Bluetooth 6.0 with LDAC and L2HC, ANC rated to -35dB and a 7.4g per-earbud design, with availability quoted as September 2026.",
+      "source": "IntoTheHiFi",
+      "url": "https://www.intothehifi.com/blogs/news-desk/hifiman-puts-an-r-2r-ladder-dac-inside-299-wireless-earbuds",
+      "date": "2026-09-02",
+      "importance": "medium",
+      "news_date": "2026-09-02"
+    },
+    {
       "title": "Oppo Enco X4 goes global with AI translation and Dynaudio tuning",
-      "summary": "Oppo launched the Enco X4 true wireless earbuds globally on September 22, featuring a coaxial dual-driver system co-developed with Dynaudio, a 6nm chip with AI noise cancellation, lossless transmission claimed up to 400 percent faster than the previous generation, and AI-powered real-time translation. Each earbud weighs just 5.6g with IP55 dust and water protection.",
-      "source": "UdaipurTimes",
+      "summary": "Oppo launched the Enco X4 true wireless earbuds globally on September 22, featuring a coaxial dual-driver system co-developed with Dynaudio, a 6nm chip with AI noise cancellation, lossless transmission claimed up to 400 percent faster than the previous generation, and AI-powered real-time translation. Each earbud weighs 5.6g with IP55 dust and water protection.",
+      "source": "Udaipur Times",
       "url": "https://udaipurtimes.com/technology/oppo-enco-x4-launch-date-ai-translation-features/cid19266137.htm",
       "date": "2026-09-22",
       "importance": "high",
@@ -39,6 +57,24 @@
       "news_date": "2026-09-21"
     },
     {
+      "title": "CMF Clip Pro reviewed: Nothing's $99 open-ear earbuds punch above their price",
+      "summary": "Nothing's CMF Clip Pro, the brand's first open-ear model, shipped on August 15 at $99 with a 10.8mm driver, LDAC, a clever Smart Dial on the charging case and up to 10 hours of playback. Early reviews from Gizmodo, TechRadar and others call it a strong value play with excellent battery life and controls, while noting Bluetooth reliability and bass are the main trade-offs versus pricier clip-on rivals.",
+      "source": "Smart Wearables",
+      "url": "https://www.smartwearables.io/blog/cmf-clip-pro-review-99-open-ear-earbuds-buy-or-spend-more-august-2026",
+      "date": "2026-08-15",
+      "importance": "medium",
+      "news_date": "2026-08-15"
+    },
+    {
+      "title": "Sony WF-1000XM6 named best overall wireless earbuds of 2026",
+      "summary": "Stuff's September roundup names the Sony WF-1000XM6 the best overall wireless earbuds of 2026, praising refined noise cancellation from eight microphones and a new QN3e processor, balanced punchy sound from an 8.4mm driver, and a more comfortable, narrower shell. Battery holds at 8 hours with ANC on and 24 hours with the case, with a 10-band EQ in the app.",
+      "source": "Stuff",
+      "url": "https://www.stuff.tv/features/best-true-wireless-headphones/",
+      "date": "2026-09-15",
+      "importance": "high",
+      "news_date": "2026-09-15"
+    },
+    {
       "title": "boAt Airdopes Prime 800D brings Google Gemini Crest AI to budget earbuds",
       "summary": "boAt launched the Airdopes Prime 800D in India on September 21 at Rs. 1,999, the first earbuds to feature its Crest AI platform built with Google Gemini. The TWS earbuds add Dolby Audio, 11mm drivers, Bluetooth 6.1 and up to 45 hours of playback, while Crest AI enables voice questions, Gmail or Calendar assistance and real-time translation across more than 25 languages.",
       "source": "CNBC TV18",
@@ -48,44 +84,8 @@
       "news_date": "2026-09-21"
     },
     {
-      "title": "Huawei FreeBuds 7 launched with ANC and up to 33-hour battery life",
-      "summary": "Huawei launched the FreeBuds 7 true wireless earphones in China on September 8 with active noise cancellation, spatial audio, Hi-Res audio and lossless playback over Bluetooth 6.0 and NearLink E2.0. The semi-in-ear earbuds carry a 48mAh cell for up to 7 hours per charge and 33 hours with the case, weigh 4.3g each, and are priced from CNY 949.",
-      "source": "Gadgets360",
-      "url": "https://www.gadgets360.com/audio/news/huawei-freebuds-7-price-launch-specifications-features-12016977",
-      "date": "2026-09-08",
-      "importance": "medium",
-      "news_date": "2026-09-08"
-    },
-    {
-      "title": "Realme Buds T500 Pro Harry Potter Edition launches in India at Rs 6,999",
-      "summary": "Realme introduced the Buds T500 Pro Harry Potter Edition in India on September 21 alongside the realme 16 Pro Harry Potter Edition, priced at Rs. 6,999 with sales from September 22. The themed TWS earbuds keep 12.4mm drivers, Hi-Res Wireless, LHDC 5.0, up to 50dB hybrid ANC, a six-microphone call array and up to 56 hours of total playback in a Hogwarts-inspired design.",
-      "source": "Beebom",
-      "url": "https://gadgets.beebom.com/news/realme-buds-t500-pro-harry-potter-edition-launched-in-india-with-hogwarts-inspired-design",
-      "date": "2026-09-21",
-      "importance": "low",
-      "news_date": "2026-09-21"
-    },
-    {
-      "title": "Sony WF-1000XM6 named best overall wireless earbuds of 2026",
-      "summary": "Stuff's September 15 roundup names the Sony WF-1000XM6 the best overall wireless earbuds of 2026, praising refined noise cancellation from eight microphones and a new QN3e processor, balanced punchy sound from an 8.4mm driver, and a more comfortable, narrower shell. Battery holds at 8 hours with ANC on and 24 hours with the case, with a 10-band EQ in the app.",
-      "source": "Stuff",
-      "url": "https://www.stuff.tv/features/best-true-wireless-headphones/",
-      "date": "2026-09-15",
-      "importance": "high",
-      "news_date": "2026-09-15"
-    },
-    {
-      "title": "Open-ear earbuds are booming while traditional TWS stalls, Omdia says",
-      "summary": "Omdia data shows open-ear audio growing rapidly while sealed TWS growth flattens, with Bose, Shokz, Sony and CMF all pushing new clip and cuff designs. Sony's $229.99 LinkBuds Clip and the $99 CMF Clip Pro bookend the category, and Omdia expects vendors to add more fitness, commuting and AI features as they chase the segment.",
-      "source": "eCoustics",
-      "url": "https://www.ecoustics.com/news/open-ear-earbuds-market-growth-2026/",
-      "date": "2026-09-17",
-      "importance": "high",
-      "news_date": "2026-09-17"
-    },
-    {
       "title": "Noise Master Buds Open bring Sound by Bose tuning to open-ear earbuds",
-      "summary": "Noise unveiled the Master Buds Open at IFA Berlin 2026, its first open-ear earbuds built on Sound by Bose technology, with a clip-on C-shaped design, 10.8mm drivers, spatial audio, four-microphone calls and dual pairing. Priced between 99 and 199 euro, the buds target commuters and runners and will go on sale in late September across retail and e-commerce channels.",
+      "summary": "Noise unveiled the Master Buds Open at IFA Berlin 2026, its first open-ear earbuds built on Sound by Bose technology, with a clip-on C-shaped design, 10.8mm drivers, spatial audio, four-microphone calls and dual pairing. Priced between 99 and 199 euro, the buds target commuters and runners and went on sale in late September across retail and e-commerce channels.",
       "source": "Techlicious",
       "url": "https://www.techlicious.com/blog/noises-open-earbuds-promise-bose-sound-on-a-budget/",
       "date": "2026-09-08",
