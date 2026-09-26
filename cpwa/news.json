@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-25T08:33:17+08:00",
+  "updated_at": "2026-09-26T08:33:10+08:00",
   "scope": "bluetooth_earbuds",
   "items": [
     {
@@ -18,6 +18,15 @@
       "url": "https://thedailytechfeed.com/apple-holds-lead-as-true-wireless-market-slows-open-ear-earbuds-surge",
       "date": "2026-09-19",
       "importance": "critical",
+      "news_date": "2026-09-19"
+    },
+    {
+      "title": "Anker's Soundcore Liberty 5 Pro Series debuts with first neural-net AI chip",
+      "summary": "Anker's audio brand soundcore unveiled the Liberty 5 Pro Series at Anker Day Philippines on September 19, headlined by the Liberty 5 Pro and the flagship Liberty 5 Pro Max, its first earbuds powered by the Thus neural-net AI chip. The series introduces Adaptive ANC 4.0, a 10-sensor fusion call system that earned a Guinness World Record for TWS speech quality, HearID 5.0 personalization and a smart display on the Pro's charging case, with the Pro Max adding on-device AI note-taking and transcription.",
+      "source": "Manila Republic",
+      "url": "https://www.manilarepublic.com/earbuds-that-think-anker-unveils-the-soundcore-liberty-5-pro-series-with-ankers-first-neural-net-chip/",
+      "date": "2026-09-19",
+      "importance": "high",
       "news_date": "2026-09-19"
     },
     {
@@ -57,15 +66,6 @@
       "news_date": "2026-09-21"
     },
     {
-      "title": "Sony WF-1000XM6 named best overall wireless earbuds of 2026",
-      "summary": "Stuff's September roundup names the Sony WF-1000XM6 the best overall wireless earbuds of 2026, praising refined noise cancellation from eight microphones and a new QN3e processor, balanced punchy sound from an 8.4mm driver and a more comfortable, narrower shell. Battery holds at 8 hours with ANC on and 24 hours with the case, with a 10-band EQ in the app.",
-      "source": "Stuff",
-      "url": "https://www.stuff.tv/features/best-true-wireless-headphones/",
-      "date": "2026-09-15",
-      "importance": "high",
-      "news_date": "2026-09-15"
-    },
-    {
       "title": "Realme Buds T500 Pro Harry Potter Edition pairs LHDC 5.0 and 50dB ANC with Hogwarts design",
       "summary": "Realme launched the Buds T500 Pro Harry Potter Edition in India on September 21 at Rs. 6,999, a themed reskin of the standard T500 Pro with a Hogwarts-crest case and Magic Brown finish. Underneath the design it keeps 12.4mm drivers, LHDC 5.0 hi-res audio, up to 50dB hybrid ANC, six-microphone calls and 56 hours of total battery life, with sales starting September 22.",
       "source": "IntoMobile",
@@ -75,22 +75,22 @@
       "news_date": "2026-09-21"
     },
     {
-      "title": "Huawei FreeBuds 7 debut with 2.3x ANC, 4.6Mbps lossless and AI translation",
-      "summary": "Huawei unveiled the FreeBuds 7 on September 7 with a 4.3g semi-in-ear design and an upgraded AI perception noise-cancellation algorithm that delivers 2.3 times deeper average cancellation than the previous generation. The buds add a custom 10.8mm driver, up to 4.6Mbps lossless transmission, 100dB two-way silent calls and AI translation, with 42 hours of total battery life.",
-      "source": "Gadgets 360",
-      "url": "https://turbo.gadgets360.com/hi/wearable/huawei-freebuds-7-latest-tws-earbuds-launched-2026-price-specifications-ai-noise-cancellation-long-battery-life-more-news-12016644",
-      "date": "2026-09-07",
+      "title": "CMF Clip Pro open-ear earbuds launch with 10.8mm drivers, LDAC and Smart Dial case",
+      "summary": "Nothing's sub-brand CMF launched the Clip Pro open-ear earbuds, a 5.9g clip-on design with a flexible titanium-core C-bridge, 10.8mm drivers, LDAC support and up to 32.5 hours of battery life with the case. Priced at $99 in the US and GBP 79 in the UK, the buds add a signature Smart Dial on the case for volume and playback control, IP54 protection and dual-device Bluetooth 5.4, with a global rollout beginning September 15 after an August 15 debut in the US, UK and Japan.",
+      "source": "My Mobile India",
+      "url": "https://mymobileindia.com/cmf-clip-pro-open-ear-earbuds-launched-with-10-8mm-drivers-up-to-32-5-hours-battery-life-and-ldac-support",
+      "date": "2026-09-15",
       "importance": "medium",
-      "news_date": "2026-09-07"
+      "news_date": "2026-09-15"
     },
     {
-      "title": "Noise Master Buds Open bring Sound by Bose tuning to open-ear earbuds",
-      "summary": "Noise unveiled the Master Buds Open at IFA Berlin 2026, its first open-ear earbuds built on Sound by Bose technology, with a clip-on C-shaped design, 10.8mm drivers, spatial audio, four-microphone calls and dual pairing. Priced between 99 and 199 euro, the buds target commuters and runners and went on sale in late September across retail and e-commerce channels.",
-      "source": "Techlicious",
-      "url": "https://www.techlicious.com/blog/noises-open-earbuds-promise-bose-sound-on-a-budget/",
-      "date": "2026-09-08",
-      "importance": "medium",
-      "news_date": "2026-09-08"
+      "title": "Sony WF-1000XM6 named best overall wireless earbuds of 2026",
+      "summary": "Stuff's September roundup names the Sony WF-1000XM6 the best overall wireless earbuds of 2026, praising refined noise cancellation from eight microphones and a new QN3e processor, balanced punchy sound from an 8.4mm driver and a more comfortable, narrower shell. Battery holds at 8 hours with ANC on and 24 hours with the case, with a 10-band EQ in the app.",
+      "source": "Stuff",
+      "url": "https://www.stuff.tv/features/best-true-wireless-headphones/",
+      "date": "2026-09-15",
+      "importance": "high",
+      "news_date": "2026-09-15"
     }
   ]
 }
