@@ -1,96 +1,96 @@
 {
-  "updated_at": "2026-09-27T08:35:19+08:00",
+  "updated_at": "2026-09-28T12:01:33+08:00",
   "scope": "bluetooth_earbuds",
   "items": [
     {
-      "title": "Realme Buds T500 Pro Harry Potter Edition debut in India with 50dB ANC",
-      "summary": "Realme launched the Buds T500 Pro Harry Potter Edition in India on September 21 at Rs. 6,999, a themed reskin of the standard TWS earbuds with a Hogwarts-crest case and leather-finish design. It keeps 12.4mm drivers, Hi-Res Wireless audio, LHDC 5.0, up to 50dB hybrid ANC, Bluetooth 6.1 and 56 hours of total battery life, with sales starting September 22.",
-      "source": "My Mobile India",
-      "url": "https://www.mymobileindia.com/realme-buds-t500-pro-with-harry-potter-sigil-debut-in-india-priced-%E2%82%B96999",
-      "date": "2026-09-21",
-      "importance": "high",
-      "news_date": "2026-09-21"
-    },
-    {
-      "title": "Bose doubles down on open-ear audio with Ultra Open Earbuds 2nd Gen and Sport model",
-      "summary": "Bose unveiled the Ultra Open Earbuds 2nd Gen at $299 and the Sport Open Earbuds at $199 on September 19, both built on Bose OpenAudio technology with SpeechClarity AI voice isolation. The flagship Ultra Open adds a new driver with deeper bass, Cinema Mode with TrueSpatial, Snapdragon Sound with aptX Adaptive and up to 9 hours of playback, with an October 1 release.",
-      "source": "eCoustics",
-      "url": "https://www.ecoustics.com/products/bose-open-earbuds-2026/",
-      "date": "2026-09-19",
-      "importance": "high",
-      "news_date": "2026-09-19"
-    },
-    {
-      "title": "Vivo Buds Clip launch with 42-hour battery life and real-time translation",
-      "summary": "Vivo launched its first open-ear clip-on earbuds, the Buds Clip, in China on September 21 with up to 42 hours of combined battery life, spatial audio, AI call filtering and simultaneous connections to three devices. Each 5.2g earbud uses a flexible memory-titanium bridge and supports LDAC and Hi-Res Audio Wireless, positioning it as a rival to the Huawei FreeClip 2.",
-      "source": "Notebookcheck",
-      "url": "https://www.notebookcheck.net/Vivo-Buds-Clip-launch-with-42-hour-battery-life-and-real-time-translation.1405462.0.html",
-      "date": "2026-09-21",
-      "importance": "high",
-      "news_date": "2026-09-21"
-    },
-    {
-      "title": "Oppo Enco X4 flagship earbuds pair Dynaudio tuning, adaptive ANC and 53-hour battery",
-      "summary": "Oppo introduced the Enco X4 flagship true wireless earbuds alongside the Find X10 series on September 22, featuring a fourth-generation Dynaudio co-developed dual-driver system, a 6nm chip with adaptive ANC and lossless Hi-Res transmission. Each earbud adds AI live translation, IP55 protection and up to 53 hours of total battery life, launching first in China at CNY 1,199.",
-      "source": "IntoMobile",
-      "url": "https://www.intomobile.com/2026/09/22/oppo-enco-x4-review-a-serious-audio-upgrade-or-just-fancy-branding",
-      "date": "2026-09-22",
-      "importance": "high",
-      "news_date": "2026-09-22"
-    },
-    {
-      "title": "boAt Airdopes Prime 800D bring Google Gemini Crest AI to budget earbuds",
-      "summary": "boAt launched the Airdopes Prime 800D in India on September 21 at Rs. 1,999, the first earbuds to feature its Crest AI platform built with Google Gemini. The TWS earbuds add Dolby Audio, 11mm drivers, Bluetooth 6.1 and up to 45 hours of playback, while Crest AI enables voice questions, Gmail or Calendar assistance and real-time translation across more than 25 languages.",
-      "source": "CNBC TV18",
-      "url": "https://www.cnbctv18.com/technology/boat-airdopes-prime-800d-with-google-gemini-based-crest-ai-launched-in-india-price-specs-19995647.htm",
-      "date": "2026-09-21",
-      "importance": "high",
-      "news_date": "2026-09-21"
-    },
-    {
-      "title": "Sony WF-1000XM6 review: superb sound, but ANC trails Bose and Apple flagships",
-      "summary": "A September 26 research-based review of the Sony WF-1000XM6 flagships praises class-leading transparency, best-in-class Android codec support including LDAC and Auracast, and a smaller shell that finally fits well, but finds noise cancellation slightly behind the Bose QuietComfort Ultra and AirPods Pro 3. Battery is rated at 8.5 hours with ANC on at moderate volume.",
-      "source": "Nexplore Info",
-      "url": "https://nexploreinfo.com/sony-wf-1000xm6-review",
-      "date": "2026-09-26",
-      "importance": "high",
-      "news_date": "2026-09-26"
-    },
-    {
-      "title": "CMF Clip Pro open-ear earbuds launch with 10.8mm drivers, LDAC and Smart Dial case",
-      "summary": "Nothing's sub-brand CMF launched the Clip Pro open-ear earbuds, a 5.9g clip-on design with a flexible titanium-core C-bridge, 10.8mm drivers, LDAC support and up to 32.5 hours of battery life with the case. Priced at $99 in the US and GBP 79 in the UK, the buds add a signature Smart Dial on the case for volume and playback control, IP54 protection and dual-device Bluetooth 5.4, with a global rollout after an August 15 debut.",
-      "source": "LatestLY",
-      "url": "https://latestly.com/technology/cmf-clip-pro-launched-price-specs-and-features-of-open-ear-earbuds-7546158.html",
-      "date": "2026-09-15",
-      "importance": "medium",
-      "news_date": "2026-09-15"
-    },
-    {
-      "title": "Omdia: TWS shipments slip 0.7% in Q2 2026 as open-ear audio jumps 12%",
-      "summary": "Omdia's Q2 2026 data shows global true wireless stereo shipments fell 0.7 percent year over year to 82.1 million units, the first annual decline since Q2 2023, while open wireless stereo grew 12 percent to 11.1 million units and lifted its share to 13.5 percent. Apple held the top spot with 20.5 percent share and OPPO was the only other top-five brand to grow, and Omdia forecasts OWS to nearly double to 90.5 million units by 2030.",
-      "source": "Stock Titan",
-      "url": "https://www.stocktitan.net/news/TTGT/omdia-ows-shipments-grow-12-as-tws-market-remains-broadly-flat-in-eet48rgars49.html",
-      "date": "2026-09-19",
-      "importance": "critical",
-      "news_date": "2026-09-19"
-    },
-    {
-      "title": "Sonova announces Sennheiser Momentum True Wireless 5 earbuds with replaceable battery",
-      "summary": "Sonova announced the Sennheiser Momentum True Wireless 5 on September 3, improving endurance to 12 hours per charge with a Qi wireless charging case and adding Google Fast Pair, Microsoft Swift Pair and a selectable robust RF mode over Bluetooth 6 and Snapdragon Sound. The earbuds ship with a user-replaceable battery design and an MSRP of $299.95.",
-      "source": "audioXpress",
-      "url": "https://audioxpress.com/news/sonova-announces-sennheiser-momentum-true-wireless-5-earbuds",
-      "date": "2026-09-03",
-      "importance": "medium",
-      "news_date": "2026-09-03"
-    },
-    {
-      "title": "Sony LinkBuds Clip review: open-ear surprise with lovely vocals and a fit that needs patience",
-      "summary": "A Hindustan Times verified review of the Sony LinkBuds Clip scores it 7.9 out of 10, praising clean vocals, detailed instrument separation and class-leading call clarity via a bone-conduction sensor, with 9 hours of playback and IPX4 protection. The open-ear C-bridge fit needs an adjustment period and bass lacks the punch of sealed earbuds, but comfort and awareness make it a strong clip-on option.",
-      "source": "Hindustan Times",
-      "url": "https://www.hindustantimes.com/technology/sony-linkbuds-clip-review-an-open-ear-surprise-with-lovely-vocals-and-a-fit-that-needs-patience-ht-verified-101789991777073.html",
+      "title": "1MORE S20 Ultra Clip-On Earbuds Launch as New Open-Ear Standard",
+      "summary": "1MORE launched its flagship S20 Ultra clip-on open-ear earbuds on Sept 20, 2026, featuring a three-magnet acoustic architecture, Hi-Res Wireless LDAC, 360-degree surround sound and SDT Sound Focusing 2.0 to cut leakage. The C-shaped clip uses nickel-titanium memory wire rated for 10,000 bends.",
+      "source": "TMCnet / PRNewswire",
+      "url": "https://www.tmcnet.com/usubmit/2026/09/20/10448496.htm",
       "date": "2026-09-20",
-      "importance": "medium",
-      "news_date": "2026-09-20"
+      "news_date": "2026-09-28",
+      "importance": "high"
+    },
+    {
+      "title": "Realme Buds T500 Pro Harry Potter Edition Debuts in India",
+      "summary": "Realme unveiled the Buds T500 Pro Harry Potter Edition in India on Sept 21, 2026 alongside the Realme 16 Pro. The limited run of 5,000 units packs 12.4mm titanium-coated drivers, up to 50dB ANC, LHDC 5.0, Bluetooth 6.1 triple-device connect and 56h total battery.",
+      "source": "The Sunday Guardian Live",
+      "url": "https://sundayguardianlive.com/tech-news/realme-buds-t500-pro-harry-potter-edition-realme-t500-pro-buds-coming-soon-in-september-in-india-with-harry-potter-themed-smartphone-check-date-time-design-specs-price-pre-order-more-286865/",
+      "date": "2026-09-21",
+      "news_date": "2026-09-28",
+      "importance": "medium"
+    },
+    {
+      "title": "Belkin Expands SoundForm Lineup at IFA 2026 with Affordable ANC",
+      "summary": "At IFA 2026 Belkin added three audio products: SoundForm Isolate Buds (up to 45dB ANC, 32h battery, $59.99), SoundForm Dot (ANC and non-ANC, 30h, from $34.99) and SoundForm Play ANC over-ear headphones for kids with an 85dB limiter.",
+      "source": "AOL / Business Wire",
+      "url": "https://www.aol.com/articles/belkin-expands-soundform-audio-lineup-080000000.html",
+      "date": "2026-09-03",
+      "news_date": "2026-09-28",
+      "importance": "medium"
+    },
+    {
+      "title": "The Best Wireless Earbuds of 2026: Lab-Tested by Experts",
+      "summary": "GearOpen's expert lab ranks 2026 wireless earbuds across ANC, sound and battery. Standouts include the JBL Tour Pro 3 (84% noise reduction, LDAC), Moondrop Space Travel (sub-$30 ANC) and the Apple AirPods Pro 3 leading at 90% average noise reduction.",
+      "source": "GearOpen",
+      "url": "https://gearopen.com/audio-video/the-best-wireless-earbuds-of-2026-lab-tested-by-experts-439476/",
+      "date": "2026-09-28",
+      "news_date": "2026-09-28",
+      "importance": "high"
+    },
+    {
+      "title": "Best True Wireless Earbuds 2026: AirPods Pro 3, Sony, Bose, Sennheiser Compared",
+      "summary": "SolderMag compares flagship TWS for 2026 by priority: Technics EAH-AZ100 for overall, Sony WF-1000XM5 for Android, Bose QuietComfort Ultra for ANC and Sennheiser MOMENTUM TW 4 for sound. The guide stresses fit, multipoint and codec support over spec-sheet marketing.",
+      "source": "SolderMag",
+      "url": "https://www.soldermag.com/posts/best-true-wireless-earbuds-2026",
+      "date": "2026-09-28",
+      "news_date": "2026-09-28",
+      "importance": "high"
+    },
+    {
+      "title": "Apple Holds TWS Lead as Market Slows, Open-Ear Surges",
+      "summary": "Omdia data for Q2 2026 shows total TWS shipments fell 0.7% YoY while Apple rose 1.2% to 16.8M units and 20.5% share. Open wireless stereo jumped 12%, with Shokz up 107.9% YoY; Omdia forecasts OWS to more than double to 90.5M units by 2030.",
+      "source": "The Daily Tech Feed",
+      "url": "https://thedailytechfeed.com/apple-holds-lead-as-true-wireless-market-slows-open-ear-earbuds-surge",
+      "date": "2026-09-28",
+      "news_date": "2026-09-28",
+      "importance": "critical"
+    },
+    {
+      "title": "IDC: Clip-On Earbuds Jump 82.2% as Open-Ear Hits 12.33M Units",
+      "summary": "IDC reports Q2 2026 clip-on earbuds surged 82.2% YoY, now over 60% of the 12.33M-unit open-ear category (+35%). Earwear overall reached 96.13M units (+5.4%). China drove more than 60% of open-ear shipments, with brands like Bose, Anker, JBL and Xiaomi entering clip-on.",
+      "source": "GSMDome",
+      "url": "https://www.gsmdome.com/idc-clip-on-earbuds-jump-82-2-as-open-ear-market-reaches-12-33-million-units",
+      "date": "2026-09-28",
+      "news_date": "2026-09-28",
+      "importance": "critical"
+    },
+    {
+      "title": "Conventional Wireless Earbuds Post First Annual Drop in Three Years",
+      "summary": "GCN reports global TWS shipments slipped 0.7% YoY to about 82M in Q2 2026, the first annual decline since 2023, while open wireless stereo grew 12% to 11.1M units (13.5% share). Sub-$50 open-ear shipments leapt 323% YoY, signaling demand at both ends of the price range.",
+      "source": "GCN",
+      "url": "https://gcn.com/conventional-wireless-earbuds-slipped-million-shipments/21836",
+      "date": "2026-09-28",
+      "news_date": "2026-09-28",
+      "importance": "high"
+    },
+    {
+      "title": "10 Best Wireless Earbuds (September 2026)",
+      "summary": "World Is Round's 90-day test of 47 pairs shortlists 2026 earbuds: Apple AirPods Pro 3 (editor's choice), Samsung Galaxy Buds 4 Pro (premium) and TOZO NC9 (budget, IPX8, 60h). The roundup weights ANC, battery with case and ecosystem fit over raw price.",
+      "source": "World Is Round",
+      "url": "https://www.worldisround.com/best-wireless-earbuds",
+      "date": "2026-09-28",
+      "news_date": "2026-09-28",
+      "importance": "medium"
+    },
+    {
+      "title": "Open-Ear Battery Life Is the Only True Differentiator, Says Analysis",
+      "summary": "A 2026 open-ear analysis finds audio quality differences marginal across brands, with battery endurance the real value split: Bose Ultra Open lasts 7h at $300 while the $60 Baseus Bowie MC2 delivers 13h and IP67. Case capacity ranges 19.5h (Bose) to 60h (Baseus).",
+      "source": "Sourcing.com",
+      "url": "https://sourcing.com/?live-blog-31512153-2026-08-24-semalt-reads-open-ear-earbuds-battery-life-is-the-only-true-differentiator",
+      "date": "2026-08-24",
+      "news_date": "2026-09-28",
+      "importance": "low"
     }
   ]
 }
