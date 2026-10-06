@@ -1,95 +1,95 @@
 {
-  "updated_at": "2026-09-30T08:30:00+08:00",
+  "updated_at": "2026-10-06T08:33:19+08:00",
   "scope": "bluetooth_earbuds",
   "items": [
     {
-      "title": "Omdia: OWS Shipments Grow 12% as TWS Market Remains Broadly Flat in 2Q26",
-      "summary": "Global true wireless stereo (TWS) shipments fell 0.7% year-over-year to 82.1 million units in Q2 2026, the first annual decline since 2Q23, while open wireless stereo (OWS) grew 12% to 11.1 million units, lifting its share of the category to 13.5%.",
-      "source": "Yahoo Finance",
-      "url": "https://finance.yahoo.com/technology/articles/omdia-ows-shipments-grow-12-080700520.html",
-      "date": "2026-09-17",
-      "news_date": "2026-09-17",
+      "title": "Fairphone Reveals Fairbuds 2: Modular, Repairable TWS Earbuds With LDAC",
+      "summary": "Fairphone will officially unveil the Fairbuds 2 on October 14, 2026, retaining a modular design with seven fully replaceable parts. The second-generation earbuds add Sony's LDAC high-resolution codec alongside SBC and AAC, and launch at 119 euros in Europe and 119 dollars in the US.",
+      "source": "Android Authority",
+      "url": "https://www.androidauthority.com/fairbuds-2-launch-date-3716894/",
+      "date": "2026-09-30",
+      "news_date": "2026-09-30",
+      "importance": "high"
+    },
+    {
+      "title": "Huawei Launches FreeBuds Neo with 30dB Adaptive ANC",
+      "summary": "Huawei officially released the FreeBuds Neo on October 1, 2026, a youth-focused noise-cancelling earbud with a dual-path active noise control architecture delivering an average 30dB cancellation depth. It features a Turbo driver, up to 2.3Mbps lossless audio, spatial audio and a gaming low-latency mode.",
+      "source": "PCPop",
+      "url": "https://m.pcpop.com/article_6952583.html",
+      "date": "2026-10-01",
+      "news_date": "2026-10-01",
+      "importance": "high"
+    },
+    {
+      "title": "Omdia: TWS Shipments Slip 0.7% While Open-Ear Segment Jumps 12%",
+      "summary": "Industry tracker Omdia reports Apple shipped 16.8 million TWS devices in Q2 2026, up 1.2% year over year and holding a 20.5% share as the total market contracted 0.7%. Open wireless stereo (OWS) shipments rose 12%, led by Shokz at 1.1 million units with 107.9% growth, and are forecast to reach 90.5 million by 2030.",
+      "source": "The Daily Tech Feed",
+      "url": "https://thedailytechfeed.com/apple-holds-lead-as-true-wireless-market-slows-open-ear-earbuds-surge",
+      "date": "2026-09-19",
+      "news_date": "2026-09-19",
       "importance": "critical"
     },
     {
-      "title": "Bose Doubles Down on Open-Ear Audio With Ultra Open 2nd Gen and Sport Open Earbuds",
-      "summary": "Bose refreshed its open-ear lineup with the Ultra Open Earbuds (2nd Gen) at $299, adding a new driver for deeper bass, Cinema Mode with TrueSpatial, and wireless charging, plus a $199 Sport variant, both available October 1 after September 19 preorders.",
-      "source": "eCoustics",
-      "url": "https://www.ecoustics.com/products/bose-open-earbuds-2026/",
-      "date": "2026-09-17",
-      "news_date": "2026-09-17",
-      "importance": "high"
-    },
-    {
-      "title": "Noise and Bose Team Up on Affordable, Futuristic Open-Ear Earbuds",
-      "summary": "Indian brand Noise unveiled its first open-ear earbuds, the Master Buds Open, at IFA Berlin 2026, built with Sound by Bose tuning and a clip-on design, priced around EUR 119 and planned to launch in late September 2026.",
-      "source": "Notebookcheck",
-      "url": "https://www.notebookcheck.net/Noise-and-Bose-team-up-on-affordable-futuristic-open-ear-earbuds.1390685.0.html",
-      "date": "2026-09-09",
-      "news_date": "2026-09-09",
-      "importance": "high"
-    },
-    {
-      "title": "Sonova Announces Sennheiser Momentum True Wireless 5 Earbuds",
-      "summary": "Sennheiser's Momentum True Wireless 5 ships September 3, 2026 at $299.95, featuring Bluetooth 6, Snapdragon Sound, user-replaceable batteries, 12 hours of playback per charge, and a selectable robust RF mode for crowded environments.",
-      "source": "audioXpress",
-      "url": "https://audioxpress.com/news/sonova-announces-sennheiser-momentum-true-wireless-5-earbuds",
-      "date": "2026-09-03",
-      "news_date": "2026-09-03",
-      "importance": "high"
-    },
-    {
-      "title": "Realme Buds T500 Pro With Harry Potter Sigil Debut In India at Rs 6,999",
-      "summary": "Realme launched the Buds T500 Pro Harry Potter Edition TWS earbuds in India on September 21 alongside the Realme 16 Pro 5G, with 12.4mm drivers, 50dB ANC, Bluetooth 6.1, Hi-Res audio, and 56 hours total playback, sales starting September 22.",
-      "source": "My Mobile India",
-      "url": "https://www.mymobileindia.com/realme-buds-t500-pro-with-harry-potter-sigil-debut-in-india-priced-%e2%82%b96999",
-      "date": "2026-09-21",
-      "news_date": "2026-09-21",
+      "title": "Nothing and CMF Debut Ear (3a), Buds Pro 2 and Clip Pro in Nepal",
+      "summary": "Chaudhary Group launched three Nothing and CMF audio products in Nepal on September 25, 2026, with availability from September 27. The lineup spans ANC true-wireless earbuds, the dual-driver CMF Buds Pro 2 with a Smart Dial, and the open-ear CMF Clip Pro, priced from 8,599 rupees.",
+      "source": "24 Ghanta Nepal",
+      "url": "https://www.24ghantanepal.com/article/cg-launches-nothing-ear-3a-cmf-buds-pro-2-and-cmf-clip-pro-in-nepal-prices-and-features",
+      "date": "2026-09-25",
+      "news_date": "2026-09-25",
       "importance": "medium"
     },
     {
-      "title": "HIFIMAN Puts an R-2R Ladder DAC Inside $299 Wireless Earbuds",
-      "summary": "HIFIMAN announced the Svanar Wireless 2 on September 2, 2026, a $299 pair of true wireless earbuds housing its proprietary HYMALAYA Mini R-2R DAC chip, with Bluetooth 6.0, LDAC and L2HC support, and ANC rated to -35dB.",
-      "source": "Into The HiFi",
-      "url": "https://www.intothehifi.com/blogs/news-desk/hifiman-puts-an-r-2r-ladder-dac-inside-299-wireless-earbuds",
-      "date": "2026-09-02",
-      "news_date": "2026-09-02",
+      "title": "AI Open-Ear Earphones Market Projected to Hit 4.1 Billion by 2032",
+      "summary": "A new market report values the AI open-wearable-stereo earphones category at 1.25 billion US dollars in 2025, forecasting growth to 4.1 billion by 2032 at an 18.5% CAGR. Bluetooth 5.3 and above led connectivity revenue in 2025, with Shokz, Oladance, EarFun, Anker Soundcore and Huawei among the profiled vendors.",
+      "source": "PMarketResearch",
+      "url": "https://pmarketresearch.com/hc?p=10709",
+      "date": "2026-09-28",
+      "news_date": "2026-09-28",
       "importance": "medium"
     },
     {
-      "title": "Sony WF-1000XM6 Review: Sound Great, ANC Falls Short",
-      "summary": "Sony's $329.99 flagship WF-1000XM6 earns praise for detailed, customizable sound and strong isolation, but independent testing finds its noise cancellation trails the Bose QuietComfort Ultra 2 and AirPods Pro 3, with fit requiring patience.",
-      "source": "Nexplore Info",
-      "url": "https://nexploreinfo.com/sony-wf-1000xm6-review",
-      "date": "2026-09-26",
-      "news_date": "2026-09-26",
-      "importance": "high"
-    },
-    {
-      "title": "Oppo Enco X4 Colourways and Key Features Revealed Ahead of September 22 Launch",
-      "summary": "Oppo teased the Enco X4 TWS earbuds ahead of their September 22 global launch, highlighting a 6nm chip, fourth-generation Dynaudio co-developed coaxial dual drivers, lossless transmission up to 400% faster, and AI-powered real-time two-way translation.",
-      "source": "Gadgets 360",
-      "url": "https://www.gadgets360.com/audio/news/oppo-enco-x4-colour-options-design-launch-features-news-12058283",
-      "date": "2026-09-14",
-      "news_date": "2026-09-14",
-      "importance": "high"
-    },
-    {
-      "title": "CMF's First Open-Ear Earbuds Arrive With a Smart Dial Charging Case",
-      "summary": "Nothing's CMF sub-brand launched the Clip Pro, its first open-ear earbuds, at $99, featuring a three-point titanium-wire clip, 10.8mm drivers, Ultra Bass Technology, a rotating Smart Dial on the case, and a global rollout completed by September 15, 2026.",
+      "title": "Digital Trends Names Sony WF-1000XM6 Best Wireless Earbuds of 2026",
+      "summary": "Digital Trends' 2026 earbuds guide ranks the Sony WF-1000XM6 as the best overall, praising redesigned drivers, four microphones per bud and class-leading ANC, with the Bose QuietComfort Ultra Earbuds 2nd Gen and Apple AirPods Pro 3 also top picks across premium, budget and open-ear categories.",
       "source": "Digital Trends",
-      "url": "https://digitaltrends.com/home-theater/cmfs-first-open-ear-earbuds-are-here-with-a-smart-dial-charging-case-that-lets-you-control-music",
-      "date": "2026-09-15",
-      "news_date": "2026-09-15",
+      "url": "https://www.digitaltrends.com/home-theater/best-true-wireless-earbuds/",
+      "date": "2026-09-30",
+      "news_date": "2026-09-30",
       "importance": "medium"
     },
     {
-      "title": "BoAt Airdopes Prime 800D Launched With Google Gemini-Powered AI, Dolby Audio and 45-Hour Battery",
-      "summary": "BoAt's Airdopes Prime 800D brings Google Gemini-powered Crest AI to budget earbuds at Rs 1,999, with 11mm drivers, Dolby Audio, four-microphone ENC, live two-way translation across 25 languages, and up to 45 hours of total battery life.",
-      "source": "TechMagazines",
-      "url": "https://www.techmagazines.net/boat-airdopes-prime-800d-launched-at-rs-1999/",
-      "date": "2026-09-21",
-      "news_date": "2026-09-21",
+      "title": "Pixel Buds Pro 2 Review: Tiny Earbuds With a Direct Line to Gemini",
+      "summary": "Google's Pixel Buds Pro 2 pair an 11mm driver with the Tensor A1 chip, Silent Seal 2.0 ANC and hands-free Gemini access, priced at 229 dollars. The review finds a compact secure fit and strong sound, but notes weaker ANC versus class leaders and limited appeal for iPhone users.",
+      "source": "MEFMobile",
+      "url": "https://mefmobile.org/pixel-buds-pro-2-review-tiny-earbuds-with-big-sound-and-a-direct-line-to-gemini",
+      "date": "2026-10-05",
+      "news_date": "2026-10-05",
+      "importance": "medium"
+    },
+    {
+      "title": "Sony WF-1000XM6 vs Soundcore Liberty 5 Pro: 2026 TWS Showdown",
+      "summary": "A head-to-head comparison pits the 278-dollar Sony WF-1000XM6 against the 170-dollar Soundcore Liberty 5 Pro, both with LDAC and adaptive ANC. HearWiki scores the Sony 87/100 for sound and ANC and the Soundcore 84/100, highlighting the latter's stronger call quality and value.",
+      "source": "HearWiki",
+      "url": "https://hearwiki.com/articles/sony-wf-1000xm6-vs-soundcore-liberty-5-pro",
+      "date": "2026-09-20",
+      "news_date": "2026-09-20",
+      "importance": "medium"
+    },
+    {
+      "title": "Android Central's 2026 Earbuds Guide Highlights OnePlus Buds 4 Value",
+      "summary": "Android Central's 2026 buying guide spotlights the OnePlus Buds 4 as a top budget pick around 80 dollars with flagship-class tech, alongside the Google Pixel Buds Pro 2, Beats Powerbeats Pro 2 with heart-rate tracking, and the Technics EAH-AZ100 for audiophiles.",
+      "source": "Android Central",
+      "url": "https://www.androidcentral.com/best-wireless-earbuds",
+      "date": "2026-09-28",
+      "news_date": "2026-09-28",
+      "importance": "medium"
+    },
+    {
+      "title": "BestPick.guide Ranks AirPods Pro 3 Best Wireless Earbuds of 2026",
+      "summary": "BestPick.guide's 2026 comparison places the Apple AirPods Pro 3 at the top with a 4.9/5 score for its H3 chip, FDA-cleared hearing-aid mode and 36-hour battery, followed by the Sony WF-1000XM6 and Bose QuietComfort Ultra Earbuds 2, with the Nothing Ear (a) named best mid-range.",
+      "source": "BestPick.guide",
+      "url": "https://bestpick.guide/electronics/best-wireless-earbuds",
+      "date": "2026-09-30",
+      "news_date": "2026-09-30",
       "importance": "medium"
     }
   ]
