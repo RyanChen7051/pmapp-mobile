@@ -1,95 +1,95 @@
 {
-  "updated_at": "2026-10-08T08:30:00+08:00",
+  "updated_at": "2026-10-09T08:30:00+08:00",
   "scope": "bluetooth_earbuds",
   "items": [
     {
-      "title": "Bose Unveils Sport Open and Ultra Open Earbuds (2nd Gen) for Open-Ear Listening",
-      "summary": "Bose announced two open-ear models on September 17: the Sport Open Earbuds at $199 with an IP54 C-arm cuff for workouts, and the Ultra Open Earbuds (2nd Gen) at $299 with deeper bass, Cinema Mode and a wireless charging case. Both ship October 1 and target users who want ambient awareness over noise isolation.",
-      "source": "Bose Pressroom",
+      "title": "Sennheiser Momentum True Wireless 5 Launches in India With User-Replaceable Batteries",
+      "summary": "Sennheiser launched the Momentum True Wireless 5 in India at Rs 29,990, featuring 7mm TrueResponse drivers, Bluetooth 6.0, aptX Lossless and up to 40 hours of total battery life. A standout feature is user-replaceable batteries in both earbuds and the charging case, targeting longer product life and e-waste reduction.",
+      "source": "Smartprix",
+      "url": "https://us.smartprix.com/bytes/sennheiser-momentum-5-wireless-and-momentum-true-wireless-5-launch-in-india-replaceable-batteries-set-them-apart/",
+      "date": "2026-10-01",
+      "news_date": "2026-10-01",
+      "importance": "high"
+    },
+    {
+      "title": "OPPO Enco X3s Premium TWS Earbuds Debut Globally Alongside Find X9 Series",
+      "summary": "OPPO introduced the Enco X3s premium TWS earbuds worldwide, offering Hi-Res Audio with the LDHC 5.0 codec, dual dynamic drivers with dual DACs, 55dB ANC across a 5,500Hz range, IP55 rating and AI Translate. International pricing starts at EUR 129.",
+      "source": "LatestLY",
+      "url": "https://www.latestly.com/socially/technology/oppo-enco-x3s-earbuds-launched-alongside-oppo-find-x9-pro-and-oppo-find-x9-globally-check-price-specifications-and-features-7180835.html",
+      "date": "2026-10-01",
+      "news_date": "2026-10-01",
+      "importance": "medium"
+    },
+    {
+      "title": "Fairphone Fairbuds 2 Revealed: Modular Repairable Earbuds Launching October 14 at EUR 119",
+      "summary": "Fairphone confirmed the Fairbuds 2 will launch on October 14, 2026, with seven fully replaceable modular parts and new support for Sony's LDAC hi-res codec, up from SBC/AAC on the original. Priced at EUR 119 in Europe and USD 119 in the US, the earbuds target sustainable TWS with a lower entry cost.",
+      "source": "Android Authority",
+      "url": "https://www.androidauthority.com/fairbuds-2-launch-date-3716894/",
+      "date": "2026-09-29",
+      "news_date": "2026-09-29",
+      "importance": "high"
+    },
+    {
+      "title": "Bose Unveils Sport Open and Ultra Open Earbuds 2nd Gen With Cinema Mode and Wireless Charging",
+      "summary": "Bose announced the Sport Open Earbuds and Ultra Open Earbuds (2nd Gen), its most serious open-ear push yet. The Ultra Open 2 adds a redesigned driver with deeper bass, up to 9 hours playback, a wireless charging upright case, SpeechClarity calls and a new Cinema Mode, shipping October 1 for USD 299.",
+      "source": "Bose",
       "url": "https://www.bose.com/pressroom/bose-sport-open-earbuds-and-bose-ultra-open-earbuds-2nd-gen",
       "date": "2026-09-17",
       "news_date": "2026-09-17",
       "importance": "critical"
     },
     {
-      "title": "Omdia: Global TWS Shipments Dip 0.7% in Q2 2026 While Open-Ear Grows 12%",
-      "summary": "Omdia reports Q2 2026 true wireless stereo shipments fell 0.7% year over year to 82.1 million units, the first annual decline since 2023. Open wireless stereo products grew 12% to 11.1 million units, now 13.5% of the market, with clip-on designs making up 61% of OWS volume.",
-      "source": "eCoustics",
-      "url": "https://www.ecoustics.com/news/open-ear-earbuds-market-growth-2026/",
-      "date": "2026-09-22",
-      "news_date": "2026-09-22",
-      "importance": "critical"
-    },
-    {
-      "title": "Sennheiser MOMENTUM True Wireless 5 Launches in India with User-Replaceable Batteries",
-      "summary": "Sennheiser brought the MOMENTUM True Wireless 5 to India at Rs 29,990, featuring 7mm TrueResponse drivers, Bluetooth 6.0, aptX Lossless and Dolby Atmos. The headline differentiator is user-replaceable batteries in both earbuds and the case, aimed at longer-term ownership. Sales began October 1.",
-      "source": "Smartprix",
-      "url": "https://us.smartprix.com/bytes/sennheiser-momentum-5-wireless-and-momentum-true-wireless-5-launch-in-india-replaceable-batteries-set-them-apart",
-      "date": "2026-09-30",
-      "news_date": "2026-09-30",
+      "title": "CNET Tests the Best Wireless Earbuds of 2026, Crowns Sony WF-1000XM6 Overall",
+      "summary": "CNET updated its 2026 earbuds roundup after hands-on testing of dozens of models. The Sony WF-1000XM6 tops the list with class-leading ANC and 8-mic call quality, while the Apple AirPods Pro 3, Anker Soundcore Liberty 5 Pro and Samsung Galaxy Buds 4 Pro are named best for their ecosystems.",
+      "source": "CNET",
+      "url": "https://www.cnet.com/?p=3209401",
+      "date": "2026-10-02",
+      "news_date": "2026-10-02",
       "importance": "high"
     },
     {
-      "title": "OnePlus Nord Buds 3r Adds Jade Mist Color Ahead of India Festive Sales",
-      "summary": "OnePlus expanded the Nord Buds 3r lineup in India with a Jade Mist finish, available from October 8 at Rs 1,999 (Rs 1,599 during festive promotions). The TWS earbuds offer 12.4mm titanium-coated drivers, 54-hour battery life, Bluetooth 5.4, AI translation and 47ms low-latency gaming mode.",
-      "source": "BHP Mania",
-      "url": "https://www.bhpmania.com/2026/10/01/oneplus-nord-buds-3r-jade-mist-launched-in-india-festive-sale-price-starts-at-%e2%82%b91599",
-      "date": "2026-10-01",
-      "news_date": "2026-10-01",
-      "importance": "medium"
-    },
-    {
-      "title": "Fairphone Fairbuds 2 Teased for October 14 Launch with LDAC and Seven Replaceable Parts",
-      "summary": "Fairphone will launch the Fairbuds 2 on October 14 at $119 in the US after a European release, down from the original Fairbuds' 149 euro debut. The ultra-repairable wireless earbuds add improved Bluetooth and LDAC hi-res support, with seven replaceable parts including the in-ear batteries.",
-      "source": "Gizmodo",
-      "url": "https://gizmodo.com/fairbuds-2-release-date-2000818936",
-      "date": "2026-09-29",
-      "news_date": "2026-09-29",
-      "importance": "high"
-    },
-    {
-      "title": "Apple AirPods Pro 3 Add On-Bud Heart Rate Sensor and Live Translation",
-      "summary": "The AirPods Pro 3 upgrade Apple's flagship earbuds with a built-in heart-rate sensor for workout tracking, on-device Live Translation across more than 10 languages, and ANC claimed to be twice as strong as the previous generation. They offer 8 hours of battery with ANC on, five ear-tip sizes and IP57 resistance at $249.",
-      "source": "Mashable",
-      "url": "https://www.mashable.com/roundup/best-headphones-2026-expert-reviewed",
-      "date": "2026-09-20",
-      "news_date": "2026-09-20",
-      "importance": "high"
-    },
-    {
-      "title": "Samsung Galaxy Buds4 Pro Review: Refined Sound and Stronger ANC for Galaxy Users",
-      "summary": "The Galaxy Buds4 Pro pair a two-way speaker with 24-bit Hi-Fi audio over Bluetooth 6.1, adaptive ANC 2.0 and 360 Audio at about $249. Reviewers praise detailed warm-leaning sound and improved fit, though battery stays at 6 hours with ANC on and key AI features require a Galaxy device.",
-      "source": "MEFMobile",
-      "url": "https://mefmobile.org/samsung-galaxy-buds4-pro-review-superb-sound-with-a-samsung-sized-catch",
+      "title": "SoundGuys Reviews Bose Ultra Open Earbuds 2nd Gen: Better Sound, Still Pricey at USD 299",
+      "summary": "SoundGuys tested the Bose Ultra Open Earbuds (2nd Gen) and found the redesign lifts its Multi-Dimensional Audio Quality score from 2.3 to 2.9, with stronger bass and tamed treble. Calls still falter in wind and noise, and at USD 299 the reviewer would not buy them over cheaper clip-on rivals.",
+      "source": "SoundGuys",
+      "url": "https://www.soundguys.com/bose-ultra-open-earbuds-2nd-gen-review-164060",
       "date": "2026-10-05",
       "news_date": "2026-10-05",
       "importance": "high"
     },
     {
-      "title": "Sony WF-1000XM6 Review: Dual Processors and 8-Mic Array Set the ANC Benchmark",
-      "summary": "Sony's flagship WF-1000XM6 earbuds pair a new QN3e HD noise-cancelling processor with the Integrated Processor V2, eight adaptive microphones and a slimmer 8.4mm-driver chassis. Reviewers call them the all-rounder to beat for noise cancelling, sound and call clarity, with LDAC support and about 8 hours of battery.",
-      "source": "Reviewed",
-      "url": "https://www.reviewed.com/headphones/best-right-now/the-best-true-wireless-earbuds",
-      "date": "2026-09-20",
-      "news_date": "2026-09-20",
+      "title": "Open-Ear Earbuds Boom 12% While Traditional TWS Shipments Stall, Omdia Says",
+      "summary": "New Omdia Q2 2026 data shows open wireless stereo shipments grew 12% to 11.1 million units even as conventional TWS slipped 0.7% to 82.1 million, the category's first annual decline since 2023. Clip-on designs took 61% of OWS volume, and the sub-USD 50 tier surged 323% year over year.",
+      "source": "eCoustics",
+      "url": "https://www.ecoustics.com/news/open-ear-earbuds-market-growth-2026/",
+      "date": "2026-09-18",
+      "news_date": "2026-09-18",
+      "importance": "critical"
+    },
+    {
+      "title": "AirPods Hold Top Spot as Global TWS Shipments Fall for First Time Since 2023",
+      "summary": "Omdia's Q2 2026 tracker puts Apple at 16.8 million TWS units and 20.5% share, up 1.2% year over year, even as the total market contracted 0.7%. OPPO was the only other top-five vendor to grow, while Xiaomi, Samsung and Huawei all declined; Shokz led open-ear with 107.9% growth.",
+      "source": "iThinkDifferent",
+      "url": "https://www.ithinkdiff.com/airpods-stay-on-top-as-global-earbuds-shipments-drop-for-the-first-time-since-2023",
+      "date": "2026-09-19",
+      "news_date": "2026-09-19",
       "importance": "high"
     },
     {
-      "title": "Shokz OpenDots ONE Review: Clip-On Open-Ear Fit for Runners and Glasses Wearers",
-      "summary": "The Shokz OpenDots ONE are open-ear clip-on earbuds with Dolby Audio, dual drivers and OpenBass 2.0, weighing about 6.5g per bud with up to 40 hours of total battery and IP54 resistance. The review highlights secure interchangeable left-right fit and situational awareness, though open design offers no isolation for noisy commutes.",
-      "source": "HeadsetAtlas",
-      "url": "https://headsetatlas.com/pages/shokz-opendots-one-review",
-      "date": "2026-10-01",
-      "news_date": "2026-10-01",
+      "title": "AirPods Pro 3 Review: Heart-Rate Sensing and Live Translation Redefine the Buds",
+      "summary": "Showmetech's full AirPods Pro 3 analysis highlights the new PPG heart-rate sensor reading blood flow 256 times per second, real-time Live Translation across ten languages, Conversation Detection and Hearing Aid mode. Battery rises to 8-9 hours per charge while the case total drops to about 24 hours.",
+      "source": "Showmetech",
+      "url": "https://en.showmetech.com.br/review-apple-airpods-pro-3-full-analysis/",
+      "date": "2026-09-28",
+      "news_date": "2026-09-28",
       "importance": "medium"
     },
     {
-      "title": "Nothing and CMF Audio Debut Ear (3a), Buds Pro 2 and Clip Pro in Nepal",
-      "summary": "Chaudhary Group launched Nothing Ear (3a), CMF Buds Pro 2 and CMF Clip Pro in Nepal on September 27. The Ear (3a) adds Audio Snapshot and on-device call recording with up to 45dB ANC, the Buds Pro 2 bring a Smart Dial case and 50dB hybrid ANC, and the Clip Pro is an open-ear option, starting at NPR 8,599.",
-      "source": "24 Ghanta Nepal",
-      "url": "https://24ghantanepal.com/article/cg-launches-nothing-ear-3a-cmf-buds-pro-2-and-cmf-clip-pro-in-nepal-prices-and-features",
-      "date": "2026-10-01",
-      "news_date": "2026-10-01",
+      "title": "JLab Debuts JBuds Mini ANC With Apple Find My at IFA 2026",
+      "summary": "At IFA 2026 JLab unveiled the JBuds Mini ANC, claimed as the smallest TWS earbuds from a major brand, adding Active Noise Cancellation, Spatial Audio and Apple Find My compatibility as the first non-Apple, non-Beats earbuds to do so. The GO Sport ANC and JBuds Open Sport 2 also joined the lineup.",
+      "source": "Cazin.NET",
+      "url": "https://www.cazin.net/magazin/kako-izgleda-zivot-u-starackom-domu-villa-adriana-bihac?live-blog-32575508-2026-09-13-jlab-debuts-fashion-forward-audio-at-ifa-2026-category-trustburn-data-shows",
+      "date": "2026-09-13",
+      "news_date": "2026-09-13",
       "importance": "medium"
     }
   ]
