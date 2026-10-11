@@ -1,95 +1,95 @@
 {
-  "updated_at": "2026-10-10T08:30:00+08:00",
+  "updated_at": "2026-10-11T08:30:00+08:00",
   "scope": "bluetooth_earbuds",
   "items": [
     {
-      "title": "Cambridge Audio Melomania A100 SE Adds Dolby Audio to Affordable TWS Earbuds",
-      "summary": "Cambridge Audio launched the Melomania A100 SE true wireless earbuds at 149 euros, adding Dolby Audio spatial sound to the existing A100 platform. The earbuds keep Class A/B amplification, 10mm drivers, aptX Lossless and LDAC, adaptive hybrid ANC, and up to 39 hours of battery life.",
-      "source": "Basic Tutorials",
-      "url": "https://basic-tutorials.com/news/cambridge-audio-melomania-a100-se-dolby-audio-and-hi-fi-technology-for-149-euros/",
+      "title": "Samsung Unveils Its First Clip-On TWS, Galaxy Buds On",
+      "summary": "Samsung quietly unveiled the Galaxy Buds On, its first clip-on true wireless earbuds with an open-ear design, TwinBoost speakers and Audio Leakage Reduction. The buds offer 9.5 hours of playback, three-mic calls with a bone-conduction Voice Pickup sensor, and Gemini Live support, launching in South Korea on October 27.",
+      "source": "The Tech Outlook",
+      "url": "https://www.thetechoutlook.com/new-release/gadgets-release/earphones/samsung-unveils-its-first-clip-on-tws-galaxy-buds-on-will-launch-first-in-south-korea-on-27th-october/",
       "date": "2026-10-01",
       "news_date": "2026-10-01",
       "importance": "high"
     },
     {
-      "title": "Samsung Galaxy Buds On Debut With Clip-On Open-Ear Design and 9.5-Hour Battery",
-      "summary": "Samsung unveiled the Galaxy Buds On, its first clip-on open-ear wireless earbuds that keep the ear canal open for situational awareness. Powered by the Snapdragon S7 Gen 1 platform with TwinBoost speakers, Audio Leakage Reduction and Gemini Live, they offer up to 9.5 hours of playback and launch in South Korea on October 27.",
-      "source": "Gadgets.com.pk",
-      "url": "https://www.gadgets.com.pk/samsung-galaxy-buds-on-launch-with-clip-on-design-and-95-hour-battery",
-      "date": "2026-10-01",
-      "news_date": "2026-10-01",
-      "importance": "high"
-    },
-    {
-      "title": "Bose Doubles Down on Open-Ear With $199 Sport Open and $299 Ultra Open 2nd Gen",
-      "summary": "Bose expanded its open-ear range from one flagship to two models shipping October 1. The $299 Ultra Open Earbuds 2nd Gen add a redesigned driver, Cinema Mode with TrueSpatial head tracking and aptX Adaptive, while the $199 Sport Open targets runners with a C-arm cuff, IP54 rating and 22-hour case battery.",
-      "source": "Bytevyte",
-      "url": "https://bytevyte.com/bose-doubles-down-on-open-ear-earbuds-with-199-sport-and-299-ultra-2nd-gen",
-      "date": "2026-10-01",
-      "news_date": "2026-10-01",
-      "importance": "high"
-    },
-    {
-      "title": "OnePlus Nord Buds 3r Jade Mist Launches in India at 1,599 Rupees Festive Price",
-      "summary": "OnePlus added a Jade Mist color option to its Nord Buds 3r TWS earbuds ahead of the Indian festive season. The earbuds offer 12.4mm titanium-coated drivers, up to 54 hours of battery, AI call noise cancellation, 47ms low-latency gaming mode and Bluetooth 5.4, available from October 8 at an effective 1,599 rupees.",
-      "source": "BHP Mania",
-      "url": "https://www.bhpmania.com/2026/10/01/oneplus-nord-buds-3r-jade-mist-launched-in-india-festive-sale-price-starts-at-%e2%82%b91599",
-      "date": "2026-10-01",
-      "news_date": "2026-10-01",
-      "importance": "medium"
-    },
-    {
-      "title": "Noise Opens Pre-Booking for Master Buds Open Clip-On Earbuds With Bose Tuning",
-      "summary": "Indian brand Noise began pre-booking its first open-ear earbuds, the Master Buds Open, at 999 rupees ahead of an October 23 launch priced at 7,999 rupees. The C-bridge clip-on TWS features Sound by Bose tuning, a 10.8mm driver, 4-mic ENC, 360-degree spatial audio and up to 28 hours of playback.",
-      "source": "Beebom",
-      "url": "https://gadgets.beebom.com/news/noise-master-buds-open-pre-booking-starts-ahead-of-india-launch",
-      "date": "2026-10-08",
-      "news_date": "2026-10-08",
-      "importance": "high"
-    },
-    {
-      "title": "Timekettle Launches $129 LiveTalk Open-Ear AI Interpreter Earbuds",
-      "summary": "Timekettle announced the LiveTalk open-ear AI interpreter earbuds at $129, combining real-time translation across 54 languages and 108 accents with everyday audio. The 6.9g ear-hook earbuds support four translation modes, offline language pairs, dual-device connection and up to 35 hours of total battery life.",
-      "source": "PR Newswire",
-      "url": "https://www.prnewswire.com/news-releases/timekettle-launches-129-livetalk-open-ear-ai-interpreter-earbuds-for-everyday-translation-302901489.html",
-      "date": "2026-10-08",
-      "news_date": "2026-10-08",
-      "importance": "high"
-    },
-    {
-      "title": "AVIOT Opens Pre-Orders for 96Neko Collaboration True Wireless Earbuds",
-      "summary": "AVIOT opened pre-orders for the TE-V1R-96N, a special-edition true wireless earbuds created with utaite 96Neko. Based on the TE-V1R with 19 hours of playback, adaptive hybrid ANC, LDAC and wireless charging, it ships from late October with custom voice lines and collector artwork.",
-      "source": "The Outerhaven",
-      "url": "https://www.theouterhaven.net/aviot-opens-pre-orders-for-96neko-collaboration-true-wireless-earbuds/",
-      "date": "2026-10-08",
-      "news_date": "2026-10-08",
-      "importance": "medium"
-    },
-    {
-      "title": "Omdia: Global TWS Shipments Fall 0.7% in Q2 2026 as Open-Ear Grows 12%",
-      "summary": "Omdia reported global true wireless stereo shipments of 82.1 million units in Q2 2026, down 0.7% year-on-year for the first decline since 2023, with China falling 9.5%. Open wireless stereo grew 12% to 11.1 million units, a 13.5% share, while clip-on designs led with 61% of OWS shipments.",
-      "source": "Cyprus Mail",
-      "url": "https://cyprus-mail.com/2026/10/03/open-wireless-stereo-devices-buck-trend-in-falling-global-audio-market",
-      "date": "2026-10-03",
-      "news_date": "2026-10-03",
+      "title": "Bose Ultra Open Earbuds (2nd Gen) Review: Best Clip-On, Hard to Justify at $299",
+      "summary": "SoundGuys tested the second-generation Bose Ultra Open Earbuds and found they fix most original flaws with a new driver for deeper bass, improved mics and longer 9-hour battery life. The $299 price remains hard to justify against a fast-growing field of better-value clip-on alternatives.",
+      "source": "SoundGuys",
+      "url": "https://www.soundguys.com/bose-ultra-open-earbuds-2nd-gen-review-164060",
+      "date": "2026-10-07",
+      "news_date": "2026-10-07",
       "importance": "critical"
     },
     {
-      "title": "Best True Wireless Earbuds 2026: Sony, Apple, Bose and Sennheiser Lead Buyer Guides",
-      "summary": "Current buying guides split 2026 true wireless recommendations by ecosystem: Sony WF-1000XM6 for all-around use, Apple AirPods Pro 3 for iPhone with heart-rate sensing, Bose QuietComfort Ultra Earbuds 2nd Gen for noise cancelling, and Sennheiser MOMENTUM True Wireless 5 for Android with aptX Lossless.",
-      "source": "WatchRanker",
-      "url": "https://watchranker.com/best-true-wireless-earbuds-top-hearables-2026/",
-      "date": "2026-10-07",
-      "news_date": "2026-10-07",
+      "title": "Noise Master Buds Open Open Pre-Booking in India at Rs 999",
+      "summary": "Noise opened pre-bookings for its first Sound by Bose clip-on open-ear TWS, the Master Buds Open, priced from Rs 7,999 at launch on October 23. The earbuds feature a C-bridge design, 10.8mm driver, 4-mic ENC and up to 28 hours of playback with Bose-tuned Dynamic EQ.",
+      "source": "Beebom",
+      "url": "https://gadgets.beebom.com/news/noise-master-buds-open-pre-booking-starts-ahead-of-india-launch",
+      "date": "2026-10-05",
+      "news_date": "2026-10-05",
+      "importance": "high"
+    },
+    {
+      "title": "OPPO Enco X3s Premium TWS Earbuds Launched Globally",
+      "summary": "OPPO launched the Enco X3s premium true wireless earbuds globally alongside the Find X9 series, starting at EUR 129. The buds offer up to 45 hours of playback, dual dynamic drivers with dual DACs, Dynaudio tuning, 55dB ANC and Hi-Res Audio via the LDHC 5.0 codec.",
+      "source": "LatestLY",
+      "url": "https://www.latestly.com/socially/technology/oppo-enco-x3s-earbuds-launched-alongside-oppo-find-x9-pro-and-oppo-find-x9-globally-check-price-specifications-and-features-7180835.html",
+      "date": "2026-10-01",
+      "news_date": "2026-10-01",
+      "importance": "high"
+    },
+    {
+      "title": "Fairphone Fairbuds 2 Set for October 14 Launch With Modular Repairability and LDAC",
+      "summary": "Fairphone will unveil the Fairbuds 2 on October 14 with seven fully replaceable modular parts and new Sony LDAC codec support alongside SBC and AAC. Priced at EUR 119 in Europe and USD 119 in the US, the repairable TWS challenge less serviceable flagship earbuds.",
+      "source": "TLDR Daily News",
+      "url": "https://tldrdailynews.com/news/technology/tech/fairphone-fairbuds-2-set-for-october-14-launch-with-modular-repairability-and-ldac-support-fnlpp92al",
+      "date": "2026-10-09",
+      "news_date": "2026-10-09",
       "importance": "medium"
     },
     {
-      "title": "Anker Soundcore Unveils THUS AI-Chip Earbuds and Headphones at IFA 2026",
-      "summary": "Anker showcased a broad Soundcore audio lineup at IFA 2026 built around its new THUS AI chip for on-device intelligence across earbuds and headphones. The range emphasizes adaptive audio, translation and health-adjacent features as Anker pushes AI from a marketing tagline into the product stack.",
-      "source": "SoundGuys",
-      "url": "https://www.soundguys.com/anker-earbuds-at-ifa-2026-162403/",
-      "date": "2026-09-03",
-      "news_date": "2026-09-03",
+      "title": "Omdia: OWS Shipments Grow 12% as TWS Market Stays Flat in Q2 2026",
+      "summary": "Omdia reports global true wireless stereo shipments fell 0.7% year-on-year to 82.1 million in Q2 2026, the first decline since 2023, while open wireless stereo grew 12% to 11.1 million. Apple led with 20.5% share; clip-on OWS made up 61% of the category.",
+      "source": "Stock Titan",
+      "url": "https://www.stocktitan.net/news/TTGT/omdia-ows-shipments-grow-12-as-tws-market-remains-broadly-flat-in-eet48rgars49.html",
+      "date": "2026-09-17",
+      "news_date": "2026-09-17",
+      "importance": "critical"
+    },
+    {
+      "title": "Samsung Galaxy Buds 4 Pro (2026) Review: Flagship ANC With Galaxy-Only AI",
+      "summary": "TopCrate rates the Galaxy Buds 4 Pro 4.5/5, praising six-mic ANC close to AirPods Pro, very good sound and IP57 durability with AI live translation and head gestures. The standout features activate only on Galaxy phones, limiting value for iPhone and non-Galaxy Android users.",
+      "source": "TopCrate",
+      "url": "https://www.topcrate.com/reviews/samsung-galaxy-buds-4-pro",
+      "date": "2026-09-20",
+      "news_date": "2026-09-20",
+      "importance": "high"
+    },
+    {
+      "title": "Sony WF-1000XM6 Review: Small, Smart, and Finally Fitting Properly",
+      "summary": "The Review Bench finds the WF-1000XM6 deliver class-leading transparency and best-in-class Android codec support with a 12% smaller shell that finally fits. Touch controls are a regression and there is no Auracast, but they remain the default pick for Android-first buyers.",
+      "source": "The Review Bench",
+      "url": "https://thereviewbench.com/reviews/sony-wf-1000xm6-review",
+      "date": "2026-09-28",
+      "news_date": "2026-09-28",
+      "importance": "high"
+    },
+    {
+      "title": "Apple AirPods Pro 3 Review: ANC, Heart Rate and Live Translation",
+      "summary": "Showmetech's full analysis highlights the AirPods Pro 3's heart-rate sensor using a PPG reading 256 times per second and on-device Live Translation across supported languages. The buds add Conversation Awareness and IP57 durability while staying deepest within the Apple ecosystem.",
+      "source": "Showmetech",
+      "url": "https://en.showmetech.com.br/review-apple-airpods-pro-3-full-analysis/",
+      "date": "2026-09-26",
+      "news_date": "2026-09-26",
+      "importance": "critical"
+    },
+    {
+      "title": "CMF Buds Pro 2 Review: Budget Earphones in Name Only",
+      "summary": "Position Is Everything praises the CMF Buds Pro 2's confident 50dB adaptive ANC, LDAC support and a useful Smart Dial case at a budget price. Transparency and outdoor call quality trail premium Sony, Bose and Apple models, but the everyday package overdelivers for the money.",
+      "source": "Position Is Everything",
+      "url": "https://www.positioniseverything.net/cmf-buds-pro-2-review-budget-earphones-in-name-only/",
+      "date": "2026-09-25",
+      "news_date": "2026-09-25",
       "importance": "medium"
     }
   ]
