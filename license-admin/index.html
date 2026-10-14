@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>PMApp License 管理后台</title>
+<style>
+  :root{
+    --bg:#f5f8fc; --card:#ffffff; --ink:#1a1a1a; --muted:#5b6b7e;
+    --brand:#1f6feb; --brand-d:#123a5e; --line:#dce4ee; --soft:#eef3fa;
+    --green:#1f9d5b; --red:#c0392b; --orange:#d98324;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",Segoe UI,Roboto,sans-serif;
+    line-height:1.5;font-size:14px}
+  .topbar{background:var(--brand-d);color:#fff;padding:14px 22px;display:flex;
+    align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+  .topbar h1{font-size:17px;margin:0;font-weight:700;letter-spacing:.5px}
+  .topbar .who{font-size:13px;opacity:.92}
+  .topbar button{background:rgba(255,255,255,.16);color:#fff;border:1px solid rgba(255,255,255,.35);
+    border-radius:8px;padding:6px 14px;cursor:pointer;font-size:13px}
+  .topbar button:hover{background:rgba(255,255,255,.28)}
+  .wrap{max-width:1080px;margin:22px auto;padding:0 18px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:20px 22px;margin-bottom:18px;box-shadow:0 1px 3px rgba(20,40,70,.04)}
+  .card h2{font-size:15px;margin:0 0 14px;color:var(--brand-d);
+    border-left:4px solid var(--brand);padding-left:10px}
+  label{display:block;font-size:13px;color:var(--muted);margin:10px 0 5px}
+  input,select{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:9px;
+    font-size:14px;background:#fff;color:var(--ink);outline:none}
+  input:focus,select:focus{border-color:var(--brand)}
+  .row{display:flex;gap:12px;flex-wrap:wrap}
+  .row > div{flex:1;min-width:140px}
+  .btn{background:var(--brand);color:#fff;border:none;border-radius:9px;padding:10px 18px;
+    font-size:14px;cursor:pointer;font-weight:600}
+  .btn:hover{background:#1a5fce}
+  .btn.ghost{background:var(--soft);color:var(--brand-d);border:1px solid var(--line);font-weight:600}
+  .btn.sm{padding:5px 11px;font-size:12px}
+  .btn.danger{background:#fff;color:var(--red);border:1px solid var(--red)}
+  .btn.ok{background:#fff;color:var(--green);border:1px solid var(--green)}
+  .msg{font-size:13px;margin-top:10px;padding:9px 12px;border-radius:8px;display:none}
+  .msg.err{background:#fdeceb;color:var(--red);display:block}
+  .msg.okm{background:#eaf5ec;color:var(--green);display:block}
+  table{width:100%;border-collapse:collapse;margin-top:6px;font-size:13px}
+  th,td{padding:9px 10px;text-align:left;border-bottom:1px solid var(--line)}
+  th{color:var(--muted);font-weight:600;background:var(--soft)}
+  tr:hover td{background:#fafcff}
+  .badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:12px;font-weight:600}
+  .b-green{background:#eaf5ec;color:var(--green)}
+  .b-red{background:#fdeceb;color:var(--red)}
+  .b-orange{background:#fdf1e2;color:var(--orange)}
+  .b-gray{background:#eef1f5;color:var(--muted)}
+  .keys{background:var(--soft);border-radius:9px;padding:12px 14px;margin-top:10px;
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;word-break:break-all}
+  .login-wrap{max-width:380px;margin:80px auto}
+  .foot{text-align:center;color:var(--muted);font-size:12px;margin:24px 0 40px}
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+</style>
+</head>
+<body>
+
+<div class="topbar" id="topbar" style="display:none">
+  <h1>PMApp License 管理后台</h1>
+  <div class="who"><span id="whoEmail"></span>
+    <button id="logoutBtn">退出</button></div>
+</div>
+
+<div class="wrap" id="main"></div>
+
+<div class="foot">PMApp · 授权管理后台 · 仅限管理员访问 · 操作经服务端二次鉴权</div>
+
+<script>
+// ─── Supabase 连接（与 PWA 同源 publishable key，仅能调用白名单 RPC）──
+const SUPABASE_URL = 'https://nsnmtkukxquhinlmbejg.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_YB5z3cQK-vCg67--oKpSrg_63STgMJW';
+
+const $ = (s)=>document.querySelector(s);
+const main = $('#main');
+
+// ─── 本地会话缓存 ───
+function loadSession(){
+  try{ return JSON.parse(localStorage.getItem('pmapp_lic_admin')||'null'); }catch(e){ return null; }
+}
+function saveSession(s){ localStorage.setItem('pmapp_lic_admin', JSON.stringify(s)); }
+function clearSession(){ localStorage.removeItem('pmapp_lic_admin'); }
+
+// ─── RPC 调用（POST /rest/v1/rpc/<name>）───
+async function rpc(name, payload){
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/${name}`, {
+    method:'POST',
+    headers:{ 'apikey':SUPABASE_KEY, 'Authorization':`Bearer ${SUPABASE_KEY}`,
+              'Content-Type':'application/json' },
+    body: JSON.stringify(payload)
+  });
+  const text = await res.text();
+  if(!text) return {};
+  try{ return JSON.parse(text); }catch(e){ return {ok:false, msg:'返回解析失败: '+text}; }
+}
+
+// ─── 密码哈希：PBKDF2-HMAC-SHA256 / 100000 迭代 ───
+// 与桌面端 account_manager._hash_password 完全一致：
+// Python 用 salt.encode()（即把 hex 盐字符串当字节），故 JS 也用 TextEncoder 编码盐，而非 hex decode。
+async function pbkdf2(password, saltHex){
+  const enc = new TextEncoder();
+  const key = await crypto.subtle.importKey('raw', enc.encode(password), 'PBKDF2', false, ['deriveBits']);
+  const salt = enc.encode(saltHex);
+  const bits = await crypto.subtle.deriveBits({name:'PBKDF2', salt, iterations:100000, hash:'SHA-256'}, key, 256);
+  return [...new Uint8Array(bits)].map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+async function sha256hex(str){
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+// ─── 方案中文标签 ───
+const PLAN_LABEL = {starter:'入门 Starter', pro:'专业 Pro', enterprise:'企业 Enterprise'};
+
+// ─── 消息条 ───
+function showMsg(box, text, isErr){
+  box.textContent = text;
+  box.className = 'msg ' + (isErr ? 'err' : 'okm');
+}
+
+// ─── 登录界面 ───
+function renderLogin(){
+  $('#topbar').style.display = 'none';
+  main.innerHTML = `
+    <div class="login-wrap">
+      <div class="card">
+        <h2>管理员登录</h2>
+        <label>邮箱</label>
+        <input id="email" type="email" placeholder="admin@gunbase.com" autocomplete="username">
+        <label>密码</label>
+        <input id="pwd" type="password" placeholder="••••••••" autocomplete="current-password">
+        <div class="msg" id="loginMsg"></div>
+        <div style="margin-top:16px"><button class="btn" id="loginBtn" style="width:100%">登录</button></div>
+      </div>
+    </div>`;
+  $('#loginBtn').onclick = doLogin;
+  $('#pwd').addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
+}
+
+async function doLogin(){
+  const box = $('#loginMsg');
+  const email = $('#email').value.trim().toLowerCase();
+  const pwd = $('#pwd').value;
+  if(!email || !pwd){ showMsg(box,'请输入邮箱和密码',true); return; }
+  // 1) 取盐
+  const saltResp = await rpc('api_get_salt', {p_email:email});
+  if(!saltResp.ok || !saltResp.salt){ showMsg(box,'账号或密码错误',true); return; }
+  // 2) 计算哈希
+  const hash = await pbkdf2(pwd, saltResp.salt);
+  // 3) 管理员登录
+  const r = await rpc('api_admin_login', {p_email:email, p_password_hash:hash});
+  if(!r.ok){ showMsg(box, r.msg||'登录失败', true); return; }
+  saveSession({session_token:r.session_token, account_id:r.account_id, email:r.email});
+  renderAdmin();
+}
+
+// ─── 主管理界面 ───
+function renderAdmin(){
+  const s = loadSession();
+  if(!s){ renderLogin(); return; }
+  $('#topbar').style.display = 'flex';
+  $('#whoEmail').textContent = s.email;
+  $('#logoutBtn').onclick = ()=>{ clearSession(); renderLogin(); };
+
+  main.innerHTML = `
+    <div class="card">
+      <h2>生成激活码</h2>
+      <div class="row">
+        <div><label>授权方案</label>
+          <select id="plan"><option value="starter">入门 Starter（1 设备）</option>
+            <option value="pro">专业 Pro（默认 5 设备）</option>
+            <option value="enterprise">企业 Enterprise（默认 5 设备）</option></select></div>
+        <div><label>数量</label><input id="count" type="number" min="1" max="100" value="1"></div>
+        <div><label>设备上限</label><input id="maxdev" type="number" min="1" max="999" value="1"></div>
+      </div>
+      <div class="row">
+        <div><label>备注（内部）</label><input id="notes" placeholder="如：客户名 / 订单号"></div>
+        <div><label>到期日（留空=永久）</label><input id="expire" type="date"></div>
+      </div>
+      <div class="msg" id="issueMsg"></div>
+      <div style="margin-top:14px"><button class="btn" id="issueBtn">生成</button></div>
+      <div class="keys" id="issueKeys" style="display:none"></div>
+    </div>
+
+    <div class="card">
+      <h2>激活码列表</h2>
+      <div style="margin-bottom:10px"><button class="btn ghost sm" id="refreshBtn">刷新</button>
+        <button class="btn ghost sm" id="copyAllBtn">复制全部激活码</button></div>
+      <div class="msg" id="listMsg"></div>
+      <table id="licTable"><thead><tr>
+        <th>激活码</th><th>方案</th><th>设备上限</th><th>已激活</th><th>邮箱</th>
+        <th>到期</th><th>状态</th><th>操作</th>
+      </tr></thead><tbody></tbody></table>
+    </div>`;
+
+  $('#issueBtn').onclick = doIssue;
+  $('#refreshBtn').onclick = loadList;
+  $('#copyAllBtn').onclick = copyAll;
+  loadList();
+}
+
+async function doIssue(){
+  const s = loadSession(); const box = $('#issueMsg');
+  const plan = $('#plan').value;
+  const count = Math.min(Math.max(parseInt($('#count').value)||1,1),100);
+  const maxdev = Math.max(parseInt($('#maxdev').value)||1,1);
+  const notes = $('#notes').value.trim();
+  const expire = $('#expire').value ? new Date($('#expire').value+'T00:00:00Z').toISOString() : null;
+  const tokenHash = await sha256hex(s.session_token);
+  const r = await rpc('api_admin_issue_license', {
+    p_account_id:s.account_id, p_token_hash:tokenHash, p_plan:plan,
+    p_count:count, p_max_devices:maxdev, p_notes:notes, p_expires_at:expire
+  });
+  if(!r.ok){ showMsg(box, r.msg||'生成失败', true); return; }
+  showMsg(box, `已生成 ${r.count} 个激活码`, false);
+  const keys = (r.keys||[]).join('\n');
+  const ks = $('#issueKeys'); ks.style.display='block'; ks.textContent = keys;
+  loadList();
+}
+
+let CURRENT_KEYS = [];
+async function loadList(){
+  const s = loadSession(); const box = $('#listMsg');
+  const tokenHash = await sha256hex(s.session_token);
+  const r = await rpc('api_admin_list_licenses', {p_account_id:s.account_id, p_token_hash:tokenHash});
+  if(!r.ok){ showMsg(box, r.msg||'加载失败', true);
+    if(/鉴权/.test(r.msg||'')){ clearSession(); renderLogin(); } return; }
+  const list = r.licenses||[];
+  CURRENT_KEYS = list.map(x=>x.license_key);
+  const tb = $('#licTable tbody'); tb.innerHTML='';
+  if(!list.length){ tb.innerHTML = '<tr><td colspan="8" style="color:var(--muted)">暂无激活码</td></tr>'; return; }
+  const now = Date.now();
+  list.forEach(x=>{
+    let badge, st;
+    if(!x.is_active){ badge='b-red'; st='已吊销'; }
+    else if(x.expires_at && new Date(x.expires_at).getTime() < now){ badge='b-orange'; st='已到期'; }
+    else { badge='b-green'; st='启用中'; }
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="mono">${x.license_key}</td>
+      <td>${PLAN_LABEL[x.plan]||x.plan}</td>
+      <td>${x.max_devices}</td>
+      <td>${x.activated_count||0}</td>
+      <td>${x.email||'-'}</td>
+      <td>${x.expires_at? x.expires_at.slice(0,10):'永久'}</td>
+      <td><span class="badge ${badge}">${st}</span></td>
+      <td>${ x.is_active
+            ? `<button class="btn danger sm" data-k="${x.license_key}" data-a="false">吊销</button>`
+            : `<button class="btn ok sm" data-k="${x.license_key}" data-a="true">恢复</button>` }</td>`;
+    tb.appendChild(tr);
+  });
+  tb.querySelectorAll('button[data-k]').forEach(b=>{
+    b.onclick = ()=>doRevoke(b.dataset.k, b.dataset.a==='true');
+  });
+}
+
+async function doRevoke(key, active){
+  if(!confirm((active?'恢复':'吊销')+'激活码 '+key+' ？')) return;
+  const s = loadSession();
+  const tokenHash = await sha256hex(s.session_token);
+  const r = await rpc('api_admin_revoke_license', {
+    p_account_id:s.account_id, p_token_hash:tokenHash, p_license_key:key, p_active:active
+  });
+  if(!r.ok){ alert(r.msg||'操作失败'); return; }
+  loadList();
+}
+
+function copyAll(){
+  if(!CURRENT_KEYS.length){ return; }
+  navigator.clipboard.writeText(CURRENT_KEYS.join('\n')).then(
+    ()=>alert('已复制 '+CURRENT_KEYS.length+' 个激活码'),
+    ()=>alert('复制失败，请手动选择')
+  );
+}
+
+// 启动
+if(loadSession()){ renderAdmin(); } else { renderLogin(); }
+</script>
+</body>
+</html>
