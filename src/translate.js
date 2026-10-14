@@ -42,6 +42,8 @@ function setCached(text, targetLang, translation) {
 export async function translateText(text, targetLang) {
   if (!text || !text.trim()) return text;
   targetLang = targetLang || getLang() || 'en';
+  // 繁体中文映射到 Google/MyMemory 的台湾 locale
+  if (targetLang === 'zh_Hant') targetLang = 'zh-TW';
 
   // Check cache
   const cached = getCached(text, targetLang);
