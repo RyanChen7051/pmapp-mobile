@@ -9,7 +9,7 @@ import { translateText } from './translate.js';
 /* ═══ 语音录入指令映射（SpeechRecognition lang / 命令词 / 结束词）═══
  * 识别语言跟随 PWA 界面语言；命令词支持「本地化 + 中文通用」双匹配，
  * 即使工程师用中文指令（栏目xxx / 输入结束）也能在任意语言界面下命中。 */
-const VOICE_LANG = { zh: 'zh-CN', en: 'en-US', es: 'es-ES', ja: 'ja-JP', fr: 'fr-FR', de: 'de-DE', ar: 'ar-SA', vi: 'vi-VN', hi: 'hi-IN' };
+const VOICE_LANG = { zh: 'zh-CN', zh_Hant: 'zh-TW', en: 'en-US', es: 'es-ES', ja: 'ja-JP', fr: 'fr-FR', de: 'de-DE', ar: 'ar-SA', vi: 'vi-VN', hi: 'hi-IN' };
 const VOICE_CMD_KW = { zh: '栏目', en: 'column', es: 'campo', ja: '項目', fr: 'champ', de: 'feld', ar: 'حقل', vi: 'trường', hi: 'फ़ील्ड' };
 const VOICE_END = {
   zh: ['输入结束', '录入结束'], en: ['input end', 'input finished'], es: ['entrada terminada', 'fin de entrada'],
@@ -181,7 +181,7 @@ export function setupFieldLog(App) {
         <div class="card-title">📸 ${this.esc(r.project ? tr(r.project) : tr('未指定项目'))}</div>
         ${r.problem_level ? `<span class="badge ${this._flLevelBadge(r.problem_level)}">${this.esc(tr(r.problem_level))}</span>` : ''}
         ${r.status ? `<span class="badge ${r.status === '已处理' ? 'badge-green' : r.status === '处理中' ? 'badge-orange' : 'badge-red'}">${this.esc(tr(r.status))}</span>` : ''}
-        ${r.is_customer_complaint ? `<span class="badge" style="background:#378ADD;color:#fff">${getLang() === 'zh' ? '客户投诉' : 'Complaint'}</span>` : ''}
+        ${r.is_customer_complaint ? `<span class="badge" style="background:#378ADD;color:#fff">${['zh', 'zh_Hant'].includes(getLang()) ? (getLang() === 'zh_Hant' ? '客訴' : '客户投诉') : 'Complaint'}</span>` : ''}
       </div>
       <div class="card-meta">
         ${r.problem_factory ? `<span>🏭 ${this.esc(r.problem_factory)}</span>` : ''}
