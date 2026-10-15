@@ -17,7 +17,7 @@ const CFG = {
     theme: '#1e6b3a', themeDark: '#155230', accentBg: '#eaf5ec',
     tagline: '合作工厂协同平台', taglineEn: 'Partner Factory Portal',
     roleLabel: '选择工厂', roleLabelEn: 'Select Factory',
-    idKey: 'factory_id', idLabel: '工厂', accessCode: 'fpwa2026',
+    idKey: 'factory_id', idLabel: '工厂', idLabelEn: 'Factory', accessCode: 'fpwa2026',
     sessionKey: 'pmapp_fpwa_session', reportTable: 'fpwa_report',
     idSource: 'factory_info', idValueKey: 'id', idTextKey: 'factory_name',
     hideFields: [],                                    // 工厂可见全部项目字段
@@ -27,7 +27,7 @@ const CFG = {
     theme: '#0e5a8a', themeDark: '#0a4370', accentBg: '#e8f2f9',
     tagline: '客户项目协同平台', taglineEn: 'Customer Project Portal',
     roleLabel: '选择客户', roleLabelEn: 'Select Customer',
-    idKey: 'customer_id', idLabel: '客户', accessCode: 'cpwa2026',
+    idKey: 'customer_id', idLabel: '客户', idLabelEn: 'Customer', accessCode: 'cpwa2026',
     sessionKey: 'pmapp_cpwa_session', reportTable: 'cpwa_feedback',
     // 客户身份取自「客户基础资料」(customer_info)，以 客户代码(code) 为唯一标识
     idSource: 'customer_info', idValueKey: 'code', idTextKey: 'customer_name',
@@ -97,7 +97,7 @@ const I18N = {
     myRecords: IS_FACTORY ? 'My Reports' : 'My Feedback',
     noRecord: 'No records', logout: 'Sign Out', settings: 'Settings', language: 'Language',
     detail: 'Project Detail', submitted: 'Submitted', errCode: 'Invalid access code',
-    errNet: 'Network error, please retry', errSelect: 'Please select ' + CFG.idLabel,
+    errNet: 'Network error, please retry', errSelect: 'Please select ' + CFG.idLabelEn,
     allFields: 'Full Information', refresh: 'Refresh', ok: 'OK',
     problems: 'Issues', noProblem: 'No related issues', submitComplaint: 'Submit Complaint',
     complaintCat: 'Category', complaintProject: 'Project', complaintDesc: 'Description',
@@ -459,7 +459,9 @@ function sessVals(sess) {
 /* 三端统一区块的多语言标签（不污染 I18N 主字典，en 兜底） */
 const LBL = {
   onsite:      {zh:'现场', en:'Onsite', es:'Sitio', ja:'現場', fr:'Site', de:'Vor Ort', ar:'الموقع', vi:'Tại chỗ', hi:'साइट'},
-  newsTab:     {zh:'耳机行业新闻', en:'Headphone News', es:'Noticias Auriculares', ja:'ヘッドホン業界ニュース', fr:'Actualités Casques', de:'Headphone-News', ar:'أخبار سماعات الرأس', vi:'Tin ngành Tai nghe', hi:'हेडफोन उद्योग समाचार'},
+  newsTab:     {zh:'蓝牙耳机新闻', en:'Earbuds News', es:'Auriculares BT', ja:'イヤホンニュース', fr:'Ecouteurs BT', de:'Earbuds-News', ar:'أخبار السماعات', vi:'Tin tai nghe', hi:'ईयरबड्स समाचार'},
+  newsTitle:   {zh:'全球蓝牙耳机产业新闻', en:'Bluetooth Earbuds Industry News', es:'Noticias de Auriculares Bluetooth', ja:'世界のBluetoothイヤホンニュース', fr:'Actualites Ecouteurs Bluetooth', de:'Bluetooth-Earbuds-Branchennews', ar:'أخبار سماعات البلوتوث', vi:'Tin nganh tai nghe Bluetooth', hi:'वैश्विक ब्लूटूथ ईयरबड्स समाचार'},
+  newsEmpty:   {zh:'暂无蓝牙耳机新闻', en:'No Bluetooth earbuds news yet', es:'Sin noticias de auriculares Bluetooth', ja:'Bluetoothイヤホンニュースはまだありません', fr:'Pas encore de news ecouteurs Bluetooth', de:'Noch keine Bluetooth-Earbuds-News', ar:'لا توجد أخبار لسماعات البلوتوث بعد', vi:'Chua co tin tai nghe Bluetooth', hi:'अभी कोई ब्लूटूथ ईयरबड्स समाचार नहीं'},
   recFactory:  {zh:'上报问题记录汇总', en:'Reported Issues', es:'Informes de Problemas', ja:'報告問題集計', fr:'Problèmes Signalés', de:'Gemeldete Probleme', ar:'المشاكل المبلّغة', vi:'Tổng hợp Sự cố Báo cáo', hi:'रिपोर्ट किए गए मुद्दे'},
   recCustomer: {zh:'问题汇总', en:'Issue Summary', es:'Resumen de Problemas', ja:'問題集計', fr:'Résumé des Problèmes', de:'Problemübersicht', ar:'ملخص المشاكل', vi:'Tổng hợp Sự cố', hi:'मुद्दों का सारांश'},
   syncing:     {zh:'同步中…', en:'Syncing…', es:'Sincronizando…', ja:'同期中…', fr:'Synchronisation…', de:'Synchronisiere…', ar:'جارٍ المزامنة…', vi:'Đang đồng bộ…', hi:'सिंक हो रहा है…'},
@@ -484,6 +486,7 @@ const EXT = {
   deleted:     {zh:'已删除', en:'Deleted', es:'Borrado', ja:'削除済み', fr:'Supprimé', de:'Gelöscht', ar:'تم الحذف', vi:'Đã xóa', hi:'हटाया गया'},
   saved:       {zh:'已保存', en:'Saved', es:'Guardado', ja:'保存済み', fr:'Enregistré', de:'Gespeichert', ar:'تم الحفظ', vi:'Đã lưu', hi:'सहेजा गया'},
   confirmDelete:{zh:'确定删除这条记录？此操作不可撤销。', en:'Delete this record? This cannot be undone.', es:'¿Eliminar este registro? No se puede deshacer.', ja:'この記録を削除しますか？元に戻せません。', fr:'Supprimer cet enregistrement ? Action irréversible.', de:'Diesen Datensatz löschen? Kann nicht rückgängig gemacht werden.', ar:'حذف هذا السجل؟ لا يمكن التراجع.', vi:'Xóa bản ghi này? Không thể hoàn tác.', hi:'इस रिकॉर्ड को हटाएं? इसे पूर्ववत नहीं किया जा सकता।'},
+  confirmTitle: {zh:'确认操作', en:'Confirm', es:'Confirmar', ja:'確認', fr:'Confirmer', de:'Bestätigen', ar:'تأكيد', vi:'Xác nhận', hi:'पुष्टि करें'},
   /* ─── 现场记录编辑器（与 PWA 现场记录模块对齐）─── */
   flOnsite:        {zh:'现场记录', en:'Onsite Record'},
   flRaiseIssue:    {zh:'上报现场问题', en:'Report On-site Issue', es:'Reportar problema', ja:'現場問題を報告', fr:"Signaler un problème", de:'Problem melden', ar:'الإبلاغ عن مشكلة', vi:'Báo cáo sự cố', hi:'समस्या रिपोर्ट करें'},
@@ -521,8 +524,16 @@ const EXT = {
   stPend:        {zh:'待处理', en:'Pending', es:'Pendiente', ja:'未処理', fr:'En attente', de:'Offen', ar:'معلق', vi:'Chờ xử lý', hi:'लंबित'},
   stDoing:       {zh:'处理中', en:'In Progress', es:'En progreso', ja:'処理中', fr:'En cours', de:'In Bearbeitung', ar:'قيد المعالجة', vi:'Đang xử lý', hi:'प्रगति में'},
   stDone:        {zh:'已处理', en:'Resolved', es:'Resuelto', ja:'処理済', fr:'Résolu', de:'Gelöst', ar:'تم الحل', vi:'Đã xử lý', hi:'हल हो गया'},
-  newsUpdNote:   {zh:'每天 08:00 (GMT+8) 自动更新', en:'Auto-updated daily 08:00 (GMT+8)', es:'Actualización automática 08:00 (GMT+8)', ja:'毎日 08:00 (GMT+8) 自動更新', fr:'Mise à jour auto 08:00 (GMT+8)', de:'Täglich 08:00 (GMT+8) auto-aktualisiert', ar:'تحديث تلقائي 08:00 (GMT+8)', vi:'Tự động cập nhật 08:00 (GMT+8)', hi:'दैनिक 08:00 (GMT+8) ऑटो-अपडेट'},
+  newsUpdNote:   {zh:'每天 08:30 (GMT+8) 自动更新蓝牙耳机新闻', en:'Bluetooth earbuds news auto-updated daily 08:30 (GMT+8)', es:'Noticias de auriculares Bluetooth, actualización diaria 08:30 (GMT+8)', ja:'Bluetoothイヤホンニュースは毎日 08:30 (GMT+8) 自動更新', fr:'News ecouteurs Bluetooth, maj auto quotidienne 08:30 (GMT+8)', de:'Bluetooth-Earbuds-News, taeglich 08:30 (GMT+8) auto-aktualisiert', ar:'أخبار سماعات البلوتوث، تحديث تلقائي يومياً 08:30 (GMT+8)', vi:'Tin tai nghe Bluetooth, tu dong cap nhat 08:30 (GMT+8) hang ngay', hi:'ब्लूटूथ ईयरबड्स समाचार, प्रतिदिन 08:30 (GMT+8) ऑटो-अपडेट'},
   flRecorder:    {zh:'问题记录人', en:'Issue Recorder', es:'Reportador', ja:'記録者', fr:'Déclarant', de:'Erfasser', ar:'مسجل المشكلة', vi:'Người ghi nhận', hi:'समस्या रिकॉर्डर'},
+  /* ─── 严重度（issue 卡片 severity 字段，中英/中文皆可能）─── */
+  sevLow:        {zh:'低', en:'Low', es:'Bajo', ja:'低', fr:'Faible', de:'Niedrig', ar:'منخفض', vi:'Thấp', hi:'कम'},
+  sevMed:        {zh:'中', en:'Medium', es:'Medio', ja:'中', fr:'Moyen', de:'Mittel', ar:'متوسط', vi:'Trung bình', hi:'मध्यम'},
+  sevHigh:       {zh:'高', en:'High', es:'Alto', ja:'高', fr:'Élevé', de:'Hoch', ar:'مرتفع', vi:'Cao', hi:'उच्च'},
+  sevCrit:       {zh:'严重', en:'Critical', es:'Crítico', ja:'深刻', fr:'Critique', de:'Kritisch', ar:'حرج', vi:'Nghiêm trọng', hi:'गंभीर'},
+  roleUser:      {zh:'普通使用者', en:'Regular User', es:'Usuario regular', ja:'一般使用者', fr:'Utilisateur standard', de:'Standardbenutzer', ar:'مستخدم عادي', vi:'Người dùng thông thường', hi:'सामान्य उपयोगकर्ता'},
+  authRW:        {zh:'只可读、写', en:'Read & Write', es:'Lectura y escritura', ja:'読み取り・書き込み', fr:'Lecture et écriture', de:'Lesen & Schreiben', ar:'قراءة وكتابة', vi:'Đọc và ghi', hi:'पढ़ने और लिखने'},
+  flRespPh:      {zh:'负责同事邮箱', en:"Assignee's email", es:'Correo del responsable', ja:'担当者メール', fr:"E-mail du responsable", de:'E-Mail des Zuständigen', ar:'بريد المسؤول', vi:'Email người phụ trách', hi:'जिम्मेदार का ईमेल'},
 };
 const TE = k => (EXT[k] && EXT[k][LANG]) || (EXT[k] && EXT[k].en) || k;
 
@@ -642,32 +653,45 @@ async function loadRecords() {
     .sort((a, b) => String(b.created_at || '').localeCompare(String(a.created_at || '')));
 }
 
-/* 耳机/音频产业新闻（全英文）：主源 Supabase ai_industry_news，缺失时回落 fpwa/news.json */
+/* 蓝牙耳机（TWS）产业新闻（全英文）
+   —— FPWA / CPWA 只展示「蓝牙耳机」新闻（2026-09-22 邦杰确认口径）。
+   主源：本站每日生成的 news.json（只收录蓝牙耳机新闻，每天 08:30 刷新）；
+   兜底：Supabase ai_industry_news 中 sector=tws_earbuds / category=headphones 的条目；
+   两源都取到「最新日期更新」的一方，任一方停更时页面也不会变旧。 */
+const IS_TWS = n => {
+  const s = String((n && n.sector) || '').toLowerCase();
+  const c = String((n && n.category) || '').toLowerCase();
+  return s === 'tws_earbuds' || c === 'headphones';
+};
 async function loadNews() {
-  // 耳机行业新闻要求「全英文」：过滤掉含中文标题/摘要的条目
+  // 蓝牙耳机新闻要求「全英文」：过滤掉含中文标题/摘要的条目
   const cjk = s => /[一-鿿]/.test(s || '');
+  const norm = n => ({
+    title: n.title || '', summary: n.summary || '', source: n.source || '',
+    url: n.url || '', date: n.news_date || n.date || '', importance: n.importance || ''
+  });
+  const ok = n => n.title && !cjk(n.title) && !cjk(n.summary);
+  const newest = arr => arr.reduce((m, n) => ((n.date || '') > m ? n.date : m), '');
+
+  // 1) 本站蓝牙耳机专版 news.json
+  let local = [];
   try {
-    const rows = await loadTable('ai_industry_news', 200);
-    if (rows && rows.length) {
-      const out = rows.map(n => ({
-        title: n.title || '', summary: n.summary || '', source: n.source || '',
-        url: n.url || '', date: n.news_date || n.date || '', importance: n.importance || ''
-      })).filter(n => n.title && !cjk(n.title) && !cjk(n.summary));
-      if (out.length) return out;
-    }
-  } catch (e) {}
-  try {
-    const r = await fetch('news.json', { cache: 'no-store' });
+    const r = await fetch('news.json?t=' + Date.now(), { cache: 'no-store' });
     if (r.ok) {
       const j = await r.json();
-      const items = (j.items || []).map(n => ({
-        title: n.title || '', summary: n.summary || '', source: n.source || '',
-        url: n.url || '', date: n.date || '', importance: ''
-      })).filter(n => n.title && !cjk(n.title) && !cjk(n.summary));
-      if (items.length) return items;
+      local = ((j && j.items) || []).map(norm).filter(ok);
     }
   } catch (e) {}
-  return [];
+  // 2) Supabase 兜底：只筛蓝牙耳机板块
+  let cloud = [];
+  try {
+    const rows = await loadTable('ai_industry_news', 200);
+    if (rows && rows.length) cloud = rows.filter(IS_TWS).map(norm).filter(ok);
+  } catch (e) {}
+
+  if (!local.length) return cloud;
+  if (!cloud.length) return local;
+  return newest(cloud) > newest(local) ? cloud : local;
 }
 
 /* ─────────── 渲染：登录页 ─────────── */
@@ -805,11 +829,7 @@ function renderShell() {
 
   $('btn-out').onclick = () => { clearSession(); S.current = null; boot(); };
   $('btn-sync').onclick = () => { toast(TL('syncing')); refreshData(); };
-  $('btn-lang2').onclick = () => {
-    LANG = LANG === 'zh' ? 'en' : 'zh';
-    localStorage.setItem(CFG.sessionKey + '_lang', LANG);
-    renderShell(); switchTab(S.tab || 'onsite');
-  };
+  $('btn-lang2').onclick = () => openLangPicker();
   document.querySelectorAll('.tab').forEach(b => {
     b.onclick = () => switchTab(b.dataset.tab);
   });
@@ -893,6 +913,29 @@ function openDetail(p) {
 }
 
 function closeModal() { $('modal').classList.remove('open'); $('modal').innerHTML = ''; }
+/* 顶栏 🌐 弹出 9 语选择器（修复旧版只在中/英间切换的 bug） */
+function openLangPicker() {
+  const modal = $('modal');
+  modal.innerHTML = `
+  <div class="sheet lang-sheet">
+    <div class="sheet-head"><div class="sheet-title">🌐 ${T('language')}</div>
+      <button class="sheet-x" id="lp-x">✕</button></div>
+    <div class="lang-grid">
+      ${Object.entries(LANGUAGES).map(([k, o]) => `<button class="lang-chip ${LANG === k ? 'on' : ''}" data-l="${k}">${o.flag} ${o.name}</button>`).join('')}
+    </div>
+  </div>`;
+  modal.classList.add('open');
+  modal.onclick = e => { if (e.target.id === 'modal') closeModal(); };
+  modal.querySelectorAll('[data-l]').forEach(b => {
+    b.onclick = () => {
+      LANG = b.dataset.l;
+      localStorage.setItem(CFG.sessionKey + '_lang', LANG);
+      closeModal();
+      renderShell(); switchTab(S.tab || 'onsite');
+    };
+  });
+  $('lp-x').onclick = closeModal;
+}
 
 function openReport(p, rec) {
   const isEdit = !!(rec && rec._sb);
@@ -1009,13 +1052,13 @@ function renderSettings() {
       <div class="card-head"><div class="card-title">${CFG.code} v0.1.0</div></div>
       <div class="card-meta">
         <div><span>Variant</span>${VARIANT}</div>
-        <div><span>${CFG.idLabel}</span>${esc(me.name || '')}</div>
+        <div><span>${LANG==='zh' ? CFG.idLabel : CFG.idLabelEn}</span>${esc(me.name || '')}</div>
         ${IS_CUSTOMER ? `
         <div><span>${TL('lblUser')}</span>${esc(me.user_name || '—')}</div>
         <div><span>${TL('lblAcct')}</span>${esc(me.account || '—')}</div>
         <div><span>${TL('lblCode')}</span>${esc(me.value || '—')}</div>
-        <div><span>${TL('lblRole')}</span>${esc(me.role || '普通使用者')}</div>
-        <div><span>${TL('lblAuth')}</span>${esc(me.authority || '只可读、写')}</div>` : ''}
+        <div><span>${TL('lblRole')}</span>${esc(me.role || TE('roleUser'))}</div>
+        <div><span>${TL('lblAuth')}</span>${esc(me.authority || TE('authRW'))}</div>` : ''}
         <div><span>${T('myProjects')}</span>${S.projects.length}</div>
         <div><span>${T('myRecords')}</span>${S.records.length}</div>
       </div>
@@ -1163,6 +1206,10 @@ async function saveIssueRecord(r) {
 
 function problemCard(r) {
   const isC = r.is_customer_complaint;
+  const act = canModify(r) ? `<div class="rec-actions">
+    <button class="rec-edit" data-sb="${esc(r._sb)}">✎ ${TE('editRecord')}</button>
+    <button class="rec-del" data-sb="${esc(r._sb)}">🗑 ${TE('btnDelete')}</button>
+  </div>` : '';
   return `<div class="card" data-id="${esc(r.id)}">
     <div class="card-head">
       <div class="card-title">📸 ${esc(r.project || '—')}</div>
@@ -1175,12 +1222,17 @@ function problemCard(r) {
       <span>🕒 ${esc((r.created_at || '').slice(0, 16))}</span>
     </div>
     ${r.description ? `<div class="card-desc">${esc((r.description || '').slice(0, 120))}</div>` : ''}
+    ${act}
   </div>`;
 }
 
 function issueCard(r) {
   const proj = projRefById(r.project_id);
   const sev = r.severity || 'medium';
+  const act = canModify(r) ? `<div class="rec-actions">
+    <button class="rec-edit" data-sb="${esc(r._sb)}">✎ ${TE('editRecord')}</button>
+    <button class="rec-del" data-sb="${esc(r._sb)}">🗑 ${TE('btnDelete')}</button>
+  </div>` : '';
   return `<div class="card" data-id="${esc(r.id)}">
     <div class="card-head">
       <div class="card-title">🛠 ${esc(proj || '—')}</div>
@@ -1189,11 +1241,12 @@ function issueCard(r) {
     </div>
     <div class="card-meta">
       ${r.title ? `<span>${T('lblTitle')}:${esc(r.title)}</span>` : ''}
-      ${r.severity ? `<span>${T('lblLevel')}:${esc(sev)}</span>` : ''}
-      ${r.issue_type ? `<span>${T('lblCat')}:${esc(r.issue_type)}</span>` : ''}
+      ${r.severity ? `<span>${T('lblLevel')}:${esc(dispSev(sev))}</span>` : ''}
+      ${r.issue_type ? `<span>${T('lblCat')}:${esc(dispTr(r.issue_type))}</span>` : ''}
       <span>🕒 ${esc((r.created_at || '').slice(0, 16))}</span>
     </div>
     ${r.description ? `<div class="card-desc">${esc((r.description || '').slice(0, 120))}</div>` : ''}
+    ${act}
   </div>`;
 }
 
@@ -1525,7 +1578,7 @@ function openFieldLogEditor(rec, p) {
     <label class="lbl">${TE('flReporterEmail')}</label>
     <input id="fl-rep-email" class="inp" type="email" placeholder="name@gunbase.com" value="${esc(repEmail)}">
     <label class="lbl">${TE('flRespEmail')}</label>
-    <input id="fl-resp-email" class="inp" type="email" placeholder="负责同事邮箱" value="${esc(respEmail)}">
+    <input id="fl-resp-email" class="inp" type="email" placeholder="${esc(TE('flRespPh'))}" value="${esc(respEmail)}">
     <button class="btn-main" id="fl-save">${isEdit ? TE('btnSave') : T('submit')}</button>
     <button class="btn-ghost" id="fl-cancel">${T('cancel')}</button>
     ${isEdit ? `<button class="btn-main danger" id="fl-del" style="background:#b8461f">${TE('btnDelete')}</button>` : ''}
@@ -1571,21 +1624,126 @@ function openFieldLogEditor(rec, p) {
   };
 }
 
+// 内部问题（issues）编辑器：工厂端编辑自己项目的问题；rec 存在则进入编辑模式
+function openIssueEditor(rec) {
+  const isEdit = !!(rec && rec._sb);
+  const projOpts = `<option value="">${T('notSelected')}</option>` + (S.projects || []).map(p => {
+    const v = p.id || '';
+    const sel = (rec && String(rec.project_id) === String(v)) ? ' selected' : '';
+    const lbl = p.factory_project_no || p.customer_project_no || p.name || v;
+    return `<option value="${esc(v)}"${sel}>${esc(lbl)}</option>`;
+  }).join('');
+  const catVal = CATMAP[rec && rec.issue_type] || (rec && rec.issue_type) || '生产';
+  const sevVal = (rec && rec.severity) || 'medium';
+  const statusVal = (rec && rec.status) || 'open';
+  const titleVal = (rec && rec.title) || '';
+  const descVal = (rec && rec.description) || '';
+  $('modal').innerHTML = `
+  <div class="sheet">
+    <div class="sheet-bar"></div>
+    <div class="sheet-head"><div><div class="sheet-title">${isEdit ? TE('editRecord') : T('intIssue')}</div>
+      <div class="sheet-sub">${T('intIssue')} · ${CFG.code}</div></div>
+      <button class="sheet-x" id="m-xi">✕</button></div>
+    <label class="lbl">${T('lblProject')}</label>
+    <select id="is-project" class="inp">${projOpts}</select>
+    <label class="lbl">${T('lblCat')}</label>
+    <select id="is-cat" class="inp">
+      ${['生产', '工程', '制程', '品质'].map(c => `<option value="${esc(c)}"${catVal === c ? ' selected' : ''}>${esc(dispTr(c))}</option>`).join('')}
+    </select>
+    <label class="lbl">${T('lblTitle')}</label>
+    <input id="is-title" class="inp" type="text" value="${esc(titleVal)}" placeholder="${T('lblTitle')}">
+    <label class="lbl">${T('lblLevel')}</label>
+    <select id="is-sev" class="inp">
+      ${['low', 'medium', 'high', 'critical'].map(s => `<option value="${esc(s)}"${sevVal === s ? ' selected' : ''}>${esc(dispSev(s))}</option>`).join('')}
+    </select>
+    <label class="lbl">${T('lblStatus')}</label>
+    <select id="is-status" class="inp">
+      ${['待处理', '处理中', '已处理', 'open', 'in_progress', 'closed'].map(s => `<option value="${esc(s)}"${statusVal === s ? ' selected' : ''}>${esc(dispTr(s))}</option>`).join('')}
+    </select>
+    <label class="lbl">${T('lblDesc')}</label>
+    <textarea id="is-desc" class="inp" rows="5" placeholder="${T('descPlaceholder')}">${esc(descVal)}</textarea>
+    <button class="btn-main" id="is-save">${isEdit ? TE('btnSave') : T('submit')}</button>
+    <button class="btn-ghost" id="is-cancel">${T('cancel')}</button>
+    <div class="spacer"></div>
+  </div>`;
+  $('modal').classList.add('open');
+  $('m-xi').onclick = closeModal;
+  $('is-cancel').onclick = closeModal;
+  $('is-save').onclick = async () => {
+    const btn = $('is-save'); btn.disabled = true;
+    const base = isEdit ? { ...rec } : { id: 'is_' + Date.now(), created_at: new Date().toISOString().slice(0, 19).replace('T', ' '), comments: [] };
+    base.project_id = $('is-project').value;
+    base.issue_type = $('is-cat').value;
+    base.title = $('is-title').value.trim();
+    base.severity = $('is-sev').value;
+    base.status = $('is-status').value;
+    base.description = $('is-desc').value.trim();
+    base.updated_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    if (!base.title && !base.description) { btn.disabled = false; return toast(TE('flFillProjOrDesc'), true); }
+    try { await saveIssueRecord(base); closeModal(); toast(isEdit ? TE('flSaved') : T('submitted')); await refreshData(); switchTab('onsite'); }
+    catch (e) { btn.disabled = false; toast(T('errNet'), true); }
+  };
+}
+
+/* 应用内确认框（替代 window.confirm：PWA 独立模式下 confirm 会被系统拦截/静默返回 false，导致删除中断） */
+function confirmModal(msg) {
+  return new Promise(resolve => {
+    const modal = $('modal');
+    modal.innerHTML = `<div class="sheet" style="max-width:440px">
+      <div class="sheet-bar"></div>
+      <div class="sheet-head"><div class="sheet-title">${esc(TE('confirmTitle'))}</div>
+        <button class="sheet-x" id="cf-x">✕</button></div>
+      <div class="cf-msg" style="padding:6px 2px 14px;color:#333;font-size:14px;line-height:1.5">${esc(msg)}</div>
+      <div class="cf-actions" style="display:flex;gap:10px;justify-content:flex-end">
+        <button class="btn-ghost" id="cf-cancel">${esc(T('cancel'))}</button>
+        <button id="cf-ok" style="background:#E5484D;color:#fff;border:none;padding:10px 18px;border-radius:10px;font-size:15px;cursor:pointer">${esc(TE('btnDelete'))}</button>
+      </div>
+    </div>`;
+    modal.classList.add('open');
+    const done = v => { modal.onclick = null; closeModal(); resolve(v); };
+    $('cf-x').onclick = () => done(false);
+    $('cf-cancel').onclick = () => done(false);
+    $('cf-ok').onclick = () => done(true);
+    modal.onclick = e => { if (e.target.id === 'modal') done(false); };
+  });
+}
+
 /* ─────────── 通用删除（软删：置 is_deleted=true）─────────── */
 // 同时过滤 S.records（工厂上报）与 S.problems（含客诉），按 supabase_id 定位
 async function deleteExtRecord(rec, kind) {
   if (!rec || !rec._sb) return;
-  if (!confirm(TE('confirmDelete'))) return;
+  const ok = await confirmModal(TE('confirmDelete'));
+  if (!ok) return;
   try {
     await sbPatch('sync_data', `supabase_id=eq.${rec._sb}`, { is_deleted: true, updated_at: new Date().toISOString() });
     S.records = (S.records || []).filter(x => String(x._sb) !== String(rec._sb));
     S.problems = (S.problems || []).filter(x => String(x._sb) !== String(rec._sb));
     closeModal();
     toast(TE('deleted'));
-    switchTab(S.tab || 'records');
+    await refreshData(); // 服务端权威重渲染，确保卡片真正消失（is_deleted 已在 loadTable 过滤）
   } catch (e) { toast(T('errNet'), true); }
 }
 function findRecord(sb) { return (S.records || []).find(x => String(x._sb) === String(sb)); }
+function findBySb(sb) {
+  return (S.problems || []).find(x => String(x._sb) === String(sb))
+      || (S.records || []).find(x => String(x._sb) === String(sb));
+}
+// 当前登录用户是否可编辑/删除该记录（所有人为输入的记录都应带编辑+删除按钮）
+function canModify(r) {
+  const sess = getSession(); if (!sess) return false;
+  if (sess.role === 'super') return true;
+  if (r._table === 'field_log' || r.is_customer_complaint) {
+    if (IS_FACTORY) {
+      // 工厂端：现场记录(field_log)由工厂录入/归属，工厂用户一律可编辑与删除。
+      // 不再用 problem_factory 字符串匹配做闸门——全角括号/格式差异会让按钮整片消失，
+      // 正是「FPWA 没有删除按钮」的根因。现场记录本就是工厂的数据，工厂可管。
+      return true;
+    }
+    if (IS_CUSTOMER) return String(r.customer_code || '').toLowerCase() === String(sess.value).toLowerCase();
+  }
+  if (r._kind === 'issues') return IS_FACTORY; // 工厂内部问题仅工厂端可改，客户只读
+  return false;
+}
 function recordActions(r) {
   return `<div class="rec-actions">
     <button class="rec-edit" data-sb="${esc(r._sb)}">✎ ${TE('editRecord')}</button>
@@ -1606,7 +1764,9 @@ const CATS = ['生产', '工程', '制程', '品质'];
 // 现场大标题多语言映射（内部键 → EXT 词典 key）
 const CAT_TR = { '生产': 'catProd', '工程': 'catEng', '制程': 'catProc', '品质': 'catQual' };
 const STATUS_TR = { '待处理': 'stPend', '处理中': 'stDoing', '已处理': 'stDone', '已解决': 'stDone' };
-function dispTr(v) { if (v == null) return v; const k = STATUS_TR[v] || CAT_TR[v]; return k ? (TE(k) || v) : v; }
+const SEV_TR = { 'low':'sevLow', 'medium':'sevMed', 'high':'sevHigh', 'critical':'sevCrit', '低':'sevLow', '中':'sevMed', '高':'sevHigh', '严重':'sevCrit' };
+function dispTr(v) { if (v == null) return v; const k = STATUS_TR[v] || CAT_TR[CATMAP[v] || v]; return k ? (TE(k) || v) : v; }
+function dispSev(v) { if (!v) return v; const k = SEV_TR[v]; return k ? (TE(k) || v) : v; }
 // 归一化：主 PWA 的 issue_type / 问题表名 可能是英文(production/engineering/quality)或中文，
 // 统一映射到 FPWA/CPWA 现场的 4 类，确保两端「串在一起」
 const CATMAP = {
@@ -1667,6 +1827,13 @@ function renderOnsite() {
   document.querySelectorAll('.onsite .card').forEach(c => {
     c.onclick = () => { const r = findProblem(c.dataset.id); if (r) openProblem(r); };
   });
+  // 每条人为输入的记录都带编辑/删除按钮（点按钮不触发卡片详情）
+  document.querySelectorAll('.onsite .rec-edit').forEach(b => {
+    b.onclick = e => { e.stopPropagation(); const r = findBySb(b.dataset.sb); if (r) (r._kind === 'issues' ? openIssueEditor(r) : openFieldLogEditor(r)); };
+  });
+  document.querySelectorAll('.onsite .rec-del').forEach(b => {
+    b.onclick = e => { e.stopPropagation(); const r = findBySb(b.dataset.sb); if (r) deleteExtRecord(r, r._kind === 'issues' ? 'issues' : 'fieldlog'); };
+  });
 }
 function renderNews() {
   const m = $('main');
@@ -1676,9 +1843,9 @@ function renderNews() {
       <div class="ni-title">${esc(n.title)}</div>
       <div class="ni-meta"><span>📅 ${esc(n.date || '')}</span>${n.source ? `<span>· ${esc(n.source)}</span>` : ''}</div>
       <div class="ni-sum">${esc(n.summary || '')}</div>
-    </a>`).join('') : `<div class="empty"><div class="empty-ico">📰</div><div>No industry news yet</div></div>`;
+    </a>`).join('') : `<div class="empty"><div class="empty-ico">📰</div><div>${esc(TL('newsEmpty'))}</div></div>`;
   m.innerHTML = `<div class="news-full">
-    <div class="news-head"><div class="news-title">🎧 Headphone Industry News</div></div>
+    <div class="news-head"><div class="news-title">🎧 ${esc(TL('newsTitle'))}</div></div>
     ${news.length && news[0].date ? `<div class="news-upd">Updated ${esc(news[0].date)} · ${TE('newsUpdNote')}</div>` : ''}
     <div class="news-list">${items}</div>
   </div>`;
@@ -1720,6 +1887,16 @@ async function boot() {
   renderShell();
   $('main').innerHTML = `<div class="empty"><div class="empty-ico">⏳</div><div>${T('loading')}</div></div>`;
   await refreshData();
+}
+
+// SW 更新后立即接管并自动重载一次，确保用户第一时间吃到新 bundle（无需手动点「更新」）
+if ('serviceWorker' in navigator) {
+  let _swReloaded = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (_swReloaded) return;
+    _swReloaded = true;
+    location.reload();
+  });
 }
 
 boot();
