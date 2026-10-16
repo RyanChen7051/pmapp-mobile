@@ -1,95 +1,95 @@
 {
-  "updated_at": "2026-10-15T08:30:00+08:00",
+  "updated_at": "2026-10-16T08:30:00+08:00",
   "scope": "bluetooth_earbuds",
   "items": [
     {
-      "title": "Samsung Galaxy Buds On Debut as Brand's First Clip-On Open-Ear Earbuds",
-      "summary": "Samsung unveiled the Galaxy Buds On on October 1, 2026, its first clip-on open-ear wireless earbuds that leave the ear canal open for situational awareness. Powered by the Snapdragon S7 Gen 1 sound platform with TwinBoost speakers and Audio Leakage Reduction, they offer up to 9.5 hours of playback, Gemini Live, head gestures and Quick Voice Memo, launching in South Korea on October 27 at KRW 299,000.",
-      "source": "Gadgets",
-      "url": "https://www.gadgets.com.pk/samsung-galaxy-buds-on-launch-with-clip-on-design-and-95-hour-battery",
+      "title": "Samsung Enters Open-Ear Market With Clip-On Galaxy Buds On",
+      "summary": "Samsung's first clip-on, open-ear wireless earbuds wrap around the outer ear instead of sealing the canal, using TwinBoost speakers, Audio Leakage Reduction and up to 9.5 hours of playback. Priced at KRW 299,000, they launch in South Korea on October 27 with Gemini Live and head-gesture controls.",
+      "source": "TechNewsReel",
+      "url": "https://technewsreel.com/gadgets/samsung-enters-open-ear-market-with-clip-on-galaxy-buds-on",
       "date": "2026-10-01",
       "news_date": "2026-10-01",
       "importance": "high"
     },
     {
-      "title": "Huawei FreeBuds Neo Go on Sale in Vietnam from October 1 with 30dB ANC",
-      "summary": "Huawei began selling the FreeBuds Neo true wireless earbuds in Vietnam on October 1, 2026, alongside the Watch GT 7 series. Weighing about 4.8g per bud, they use a dual-channel adaptive noise cancellation system delivering up to 30dB depth, a 10Hz-48kHz Turbo Driver, spatial audio, dual-device connection and cross-platform compatibility with Android, iOS and Windows.",
-      "source": "Vietnam.vn",
-      "url": "https://www.vietnam.vn/en/watch-gt-7-series-va-freebuds-neo-duoc-mo-ban-tu-1-10-2026",
-      "date": "2026-10-01",
-      "news_date": "2026-10-01",
-      "importance": "medium"
-    },
-    {
-      "title": "NEXAL Debuts Earbuds in Malaysia with Bone Voiceprint AI Calls at RM199",
-      "summary": "Shenzhen brand NEXAL launched its first product lineup in Malaysia on October 13, 2026, including the NEXAL Earbuds priced at RM199. The earbuds use Bone Voiceprint AI Call technology, three-mic hybrid noise reduction, a 13mm graphene-composite driver, transparency mode and in-ear detection, going on sale online and offline from October 13.",
-      "source": "Pokde",
-      "url": "https://pokde.net/gadget/tablet/nexal-officially-debuts-in-malaysia",
-      "date": "2026-10-13",
-      "news_date": "2026-10-13",
-      "importance": "low"
-    },
-    {
-      "title": "Bose Unveils Ultra Open Earbuds (2nd Gen) and Sport Open Earbuds for Open-Ear Audio",
-      "summary": "On September 17, 2026, Bose announced the Ultra Open Earbuds (2nd Gen) at USD 299 and the workout-focused Sport Open Earbuds at USD 199, both available October 1. The flagship adds deeper bass, Cinema Mode with TrueSpatial head-tracking and AI SpeechClarity, while the Sport model brings an IP54 C-arm cuff, physical buttons and up to 29 hours of total battery.",
+      "title": "Bose Ultra Open Earbuds 2nd Gen and Sport Open Arrive",
+      "summary": "Bose refreshes its open-ear lineup with the Ultra Open Earbuds (2nd Gen) at $299 and the Sport Open at $199. Both add longer battery life, improved drivers, SpeechClarity calls and wireless charging; the Ultra adds Cinema Mode and aptX Adaptive via Snapdragon Sound, with sales starting October 1.",
       "source": "Bose",
       "url": "https://www.bose.com/pressroom/bose-sport-open-earbuds-and-bose-ultra-open-earbuds-2nd-gen",
-      "date": "2026-09-17",
-      "news_date": "2026-09-17",
+      "date": "2026-10-01",
+      "news_date": "2026-10-01",
       "importance": "critical"
     },
     {
-      "title": "Omdia: Apple Grew Earbud Shipments to 16.8M in Q2 as TWS Market Shrank 0.7%",
-      "summary": "Research firm Omdia reported that global true wireless shipments fell 0.7% year over year to 82.1 million units in Q2 2026, the first decline since 2023. Apple grew 1.2% to 16.8 million for a 20.5% share, while open wireless stereo (OWS) jumped 12% to 11.1 million, with Shokz more than doubling to 1.1 million; Omdia forecasts OWS reaching 90.5 million by 2030.",
-      "source": "The Mac Observer",
-      "url": "https://www.macobserver.com/news/omdia-apple-earbud-shipments-16-8-million-q2-market-shrank/",
-      "date": "2026-09-20",
-      "news_date": "2026-09-20",
-      "importance": "critical"
-    },
-    {
-      "title": "Sony WF-1000XM6 Review: Flagship Earbuds Deliver Class-Leading Noise Cancellation",
-      "summary": "Sony's WF-1000XM6 flagship true wireless earbuds pair a new QN3e processor and eight microphones for roughly 25% better ANC than the XM5, with independent tests measuring about 88% loudness reduction. Supporting LDAC hi-res audio, 8 hours of playback with ANC on and improved call quality, reviewers across CNET, SoundGuys and Tom's Guide rank them among 2026's best premium earbuds.",
-      "source": "International Business Times Australia",
-      "url": "https://ibtimes.com.au/sony-wf-1000xm6-review-flagship-earbuds-deliver-top-tier-noise-cancellation-sound-redesigned-1862195",
-      "date": "2026-10-09",
-      "news_date": "2026-10-09",
+      "title": "Fairphone Fairbuds 2 Bring Modular Repair and LDAC at EUR 119",
+      "summary": "Fairphone's Fairbuds 2 are true wireless earbuds with seven user-replaceable parts, a 100% PFAS-free exterior and LDAC hi-res support. They offer up to 45dB ANC, 11mm bio-cellulose drivers and a 3-year warranty, available across Europe from October 14 as the brand's most sustainable audio product yet.",
+      "source": "Fairphone",
+      "url": "https://www.fairphone.com/stories/the-new-fairbuds-2-your-sound-made-better",
+      "date": "2026-10-14",
+      "news_date": "2026-10-14",
       "importance": "high"
     },
     {
-      "title": "Anker Soundcore AeroClip 2 Clip-On Earbuds Earn Guinness Certification for Call Clarity",
-      "summary": "Anker's Soundcore AeroClip 2 open-ear clip-on earbuds received a Guinness World Records certification on August 31, 2026 for the highest speech-quality score among clip-on earbuds. Powered by the Thus AI chip with 4 mics and 2 VPUs, they offer Hi-Res LDAC audio, a 12mm driver, 6.2g diamond-cuff design and real-time AI translation in 100-plus languages.",
-      "source": "Soundcore",
-      "url": "https://www.soundcore.com/au/products/d1105-aeroclip-2-clip-on-earbuds-with-clearest-calls?ref=true-wireless-earbuds",
-      "date": "2026-09-22",
-      "news_date": "2026-09-22",
+      "title": "Shokz OpenDots 2 Fixes Loudness While Keeping the Clip-On Fit",
+      "summary": "The Shokz OpenDots 2 open-ear earbuds keep the comfortable clip-on design of the original but deliver much louder, clearer sound with Dolby Audio and faster quick charging. Priced at AED 699, they remain one of the easiest open-ear buds to recommend for all-day awareness listening.",
+      "source": "Tbreak",
+      "url": "https://tbreak.com/shokz-opendots-2-review-same-great-fit-much-better-sound",
+      "date": "2026-10-05",
+      "news_date": "2026-10-05",
       "importance": "medium"
     },
     {
-      "title": "Open-Ear Earbuds Boom While Traditional TWS Stalls, Omdia Data Shows",
-      "summary": "Market analysis highlights that open-ear audio is the fastest-growing wireless-audio segment, with Omdia placing OWS up 12% in Q2 2026 and clip-on designs making up 61% of the category. Bose, Shokz, Sony and budget brands such as CMF are pouring engineering into closing the bass and isolation gap, as consumers split their buying by use case rather than replacing sealed TWS.",
+      "title": "Open-Ear Earbuds Boom While Traditional TWS Shipments Slip 0.7%",
+      "summary": "Omdia's Q2 2026 tracker shows global TWS shipments fell 0.7% to 82.1 million units, the first annual decline since 2023, while open wireless stereo grew 12% to 11.1 million. Clip-on designs took 61% of OWS volume, and the sub-$50 tier surged 323% year over year.",
       "source": "eCoustics",
       "url": "https://www.ecoustics.com/news/open-ear-earbuds-market-growth-2026/",
+      "date": "2026-10-06",
+      "news_date": "2026-10-06",
+      "importance": "critical"
+    },
+    {
+      "title": "Sony WF-1000XM6 Stays the Noise-Cancelling Benchmark in 2026",
+      "summary": "Aggregating six published reviews, the Sony WF-1000XM6 earns strong marks for class-leading ANC, clearer calls and a smaller, more secure fit via the QN3e chip and LDAC. At $329.99 battery and codecs are unchanged from the XM5, making it best for Android and cross-platform buyers chasing silence.",
+      "source": "Verdict Reviews",
+      "url": "https://verdict-reviews.com/product/sony-wf-1000xm6",
       "date": "2026-10-08",
       "news_date": "2026-10-08",
       "importance": "high"
     },
     {
-      "title": "Best Wireless Earbuds of 2026: 10 Smart Picks Across Ecosystems",
-      "summary": "A research-based roundup scores ten wireless earbuds as of October 13, 2026, with the Sony WF-1000XM6 (8.9) and Apple AirPods Pro 3 (9.0) leading overall, the Samsung Galaxy Buds4 Pro for Galaxy phones, the Bose QC Ultra 2nd Gen for comfort, and the Soundcore Liberty 5 Pro for midrange value with Guinness-certified call quality. The guide stresses fit and codec support over raw specs.",
-      "source": "AsumeTech",
-      "url": "https://asumetech.com/2026/10/13/best-wireless-earbuds-of-2026",
-      "date": "2026-10-13",
-      "news_date": "2026-10-13",
+      "title": "CMF Buds Pro 2 Packs 50dB ANC and LDAC Into a $59 Package",
+      "summary": "Nothing's CMF Buds Pro 2 pair an 11mm bass driver and 6mm tweeter with 50dB adaptive hybrid ANC, LDAC and a smart dial on the case for phone-free control. Reviews praise flagship-adjacent sound and 43-hour battery for the price, with the main trade-off being bass-heavy default tuning.",
+      "source": "HiFiReport",
+      "url": "https://www.hifireport.com/cmf-buds-pro-2-review",
+      "date": "2026-10-09",
+      "news_date": "2026-10-09",
       "importance": "medium"
     },
     {
-      "title": "Anker Debuts Soundcore Sleep Earbuds 4 with Real-Time Snore Masking at IFA 2026",
-      "summary": "At IFA 2026, Anker introduced the Soundcore Sleep Earbuds 4, launching October 2026 at USD 229, with a Pro version at USD 349 in November. The earbuds use adaptive snore masking that reacts to room noise in real time, a 20% slimmer side-sleep design, and the Pro adds in-ear PPG heart-rate and HRV tracking plus a touchscreen SleepHub case, with no subscription required.",
+      "title": "Noise Master Buds Open Open Pre-Bookings Ahead of India Launch",
+      "summary": "Indian brand Noise opened pre-bookings for its first Sound by Bose clip-on earbuds, the Master Buds Open, at Rs 999 ahead of an October 23 launch at Rs 7,999. The open-ear TWS offer a 10.8mm driver, 4-mic ENC, Dynamic EQ co-developed with Bose and up to 28 hours of playback.",
+      "source": "Beebom",
+      "url": "https://gadgets.beebom.com/news/noise-master-buds-open-pre-booking-starts-ahead-of-india-launch",
+      "date": "2026-10-15",
+      "news_date": "2026-10-15",
+      "importance": "medium"
+    },
+    {
+      "title": "Anker Soundcore Sleep Earbuds 4 Ship With Real-Time Snore Masking",
+      "summary": "Unveiled at IFA 2026 and shipping in October for $229, the Soundcore Sleep Earbuds 4 use adaptive snore masking and a 20% slimmer side-sleeping design. The $349 Pro adds in-ear PPG heart-rate tracking and a touchscreen Smart Case, with no subscription required for the sound library.",
       "source": "Android Headlines",
       "url": "https://www.androidheadlines.com/2026/09/anker-debuts-soundcore-sleep-earbuds-4-and-radar-speakers-at-ifa-2026.html",
-      "date": "2026-09-15",
-      "news_date": "2026-09-15",
+      "date": "2026-10-15",
+      "news_date": "2026-10-15",
+      "importance": "medium"
+    },
+    {
+      "title": "Shokz OpenFit Pro Adds Noise Cancelling to an Open-Ear Design",
+      "summary": "Shokz's OpenFit Pro is the brand's first open-ear earbuds with active noise reduction, using OpenEar Noise Reduction and a triple-mic AI system to cut low-frequency ambient sound. Hands-on testing highlights strong comfort, 12-hour battery and wireless charging, with sound led by SuperBoost drivers and Dolby Atmos.",
+      "source": "Bia Review",
+      "url": "https://biareview.com/hands-on-with-the-openfit-pro-shokzs-first-open-ear-earbuds-with-noise-cancelling",
+      "date": "2026-10-07",
+      "news_date": "2026-10-07",
       "importance": "medium"
     }
   ]
