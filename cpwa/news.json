@@ -1,46 +1,19 @@
 {
-  "updated_at": "2026-10-20T08:30:00+08:00",
+  "updated_at": "2026-10-21T08:30:00+08:00",
   "scope": "bluetooth_earbuds",
   "items": [
     {
-      "title": "Bose Ultra Open Earbuds (2nd Gen) and Sport Open Now Available at $299 and $199",
-      "summary": "Bose has put its second-generation Ultra Open Earbuds and the new Sport Open Earbuds on sale. The flagship open-ear model adds a redesigned driver with deeper bass, Cinema Mode with TrueSpatial processing, and up to 9 hours of battery life, while the Sport variant targets workouts with an IP54 cuff design.",
-      "source": "Bose",
-      "url": "https://www.bose.com/pressroom/bose-sport-open-earbuds-and-bose-ultra-open-earbuds-2nd-gen",
-      "date": "2026-10-01",
-      "news_date": "2026-10-01",
-      "importance": "critical"
+      "title": "GOBOULT Debuts Tenet, Its First Designed-in-India TWS With 75-Hour Playtime",
+      "summary": "GOBOULT has unveiled Tenet, the brand's first 100 percent designed-in-India true wireless earbuds, priced at Rs 1,299 with up to 75 hours of total playtime, 13mm drivers, quad-mic ENC and an ultra-low-latency gaming mode.",
+      "source": "Gizbot",
+      "url": "https://www.gizbot.com/accessories/news/goboult-debuts-tenet-as-its-first-designed-in-india-tws-with-75-hour-playtime-ultra-low-latency-011-122725.html",
+      "date": "2026-10-16",
+      "news_date": "2026-10-16",
+      "importance": "medium"
     },
     {
-      "title": "Apple AirPods Pro 3 Review: Heart-Rate Sensing and Live Translation Headline the Upgrade",
-      "summary": "Reviewers rate the AirPods Pro 3 highly for best-in-class in-ear ANC, a new optical heart-rate sensor for workouts, and Apple Intelligence-powered Live Translation across five languages. Battery rises to 8 hours with ANC on and the earbuds carry an IP57 rating.",
-      "source": "Verdict Reviews",
-      "url": "https://verdict-reviews.com/product/apple-airpods-pro-3",
-      "date": "2026-10-15",
-      "news_date": "2026-10-15",
-      "importance": "critical"
-    },
-    {
-      "title": "Sony WF-1000XM6 Review: A New Benchmark for Noise-Cancelling Earbuds",
-      "summary": "The WF-1000XM6 earns top marks as Sony's best true-wireless flagship, with class-leading ANC, an upgraded eight-microphone call system, LDAC support and refined tuning. The main trade-offs are an $329.99 price and a tall, less pocketable charging case.",
-      "source": "Trust-x-Tech",
-      "url": "https://www.trustxtech.com/posts/sony-wf-1000xm6-review-a-new-benchmark-for-noise-cancelling-earbuds-with-one-catch",
-      "date": "2026-10-10",
-      "news_date": "2026-10-10",
-      "importance": "high"
-    },
-    {
-      "title": "Fairphone Fairbuds 2 Launch: Modular, Repairable TWS Earbuds with LDAC",
-      "summary": "Fairphone's Fairbuds 2 bring a tool-free modular design with seven user-replaceable parts, including earbud and case batteries, plus LDAC hi-res audio and 45dB ANC. Priced at 119 euros with a three-year warranty, they are billed as the world's first earbuds with a 100% PFAS-free exterior.",
-      "source": "Fairphone",
-      "url": "https://www.fairphone.com/fairbuds",
-      "date": "2026-10-14",
-      "news_date": "2026-10-14",
-      "importance": "high"
-    },
-    {
-      "title": "Noise Master Buds Open Pre-Booking in India with Sound by Bose Tuning",
-      "summary": "Indian brand Noise has opened pre-bookings for its first clip-on open-ear earbuds, the Master Buds Open, tuned with Sound by Bose and a 10.8mm driver. The C-bridge design offers 4-mic ENC, 360-degree spatial audio, Bluetooth 5.4 and up to 28 hours of battery, launching October 23 at 7,999 rupees.",
+      "title": "Noise Master Buds Open Pre-Booking Starts Ahead of India Launch",
+      "summary": "Indian brand Noise has opened pre-bookings for its first open-ear clip-on earbuds, the Master Buds Open, tuned with Sound by Bose audio, a 10.8mm driver, 4-mic ENC and up to 28 hours of battery, launching October 23 at Rs 7,999.",
       "source": "Beebom",
       "url": "https://gadgets.beebom.com/news/noise-master-buds-open-pre-booking-starts-ahead-of-india-launch",
       "date": "2026-10-15",
@@ -48,49 +21,76 @@
       "importance": "high"
     },
     {
-      "title": "CMF Buds Pro 2 Review: 50dB ANC, LDAC and a Smart Dial at Budget Pricing",
-      "summary": "Nothing's sub-brand packs the Buds Pro 2 with 50dB adaptive hybrid ANC, an 11mm plus 6mm dual-driver setup with LDAC, 43 hours of total battery and a rotating Smart Dial on the case. Reviewers praise the feature set for the price while noting the ANC trails flagship Bose and Sony models.",
-      "source": "HiFiReport",
-      "url": "https://www.hifireport.com/cmf-buds-pro-2-review",
+      "title": "CMF Clip Pro and Buds Neo Launch in Malaysia With Open-Ear and Budget ANC Options",
+      "summary": "CMF has brought the Clip Pro open-ear clip-on earbuds (RM359, LDAC, 10.8mm drivers, 32.5h battery) and the Buds Neo in-ear ANC earbuds (RM129, 35dB ANC, 52h battery) to Malaysia, both on sale from October 19.",
+      "source": "Pokde",
+      "url": "https://pokde.net/system/audio/earphone/cmf-clip-pro-buds-neo-malaysia",
+      "date": "2026-10-19",
+      "news_date": "2026-10-19",
+      "importance": "high"
+    },
+    {
+      "title": "JLab JBuds Mini ANC Reaches Japan With Clip-On Case and Apple Find My",
+      "summary": "JLab launched the JBuds Mini ANC in Japan on October 16 at 8,980 yen, packing active noise cancellation and a compact carabiner charging case that supports Apple Find My, with up to 7 hours of playback per charge.",
+      "source": "mastergyouza",
+      "url": "https://mastergyouza.com/2026/10/17/jlab-jbuds-mini-anc-japan-launch-8980-yen-october-2026-en",
+      "date": "2026-10-17",
+      "news_date": "2026-10-17",
+      "importance": "medium"
+    },
+    {
+      "title": "UGREEN ClipBuds Pro 2 Open-Ear Clip Earbuds Go on Sale With LDAC",
+      "summary": "UGREEN put the ClipBuds Pro 2 clip-on open-ear earbuds on sale October 1 at 99.99 dollars, featuring an 11mm titanium-composite driver, LDAC, Bluetooth 6.1, IP56 protection and a 46-hour total battery claim, with four mics plus bone-conduction voice pickup.",
+      "source": "TrendyTechReviews",
+      "url": "https://trendytechreviews.com/trending/biggest-budget-earbud-releases-q4-2026-live-launch-tracker",
+      "date": "2026-10-01",
+      "news_date": "2026-10-01",
+      "importance": "medium"
+    },
+    {
+      "title": "Galaxy Buds On vs Sony LinkBuds Clip: Samsung Plays Catch-Up in Clip-On Audio",
+      "summary": "A head-to-head compares Samsung's new Galaxy Buds On clip-on earbuds with the Sony LinkBuds Clip, noting Samsung's stronger Galaxy-AI ecosystem features and slightly longer battery against Sony's broader iPhone and Android support and multipoint flexibility.",
+      "source": "Gadget Flow",
+      "url": "https://thegadgetflow.com/blog/galaxy-buds-on-vs-sony-linkbuds/",
       "date": "2026-10-10",
       "news_date": "2026-10-10",
       "importance": "medium"
     },
     {
-      "title": "Shokz OpenFit Pro Hands-On: The Brand's First Open-Ear Earbuds with Noise Cancelling",
-      "summary": "Shokz moves upmarket with the OpenFit Pro, its first open-ear earbuds to add active noise cancellation, pairing an ear-hook design with physical water-resistant buttons and wireless charging. The hands-on notes surprisingly fuller sound from the open design while keeping the brand's signature all-day comfort.",
-      "source": "BiaReview",
-      "url": "https://biareview.com/hands-on-with-the-openfit-pro-shokzs-first-open-ear-earbuds-with-noise-cancelling",
-      "date": "2026-10-12",
-      "news_date": "2026-10-12",
-      "importance": "medium"
-    },
-    {
-      "title": "Anker's THUS AI Chip Brings On-Device Transcription and Smarter ANC to Soundcore Earbuds",
-      "summary": "Anker unveiled seven Soundcore products at IFA 2026 built around its proprietary THUS AI chip, handling adaptive ANC, voice processing and on-device call or meeting transcription. Headliners include the Space 2 Pro headphones, the AeroClip 2 Pro open-ear clip with AI recording, and the Liberty Buds 2 with Comfort ANC.",
-      "source": "gagadget",
-      "url": "https://gagadget.com/en/724418-ankers-new-thus-ai-chip-brings-call-transcription-and-sleep-tracking-to-soundcore-earbuds/",
-      "date": "2026-09-22",
-      "news_date": "2026-09-22",
+      "title": "AirPods Pro 3 vs Sony WF-1000XM6: Which Earbuds to Buy in 2026",
+      "summary": "A detailed comparison finds the AirPods Pro 3 the better pick for most iPhone users thanks to heart-rate tracking, Live Translation and Hearing Aid features, while the Sony WF-1000XM6 wins for Android owners and audiophiles with LDAC, a 10-band EQ and longer measured battery.",
+      "source": "NexploreInfo",
+      "url": "https://nexploreinfo.com/airpods-pro-3-vs-sony-wf-1000xm6",
+      "date": "2026-10-01",
+      "news_date": "2026-10-01",
       "importance": "high"
     },
     {
-      "title": "Omdia: Global TWS Shipments Slip for First Time Since 2023 as Open-Ear Grows 12%",
-      "summary": "Omdia's Q2 2026 tracker shows true wireless stereo shipments down 0.7% to 82.1 million units, the category's first annual decline since 2023, while open wireless stereo grew 12% to 11.1 million. Apple held the top spot with 20.5% share, and Omdia forecasts OWS to nearly double to 90.5 million by 2030.",
-      "source": "eCoustics",
-      "url": "https://www.ecoustics.com/news/open-ear-earbuds-market-growth-2026/",
-      "date": "2026-09-18",
-      "news_date": "2026-09-18",
+      "title": "AirPods Keep TWS Crown as Global Earbud Shipments Fall for First Time Since 2023",
+      "summary": "Omdia's Q2 2026 data shows global true wireless shipments slipped 0.7 percent year over year to 82.1 million units, the first annual decline since 2023, while Apple grew 1.2 percent to a 20.5 percent share led by AirPods 5.",
+      "source": "iThinkDiff",
+      "url": "https://www.ithinkdiff.com/airpods-stay-on-top-as-global-earbuds-shipments-drop-for-the-first-time-since-2023/",
+      "date": "2026-09-19",
+      "news_date": "2026-09-19",
       "importance": "critical"
     },
     {
-      "title": "Shokz October Prime Day Guide Spotlights OpenDots 2, OpenDots Air and OpenFit Air 2",
-      "summary": "Shokz outlines its current open-ear lineup for the October Prime Day sales, including the clip-on OpenDots 2 with Dolby Audio and 40-hour total battery, the lightweight OpenDots Air, and the OpenFit Air 2 ear-hook earbuds with Bluetooth 6.1 and 36-hour battery. The guide helps buyers choose by design and use case.",
-      "source": "Shokz",
-      "url": "http://shokz.com/blogs/news/shokz-october-2026-prime-day-sale-guide",
-      "date": "2026-10-15",
-      "news_date": "2026-10-15",
-      "importance": "low"
+      "title": "Open-Ear Earbuds Boom While Traditional TWS Stalls",
+      "summary": "Omdia data highlighted by eCoustics shows open wireless stereo shipments grew 12 percent to 11.1 million units in Q2 2026, with clip-on designs making up 61 percent of the category, as sub-50-dollar open-ear models surged 323 percent year over year.",
+      "source": "eCoustics",
+      "url": "https://www.ecoustics.com/news/open-ear-earbuds-market-growth-2026/",
+      "date": "2026-10-10",
+      "news_date": "2026-10-10",
+      "importance": "high"
+    },
+    {
+      "title": "The 7 Best Open-Ear Earbuds of 2026, Expert Tested",
+      "summary": "Mashable tested open-ear earbuds from Shokz, Sony, Bose and others, naming the Shokz OpenDots One the best overall for workout use, with the Sony LinkBuds Clip as best newcomer and the Bose Ultra Open as best for comfort and sound.",
+      "source": "Mashable",
+      "url": "https://mashable.com/roundup/best-open-ear-buds-tested",
+      "date": "2026-10-05",
+      "news_date": "2026-10-05",
+      "importance": "medium"
     }
   ]
 }
